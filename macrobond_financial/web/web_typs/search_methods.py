@@ -107,7 +107,7 @@ class SearchMethods():
                 'entityType': entity_type
             }
         )
-        return cast(list['ItemListingResponse'], response.json())
+        return cast(List['ItemListingResponse'], response.json())
 
     def entities_for_display(
         self, request: 'SearchForDisplayRequest'

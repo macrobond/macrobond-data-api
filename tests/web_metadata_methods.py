@@ -1,11 +1,12 @@
 # -*- coding: utf-8 -*-
 
-from typing import List
-
-from macrobond_financial.web.web_typs.metadata_value_information_response import \
-    MetadataValueInformationResponse
+from typing import List, TYPE_CHECKING
 
 from tests.test_common import TestCase
+
+if TYPE_CHECKING:  # pragma: no cover
+    from macrobond_financial.web.web_typs.metadata_value_information_response import \
+        MetadataValueInformationResponse
 
 
 class WebMetadataMethods(TestCase):
@@ -16,7 +17,7 @@ class WebMetadataMethods(TestCase):
             ('EntityType', 'SuperRegion')
         )
 
-        expected: List[MetadataValueInformationResponse] = [
+        expected: List['MetadataValueInformationResponse'] = [
             {
                 'attributeName': 'EntityType',
                 'value': 'Category',
