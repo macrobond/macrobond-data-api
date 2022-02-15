@@ -1,0 +1,49 @@
+{
+    // See https://go.microsoft.com/fwlink/?LinkId=733558
+    // for the documentation about the tasks.json format
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "test in Python 3.6",
+            "type": "shell",
+            "command": "C:\\Users\\Johan.Polson\\AppData\\Local\\Programs\\Python\\Python36\\python.exe -m unittest discover -v -s .\\tests -p '**.py'",
+            "problemMatcher": []
+        },
+        {
+            "label": "pylint",
+            "type": "shell",
+            "command": "python scripts\\pylint.py",
+            "problemMatcher": []
+        },
+        {
+            "label": "mypy",
+            "type": "shell",
+            "command": "python scripts\\mypy.py",
+            "problemMatcher": []
+        },
+        {
+            "label": "pycodestyle",
+            "type": "shell",
+            "command": "python scripts\\pycodestyle.py",
+            "problemMatcher": []
+        },
+        {
+            "label": "pdoc3",
+            "type": "shell",
+            "command": "python scripts\\pdoc3.py",
+            "problemMatcher": []
+        },
+        {
+            "label": "coverage",
+            "type": "shell",
+            "command": "python scripts\\coverage.py",
+            "problemMatcher": []
+        },
+        {
+            "label": "build",
+            "type": "shell",
+            "command": "python scripts\\build.py",
+            "problemMatcher": []
+        }
+    ]
+}

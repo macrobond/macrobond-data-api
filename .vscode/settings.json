@@ -1,0 +1,33 @@
+{
+    "editor.rulers": [100],
+
+    "files.exclude": {
+        "**/__pycache__": true,
+        "**/.mypy_cache": true
+    },
+
+    "python.testing.unittestArgs": [
+        "-v",
+        "-s",
+        "./tests",
+        "-p",
+        "**.py"
+    ],
+    "python.testing.pytestEnabled": false,
+    "python.testing.unittestEnabled": true,
+    
+    "testing.autoRun.mode": "all",
+    "testing.autoRun.delay": 2000,
+
+
+    
+    "python.linting.enabled": true,
+
+    "python.linting.pylintEnabled": true,
+    "python.linting.pylintArgs": [],
+
+    "python.linting.mypyEnabled": true,
+
+    "python.linting.pycodestyleEnabled": true,
+    "python.linting.pycodestyleArgs": ["--config=setup.cfg"]
+}
