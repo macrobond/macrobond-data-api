@@ -135,7 +135,7 @@ class SearchMethods():
                 &#39;entityType&#39;: entity_type
             }
         )
-        return cast(list[&#39;ItemListingResponse&#39;], response.json())
+        return cast(List[&#39;ItemListingResponse&#39;], response.json())
 
     def entities_for_display(
         self, request: &#39;SearchForDisplayRequest&#39;
@@ -274,7 +274,7 @@ class SearchMethods():
                 &#39;entityType&#39;: entity_type
             }
         )
-        return cast(list[&#39;ItemListingResponse&#39;], response.json())
+        return cast(List[&#39;ItemListingResponse&#39;], response.json())
 
     def entities_for_display(
         self, request: &#39;SearchForDisplayRequest&#39;
@@ -378,7 +378,7 @@ selected metadata formatted for presentation purposes.</p>
             &#39;entityType&#39;: entity_type
         }
     )
-    return cast(list[&#39;ItemListingResponse&#39;], response.json())</code></pre>
+    return cast(List[&#39;ItemListingResponse&#39;], response.json())</code></pre>
 </details>
 </dd>
 <dt id="macrobond_financial.web.web_typs.search_methods.SearchMethods.get_entities"><code class="name flex">

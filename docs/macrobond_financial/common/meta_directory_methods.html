@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.10.0" />
 <title>macrobond_financial.common.meta_directory_methods API documentation</title>
-<meta name="description" content="" />
+<meta name="description" content="module doc string" />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
 <link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
@@ -22,11 +22,13 @@
 <h1 class="title">Module <code>macrobond_financial.common.meta_directory_methods</code></h1>
 </header>
 <section id="section-intro">
+<p>module doc string</p>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python"># -*- coding: utf-8 -*-
+&#39;&#39;&#39;module doc string&#39;&#39;&#39;
 
 from typing import List, Any, Optional, TYPE_CHECKING
 from abc import ABC, abstractmethod
@@ -36,10 +38,34 @@ if TYPE_CHECKING:  # pragma: no cover
 
 
 class MetaDirectoryMethods(ABC):
+    &#39;&#39;&#39;
+    This class fetches methods to look up metadata
+    &#39;&#39;&#39;
 
     @abstractmethod
     def list_values(self, name: str) -&gt; List[&#39;MetadataValueInformation&#39;]:
-        &#39;&#39;&#39;List all metadata attribute values.&#39;&#39;&#39;
+        &#39;&#39;&#39;
+        List all metadata attribute values.
+
+        Parameters
+        ----------
+        name: str
+            record that failed processing
+
+        Returns
+        -------
+        List[MetadataValueInformation]
+            &#34;success&#34;, result, original record
+
+        Examples
+        -------
+        ```python
+        with ComClient() as api: # or Weblient
+            value_information_list = api.meta_directory.list_values(&#39;RateType&#39;)
+            for info in value_information_list:
+                print(info.value + &#39; &#39; + info.description)
+        ```
+        &#39;&#39;&#39;
 
     @abstractmethod
     def get_attribute_information(self, name: str) -&gt; &#39;MetadataAttributeInformation&#39;:
@@ -215,17 +241,40 @@ class MetadataAttributeInformation():
 <span>class <span class="ident">MetaDirectoryMethods</span></span>
 </code></dt>
 <dd>
-<div class="desc"><p>Helper class that provides a standard way to create an ABC using
-inheritance.</p></div>
+<div class="desc"><p>This class fetches methods to look up metadata</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class MetaDirectoryMethods(ABC):
+    &#39;&#39;&#39;
+    This class fetches methods to look up metadata
+    &#39;&#39;&#39;
 
     @abstractmethod
     def list_values(self, name: str) -&gt; List[&#39;MetadataValueInformation&#39;]:
-        &#39;&#39;&#39;List all metadata attribute values.&#39;&#39;&#39;
+        &#39;&#39;&#39;
+        List all metadata attribute values.
+
+        Parameters
+        ----------
+        name: str
+            record that failed processing
+
+        Returns
+        -------
+        List[MetadataValueInformation]
+            &#34;success&#34;, result, original record
+
+        Examples
+        -------
+        ```python
+        with ComClient() as api: # or Weblient
+            value_information_list = api.meta_directory.list_values(&#39;RateType&#39;)
+            for info in value_information_list:
+                print(info.value + &#39; &#39; + info.description)
+        ```
+        &#39;&#39;&#39;
 
     @abstractmethod
     def get_attribute_information(self, name: str) -&gt; &#39;MetadataAttributeInformation&#39;:
@@ -260,14 +309,51 @@ def get_attribute_information(self, name: str) -&gt; &#39;MetadataAttributeInfor
 <span>def <span class="ident">list_values</span></span>(<span>self, name: str) ‑> List[<a title="macrobond_financial.common.meta_directory_methods.MetadataValueInformation" href="#macrobond_financial.common.meta_directory_methods.MetadataValueInformation">MetadataValueInformation</a>]</span>
 </code></dt>
 <dd>
-<div class="desc"><p>List all metadata attribute values.</p></div>
+<div class="desc"><p>List all metadata attribute values.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>name</code></strong> :&ensp;<code>str</code></dt>
+<dd>record that failed processing</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>List[<a title="macrobond_financial.common.meta_directory_methods.MetadataValueInformation" href="#macrobond_financial.common.meta_directory_methods.MetadataValueInformation">MetadataValueInformation</a>]</code></dt>
+<dd>"success", result, original record</dd>
+</dl>
+<h2 id="examples">Examples</h2>
+<pre><code class="language-python">with ComClient() as api: # or Weblient
+    value_information_list = api.meta_directory.list_values('RateType')
+    for info in value_information_list:
+        print(info.value + ' ' + info.description)
+</code></pre></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@abstractmethod
 def list_values(self, name: str) -&gt; List[&#39;MetadataValueInformation&#39;]:
-    &#39;&#39;&#39;List all metadata attribute values.&#39;&#39;&#39;</code></pre>
+    &#39;&#39;&#39;
+    List all metadata attribute values.
+
+    Parameters
+    ----------
+    name: str
+        record that failed processing
+
+    Returns
+    -------
+    List[MetadataValueInformation]
+        &#34;success&#34;, result, original record
+
+    Examples
+    -------
+    ```python
+    with ComClient() as api: # or Weblient
+        value_information_list = api.meta_directory.list_values(&#39;RateType&#39;)
+        for info in value_information_list:
+            print(info.value + &#39; &#39; + info.description)
+    ```
+    &#39;&#39;&#39;</code></pre>
 </details>
 </dd>
 </dl>

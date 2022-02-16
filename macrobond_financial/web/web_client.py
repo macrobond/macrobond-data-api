@@ -10,6 +10,14 @@ from .web_api import WebApi
 
 
 class WebClient(Client):
+    """
+    WebClient to get data from the web
+
+    Examples:
+        with WebClient('client id', 'client secret') as api:
+            series = api.series.get_one_series('usgdp')
+            print(series.metadata)
+    """
 
     __api: Optional['WebApi'] = None
 

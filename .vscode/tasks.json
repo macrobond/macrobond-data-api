@@ -1,12 +1,22 @@
 {
-    // See https://go.microsoft.com/fwlink/?LinkId=733558
-    // for the documentation about the tasks.json format
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "test in Python 3.6",
+            "label": "set up dev environment",
             "type": "shell",
-            "command": "C:\\Users\\Johan.Polson\\AppData\\Local\\Programs\\Python\\Python36\\python.exe -m unittest discover -v -s .\\tests -p '**.py'",
+            "command": "python scripts\\set_up_dev_environment.py",
+            "problemMatcher": []
+        },
+        {
+            "label": "unittest 36",
+            "type": "shell",
+            "command": "python scripts\\unittest_36.py",
+            "problemMatcher": []
+        },
+        {
+            "label": "unittest 310",
+            "type": "shell",
+            "command": "python scripts\\unittest_310.py",
             "problemMatcher": []
         },
         {

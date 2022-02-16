@@ -45,30 +45,6 @@ class SeriesMethods(ABC):
         ...  # pragma: no cover
 
 
-class Metadata(ABC):
-    '''Interface for a Macrobond metadata collection.'''
-
-    @abstractmethod
-    def get_first_value(self, name: str) -> Optional[object]:
-        '''Get the first metadata value with the specified name.'''
-
-    @abstractmethod
-    def get_values(self, name: str) -> Union[Tuple[Any], Tuple]:
-        '''Get a list of metadata values with the specified name.'''
-
-    @abstractmethod
-    def get_dict(self) -> Dict[str, Any]:
-        ...  # pragma: no cover
-
-    @abstractmethod
-    def __str__(self):
-        ...  # pragma: no cover
-
-    @abstractmethod
-    def __repr__(self):
-        ...  # pragma: no cover
-
-
 class Entity(ABC):
     '''Interface for a database Macrobond entity.'''
 
@@ -118,7 +94,7 @@ class Entity(ABC):
 
     @property
     @abstractmethod
-    def metadata(self) -> Metadata:
+    def metadata(self) -> Dict[str, Any]:
         '''The metadata for the entity.'''
 
 

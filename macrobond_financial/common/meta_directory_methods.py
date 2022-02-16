@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+'''module doc string'''
 
 from typing import List, Any, Optional, TYPE_CHECKING
 from abc import ABC, abstractmethod
@@ -8,10 +9,34 @@ if TYPE_CHECKING:  # pragma: no cover
 
 
 class MetaDirectoryMethods(ABC):
+    '''
+    This class fetches methods to look up metadata
+    '''
 
     @abstractmethod
     def list_values(self, name: str) -> List['MetadataValueInformation']:
-        '''List all metadata attribute values.'''
+        '''
+        List all metadata attribute values.
+
+        Parameters
+        ----------
+        name: str
+            record that failed processing
+
+        Returns
+        -------
+        List[MetadataValueInformation]
+            "success", result, original record
+
+        Examples
+        -------
+        ```python
+        with ComClient() as api: # or Weblient
+            value_information_list = api.meta_directory.list_values('RateType')
+            for info in value_information_list:
+                print(info.value + ' ' + info.description)
+        ```
+        '''
 
     @abstractmethod
     def get_attribute_information(self, name: str) -> 'MetadataAttributeInformation':

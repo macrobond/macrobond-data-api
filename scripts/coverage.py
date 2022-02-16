@@ -1,15 +1,14 @@
 
 import sys
 from context import Context
+from unittest_310 import UNITTEST_COMMAND
 
 
 def coverage(context: Context) -> None:
-    run = 'run --omit=macrobond_financial/common/enums/**,tests/** ' + \
-        '-m unittest discover -v -s .\\tests -p **.py'
     context.install_and_run(
         'coverage',
         'erase',
-        run,
+        'run --omit=macrobond_financial/common/enums/**,tests/** -m ' + UNITTEST_COMMAND,
         'html',
         'report -m',
         'erase'

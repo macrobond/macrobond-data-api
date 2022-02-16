@@ -5,10 +5,6 @@ from .meta_directory_methods import MetaDirectoryMethods
 from .search_methods import SearchMethods
 from .series_methods import SeriesMethods
 
-__pdoc__ = {
-    'Api.__init__': False,
-}
-
 
 class Api(ABC):
 

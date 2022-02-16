@@ -7,30 +7,27 @@ from typing import TYPE_CHECKING, Dict, Any
 from macrobond_financial.common import SearchMethods as CommonSearchMethods, \
     Entity as CommonEntity, \
     SearchResult
-from ._web_series_methods import _Metadata
 
 if TYPE_CHECKING:  # pragma: no cover
     from .session import Session
-    from macrobond_financial.common import \
-        SearchFilter, \
-        Metadata as CommonMetadata
+    from macrobond_financial.common import SearchFilter
     from .web_typs.search_filter import SearchFilter as WebSearchFilter
     from .web_typs.search_request import SearchRequest
 
 
 class _Entity(CommonEntity):
 
-    _metadata: _Metadata
+    _metadata: Dict[str, Any]
 
-    def __init__(self, meta: Dict[str, Any]) -> None:
+    def __init__(self, metadata: Dict[str, Any]) -> None:
         super().__init__()
-        self._metadata = _Metadata(meta)
+        self._metadata = metadata
 
     def __str__(self):
         return str(self.name)
 
     def __repr__(self):
-        return str(self.name) + ' ' + self.metadata['EntityType']
+        return str(self.name)
 
     @property
     def name(self) -> str:
@@ -57,7 +54,7 @@ class _Entity(CommonEntity):
         return self._metadata['EntityType']
 
     @property
-    def metadata(self) -> 'CommonMetadata':
+    def metadata(self) -> Dict[str, Any]:
         return self._metadata
 
 

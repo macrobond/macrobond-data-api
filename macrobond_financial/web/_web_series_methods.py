@@ -7,7 +7,6 @@ from typing import Tuple, List, Optional, Union, Any, cast, Dict, TYPE_CHECKING
 from datetime import datetime, timezone
 
 from macrobond_financial.common import SeriesMethods, \
-    Metadata as CommonMetadata, \
     Entity as CommonEntity, \
     UnifiedSeries as CommonUnifiedSeries, \
     Series as CommonSeries
@@ -23,44 +22,9 @@ if TYPE_CHECKING:  # pragma: no cover
     from .web_typs.values_response import ValuesResponse
 
 
-class _Metadata(CommonMetadata):
-
-    _data: Dict[str, Any]
-
-    def __init__(self, data: Dict[str, Any]) -> None:
-        super().__init__()
-        self._data = data
-
-    def __getitem__(self, name: str):
-        return self._data[name]
-
-    def __str__(self):
-        return str(self._data)
-
-    def __repr__(self):
-        return str(self)
-
-    def get_first_value(self, name: str) -> Optional[object]:
-        val = self._data.get(name)
-        if val is None:
-            return None
-        return val[0] if isinstance(val, list) else val
-
-    def get_values(self, name: str) -> Union[Tuple[Any], Tuple]:
-        val = self._data.get(name)
-        if val is None:
-            return ()
-        if isinstance(val, list):
-            return tuple(val)
-        return (val,)
-
-    def get_dict(self) -> Dict[str, Any]:
-        return dict(self._data)
-
-
 class _Entity(CommonEntity):
 
-    _metadata: Optional[_Metadata]
+    _metadata: Dict[str, Any]
     _error_message: str
     _error_name: str
 
@@ -72,14 +36,10 @@ class _Entity(CommonEntity):
 
         if error_text is None:
             self._error_message = ''
-
-            metadata = entity_response.get('metadata')
-            if not isinstance(metadata, dict):
-                raise Exception('no metadata in data')
-            self._metadata = _Metadata(metadata)
+            self._metadata = cast(Dict[str, Any], entity_response['metadata'])
         else:
             self._error_message = error_text
-            self._metadata = None
+            self._metadata = {}
 
     def __str__(self):
         return str(self.name)
@@ -89,13 +49,13 @@ class _Entity(CommonEntity):
 
     @property
     def name(self) -> str:
-        if self._metadata is None:
+        if self._error_message != '':
             return self._error_name
         return self._metadata['Name']
 
     @property
     def primary_name(self) -> str:
-        if self._metadata is None:
+        if self._error_message != '':
             return ''
         return self._metadata['PrimName']
 
@@ -109,51 +69,49 @@ class _Entity(CommonEntity):
 
     @property
     def title(self) -> str:
-        if self._metadata is None:
+        if self._error_message != '':
             raise Exception(self._error_message)
         return self._metadata['FullDescription']
 
     @property
     def entity_type(self) -> str:
-        if self._metadata is None:
+        if self._error_message != '':
             raise Exception(self._error_message)
         return self._metadata['EntityType']
 
     @property
-    def metadata(self) -> CommonMetadata:
-        if self._metadata is None:
-            raise Exception(self._error_message)
+    def metadata(self) -> Dict[str, Any]:
         return self._metadata
 
 
 class _UnifiedSeries(_Entity, CommonUnifiedSeries):
 
-    _values: Optional[Tuple[float, ...]]
+    _values: Tuple[float, ...]
 
     def __init__(self, values_response: 'ValuesResponse', name: str) -> None:
         super().__init__(values_response, name)
-        if self._metadata is not None:
+        if self._error_message == '':
             values = values_response.get("values")
             if values is not None:
                 self._values = tuple(values)
 
     @property
     def values(self) -> Tuple[Optional[float], ...]:
-        if self._values is None:
+        if self._error_message != '':
             raise Exception()
         return self._values
 
 
 class _Series(_Entity, CommonSeries):
 
-    _values: Optional[Tuple[float, ...]]
+    _values: Tuple[float, ...]
 
     _str_dates: Optional[List[str]]
     _dates: Optional[Tuple[datetime, ...]] = None
 
     def __init__(self, series_response: 'SeriesResponse', name: str) -> None:
         super().__init__(series_response, name)
-        if self._metadata is not None:
+        if self._error_message == '':
             values = series_response.get("values")
             if values is not None:
                 self._values = tuple(values)
@@ -161,13 +119,13 @@ class _Series(_Entity, CommonSeries):
 
     @property
     def values(self) -> Tuple[Optional[float], ...]:
-        if self._values is None:
+        if self._error_message != '':
             raise Exception(self._error_message)
         return self._values
 
     @property
     def dates(self) -> Tuple[datetime, ...]:
-        if self._metadata is None:
+        if self._error_message != '':
             raise Exception(self._error_message)
         if self._dates is None:
             self._dates = tuple(
@@ -189,13 +147,13 @@ class _Series(_Entity, CommonSeries):
 
     @property
     def frequency(self) -> SeriesFrequency:
-        if self._metadata is None:
+        if self._error_message != '':
             raise Exception(self._error_message)
-        return SeriesFrequency[self._metadata['Frequency'].upper()]
+        return SeriesFrequency[cast(str, self._metadata['Frequency']).upper()]
 
     @property
     def weekdays(self) -> SeriesWeekdays:
-        if self._metadata is None:
+        if self._error_message != '':
             raise Exception(self._error_message)
         return SeriesWeekdays(self._metadata['DayMask'])
 

@@ -31,23 +31,18 @@
 from .enums import *
 from .meta_directory_methods import *
 from .search_methods import SearchMethods, SearchFilter, SearchResult
-from .series_methods import Series, Entity, UnifiedSeries, Metadata, StartOrEndPoint, \
-    SeriesEntrie, SeriesMethods
+from .series_methods import Series, Entity, UnifiedSeries, StartOrEndPoint, SeriesEntrie, \
+    SeriesMethods
 from .client import Client
 from .api import Api
 
 __all__ = [
-    &#39;Client&#39;, &#39;Api&#39;, &#39;Series&#39;, &#39;Entity&#39;, &#39;UnifiedSeries&#39;, &#39;Metadata&#39;, &#39;StartOrEndPoint&#39;,
+    &#39;Client&#39;, &#39;Api&#39;, &#39;Series&#39;, &#39;Entity&#39;, &#39;UnifiedSeries&#39;, &#39;StartOrEndPoint&#39;,
     &#39;SeriesEntrie&#39;, &#39;SeriesMethods&#39;, &#39;SearchMethods&#39;, &#39;SearchFilter&#39;, &#39;SearchResult&#39;
 ]
 
 __pdoc__ = {
-    &#39;Api.__init__&#39;: False,
-    &#39;StartOrEndPoint.__init__&#39;: False,
-    # &#39;macrobond_financial.common.api&#39;: False,
-    # &#39;macrobond_financial.common.client&#39;: False,
-    # &#39;macrobond_financial.common.series_methods&#39;: False,
-    # &#39;macrobond_financial.common.meta_directory_methods&#39;: False,
+    &#39;StartOrEndPoint.__init__&#39;: False
 }</code></pre>
 </details>
 </section>
@@ -68,7 +63,7 @@ __pdoc__ = {
 </dd>
 <dt><code class="name"><a title="macrobond_financial.common.meta_directory_methods" href="meta_directory_methods.html">macrobond_financial.common.meta_directory_methods</a></code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>module doc string</p></div>
 </dd>
 <dt><code class="name"><a title="macrobond_financial.common.search_methods" href="search_methods.html">macrobond_financial.common.search_methods</a></code></dt>
 <dd>
@@ -89,6 +84,7 @@ __pdoc__ = {
 <dl>
 <dt id="macrobond_financial.common.Api"><code class="flex name class">
 <span>class <span class="ident">Api</span></span>
+<span>(</span><span>meta_directory: <a title="macrobond_financial.common.meta_directory_methods.MetaDirectoryMethods" href="meta_directory_methods.html#macrobond_financial.common.meta_directory_methods.MetaDirectoryMethods">MetaDirectoryMethods</a>, search: <a title="macrobond_financial.common.search_methods.SearchMethods" href="search_methods.html#macrobond_financial.common.search_methods.SearchMethods">SearchMethods</a>, series: <a title="macrobond_financial.common.series_methods.SeriesMethods" href="series_methods.html#macrobond_financial.common.series_methods.SeriesMethods">SeriesMethods</a>)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Helper class that provides a standard way to create an ABC using
@@ -291,7 +287,7 @@ def open(self) -&gt; Api:
 
     @property
     @abstractmethod
-    def metadata(self) -&gt; Metadata:
+    def metadata(self) -&gt; Dict[str, Any]:
         &#39;&#39;&#39;The metadata for the entity.&#39;&#39;&#39;</code></pre>
 </details>
 <h3>Ancestors</h3>
@@ -355,7 +351,7 @@ def is_error(self) -&gt; bool:
     &#39;&#39;&#39;</code></pre>
 </details>
 </dd>
-<dt id="macrobond_financial.common.Entity.metadata"><code class="name">var <span class="ident">metadata</span> : <a title="macrobond_financial.common.series_methods.Metadata" href="series_methods.html#macrobond_financial.common.series_methods.Metadata">Metadata</a></code></dt>
+<dt id="macrobond_financial.common.Entity.metadata"><code class="name">var <span class="ident">metadata</span> : Dict[str, Any]</code></dt>
 <dd>
 <div class="desc"><p>The metadata for the entity.</p></div>
 <details class="source">
@@ -364,7 +360,7 @@ def is_error(self) -&gt; bool:
 </summary>
 <pre><code class="python">@property
 @abstractmethod
-def metadata(self) -&gt; Metadata:
+def metadata(self) -&gt; Dict[str, Any]:
     &#39;&#39;&#39;The metadata for the entity.&#39;&#39;&#39;</code></pre>
 </details>
 </dd>
@@ -405,93 +401,6 @@ def primary_name(self) -&gt; str:
 @abstractmethod
 def title(self) -&gt; str:
     &#39;&#39;&#39;The title of the entity.&#39;&#39;&#39;</code></pre>
-</details>
-</dd>
-</dl>
-</dd>
-<dt id="macrobond_financial.common.Metadata"><code class="flex name class">
-<span>class <span class="ident">Metadata</span></span>
-</code></dt>
-<dd>
-<div class="desc"><p>Interface for a Macrobond metadata collection.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">class Metadata(ABC):
-    &#39;&#39;&#39;Interface for a Macrobond metadata collection.&#39;&#39;&#39;
-
-    @abstractmethod
-    def get_first_value(self, name: str) -&gt; Optional[object]:
-        &#39;&#39;&#39;Get the first metadata value with the specified name.&#39;&#39;&#39;
-
-    @abstractmethod
-    def get_values(self, name: str) -&gt; Union[Tuple[Any], Tuple]:
-        &#39;&#39;&#39;Get a list of metadata values with the specified name.&#39;&#39;&#39;
-
-    @abstractmethod
-    def get_dict(self) -&gt; Dict[str, Any]:
-        ...  # pragma: no cover
-
-    @abstractmethod
-    def __str__(self):
-        ...  # pragma: no cover
-
-    @abstractmethod
-    def __repr__(self):
-        ...  # pragma: no cover</code></pre>
-</details>
-<h3>Ancestors</h3>
-<ul class="hlist">
-<li>abc.ABC</li>
-</ul>
-<h3>Subclasses</h3>
-<ul class="hlist">
-<li>macrobond_financial.com._com_series_methods._Metadata</li>
-<li>macrobond_financial.web._web_series_methods._Metadata</li>
-</ul>
-<h3>Methods</h3>
-<dl>
-<dt id="macrobond_financial.common.Metadata.get_dict"><code class="name flex">
-<span>def <span class="ident">get_dict</span></span>(<span>self) ‑> Dict[str, Any]</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@abstractmethod
-def get_dict(self) -&gt; Dict[str, Any]:
-    ...  # pragma: no cover</code></pre>
-</details>
-</dd>
-<dt id="macrobond_financial.common.Metadata.get_first_value"><code class="name flex">
-<span>def <span class="ident">get_first_value</span></span>(<span>self, name: str) ‑> Optional[object]</span>
-</code></dt>
-<dd>
-<div class="desc"><p>Get the first metadata value with the specified name.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@abstractmethod
-def get_first_value(self, name: str) -&gt; Optional[object]:
-    &#39;&#39;&#39;Get the first metadata value with the specified name.&#39;&#39;&#39;</code></pre>
-</details>
-</dd>
-<dt id="macrobond_financial.common.Metadata.get_values"><code class="name flex">
-<span>def <span class="ident">get_values</span></span>(<span>self, name: str) ‑> Union[Tuple[Any], Tuple]</span>
-</code></dt>
-<dd>
-<div class="desc"><p>Get a list of metadata values with the specified name.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@abstractmethod
-def get_values(self, name: str) -&gt; Union[Tuple[Any], Tuple]:
-    &#39;&#39;&#39;Get a list of metadata values with the specified name.&#39;&#39;&#39;</code></pre>
 </details>
 </dd>
 </dl>
@@ -1345,14 +1254,6 @@ def values(self) -&gt; Tuple[Optional[float], ...]:
 <li><code><a title="macrobond_financial.common.Entity.name" href="#macrobond_financial.common.Entity.name">name</a></code></li>
 <li><code><a title="macrobond_financial.common.Entity.primary_name" href="#macrobond_financial.common.Entity.primary_name">primary_name</a></code></li>
 <li><code><a title="macrobond_financial.common.Entity.title" href="#macrobond_financial.common.Entity.title">title</a></code></li>
-</ul>
-</li>
-<li>
-<h4><code><a title="macrobond_financial.common.Metadata" href="#macrobond_financial.common.Metadata">Metadata</a></code></h4>
-<ul class="">
-<li><code><a title="macrobond_financial.common.Metadata.get_dict" href="#macrobond_financial.common.Metadata.get_dict">get_dict</a></code></li>
-<li><code><a title="macrobond_financial.common.Metadata.get_first_value" href="#macrobond_financial.common.Metadata.get_first_value">get_first_value</a></code></li>
-<li><code><a title="macrobond_financial.common.Metadata.get_values" href="#macrobond_financial.common.Metadata.get_values">get_values</a></code></li>
 </ul>
 </li>
 <li>

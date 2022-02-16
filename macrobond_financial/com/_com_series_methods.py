@@ -5,7 +5,6 @@ from typing import Tuple, Any, Union, Optional, Dict, TYPE_CHECKING, cast
 from datetime import datetime
 
 from macrobond_financial.common import SeriesMethods, \
-    Metadata as CommonMetadata, \
     Entity as CommonEntity, \
     UnifiedSeries as CommonUnifiedSeries, \
     Series as CommonSeries
@@ -13,49 +12,32 @@ from macrobond_financial.common import SeriesMethods, \
 from macrobond_financial.common.enums import SeriesWeekdays, SeriesFrequency
 
 if TYPE_CHECKING:  # pragma: no cover
-    from .com_typs import Connection, Metadata as ComMetadata, \
-        Entity as ComEntity, Series as ComSeries
+    from .com_typs import Connection, Entity as ComEntity, Series as ComSeries
     from macrobond_financial.common import SeriesEntrie, StartOrEndPoint, CalendarMergeMode
-
-
-class _Metadata(CommonMetadata):
-
-    def __init__(self, com_metadata: 'ComMetadata') -> None:
-        super().__init__()
-        self._com_metadata = com_metadata
-
-    def __str__(self):
-        return str(self.get_dict())
-
-    def __repr__(self):
-        return str(self)
-
-    def get_first_value(self, name: str) -> Optional[object]:
-        return self._com_metadata.GetFirstValue(name)
-
-    def get_values(self, name: str) -> Union[Tuple[Any], Tuple]:
-        return self._com_metadata.GetValues(name)
-
-    def get_dict(self) -> Dict[str, Any]:
-        ret: Dict[str, Any] = {}
-        for names_and_description in self._com_metadata.ListNames():
-            name = names_and_description[0]
-            values = self._com_metadata.GetValues(name)
-            if len(values) == 1:
-                ret[name] = values[0]
-            else:
-                ret[name] = list(values)
-        return ret
 
 
 class _Entity(CommonEntity):
 
     _com_type: 'ComEntity'
-    _metadata: Optional[_Metadata] = None
+    _metadata: Dict[str, Any]
 
     def __init__(self, com_type: 'ComEntity') -> None:
         super().__init__()
         self._com_type = com_type
+
+        if not self._com_type.IsError:
+            metadata = {}
+            com_metadata = com_type.Metadata
+            for names_and_description in com_metadata.ListNames():
+                name = names_and_description[0]
+                values = com_metadata.GetValues(name)
+                if len(values) == 1:
+                    metadata[name] = values[0]
+                else:
+                    metadata[name] = list(values)
+            self._metadata = metadata
+        else:
+            self._metadata = {}
 
     def __str__(self):
         return str(self.name)
@@ -85,12 +67,10 @@ class _Entity(CommonEntity):
 
     @property
     def entity_type(self) -> str:
-        return cast(str, self.metadata.get_first_value('EntityType'))
+        return cast(str, self.metadata['EntityType'])
 
     @property
-    def metadata(self) -> CommonMetadata:
-        if self._metadata is None:
-            self._metadata = _Metadata(self._com_type.Metadata)
+    def metadata(self) -> Dict[str, Any]:
         return self._metadata
 
 
@@ -122,16 +102,6 @@ class _Series(_Entity, CommonSeries):
         return self._com_type.DatesAtStartOfPeriod
 
     # @property
-    # def dates_at_start_of_period(self) -> List[object]:
-    #     '''The dates of of the observations at the start of each period.'''
-    #     return self._com_type.DatesAtStartOfPeriod
-
-    # @property
-    # def dates_at_end_of_period(self) -> List[object]:
-    #     '''The dates of of the observations at the end of each period.'''
-    #     return self._com_type.DatesAtEndOfPeriod
-
-    # @property
     # def forecast_flags(self) -> List[bool]:
     #     '''A vector with a flag for each value indicating if this is a forecast or not.'''
     #     return self._com_type.ForecastFlags
@@ -151,16 +121,6 @@ class _Series(_Entity, CommonSeries):
     @property
     def weekdays(self) -> SeriesWeekdays:
         return SeriesWeekdays(self._com_type.Weekdays)
-
-    # @property
-    # def typical_observation_count_per_year(self) -> float:
-    #     '''The typical number of observations per year.'''
-    #     return self._com_type.TypicalObservationCountPerYear
-
-    # @property
-    # def values_metadata(self) -> List[CommonMetadata]:
-    #     '''Get the meta data for the values.'''
-    #     return list(map(_Metadata, self._com_type.ValuesMetadata))
 
     def get_value_at_date(self, date_time: datetime) -> float:
         return self._com_type.GetValueAtDate(date_time)

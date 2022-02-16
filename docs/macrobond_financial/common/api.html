@@ -33,10 +33,6 @@ from .meta_directory_methods import MetaDirectoryMethods
 from .search_methods import SearchMethods
 from .series_methods import SeriesMethods
 
-__pdoc__ = {
-    &#39;Api.__init__&#39;: False,
-}
-
 
 class Api(ABC):
 
@@ -71,6 +67,7 @@ class Api(ABC):
 <dl>
 <dt id="macrobond_financial.common.api.Api"><code class="flex name class">
 <span>class <span class="ident">Api</span></span>
+<span>(</span><span>meta_directory: <a title="macrobond_financial.common.meta_directory_methods.MetaDirectoryMethods" href="meta_directory_methods.html#macrobond_financial.common.meta_directory_methods.MetaDirectoryMethods">MetaDirectoryMethods</a>, search: <a title="macrobond_financial.common.search_methods.SearchMethods" href="search_methods.html#macrobond_financial.common.search_methods.SearchMethods">SearchMethods</a>, series: <a title="macrobond_financial.common.series_methods.SeriesMethods" href="series_methods.html#macrobond_financial.common.series_methods.SeriesMethods">SeriesMethods</a>)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Helper class that provides a standard way to create an ABC using

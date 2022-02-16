@@ -38,6 +38,14 @@ from .web_api import WebApi
 
 
 class WebClient(Client):
+    &#34;&#34;&#34;
+    WebClient to get data from the web
+
+    Examples:
+        with WebClient(&#39;client id&#39;, &#39;client secret&#39;) as api:
+            series = api.series.get_one_series(&#39;usgdp&#39;)
+            print(series.metadata)
+    &#34;&#34;&#34;
 
     __api: Optional[&#39;WebApi&#39;] = None
 
@@ -75,13 +83,24 @@ class WebClient(Client):
 <span>(</span><span>client_id: str, client_secret: str, *scopes: <a title="macrobond_financial.web.scope.Scope" href="scope.html#macrobond_financial.web.scope.Scope">Scope</a>, api_url: str = 'https://api.macrobondfinancial.com/', authorization_url: str = 'https://apiauth.macrobondfinancial.com/mbauth/')</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Helper class that provides a standard way to create an ABC using
-inheritance.</p></div>
+<div class="desc"><p>WebClient to get data from the web</p>
+<h2 id="examples">Examples</h2>
+<p>with WebClient('client id', 'client secret') as api:
+series = api.series.get_one_series('usgdp')
+print(series.metadata)</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class WebClient(Client):
+    &#34;&#34;&#34;
+    WebClient to get data from the web
+
+    Examples:
+        with WebClient(&#39;client id&#39;, &#39;client secret&#39;) as api:
+            series = api.series.get_one_series(&#39;usgdp&#39;)
+            print(series.metadata)
+    &#34;&#34;&#34;
 
     __api: Optional[&#39;WebApi&#39;] = None
 
