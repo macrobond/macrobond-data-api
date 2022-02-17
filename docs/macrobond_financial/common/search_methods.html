@@ -28,7 +28,7 @@
 </summary>
 <pre><code class="python"># -*- coding: utf-8 -*-
 
-from typing import Dict, Sequence, Union, TYPE_CHECKING, List
+from typing import Dict, Sequence, Union, TYPE_CHECKING, List, overload, Optional
 from abc import ABC, abstractmethod
 
 if TYPE_CHECKING:  # pragma: no cover
@@ -70,6 +70,13 @@ class SearchMethods(ABC):
 
 class SearchFilter:
 
+    text: Optional[str]
+    entity_types: Sequence[str]
+    must_have_values: Dict[str, object]
+    must_not_have_values: Dict[str, object]
+    must_have_attributes: Sequence[str]
+    must_not_have_attributes: Sequence[str]
+
     def __init__(
         self,
         text: str = None,
@@ -105,7 +112,11 @@ class SearchFilter:
                 must_not_have_attributes if must_not_have_attributes is not None else []
 
 
-class SearchResult:
+class SearchResult(Sequence[&#39;Entity&#39;]):
+
+    entities: List[&#39;Entity&#39;]
+
+    is_truncated: bool
 
     def __init__(self, entities: List[&#39;Entity&#39;], is_truncated: bool) -&gt; None:
         self.entities = entities
@@ -117,8 +128,16 @@ class SearchResult:
     def __repr__(self):
         return str(self)
 
-    def __getitem__(self, i: int) -&gt; &#39;Entity&#39;:
-        return self.entities[i]
+    @overload
+    def __getitem__(self, idx: int) -&gt; &#39;Entity&#39;:
+        ...
+
+    @overload
+    def __getitem__(self, s: slice) -&gt; Sequence[&#39;Entity&#39;]:
+        ...
+
+    def __getitem__(self, item: Union[int, slice]):
+        return self.entities.__getitem__(item)
 
     def __len__(self) -&gt; int:
         return len(self.entities)</code></pre>
@@ -144,6 +163,13 @@ class SearchResult:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class SearchFilter:
+
+    text: Optional[str]
+    entity_types: Sequence[str]
+    must_have_values: Dict[str, object]
+    must_not_have_values: Dict[str, object]
+    must_have_attributes: Sequence[str]
+    must_not_have_attributes: Sequence[str]
 
     def __init__(
         self,
@@ -179,6 +205,33 @@ class SearchResult:
             self.must_not_have_attributes = \
                 must_not_have_attributes if must_not_have_attributes is not None else []</code></pre>
 </details>
+<h3>Class variables</h3>
+<dl>
+<dt id="macrobond_financial.common.search_methods.SearchFilter.entity_types"><code class="name">var <span class="ident">entity_types</span> : Sequence[str]</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="macrobond_financial.common.search_methods.SearchFilter.must_have_attributes"><code class="name">var <span class="ident">must_have_attributes</span> : Sequence[str]</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="macrobond_financial.common.search_methods.SearchFilter.must_have_values"><code class="name">var <span class="ident">must_have_values</span> : Dict[str, object]</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="macrobond_financial.common.search_methods.SearchFilter.must_not_have_attributes"><code class="name">var <span class="ident">must_not_have_attributes</span> : Sequence[str]</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="macrobond_financial.common.search_methods.SearchFilter.must_not_have_values"><code class="name">var <span class="ident">must_not_have_values</span> : Dict[str, object]</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="macrobond_financial.common.search_methods.SearchFilter.text"><code class="name">var <span class="ident">text</span> : Optional[str]</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
 </dd>
 <dt id="macrobond_financial.common.search_methods.SearchMethods"><code class="flex name class">
 <span>class <span class="ident">SearchMethods</span></span>
@@ -290,12 +343,18 @@ def series_multi_filter(
 <span>(</span><span>entities: List[ForwardRef('Entity')], is_truncated: bool)</span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>All the operations on a read-only sequence.</p>
+<p>Concrete subclasses must override <strong>new</strong> or <strong>init</strong>,
+<strong>getitem</strong>, and <strong>len</strong>.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class SearchResult:
+<pre><code class="python">class SearchResult(Sequence[&#39;Entity&#39;]):
+
+    entities: List[&#39;Entity&#39;]
+
+    is_truncated: bool
 
     def __init__(self, entities: List[&#39;Entity&#39;], is_truncated: bool) -&gt; None:
         self.entities = entities
@@ -307,12 +366,41 @@ def series_multi_filter(
     def __repr__(self):
         return str(self)
 
-    def __getitem__(self, i: int) -&gt; &#39;Entity&#39;:
-        return self.entities[i]
+    @overload
+    def __getitem__(self, idx: int) -&gt; &#39;Entity&#39;:
+        ...
+
+    @overload
+    def __getitem__(self, s: slice) -&gt; Sequence[&#39;Entity&#39;]:
+        ...
+
+    def __getitem__(self, item: Union[int, slice]):
+        return self.entities.__getitem__(item)
 
     def __len__(self) -&gt; int:
         return len(self.entities)</code></pre>
 </details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>collections.abc.Sequence</li>
+<li>collections.abc.Reversible</li>
+<li>collections.abc.Collection</li>
+<li>collections.abc.Sized</li>
+<li>collections.abc.Iterable</li>
+<li>collections.abc.Container</li>
+<li>typing.Generic</li>
+</ul>
+<h3>Class variables</h3>
+<dl>
+<dt id="macrobond_financial.common.search_methods.SearchResult.entities"><code class="name">var <span class="ident">entities</span> : List[Entity]</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="macrobond_financial.common.search_methods.SearchResult.is_truncated"><code class="name">var <span class="ident">is_truncated</span> : bool</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
 </dd>
 </dl>
 </section>
@@ -332,6 +420,14 @@ def series_multi_filter(
 <ul>
 <li>
 <h4><code><a title="macrobond_financial.common.search_methods.SearchFilter" href="#macrobond_financial.common.search_methods.SearchFilter">SearchFilter</a></code></h4>
+<ul class="">
+<li><code><a title="macrobond_financial.common.search_methods.SearchFilter.entity_types" href="#macrobond_financial.common.search_methods.SearchFilter.entity_types">entity_types</a></code></li>
+<li><code><a title="macrobond_financial.common.search_methods.SearchFilter.must_have_attributes" href="#macrobond_financial.common.search_methods.SearchFilter.must_have_attributes">must_have_attributes</a></code></li>
+<li><code><a title="macrobond_financial.common.search_methods.SearchFilter.must_have_values" href="#macrobond_financial.common.search_methods.SearchFilter.must_have_values">must_have_values</a></code></li>
+<li><code><a title="macrobond_financial.common.search_methods.SearchFilter.must_not_have_attributes" href="#macrobond_financial.common.search_methods.SearchFilter.must_not_have_attributes">must_not_have_attributes</a></code></li>
+<li><code><a title="macrobond_financial.common.search_methods.SearchFilter.must_not_have_values" href="#macrobond_financial.common.search_methods.SearchFilter.must_not_have_values">must_not_have_values</a></code></li>
+<li><code><a title="macrobond_financial.common.search_methods.SearchFilter.text" href="#macrobond_financial.common.search_methods.SearchFilter.text">text</a></code></li>
+</ul>
 </li>
 <li>
 <h4><code><a title="macrobond_financial.common.search_methods.SearchMethods" href="#macrobond_financial.common.search_methods.SearchMethods">SearchMethods</a></code></h4>
@@ -342,6 +438,10 @@ def series_multi_filter(
 </li>
 <li>
 <h4><code><a title="macrobond_financial.common.search_methods.SearchResult" href="#macrobond_financial.common.search_methods.SearchResult">SearchResult</a></code></h4>
+<ul class="">
+<li><code><a title="macrobond_financial.common.search_methods.SearchResult.entities" href="#macrobond_financial.common.search_methods.SearchResult.entities">entities</a></code></li>
+<li><code><a title="macrobond_financial.common.search_methods.SearchResult.is_truncated" href="#macrobond_financial.common.search_methods.SearchResult.is_truncated">is_truncated</a></code></li>
+</ul>
 </li>
 </ul>
 </li>

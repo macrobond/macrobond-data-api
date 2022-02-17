@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from typing import Dict, Sequence, Union, TYPE_CHECKING, List
+from typing import Dict, Sequence, Union, TYPE_CHECKING, List, overload, Optional
 from abc import ABC, abstractmethod
 
 if TYPE_CHECKING:  # pragma: no cover
@@ -42,6 +42,13 @@ class SearchMethods(ABC):
 
 class SearchFilter:
 
+    text: Optional[str]
+    entity_types: Sequence[str]
+    must_have_values: Dict[str, object]
+    must_not_have_values: Dict[str, object]
+    must_have_attributes: Sequence[str]
+    must_not_have_attributes: Sequence[str]
+
     def __init__(
         self,
         text: str = None,
@@ -77,7 +84,11 @@ class SearchFilter:
                 must_not_have_attributes if must_not_have_attributes is not None else []
 
 
-class SearchResult:
+class SearchResult(Sequence['Entity']):
+
+    entities: List['Entity']
+
+    is_truncated: bool
 
     def __init__(self, entities: List['Entity'], is_truncated: bool) -> None:
         self.entities = entities
@@ -89,8 +100,16 @@ class SearchResult:
     def __repr__(self):
         return str(self)
 
-    def __getitem__(self, i: int) -> 'Entity':
-        return self.entities[i]
+    @overload
+    def __getitem__(self, idx: int) -> 'Entity':
+        ...
+
+    @overload
+    def __getitem__(self, s: slice) -> Sequence['Entity']:
+        ...
+
+    def __getitem__(self, item: Union[int, slice]):
+        return self.entities.__getitem__(item)
 
     def __len__(self) -> int:
         return len(self.entities)

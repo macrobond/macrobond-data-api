@@ -28,7 +28,7 @@
 </summary>
 <pre><code class="python"># -*- coding: utf-8 -*-
 
-from typing import Tuple, Optional, Union, Any, Dict, TYPE_CHECKING
+from typing import Tuple, Optional, Union, Any, Dict, TYPE_CHECKING, overload
 from abc import ABC, abstractmethod
 
 from datetime import datetime
@@ -216,9 +216,9 @@ class StartOrEndPoint():
 
     @staticmethod
     def point_in_time(
-        yyyy_or_datetime: Union[int, datetime],
-        mm: Union[int, str] = None,  # pylint: disable = invalid-name
-        dd: Union[int, str] = None  # pylint: disable = invalid-name
+        yyyy_or_datetime,
+        mm: int = None,  # pylint: disable = invalid-name
+        dd: int = None  # pylint: disable = invalid-name
     ) -&gt; &#39;StartOrEndPoint&#39;:
         if isinstance(yyyy_or_datetime, datetime):
             return StartOrEndPoint(yyyy_or_datetime.strftime(&#39;%Y-%m-%d&#39;), None)
@@ -239,6 +239,12 @@ class StartOrEndPoint():
 
 
 class SeriesEntrie():
+
+    name: str
+    missing_value_method: Optional[&#39;SeriesMissingValueMethod&#39;]
+    to_lowerfrequency_method: Optional[&#39;SeriesToLowerFrequencyMethod&#39;]
+    to_higherfrequency_method: Optional[&#39;SeriesToHigherFrequencyMethod&#39;]
+    partial_periods_method: Optional[&#39;SeriesPartialPeriodsMethod&#39;]
 
     def __init__(
         self,
@@ -639,6 +645,12 @@ def get_value_at_date(self, date_time: datetime) -&gt; float:
 </summary>
 <pre><code class="python">class SeriesEntrie():
 
+    name: str
+    missing_value_method: Optional[&#39;SeriesMissingValueMethod&#39;]
+    to_lowerfrequency_method: Optional[&#39;SeriesToLowerFrequencyMethod&#39;]
+    to_higherfrequency_method: Optional[&#39;SeriesToHigherFrequencyMethod&#39;]
+    partial_periods_method: Optional[&#39;SeriesPartialPeriodsMethod&#39;]
+
     def __init__(
         self,
         name: str,
@@ -653,6 +665,29 @@ def get_value_at_date(self, date_time: datetime) -&gt; float:
         self.to_higherfrequency_method = to_higherfrequency_method
         self.partial_periods_method = partial_periods_method</code></pre>
 </details>
+<h3>Class variables</h3>
+<dl>
+<dt id="macrobond_financial.common.series_methods.SeriesEntrie.missing_value_method"><code class="name">var <span class="ident">missing_value_method</span> : Optional[SeriesMissingValueMethod]</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="macrobond_financial.common.series_methods.SeriesEntrie.name"><code class="name">var <span class="ident">name</span> : str</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="macrobond_financial.common.series_methods.SeriesEntrie.partial_periods_method"><code class="name">var <span class="ident">partial_periods_method</span> : Optional[SeriesPartialPeriodsMethod]</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="macrobond_financial.common.series_methods.SeriesEntrie.to_higherfrequency_method"><code class="name">var <span class="ident">to_higherfrequency_method</span> : Optional[SeriesToHigherFrequencyMethod]</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="macrobond_financial.common.series_methods.SeriesEntrie.to_lowerfrequency_method"><code class="name">var <span class="ident">to_lowerfrequency_method</span> : Optional[SeriesToLowerFrequencyMethod]</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
 </dd>
 <dt id="macrobond_financial.common.series_methods.SeriesMethods"><code class="flex name class">
 <span>class <span class="ident">SeriesMethods</span></span>
@@ -837,9 +872,9 @@ def get_unified_series(
 
     @staticmethod
     def point_in_time(
-        yyyy_or_datetime: Union[int, datetime],
-        mm: Union[int, str] = None,  # pylint: disable = invalid-name
-        dd: Union[int, str] = None  # pylint: disable = invalid-name
+        yyyy_or_datetime,
+        mm: int = None,  # pylint: disable = invalid-name
+        dd: int = None  # pylint: disable = invalid-name
     ) -&gt; &#39;StartOrEndPoint&#39;:
         if isinstance(yyyy_or_datetime, datetime):
             return StartOrEndPoint(yyyy_or_datetime.strftime(&#39;%Y-%m-%d&#39;), None)
@@ -889,7 +924,7 @@ def data_in_any_series() -&gt; &#39;StartOrEndPoint&#39;:
 </details>
 </dd>
 <dt id="macrobond_financial.common.series_methods.StartOrEndPoint.point_in_time"><code class="name flex">
-<span>def <span class="ident">point_in_time</span></span>(<span>yyyy_or_datetime: Union[int, datetime.datetime], mm: Union[int, str] = None, dd: Union[int, str] = None) ‑> <a title="macrobond_financial.common.series_methods.StartOrEndPoint" href="#macrobond_financial.common.series_methods.StartOrEndPoint">StartOrEndPoint</a></span>
+<span>def <span class="ident">point_in_time</span></span>(<span>yyyy_or_datetime, mm: int = None, dd: int = None) ‑> <a title="macrobond_financial.common.series_methods.StartOrEndPoint" href="#macrobond_financial.common.series_methods.StartOrEndPoint">StartOrEndPoint</a></span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -899,9 +934,9 @@ def data_in_any_series() -&gt; &#39;StartOrEndPoint&#39;:
 </summary>
 <pre><code class="python">@staticmethod
 def point_in_time(
-    yyyy_or_datetime: Union[int, datetime],
-    mm: Union[int, str] = None,  # pylint: disable = invalid-name
-    dd: Union[int, str] = None  # pylint: disable = invalid-name
+    yyyy_or_datetime,
+    mm: int = None,  # pylint: disable = invalid-name
+    dd: int = None  # pylint: disable = invalid-name
 ) -&gt; &#39;StartOrEndPoint&#39;:
     if isinstance(yyyy_or_datetime, datetime):
         return StartOrEndPoint(yyyy_or_datetime.strftime(&#39;%Y-%m-%d&#39;), None)
@@ -1101,6 +1136,13 @@ def values(self) -&gt; Tuple[Optional[float], ...]:
 </li>
 <li>
 <h4><code><a title="macrobond_financial.common.series_methods.SeriesEntrie" href="#macrobond_financial.common.series_methods.SeriesEntrie">SeriesEntrie</a></code></h4>
+<ul class="">
+<li><code><a title="macrobond_financial.common.series_methods.SeriesEntrie.missing_value_method" href="#macrobond_financial.common.series_methods.SeriesEntrie.missing_value_method">missing_value_method</a></code></li>
+<li><code><a title="macrobond_financial.common.series_methods.SeriesEntrie.name" href="#macrobond_financial.common.series_methods.SeriesEntrie.name">name</a></code></li>
+<li><code><a title="macrobond_financial.common.series_methods.SeriesEntrie.partial_periods_method" href="#macrobond_financial.common.series_methods.SeriesEntrie.partial_periods_method">partial_periods_method</a></code></li>
+<li><code><a title="macrobond_financial.common.series_methods.SeriesEntrie.to_higherfrequency_method" href="#macrobond_financial.common.series_methods.SeriesEntrie.to_higherfrequency_method">to_higherfrequency_method</a></code></li>
+<li><code><a title="macrobond_financial.common.series_methods.SeriesEntrie.to_lowerfrequency_method" href="#macrobond_financial.common.series_methods.SeriesEntrie.to_lowerfrequency_method">to_lowerfrequency_method</a></code></li>
+</ul>
 </li>
 <li>
 <h4><code><a title="macrobond_financial.common.series_methods.SeriesMethods" href="#macrobond_financial.common.series_methods.SeriesMethods">SeriesMethods</a></code></h4>

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from typing import Tuple, Optional, Union, Any, Dict, TYPE_CHECKING
+from typing import Tuple, Optional, Union, Any, Dict, TYPE_CHECKING, overload
 from abc import ABC, abstractmethod
 
 from datetime import datetime
@@ -186,11 +186,27 @@ class StartOrEndPoint():
     def relative_to_days(days: int, mode: CalendarDateMode = None) -> 'StartOrEndPoint':
         return StartOrEndPoint(str(days) + "d", mode)
 
+    @overload
+    @staticmethod
+    def point_in_time(
+        yyyy_or_datetime: int,
+        mm: int = None,  # pylint: disable = invalid-name
+        dd: int = None  # pylint: disable = invalid-name
+    ) -> 'StartOrEndPoint':
+        ...
+
+    @overload
+    @staticmethod
+    def point_in_time(
+        yyyy_or_datetime: datetime
+    ) -> 'StartOrEndPoint':
+        ...
+
     @staticmethod
     def point_in_time(
         yyyy_or_datetime: Union[int, datetime],
-        mm: Union[int, str] = None,  # pylint: disable = invalid-name
-        dd: Union[int, str] = None  # pylint: disable = invalid-name
+        mm: int = None,  # pylint: disable = invalid-name
+        dd: int = None  # pylint: disable = invalid-name
     ) -> 'StartOrEndPoint':
         if isinstance(yyyy_or_datetime, datetime):
             return StartOrEndPoint(yyyy_or_datetime.strftime('%Y-%m-%d'), None)
@@ -211,6 +227,12 @@ class StartOrEndPoint():
 
 
 class SeriesEntrie():
+
+    name: str
+    missing_value_method: Optional['SeriesMissingValueMethod']
+    to_lowerfrequency_method: Optional['SeriesToLowerFrequencyMethod']
+    to_higherfrequency_method: Optional['SeriesToHigherFrequencyMethod']
+    partial_periods_method: Optional['SeriesPartialPeriodsMethod']
 
     def __init__(
         self,

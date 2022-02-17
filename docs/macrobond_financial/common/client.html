@@ -29,19 +29,23 @@
 <pre><code class="python"># -*- coding: utf-8 -*-
 
 from abc import ABC, abstractmethod
+from logging import exception
+from typing import Generic, TypeVar
 
 from .api import Api
 
+TypeVarApi = TypeVar(&#39;TypeVarApi&#39;, bound=Api)
 
-class Client(ABC):
-    def __enter__(self) -&gt; Api:
+
+class Client(ABC, Generic[TypeVarApi]):
+    def __enter__(self) -&gt; TypeVarApi:
         return self.open()  # pragma: no cover
 
     def __exit__(self, exception_type, exception_value, traceback) -&gt; None:
         self.close()  # pragma: no cover
 
     @abstractmethod
-    def open(self) -&gt; Api:
+    def open(self) -&gt; TypeVarApi:
         ...  # pragma: no cover
 
     @abstractmethod
@@ -68,15 +72,15 @@ inheritance.</p></div>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class Client(ABC):
-    def __enter__(self) -&gt; Api:
+<pre><code class="python">class Client(ABC, Generic[TypeVarApi]):
+    def __enter__(self) -&gt; TypeVarApi:
         return self.open()  # pragma: no cover
 
     def __exit__(self, exception_type, exception_value, traceback) -&gt; None:
         self.close()  # pragma: no cover
 
     @abstractmethod
-    def open(self) -&gt; Api:
+    def open(self) -&gt; TypeVarApi:
         ...  # pragma: no cover
 
     @abstractmethod
@@ -86,6 +90,7 @@ inheritance.</p></div>
 <h3>Ancestors</h3>
 <ul class="hlist">
 <li>abc.ABC</li>
+<li>typing.Generic</li>
 </ul>
 <h3>Subclasses</h3>
 <ul class="hlist">
@@ -109,7 +114,7 @@ def close(self) -&gt; None:
 </details>
 </dd>
 <dt id="macrobond_financial.common.client.Client.open"><code class="name flex">
-<span>def <span class="ident">open</span></span>(<span>self) ‑> <a title="macrobond_financial.common.api.Api" href="api.html#macrobond_financial.common.api.Api">Api</a></span>
+<span>def <span class="ident">open</span></span>(<span>self) ‑> ~TypeVarApi</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -118,7 +123,7 @@ def close(self) -&gt; None:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@abstractmethod
-def open(self) -&gt; Api:
+def open(self) -&gt; TypeVarApi:
     ...  # pragma: no cover</code></pre>
 </details>
 </dd>

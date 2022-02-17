@@ -20,7 +20,7 @@ class MetaDirectoryMethods(ABC):
 
         Parameters
         ----------
-        name: str
+        name : str
             record that failed processing
 
         Returns
@@ -31,7 +31,7 @@ class MetaDirectoryMethods(ABC):
         Examples
         -------
         ```python
-        with ComClient() as api: # or Weblient
+        with ComClient() as api: # or WebClient
             value_information_list = api.meta_directory.list_values('RateType')
             for info in value_information_list:
                 print(info.value + ' ' + info.description)
@@ -46,64 +46,86 @@ class MetaDirectoryMethods(ABC):
 class MetadataValueInformation():
     '''Information about a metadata value'''
 
+    attribute_name: str
+    '''The name of the metadata attribute'''
+
+    value: Any
+    '''The value'''
+
+    description: str
+    '''The description of the metadata value'''
+
+    comment: Optional[str]
+    '''The comment of the metadata value'''
+
     def __init__(
         self, attribute_name: str, value: Any, description: str, comment: Optional[str]
     ) -> None:
-        self.__attribute_name = attribute_name
-        self.__value = value
-        self.__description = description
-        self.__comment = comment
+        self.attribute_name = attribute_name
+        self.value = value
+        self.description = description
+        self.comment = comment
 
     def __str__(self):
-        return self.__attribute_name
+        return self.attribute_name
 
     def __repr__(self):
-        return str(self)
-
-    @property
-    def attribute_name(self) -> str:
-        '''The name of the metadata attribute'''
-        return self.__attribute_name
-
-    @property
-    def value(self) -> Any:
-        '''The value'''
-        return self.__value
-
-    @property
-    def description(self) -> str:
-        '''The description of the metadata value'''
-        return self.__description
-
-    @property
-    def comment(self) -> Optional[str]:
-        '''The comment of the metadata value'''
-        return self.__comment
+        return self.attribute_name
 
     def __eq__(self, other):
+        print('am here !')
         if not isinstance(other, MetadataValueInformation):
             return NotImplemented
 
         return \
             self is other or \
             (
-                self.__attribute_name == other.attribute_name and
-                self.__value == other.value and
-                self.__description == other.description and
-                self.__comment == other.comment
+                self.attribute_name == other.attribute_name and
+                self.value == other.value and
+                self.description == other.description and
+                self.comment == other.comment
             )
 
     def __hash__(self):
         return hash((
-            self.__attribute_name,
-            self.__value,
-            self.__description,
-            self.__comment
+            self.attribute_name,
+            self.value,
+            self.description,
+            self.comment
         ))
 
 
 class MetadataAttributeInformation():
     '''Information about a metadata attribute'''
+
+    name: str
+    '''The name of the metadata attribute'''
+
+    description: str
+    '''The description of the metadata attribute'''
+
+    comment: Optional[str]
+    '''The comment of the metadata attribute'''
+
+    value_type: 'MetadataAttributeType'
+    '''The value type of the metadata attribute'''
+
+    uses_value_list: bool
+    '''If True, the metadata attribute uses a list of values'''
+
+    can_list_values: bool
+    '''
+    If True then the values of this type of
+    metadata can be listen using the ListAllValues function
+    '''
+
+    can_have_multiple_values: bool
+    '''If True then this type of metadata can have multiple values in a metadata collection'''
+
+    is_database_entity: bool
+    '''
+    If True then this type of metadata is an entity that can be retrieved from the database
+    '''
 
     def __init__(
         self, name: str, description: str, comment: Optional[str],
@@ -111,20 +133,20 @@ class MetadataAttributeInformation():
         uses_value_list: bool, can_list_values: bool, can_have_multiple_values: bool,
         is_database_entity: bool
     ) -> None:
-        self.__name = name
-        self.__description = description
-        self.__comment = comment
-        self.__value_type = value_type
-        self.__uses_value_list = uses_value_list
-        self.__can_list_values = can_list_values
-        self.__can_have_multiple_values = can_have_multiple_values
-        self.__is_database_entity = is_database_entity
+        self.name = name
+        self.description = description
+        self.comment = comment
+        self.value_type = value_type
+        self.uses_value_list = uses_value_list
+        self.can_list_values = can_list_values
+        self.can_have_multiple_values = can_have_multiple_values
+        self.is_database_entity = is_database_entity
 
     def __str__(self):
-        return self.__name
+        return self.name + ' ' + self.description
 
     def __repr__(self):
-        return str(self)
+        return self.name
 
     def __eq__(self, other):
         if not isinstance(other, MetadataAttributeInformation):
@@ -133,67 +155,22 @@ class MetadataAttributeInformation():
         return \
             self is other or \
             (
-                self.__name == other.name and
-                self.__description == other.description and
-                self.__comment == other.comment and
-                self.__uses_value_list == other.uses_value_list and
-                self.__can_list_values == other.can_list_values and
-                self.__can_have_multiple_values == other.can_have_multiple_values and
-                self.__is_database_entity == other.is_database_entity
+                self.name == other.name and
+                self.description == other.description and
+                self.comment == other.comment and
+                self.uses_value_list == other.uses_value_list and
+                self.can_list_values == other.can_list_values and
+                self.can_have_multiple_values == other.can_have_multiple_values and
+                self.is_database_entity == other.is_database_entity
             )
 
     def __hash__(self):
         return hash((
-            self.__name,
-            self.__description,
-            self.__comment,
-            self.__uses_value_list,
-            self.__can_list_values,
-            self.__can_have_multiple_values,
-            self.__is_database_entity
+            self.name,
+            self.description,
+            self.comment,
+            self.uses_value_list,
+            self.can_list_values,
+            self.can_have_multiple_values,
+            self.is_database_entity
         ))
-
-    @property
-    def name(self) -> str:
-        '''The name of the metadata attribute'''
-        return self.__name
-
-    @property
-    def description(self) -> str:
-        '''The description of the metadata attribute'''
-        return self.__description
-
-    @property
-    def comment(self) -> Optional[str]:
-        '''The comment of the metadata attribute'''
-        return self.__comment
-
-    @property
-    def value_type(self) -> 'MetadataAttributeType':
-        '''The value type of the metadata attribute'''
-        return self.__value_type
-
-    @property
-    def uses_value_list(self) -> bool:
-        '''If True, the metadata attribute uses a list of values'''
-        return self.__uses_value_list
-
-    @property
-    def can_list_values(self) -> bool:
-        '''
-        If True then the values of this type of
-        metadata can be listen using the ListAllValues function
-        '''
-        return self.__can_list_values
-
-    @property
-    def can_have_multiple_values(self) -> bool:
-        '''If True then this type of metadata can have multiple values in a metadata collection'''
-        return self.__can_have_multiple_values
-
-    @property
-    def is_database_entity(self) -> bool:
-        '''
-        If True then this type of metadata is an entity that can be retrieved from the database
-        '''
-        return self.__is_database_entity

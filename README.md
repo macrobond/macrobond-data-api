@@ -30,11 +30,11 @@ with ComClient() as api:
 
 for web api
 ```console
-$ python -m pip install -name- [com]
+$ python -m pip install -name- [web]
 ```
 for com api
 ```console
-$ python -m pip install -name- [web]
+$ python -m pip install -name- [com]
 ```
 
 -name- officially supports Python 3.6+.

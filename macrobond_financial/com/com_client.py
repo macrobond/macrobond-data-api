@@ -11,7 +11,23 @@ if TYPE_CHECKING:  # pragma: no cover
     from .com_typs.connection import Connection
 
 
-class ComClient(Client):
+class ComClient(Client['ComApi']):
+    """
+    ComClient to get data from the web
+
+    Returns
+    -------
+    WebClient
+        ComClient instance
+
+    Examples
+    -------
+    ```python
+    with ComClient() as api:
+        # use the api here
+    ```
+    """
+
     __api: Optional['ComApi'] = None
 
     def open(self) -> 'ComApi':

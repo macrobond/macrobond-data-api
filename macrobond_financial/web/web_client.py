@@ -9,14 +9,38 @@ from .scope import Scope
 from .web_api import WebApi
 
 
-class WebClient(Client):
+class WebClient(Client['WebApi']):
     """
     WebClient to get data from the web
 
-    Examples:
-        with WebClient('client id', 'client secret') as api:
-            series = api.series.get_one_series('usgdp')
-            print(series.metadata)
+    Parameters
+    ----------
+    client_id : str
+        record that failed processing
+
+    client_secret : str
+        record that failed processing
+
+    scopes : List[str], optional
+        record that failed processing
+
+    api_url : str, optional
+        record that failed processing
+
+    authorization_url : str, optional
+        record that failed processing
+
+    Returns
+    -------
+    WebClient
+        WebClient instance
+
+    Examples
+    -------
+    ```python
+    with WebClient('client id', 'client secret') as api:
+        # use the api here
+    ```
     """
 
     __api: Optional['WebApi'] = None

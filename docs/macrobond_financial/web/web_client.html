@@ -37,14 +37,38 @@ from .scope import Scope
 from .web_api import WebApi
 
 
-class WebClient(Client):
+class WebClient(Client[&#39;WebApi&#39;]):
     &#34;&#34;&#34;
     WebClient to get data from the web
 
-    Examples:
-        with WebClient(&#39;client id&#39;, &#39;client secret&#39;) as api:
-            series = api.series.get_one_series(&#39;usgdp&#39;)
-            print(series.metadata)
+    Parameters
+    ----------
+    client_id : str
+        record that failed processing
+
+    client_secret : str
+        record that failed processing
+
+    scopes : List[str], optional
+        record that failed processing
+
+    api_url : str, optional
+        record that failed processing
+
+    authorization_url : str, optional
+        record that failed processing
+
+    Returns
+    -------
+    WebClient
+        WebClient instance
+
+    Examples
+    -------
+    ```python
+    with WebClient(&#39;client id&#39;, &#39;client secret&#39;) as api:
+        # use the api here
+    ```
     &#34;&#34;&#34;
 
     __api: Optional[&#39;WebApi&#39;] = None
@@ -84,22 +108,64 @@ class WebClient(Client):
 </code></dt>
 <dd>
 <div class="desc"><p>WebClient to get data from the web</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>client_id</code></strong> :&ensp;<code>str</code></dt>
+<dd>record that failed processing</dd>
+<dt><strong><code>client_secret</code></strong> :&ensp;<code>str</code></dt>
+<dd>record that failed processing</dd>
+<dt><strong><code>scopes</code></strong> :&ensp;<code>List[str]</code>, optional</dt>
+<dd>record that failed processing</dd>
+<dt><strong><code>api_url</code></strong> :&ensp;<code>str</code>, optional</dt>
+<dd>record that failed processing</dd>
+<dt><strong><code>authorization_url</code></strong> :&ensp;<code>str</code>, optional</dt>
+<dd>record that failed processing</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code><a title="macrobond_financial.web.web_client.WebClient" href="#macrobond_financial.web.web_client.WebClient">WebClient</a></code></dt>
+<dd>WebClient instance</dd>
+</dl>
 <h2 id="examples">Examples</h2>
-<p>with WebClient('client id', 'client secret') as api:
-series = api.series.get_one_series('usgdp')
-print(series.metadata)</p></div>
+<pre><code class="language-python">with WebClient('client id', 'client secret') as api:
+    # use the api here
+</code></pre></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class WebClient(Client):
+<pre><code class="python">class WebClient(Client[&#39;WebApi&#39;]):
     &#34;&#34;&#34;
     WebClient to get data from the web
 
-    Examples:
-        with WebClient(&#39;client id&#39;, &#39;client secret&#39;) as api:
-            series = api.series.get_one_series(&#39;usgdp&#39;)
-            print(series.metadata)
+    Parameters
+    ----------
+    client_id : str
+        record that failed processing
+
+    client_secret : str
+        record that failed processing
+
+    scopes : List[str], optional
+        record that failed processing
+
+    api_url : str, optional
+        record that failed processing
+
+    authorization_url : str, optional
+        record that failed processing
+
+    Returns
+    -------
+    WebClient
+        WebClient instance
+
+    Examples
+    -------
+    ```python
+    with WebClient(&#39;client id&#39;, &#39;client secret&#39;) as api:
+        # use the api here
+    ```
     &#34;&#34;&#34;
 
     __api: Optional[&#39;WebApi&#39;] = None
@@ -127,6 +193,7 @@ print(series.metadata)</p></div>
 <ul class="hlist">
 <li><a title="macrobond_financial.common.client.Client" href="../common/client.html#macrobond_financial.common.client.Client">Client</a></li>
 <li>abc.ABC</li>
+<li>typing.Generic</li>
 </ul>
 <h3>Methods</h3>
 <dl>

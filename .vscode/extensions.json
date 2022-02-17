@@ -1,3 +1,5 @@
 {
-    "recommendations": ["ms-python.vscode-pylance", "ms-python.python", "ms-python.gather"]
+    "recommendations": [
+        "ms-python.vscode-pylance", "ms-python.python", "ms-python.gather","formulahendry.code-runner"
+    ]
 }

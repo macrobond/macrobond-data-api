@@ -39,7 +39,23 @@ if TYPE_CHECKING:  # pragma: no cover
     from .com_typs.connection import Connection
 
 
-class ComClient(Client):
+class ComClient(Client[&#39;ComApi&#39;]):
+    &#34;&#34;&#34;
+    ComClient to get data from the web
+
+    Returns
+    -------
+    WebClient
+        ComClient instance
+
+    Examples
+    -------
+    ```python
+    with ComClient() as api:
+        # use the api here
+    ```
+    &#34;&#34;&#34;
+
     __api: Optional[&#39;ComApi&#39;] = None
 
     def open(self) -&gt; &#39;ComApi&#39;:
@@ -72,13 +88,37 @@ class ComClient(Client):
 <span>class <span class="ident">ComClient</span></span>
 </code></dt>
 <dd>
-<div class="desc"><p>Helper class that provides a standard way to create an ABC using
-inheritance.</p></div>
+<div class="desc"><p>ComClient to get data from the web</p>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>WebClient</code></dt>
+<dd>ComClient instance</dd>
+</dl>
+<h2 id="examples">Examples</h2>
+<pre><code class="language-python">with ComClient() as api:
+    # use the api here
+</code></pre></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class ComClient(Client):
+<pre><code class="python">class ComClient(Client[&#39;ComApi&#39;]):
+    &#34;&#34;&#34;
+    ComClient to get data from the web
+
+    Returns
+    -------
+    WebClient
+        ComClient instance
+
+    Examples
+    -------
+    ```python
+    with ComClient() as api:
+        # use the api here
+    ```
+    &#34;&#34;&#34;
+
     __api: Optional[&#39;ComApi&#39;] = None
 
     def open(self) -&gt; &#39;ComApi&#39;:
@@ -101,6 +141,7 @@ inheritance.</p></div>
 <ul class="hlist">
 <li><a title="macrobond_financial.common.client.Client" href="../common/client.html#macrobond_financial.common.client.Client">Client</a></li>
 <li>abc.ABC</li>
+<li>typing.Generic</li>
 </ul>
 <h3>Methods</h3>
 <dl>
