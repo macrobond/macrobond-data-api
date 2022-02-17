@@ -7,6 +7,7 @@ def set_up_dev_environment(context: Context) -> None:
 
     python_path = context.try_get_python_path(PYTHON_36)
     if python_path is not None:
+        python_path = '"' + python_path + '"'
         context.shell_command(python_path + ' -m pip install --upgrade pip')
         context.shell_command(
             python_path + ' -m pip uninstall macrobond_financial', ignore_exit_code=True
@@ -15,7 +16,7 @@ def set_up_dev_environment(context: Context) -> None:
     else:
         context.warning_print('did not find ' + PYTHON_36)
 
-    python_path = context.get_python_path(PYTHON_310)
+    python_path = '"' + context.get_python_path(PYTHON_310) + '"'
     context.shell_command(python_path + ' -m pip install --upgrade pip')
     context.shell_command(
         python_path + ' -m pip uninstall macrobond_financial', ignore_exit_code=True
