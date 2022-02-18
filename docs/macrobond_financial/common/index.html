@@ -1079,9 +1079,25 @@ def get_unified_series(
     def relative_to_days(days: int, mode: CalendarDateMode = None) -&gt; &#39;StartOrEndPoint&#39;:
         return StartOrEndPoint(str(days) + &#34;d&#34;, mode)
 
+    @overload
     @staticmethod
     def point_in_time(
-        yyyy_or_datetime,
+        yyyy_or_datetime: int,
+        mm: int = None,  # pylint: disable = invalid-name
+        dd: int = None  # pylint: disable = invalid-name
+    ) -&gt; &#39;StartOrEndPoint&#39;:
+        ...
+
+    @overload
+    @staticmethod
+    def point_in_time(
+        yyyy_or_datetime: datetime
+    ) -&gt; &#39;StartOrEndPoint&#39;:
+        ...
+
+    @staticmethod
+    def point_in_time(
+        yyyy_or_datetime: Union[int, datetime],
         mm: int = None,  # pylint: disable = invalid-name
         dd: int = None  # pylint: disable = invalid-name
     ) -&gt; &#39;StartOrEndPoint&#39;:
@@ -1133,7 +1149,7 @@ def data_in_any_series() -&gt; &#39;StartOrEndPoint&#39;:
 </details>
 </dd>
 <dt id="macrobond_financial.common.StartOrEndPoint.point_in_time"><code class="name flex">
-<span>def <span class="ident">point_in_time</span></span>(<span>yyyy_or_datetime, mm: int = None, dd: int = None) ‑> <a title="macrobond_financial.common.series_methods.StartOrEndPoint" href="series_methods.html#macrobond_financial.common.series_methods.StartOrEndPoint">StartOrEndPoint</a></span>
+<span>def <span class="ident">point_in_time</span></span>(<span>yyyy_or_datetime: Union[int, datetime.datetime], mm: int = None, dd: int = None) ‑> <a title="macrobond_financial.common.series_methods.StartOrEndPoint" href="series_methods.html#macrobond_financial.common.series_methods.StartOrEndPoint">StartOrEndPoint</a></span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -1143,7 +1159,7 @@ def data_in_any_series() -&gt; &#39;StartOrEndPoint&#39;:
 </summary>
 <pre><code class="python">@staticmethod
 def point_in_time(
-    yyyy_or_datetime,
+    yyyy_or_datetime: Union[int, datetime],
     mm: int = None,  # pylint: disable = invalid-name
     dd: int = None  # pylint: disable = invalid-name
 ) -&gt; &#39;StartOrEndPoint&#39;:
