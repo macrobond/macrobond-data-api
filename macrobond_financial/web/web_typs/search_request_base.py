@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
-from typing import Optional, List, TypedDict
+from typing import Optional, List
+from typing_extensions import TypedDict
 
 from .search_filter import SearchFilter
 

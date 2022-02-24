@@ -70,7 +70,7 @@ class MetadataMethods():
     # Get /v1/metadata/getvalueinformation
     def get_value_information(
         self, *metadata_value: Tuple[str, str]
-    ) -&gt; List[&#39;MetadataValueInformationResponse&#39;]:
+    ) -&gt; &#39;MetadataValueInformationResponse&#39;:
         &#39;&#39;&#39;
         Get information about metadata values.
         The result will be in the same order as the request.
@@ -93,12 +93,12 @@ class MetadataMethods():
                 &#39;v&#39;: list(map(lambda x: x[0] + &#39;,&#39; + x[1], metadata_value))
             }
         )
-        return cast(List[&#39;MetadataValueInformationResponse&#39;], response.json())
+        return cast(&#39;MetadataValueInformationResponse&#39;, response.json())
 
     # Get /v1/metadata/listattributevalues
     def list_attribute_values(
         self, attribute_name: str
-    ) -&gt; List[&#39;MetadataValueInformationResponse&#39;]:
+    ) -&gt; &#39;MetadataValueInformationResponse&#39;:
         &#39;&#39;&#39;
         List all metadata attribute values.
         The attribute must have the property canListValues.
@@ -119,7 +119,7 @@ class MetadataMethods():
         response = self.__session.get_or_raise(
             &#39;v1/metadata/listattributevalues&#39;, params={&#39;n&#39;: attribute_name}
         )
-        return cast(List[&#39;MetadataValueInformationResponse&#39;], response.json())</code></pre>
+        return cast(&#39;MetadataValueInformationResponse&#39;, response.json())</code></pre>
 </details>
 </section>
 <section>
@@ -175,7 +175,7 @@ class MetadataMethods():
     # Get /v1/metadata/getvalueinformation
     def get_value_information(
         self, *metadata_value: Tuple[str, str]
-    ) -&gt; List[&#39;MetadataValueInformationResponse&#39;]:
+    ) -&gt; &#39;MetadataValueInformationResponse&#39;:
         &#39;&#39;&#39;
         Get information about metadata values.
         The result will be in the same order as the request.
@@ -198,12 +198,12 @@ class MetadataMethods():
                 &#39;v&#39;: list(map(lambda x: x[0] + &#39;,&#39; + x[1], metadata_value))
             }
         )
-        return cast(List[&#39;MetadataValueInformationResponse&#39;], response.json())
+        return cast(&#39;MetadataValueInformationResponse&#39;, response.json())
 
     # Get /v1/metadata/listattributevalues
     def list_attribute_values(
         self, attribute_name: str
-    ) -&gt; List[&#39;MetadataValueInformationResponse&#39;]:
+    ) -&gt; &#39;MetadataValueInformationResponse&#39;:
         &#39;&#39;&#39;
         List all metadata attribute values.
         The attribute must have the property canListValues.
@@ -224,7 +224,7 @@ class MetadataMethods():
         response = self.__session.get_or_raise(
             &#39;v1/metadata/listattributevalues&#39;, params={&#39;n&#39;: attribute_name}
         )
-        return cast(List[&#39;MetadataValueInformationResponse&#39;], response.json())</code></pre>
+        return cast(&#39;MetadataValueInformationResponse&#39;, response.json())</code></pre>
 </details>
 <h3>Methods</h3>
 <dl>
@@ -270,7 +270,7 @@ The result will be in the same order as the request.</p>
 </details>
 </dd>
 <dt id="macrobond_financial.web.web_typs.metadata_methods.MetadataMethods.get_value_information"><code class="name flex">
-<span>def <span class="ident">get_value_information</span></span>(<span>self, *metadata_value: Tuple[str, str]) ‑> List[MetadataValueInformationResponse]</span>
+<span>def <span class="ident">get_value_information</span></span>(<span>self, *metadata_value: Tuple[str, str]) ‑> MetadataValueInformationResponse</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Get information about metadata values.
@@ -288,7 +288,7 @@ The result will be in the same order as the request.</p>
 </summary>
 <pre><code class="python">def get_value_information(
     self, *metadata_value: Tuple[str, str]
-) -&gt; List[&#39;MetadataValueInformationResponse&#39;]:
+) -&gt; &#39;MetadataValueInformationResponse&#39;:
     &#39;&#39;&#39;
     Get information about metadata values.
     The result will be in the same order as the request.
@@ -311,11 +311,11 @@ The result will be in the same order as the request.</p>
             &#39;v&#39;: list(map(lambda x: x[0] + &#39;,&#39; + x[1], metadata_value))
         }
     )
-    return cast(List[&#39;MetadataValueInformationResponse&#39;], response.json())</code></pre>
+    return cast(&#39;MetadataValueInformationResponse&#39;, response.json())</code></pre>
 </details>
 </dd>
 <dt id="macrobond_financial.web.web_typs.metadata_methods.MetadataMethods.list_attribute_values"><code class="name flex">
-<span>def <span class="ident">list_attribute_values</span></span>(<span>self, attribute_name: str) ‑> List[MetadataValueInformationResponse]</span>
+<span>def <span class="ident">list_attribute_values</span></span>(<span>self, attribute_name: str) ‑> MetadataValueInformationResponse</span>
 </code></dt>
 <dd>
 <div class="desc"><p>List all metadata attribute values.
@@ -333,7 +333,7 @@ The attribute must have the property canListValues.</p>
 </summary>
 <pre><code class="python">def list_attribute_values(
     self, attribute_name: str
-) -&gt; List[&#39;MetadataValueInformationResponse&#39;]:
+) -&gt; &#39;MetadataValueInformationResponse&#39;:
     &#39;&#39;&#39;
     List all metadata attribute values.
     The attribute must have the property canListValues.
@@ -354,7 +354,7 @@ The attribute must have the property canListValues.</p>
     response = self.__session.get_or_raise(
         &#39;v1/metadata/listattributevalues&#39;, params={&#39;n&#39;: attribute_name}
     )
-    return cast(List[&#39;MetadataValueInformationResponse&#39;], response.json())</code></pre>
+    return cast(&#39;MetadataValueInformationResponse&#39;, response.json())</code></pre>
 </details>
 </dd>
 </dl>

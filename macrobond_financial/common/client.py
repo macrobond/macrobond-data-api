@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
 from abc import ABC, abstractmethod
-from logging import exception
 from typing import Generic, TypeVar
 
 from .api import Api

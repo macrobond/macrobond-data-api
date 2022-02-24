@@ -1,13 +1,12 @@
 # -*- coding: utf-8 -*-
 
-from typing import TYPE_CHECKING, List
+from typing import Any, Dict, List, TYPE_CHECKING
 
 from macrobond_financial.common import SearchMethods as CommonSearchMethods, SearchResult
-from ._com_series_methods import _Entity
 
 if TYPE_CHECKING:  # pragma: no cover
     from .com_typs import Connection, SearchQuery
-    from macrobond_financial.common import Entity as CommonEntity, SearchFilter
+    from macrobond_financial.common import SearchFilter
 
 
 class _ComSearchMethods(CommonSearchMethods):
@@ -49,4 +48,19 @@ class _ComSearchMethods(CommonSearchMethods):
             querys.append(query)
 
         result = self.__database.Search(querys)
-        return SearchResult(list(map(_Entity, result.Entities)), result.IsTruncated)
+
+        entities: List[Dict[str, Any]] = []
+
+        for entitie in result.Entities:
+            metadata: Dict[str, Any] = {}
+            com_metadata = entitie.Metadata
+            for names_and_description in com_metadata.ListNames():
+                name = names_and_description[0]
+                values = com_metadata.GetValues(name)
+                if len(values) == 1:
+                    metadata[name] = values[0]
+                else:
+                    metadata[name] = list(values)
+            entities.append(metadata)
+
+        return SearchResult(tuple(entities), result.IsTruncated)

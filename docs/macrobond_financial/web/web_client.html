@@ -71,13 +71,12 @@ class WebClient(Client[&#39;WebApi&#39;]):
     ```
     &#34;&#34;&#34;
 
-    __api: Optional[&#39;WebApi&#39;] = None
-
     def __init__(
             self, client_id: str, client_secret: str, *scopes: Scope,
             api_url: str = API_URL_DEFAULT, authorization_url: str = AUTHORIZATION_URL_DEFAULT
     ) -&gt; None:
         super().__init__()
+        self.__api: Optional[&#39;WebApi&#39;] = None
         self.__session = Session(
             client_id, client_secret, *scopes,
             api_url=api_url, authorization_url=authorization_url
@@ -168,13 +167,12 @@ class WebClient(Client[&#39;WebApi&#39;]):
     ```
     &#34;&#34;&#34;
 
-    __api: Optional[&#39;WebApi&#39;] = None
-
     def __init__(
             self, client_id: str, client_secret: str, *scopes: Scope,
             api_url: str = API_URL_DEFAULT, authorization_url: str = AUTHORIZATION_URL_DEFAULT
     ) -&gt; None:
         super().__init__()
+        self.__api: Optional[&#39;WebApi&#39;] = None
         self.__session = Session(
             client_id, client_secret, *scopes,
             api_url=api_url, authorization_url=authorization_url

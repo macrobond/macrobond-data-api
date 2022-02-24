@@ -30,10 +30,11 @@
 
 # pylint: disable = missing-module-docstring
 
-from typing import Optional, TypedDict, Any
+from typing import Optional, Any, List
+from typing_extensions import TypedDict
 
 
-class MetadataValueInformationResponse(TypedDict, total=False):
+class MetadataValueInformationItem(TypedDict, total=False):
     &#39;&#39;&#39;Information about a metadata value&#39;&#39;&#39;
 
     attributeName: str
@@ -46,7 +47,10 @@ class MetadataValueInformationResponse(TypedDict, total=False):
     &#39;&#39;&#39;The description of the metadata value&#39;&#39;&#39;
 
     comment: Optional[str]
-    &#39;&#39;&#39;The comment of the metadata value&#39;&#39;&#39;</code></pre>
+    &#39;&#39;&#39;The comment of the metadata value&#39;&#39;&#39;
+
+
+MetadataValueInformationResponse = List[MetadataValueInformationItem]</code></pre>
 </details>
 </section>
 <section>
@@ -58,8 +62,8 @@ class MetadataValueInformationResponse(TypedDict, total=False):
 <section>
 <h2 class="section-title" id="header-classes">Classes</h2>
 <dl>
-<dt id="macrobond_financial.web.web_typs.metadata_value_information_response.MetadataValueInformationResponse"><code class="flex name class">
-<span>class <span class="ident">MetadataValueInformationResponse</span></span>
+<dt id="macrobond_financial.web.web_typs.metadata_value_information_response.MetadataValueInformationItem"><code class="flex name class">
+<span>class <span class="ident">MetadataValueInformationItem</span></span>
 <span>(</span><span>*args, **kwargs)</span>
 </code></dt>
 <dd>
@@ -68,7 +72,7 @@ class MetadataValueInformationResponse(TypedDict, total=False):
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class MetadataValueInformationResponse(TypedDict, total=False):
+<pre><code class="python">class MetadataValueInformationItem(TypedDict, total=False):
     &#39;&#39;&#39;Information about a metadata value&#39;&#39;&#39;
 
     attributeName: str
@@ -89,19 +93,19 @@ class MetadataValueInformationResponse(TypedDict, total=False):
 </ul>
 <h3>Class variables</h3>
 <dl>
-<dt id="macrobond_financial.web.web_typs.metadata_value_information_response.MetadataValueInformationResponse.attributeName"><code class="name">var <span class="ident">attributeName</span> : str</code></dt>
+<dt id="macrobond_financial.web.web_typs.metadata_value_information_response.MetadataValueInformationItem.attributeName"><code class="name">var <span class="ident">attributeName</span> : str</code></dt>
 <dd>
 <div class="desc"><p>The name of the metadata attribute</p></div>
 </dd>
-<dt id="macrobond_financial.web.web_typs.metadata_value_information_response.MetadataValueInformationResponse.comment"><code class="name">var <span class="ident">comment</span> : Optional[str]</code></dt>
+<dt id="macrobond_financial.web.web_typs.metadata_value_information_response.MetadataValueInformationItem.comment"><code class="name">var <span class="ident">comment</span> : Optional[str]</code></dt>
 <dd>
 <div class="desc"><p>The comment of the metadata value</p></div>
 </dd>
-<dt id="macrobond_financial.web.web_typs.metadata_value_information_response.MetadataValueInformationResponse.description"><code class="name">var <span class="ident">description</span> : str</code></dt>
+<dt id="macrobond_financial.web.web_typs.metadata_value_information_response.MetadataValueInformationItem.description"><code class="name">var <span class="ident">description</span> : str</code></dt>
 <dd>
 <div class="desc"><p>The description of the metadata value</p></div>
 </dd>
-<dt id="macrobond_financial.web.web_typs.metadata_value_information_response.MetadataValueInformationResponse.value"><code class="name">var <span class="ident">value</span> : Any</code></dt>
+<dt id="macrobond_financial.web.web_typs.metadata_value_information_response.MetadataValueInformationItem.value"><code class="name">var <span class="ident">value</span> : Any</code></dt>
 <dd>
 <div class="desc"><p>The value</p></div>
 </dd>
@@ -124,12 +128,12 @@ class MetadataValueInformationResponse(TypedDict, total=False):
 <li><h3><a href="#header-classes">Classes</a></h3>
 <ul>
 <li>
-<h4><code><a title="macrobond_financial.web.web_typs.metadata_value_information_response.MetadataValueInformationResponse" href="#macrobond_financial.web.web_typs.metadata_value_information_response.MetadataValueInformationResponse">MetadataValueInformationResponse</a></code></h4>
+<h4><code><a title="macrobond_financial.web.web_typs.metadata_value_information_response.MetadataValueInformationItem" href="#macrobond_financial.web.web_typs.metadata_value_information_response.MetadataValueInformationItem">MetadataValueInformationItem</a></code></h4>
 <ul class="">
-<li><code><a title="macrobond_financial.web.web_typs.metadata_value_information_response.MetadataValueInformationResponse.attributeName" href="#macrobond_financial.web.web_typs.metadata_value_information_response.MetadataValueInformationResponse.attributeName">attributeName</a></code></li>
-<li><code><a title="macrobond_financial.web.web_typs.metadata_value_information_response.MetadataValueInformationResponse.comment" href="#macrobond_financial.web.web_typs.metadata_value_information_response.MetadataValueInformationResponse.comment">comment</a></code></li>
-<li><code><a title="macrobond_financial.web.web_typs.metadata_value_information_response.MetadataValueInformationResponse.description" href="#macrobond_financial.web.web_typs.metadata_value_information_response.MetadataValueInformationResponse.description">description</a></code></li>
-<li><code><a title="macrobond_financial.web.web_typs.metadata_value_information_response.MetadataValueInformationResponse.value" href="#macrobond_financial.web.web_typs.metadata_value_information_response.MetadataValueInformationResponse.value">value</a></code></li>
+<li><code><a title="macrobond_financial.web.web_typs.metadata_value_information_response.MetadataValueInformationItem.attributeName" href="#macrobond_financial.web.web_typs.metadata_value_information_response.MetadataValueInformationItem.attributeName">attributeName</a></code></li>
+<li><code><a title="macrobond_financial.web.web_typs.metadata_value_information_response.MetadataValueInformationItem.comment" href="#macrobond_financial.web.web_typs.metadata_value_information_response.MetadataValueInformationItem.comment">comment</a></code></li>
+<li><code><a title="macrobond_financial.web.web_typs.metadata_value_information_response.MetadataValueInformationItem.description" href="#macrobond_financial.web.web_typs.metadata_value_information_response.MetadataValueInformationItem.description">description</a></code></li>
+<li><code><a title="macrobond_financial.web.web_typs.metadata_value_information_response.MetadataValueInformationItem.value" href="#macrobond_financial.web.web_typs.metadata_value_information_response.MetadataValueInformationItem.value">value</a></code></li>
 </ul>
 </li>
 </ul>

@@ -30,7 +30,8 @@
 
 # pylint: disable = missing-module-docstring
 
-from typing import Optional, TypedDict, List, Dict
+from typing import Any, Optional, List, Dict
+from typing_extensions import TypedDict
 
 
 class SearchResponse(TypedDict):
@@ -39,7 +40,7 @@ class SearchResponse(TypedDict):
     isTruncated: Optional[bool]
     &#39;&#39;&#39;If True, the search response is truncated&#39;&#39;&#39;
 
-    results: List[Dict[str, object]]
+    results: List[Dict[str, Any]]
     &#39;&#39;&#39;The matched entites&#39;&#39;&#39;</code></pre>
 </details>
 </section>
@@ -68,7 +69,7 @@ class SearchResponse(TypedDict):
     isTruncated: Optional[bool]
     &#39;&#39;&#39;If True, the search response is truncated&#39;&#39;&#39;
 
-    results: List[Dict[str, object]]
+    results: List[Dict[str, Any]]
     &#39;&#39;&#39;The matched entites&#39;&#39;&#39;</code></pre>
 </details>
 <h3>Ancestors</h3>
@@ -81,7 +82,7 @@ class SearchResponse(TypedDict):
 <dd>
 <div class="desc"><p>If True, the search response is truncated</p></div>
 </dd>
-<dt id="macrobond_financial.web.web_typs.search_response.SearchResponse.results"><code class="name">var <span class="ident">results</span> : List[Dict[str, object]]</code></dt>
+<dt id="macrobond_financial.web.web_typs.search_response.SearchResponse.results"><code class="name">var <span class="ident">results</span> : List[Dict[str, Any]]</code></dt>
 <dd>
 <div class="desc"><p>The matched entites</p></div>
 </dd>

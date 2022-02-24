@@ -1,151 +1,235 @@
 # -*- coding: utf-8 -*-
 
-from typing import Tuple, Any, Union, Optional, Dict, TYPE_CHECKING, cast
+from typing import Optional, Tuple, Any, Union, Dict, List, TYPE_CHECKING
 
 from datetime import datetime
 
-from macrobond_financial.common import SeriesMethods, \
-    Entity as CommonEntity, \
-    UnifiedSeries as CommonUnifiedSeries, \
-    Series as CommonSeries
-
+from macrobond_financial.common import Entity, UnifiedSeries, UnifiedSerie, Series
+import macrobond_financial.common.series_methods as SeriesMethods
 from macrobond_financial.common.enums import SeriesWeekdays, SeriesFrequency
 
+# from macrobond_financial.common._get_pandas import _get_pandas
+
 if TYPE_CHECKING:  # pragma: no cover
-    from .com_typs import Connection, Entity as ComEntity, Series as ComSeries
+    from pandas import DataFrame  # type: ignore
+    from .com_typs import Connection, Database, SeriesRequest, Series as ComSeries, \
+        Entity as ComEntity
     from macrobond_financial.common import SeriesEntrie, StartOrEndPoint, CalendarMergeMode
 
+    from macrobond_financial.common import SeriesEntrie, StartOrEndPoint
 
-class _Entity(CommonEntity):
+    from macrobond_financial.common.entity import EntityColumns, EntityTypedDict
+    from macrobond_financial.common.series import SeriesColumns, SeriesTypedDict
+    from macrobond_financial.common.unified_series import UnifiedSeriesColumns, \
+        UnifiedSeriesTypedDict
 
-    _com_type: 'ComEntity'
-    _metadata: Dict[str, Any]
+    from macrobond_financial.common.entity import EntityColumns
+    from macrobond_financial.common.series import SeriesColumns
+    from macrobond_financial.common.unified_series import UnifiedSeriesColumns
 
-    def __init__(self, com_type: 'ComEntity') -> None:
-        super().__init__()
-        self._com_type = com_type
 
-        if not self._com_type.IsError:
-            metadata = {}
-            com_metadata = com_type.Metadata
-            for names_and_description in com_metadata.ListNames():
-                name = names_and_description[0]
-                values = com_metadata.GetValues(name)
-                if len(values) == 1:
-                    metadata[name] = values[0]
-                else:
-                    metadata[name] = list(values)
-            self._metadata = metadata
+def _create_entity(com_entity: 'ComEntity', name: str) -> Entity:
+    metadata: Dict[str, Any] = {'Name': name}
+
+    if com_entity.IsError:
+        return Entity(com_entity.ErrorMessage, metadata)
+
+    com_metadata = com_entity.Metadata
+    for names_and_description in com_metadata.ListNames():
+        name = names_and_description[0]
+        values = com_metadata.GetValues(name)
+        if len(values) == 1:
+            metadata[name] = values[0]
         else:
-            self._metadata = {}
+            metadata[name] = list(values)
 
-    def __str__(self):
-        return str(self.name)
+    if 'FullDescription' not in metadata:
+        metadata['FullDescription'] = com_entity.Title
 
-    def __repr__(self):
-        return str(self)
-
-    @property
-    def name(self) -> str:
-        return self._com_type.Name
-
-    @property
-    def primary_name(self) -> str:
-        return self._com_type.PrimaryName
-
-    @property
-    def is_error(self) -> bool:
-        return self._com_type.IsError
-
-    @property
-    def error_message(self) -> str:
-        return self._com_type.ErrorMessage
-
-    @property
-    def title(self) -> str:
-        return self._com_type.Title
-
-    @property
-    def entity_type(self) -> str:
-        return cast(str, self.metadata['EntityType'])
-
-    @property
-    def metadata(self) -> Dict[str, Any]:
-        return self._metadata
+    return Entity('', metadata)
 
 
-class _UnifiedSeries(_Entity, CommonUnifiedSeries):
+def _create_series(com_series: 'ComSeries', name: str) -> Series:
+    metadata: Dict[str, Any] = {'Name': name}
 
-    _com_type: 'ComSeries'
+    if com_series.IsError:
+        return Series(com_series.ErrorMessage, metadata, None, None)
 
-    def __init__(self, com_type: 'ComSeries') -> None:
-        super().__init__(com_type)
+    com_metadata = com_series.Metadata
+    for names_and_description in com_metadata.ListNames():
+        name = names_and_description[0]
+        values = com_metadata.GetValues(name)
+        if len(values) == 1:
+            metadata[name] = values[0]
+        else:
+            metadata[name] = list(values)
 
-    @property
-    def values(self) -> Tuple[Optional[float], ...]:
-        return self._com_type.Values
+    if 'FullDescription' not in metadata:
+        metadata['FullDescription'] = com_series.Title
 
-
-class _Series(_Entity, CommonSeries):
-
-    _com_type: 'ComSeries'
-
-    def __init__(self, com_type: 'ComSeries') -> None:
-        super().__init__(com_type)
-
-    @property
-    def values(self) -> Tuple[Optional[float], ...]:
-        return self._com_type.Values
-
-    @property
-    def dates(self) -> Tuple[datetime, ...]:
-        return self._com_type.DatesAtStartOfPeriod
-
-    # @property
-    # def forecast_flags(self) -> List[bool]:
-    #     '''A vector with a flag for each value indicating if this is a forecast or not.'''
-    #     return self._com_type.ForecastFlags
-
-    @property
-    def start_date(self) -> datetime:
-        return self._com_type.StartDate
-
-    @property
-    def end_date(self) -> datetime:
-        return self._com_type.EndDate
-
-    @property
-    def frequency(self) -> SeriesFrequency:
-        return SeriesFrequency(self._com_type.Frequency)
-
-    @property
-    def weekdays(self) -> SeriesWeekdays:
-        return SeriesWeekdays(self._com_type.Weekdays)
-
-    def get_value_at_date(self, date_time: datetime) -> float:
-        return self._com_type.GetValueAtDate(date_time)
-
-    def get_index_at_date(self, date_time: datetime) -> int:
-        return self._com_type.GetIndexAtDate(date_time)
+    return Series('', metadata, com_series.Values, com_series.DatesAtStartOfPeriod)
 
 
-class _ComSeriesMethods(SeriesMethods):
+class _GetOneSeriesReturn(SeriesMethods.GetOneSeriesReturn):
+
+    def __init__(self, database: 'Database', series_name: str) -> None:
+        super().__init__()
+        self.__database = database
+        self.__series_name = series_name
+
+    def object(self) -> Series:
+        com_series = self.__database.FetchOneSeries(self.__series_name)
+        return _create_series(com_series, self.__series_name)
+
+    def dict(self) -> 'SeriesTypedDict':
+        raise NotImplementedError()
+
+    def data_frame(self, *args, **kwargs) -> 'DataFrame':
+        raise NotImplementedError()
+        # pandas = _get_pandas()
+        # args = args[1:]
+        # kwargs['data'] = self.list_of_dicts()
+        # return pandas.DataFrame(*args, **kwargs)
+
+
+class _GetSeriesReturn(SeriesMethods.GetSeriesReturn):
+
+    def __init__(self, database: 'Database', series_names: Tuple[str, ...]) -> None:
+        super().__init__()
+        self.__database = database
+        self.__series_names = series_names
+
+    def tuple_of_objects(self) -> Tuple[Series, ...]:
+        com_series = self.__database.FetchSeries(self.__series_names)
+
+        ret: List[Series] = []
+        for i, com_one_series in enumerate(com_series):
+            ret.append(_create_series(com_one_series, self.__series_names[i]))
+        return tuple(ret)
+
+    def tuple_of_dicts(self) -> Tuple['SeriesTypedDict', ...]:
+        raise NotImplementedError()
+
+    def data_frame(self, *args, **kwargs) -> 'DataFrame':
+        raise NotImplementedError()
+        # pandas = _get_pandas()
+        # args = args[1:]
+        # kwargs['data'] = self.list_of_dicts()
+        # return pandas.DataFrame(*args, **kwargs)
+
+
+class _GetOneEntitieReturn(SeriesMethods.GetOneEntitieReturn):
+
+    def __init__(self, database: 'Database', entity_name: str) -> None:
+        super().__init__()
+        self.__database = database
+        self.__entity_name = entity_name
+
+    def object(self) -> Entity:
+        com_entity = self.__database.FetchOneEntity(self.__entity_name)
+        return _create_entity(com_entity, self.__entity_name)
+
+    def dict(self) -> 'EntityTypedDict':
+        raise NotImplementedError()
+
+    def data_frame(self, *args, **kwargs) -> 'DataFrame':
+        raise NotImplementedError()
+        # pandas = _get_pandas()
+        # args = args[1:]
+        # kwargs['data'] = self.list_of_dicts()
+        # return pandas.DataFrame(*args, **kwargs)
+
+
+class _GetEntitiesReturn(SeriesMethods.GetEntitiesReturn):
+
+    def __init__(self, database: 'Database', entity_names: Tuple[str, ...]) -> None:
+        super().__init__()
+        self.__database = database
+        self.__entity_names = entity_names
+
+    def tuple_of_objects(self) -> Tuple[Entity, ...]:
+        com_entitys = self.__database.FetchEntities(self.__entity_names)
+
+        ret: List[Entity] = []
+        for i, com_one_entity in enumerate(com_entitys):
+            ret.append(_create_entity(com_one_entity, self.__entity_names[i]))
+        return tuple(ret)
+
+    def tuple_of_dicts(self) -> Tuple['EntityTypedDict', ...]:
+        raise NotImplementedError()
+
+    def data_frame(self, *args, **kwargs) -> 'DataFrame':
+        raise NotImplementedError()
+        # pandas = _get_pandas()
+        # args = args[1:]
+        # kwargs['data'] = self.list_of_dicts()
+        # return pandas.DataFrame(*args, **kwargs)
+
+
+class _GetUnifiedSeriesReturn(SeriesMethods.GetUnifiedSeriesReturn):
+
+    def __init__(
+        self,
+        database: 'Database',
+        request: 'SeriesRequest'
+    ) -> None:
+        super().__init__()
+        self.__database = database
+        self.__request = request
+
+    def object(self) -> UnifiedSeries:
+        com_series = self.__database.FetchSeries(self.__request)
+        dates: Optional[Tuple[datetime, ...]] = None
+        series: List[UnifiedSerie] = []
+        for com_one_series in com_series:
+            if com_one_series.IsError:
+                series.append(UnifiedSerie(com_one_series.ErrorMessage, None, None))
+            else:
+                metadata: Dict[str, Any] = {}
+                com_metadata = com_one_series.Metadata
+                for names_and_description in com_metadata.ListNames():
+                    name = names_and_description[0]
+                    values = com_metadata.GetValues(name)
+                    if len(values) == 1:
+                        metadata[name] = values[0]
+                    else:
+                        metadata[name] = list(values)
+
+                series.append(UnifiedSerie('', metadata, com_one_series.Values))
+
+                if dates is None:
+                    dates = com_one_series.DatesAtStartOfPeriod
+
+        return UnifiedSeries(dates, tuple(series))
+
+    def dict(self) -> 'UnifiedSeriesTypedDict':
+        raise NotImplementedError()
+
+    def data_frame(self, *args, **kwargs) -> 'DataFrame':
+        raise NotImplementedError()
+        # pandas = _get_pandas()
+        # args = args[1:]
+        # kwargs['data'] = self.list_of_dicts()
+        # return pandas.DataFrame(*args, **kwargs)
+
+
+class _ComSeriesMethods(SeriesMethods.SeriesMethods):
 
     def __init__(self, connection: 'Connection') -> None:
         super().__init__()
         self.__database = connection.Database
 
-    def get_one_series(self, series_name: str) -> _Series:
-        return _Series(self.__database.FetchOneSeries(series_name))
+    def get_one_series(self, series_name: str) -> SeriesMethods.GetOneSeriesReturn:
+        return _GetOneSeriesReturn(self.__database, series_name)
 
-    def get_series(self, *series_names: str) -> Tuple[_Series, ...]:
-        return tuple(map(_Series, self.__database.FetchSeries(series_names)))
+    def get_series(self, *series_names: str) -> SeriesMethods.GetSeriesReturn:
+        return _GetSeriesReturn(self.__database, series_names)
 
-    def get_one_entitie(self, entity_name: str) -> _Entity:
-        return _Entity(self.__database.FetchOneEntity(entity_name))
+    def get_one_entitie(self, entity_name: str) -> SeriesMethods.GetOneEntitieReturn:
+        return _GetOneEntitieReturn(self.__database, entity_name)
 
-    def get_entities(self, *entity_names: str) -> Tuple[_Entity, ...]:
-        return tuple(map(_Entity, self.__database.FetchEntities(entity_names)))
+    def get_entities(self, *entity_names: str) -> SeriesMethods.GetEntitiesReturn:
+        return _GetEntitiesReturn(self.__database, entity_names)
 
     def get_unified_series(
         self,
@@ -156,7 +240,7 @@ class _ComSeriesMethods(SeriesMethods):
         currency: str = None,
         start_point: 'StartOrEndPoint' = None,
         end_point: 'StartOrEndPoint' = None,
-    ) -> Tuple[_UnifiedSeries, ...]:
+    ) -> SeriesMethods.GetUnifiedSeriesReturn:
         request = self.__database.CreateUnifiedSeriesRequest()
         for entrie_or_name in series_entries:
             if isinstance(entrie_or_name, str):
@@ -197,4 +281,4 @@ class _ComSeriesMethods(SeriesMethods):
             request.EndDate = end_point.time
             request.EndDateMode = end_point.mode
 
-        return tuple(map(_UnifiedSeries, self.__database.FetchSeries(request)))
+        return _GetUnifiedSeriesReturn(self.__database, request)

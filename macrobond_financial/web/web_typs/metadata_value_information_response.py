@@ -2,10 +2,11 @@
 
 # pylint: disable = missing-module-docstring
 
-from typing import Optional, TypedDict, Any
+from typing import Optional, Any, List
+from typing_extensions import TypedDict
 
 
-class MetadataValueInformationResponse(TypedDict, total=False):
+class MetadataValueInformationItem(TypedDict, total=False):
     '''Information about a metadata value'''
 
     attributeName: str
@@ -19,3 +20,6 @@ class MetadataValueInformationResponse(TypedDict, total=False):
 
     comment: Optional[str]
     '''The comment of the metadata value'''
+
+
+MetadataValueInformationResponse = List[MetadataValueInformationItem]

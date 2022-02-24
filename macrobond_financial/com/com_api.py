@@ -18,10 +18,6 @@ __pdoc__ = {
 
 class ComApi(Api):
 
-    @property
-    def connection(self) -> 'Connection':
-        return self.__connection
-
     def __init__(self, connection: 'Connection') -> None:
         super().__init__(
             _ComMetaDirectoryMethods(connection),
@@ -29,3 +25,7 @@ class ComApi(Api):
             _ComSeriesMethods(connection)
         )
         self.__connection = connection
+
+    @property
+    def connection(self) -> 'Connection':
+        return self.__connection

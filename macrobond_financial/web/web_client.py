@@ -43,13 +43,12 @@ class WebClient(Client['WebApi']):
     ```
     """
 
-    __api: Optional['WebApi'] = None
-
     def __init__(
             self, client_id: str, client_secret: str, *scopes: Scope,
             api_url: str = API_URL_DEFAULT, authorization_url: str = AUTHORIZATION_URL_DEFAULT
     ) -> None:
         super().__init__()
+        self.__api: Optional['WebApi'] = None
         self.__session = Session(
             client_id, client_secret, *scopes,
             api_url=api_url, authorization_url=authorization_url

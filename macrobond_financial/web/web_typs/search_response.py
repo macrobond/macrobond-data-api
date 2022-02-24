@@ -2,7 +2,8 @@
 
 # pylint: disable = missing-module-docstring
 
-from typing import Optional, TypedDict, List, Dict
+from typing import Any, Optional, List, Dict
+from typing_extensions import TypedDict
 
 
 class SearchResponse(TypedDict):
@@ -11,5 +12,5 @@ class SearchResponse(TypedDict):
     isTruncated: Optional[bool]
     '''If True, the search response is truncated'''
 
-    results: List[Dict[str, object]]
+    results: List[Dict[str, Any]]
     '''The matched entites'''

@@ -2,197 +2,236 @@
 
 # pylint: disable = missing-module-docstring
 
-from typing import Tuple, List, Optional, Union, Any, cast, Dict, TYPE_CHECKING
+from typing import Any, Dict, Tuple, List, Optional, Union, cast, TYPE_CHECKING
 
 from datetime import datetime, timezone
 
-from macrobond_financial.common import SeriesMethods, \
-    Entity as CommonEntity, \
-    UnifiedSeries as CommonUnifiedSeries, \
-    Series as CommonSeries
+from macrobond_financial.common import Entity, UnifiedSeries, UnifiedSerie, Series
 
 from macrobond_financial.common.enums import SeriesWeekdays, SeriesFrequency, CalendarMergeMode
 
+import macrobond_financial.common.series_methods as SeriesMethods
+
+# from macrobond_financial.common._get_pandas import _get_pandas
+
 if TYPE_CHECKING:  # pragma: no cover
     from .session import Session
+    from pandas import DataFrame  # type: ignore
     from macrobond_financial.common import SeriesEntrie, StartOrEndPoint
+
+    from macrobond_financial.common.entity import EntityColumns, EntityTypedDict
+    from macrobond_financial.common.series import SeriesColumns, SeriesTypedDict
+    from macrobond_financial.common.unified_series import UnifiedSeriesColumns, \
+        UnifiedSeriesTypedDict
+
     from .web_typs.series_response import SeriesResponse
     from .web_typs.entity_response import EntityResponse
     from .web_typs.unified_series_request import UnifiedSeriesRequest, UnifiedSeriesEntry
     from .web_typs.values_response import ValuesResponse
 
 
-class _Entity(CommonEntity):
+class _GetOneSeriesReturn(SeriesMethods.GetOneSeriesReturn):
 
-    _metadata: Dict[str, Any]
-    _error_message: str
-    _error_name: str
-
-    def __init__(self, entity_response: 'EntityResponse', name: str) -> None:
+    def __init__(self, session: 'Session', series_name: str) -> None:
         super().__init__()
-        self._error_name = name
+        self.__session = session
+        self.__series_name = series_name
 
-        error_text: Optional[str] = entity_response.get('errorText')
+    def object(self) -> Series:
+        response = self.__session.series.fetch_series(self.__series_name)[0]
+        error_text = response.get('errorText')
 
-        if error_text is None:
-            self._error_message = ''
-            self._metadata = cast(Dict[str, Any], entity_response['metadata'])
-        else:
-            self._error_message = error_text
-            self._metadata = {}
+        if error_text is not None:
+            return Series(error_text, {'Name': self.__series_name}, None, None)
 
-    def __str__(self):
-        return str(self.name)
+        dates = tuple(
+            map(lambda s:
+                datetime.strptime(s, '%Y-%m-%dT%H:%M:%S').replace(tzinfo=timezone.utc),
+                cast(List[str], response['dates'])
+                )
+        )
 
-    def __repr__(self):
-        return str(self)
+        values = cast(Tuple[Optional[float]], response['values'])
 
-    @property
-    def name(self) -> str:
-        if self._error_message != '':
-            return self._error_name
-        return self._metadata['Name']
+        return Series('', cast(Dict[str, Any], response['metadata']), values, dates)
 
-    @property
-    def primary_name(self) -> str:
-        if self._error_message != '':
-            return ''
-        return self._metadata['PrimName']
+    def dict(self) -> 'SeriesTypedDict':
+        raise NotImplementedError()
 
-    @property
-    def is_error(self) -> bool:
-        return self._error_message != ''
-
-    @property
-    def error_message(self) -> str:
-        return self._error_message
-
-    @property
-    def title(self) -> str:
-        if self._error_message != '':
-            raise Exception(self._error_message)
-        return self._metadata['FullDescription']
-
-    @property
-    def entity_type(self) -> str:
-        if self._error_message != '':
-            raise Exception(self._error_message)
-        return self._metadata['EntityType']
-
-    @property
-    def metadata(self) -> Dict[str, Any]:
-        return self._metadata
+    def data_frame(self, *args, **kwargs) -> 'DataFrame':
+        raise NotImplementedError()
+        # pandas = _get_pandas()
+        # args = args[1:]
+        # kwargs['data'] = self.list_of_dicts()
+        # return pandas.DataFrame(*args, **kwargs)
 
 
-class _UnifiedSeries(_Entity, CommonUnifiedSeries):
+class _GetSeriesReturn(SeriesMethods.GetSeriesReturn):
 
-    _values: Tuple[float, ...]
+    def __init__(self, session: 'Session', series_names: Tuple[str, ...]) -> None:
+        super().__init__()
+        self.__session = session
+        self.__series_names = series_names
 
-    def __init__(self, values_response: 'ValuesResponse', name: str) -> None:
-        super().__init__(values_response, name)
-        if self._error_message == '':
-            values = values_response.get("values")
-            if values is not None:
-                self._values = tuple(values)
+    def tuple_of_objects(self) -> Tuple[Series, ...]:
+        response_list = self.__session.series.fetch_series(*self.__series_names)
 
-    @property
-    def values(self) -> Tuple[Optional[float], ...]:
-        if self._error_message != '':
-            raise Exception()
-        return self._values
+        ret: List[Series] = []
+        for i, response in enumerate(response_list):
+            error_text = response.get('errorText')
+
+            if error_text is not None:
+                metadata: Dict[str, Any] = {'Name': self.__series_names[i]}
+                ret.append(Series(error_text, metadata, None, None))
+            else:
+                dates = tuple(
+                    map(lambda s:
+                        datetime.strptime(s, '%Y-%m-%dT%H:%M:%S').replace(tzinfo=timezone.utc),
+                        cast(List[str], response['dates'])
+                        )
+                )
+
+                values = cast(Tuple[Optional[float]], response['values'])
+                ret.append(Series('', cast(Dict[str, Any], response['metadata']), values, dates))
+
+        return tuple(ret)
+
+    def tuple_of_dicts(self) -> Tuple['SeriesTypedDict', ...]:
+        raise NotImplementedError()
+
+    def data_frame(self, *args, **kwargs) -> 'DataFrame':
+        raise NotImplementedError()
+        # pandas = _get_pandas()
+        # args = args[1:]
+        # kwargs['data'] = self.list_of_dicts()
+        # return pandas.DataFrame(*args, **kwargs)
 
 
-class _Series(_Entity, CommonSeries):
+class _GetOneEntitieReturn(SeriesMethods.GetOneEntitieReturn):
 
-    _values: Tuple[float, ...]
+    def __init__(self, session: 'Session', entity_name: str) -> None:
+        super().__init__()
+        self.__session = session
+        self.__entity_name = entity_name
 
-    _str_dates: Optional[List[str]]
-    _dates: Optional[Tuple[datetime, ...]] = None
+    def object(self) -> Entity:
+        response = self.__session.series.fetch_entities(self.__entity_name)[0]
+        error_text = response.get('errorText')
 
-    def __init__(self, series_response: 'SeriesResponse', name: str) -> None:
-        super().__init__(series_response, name)
-        if self._error_message == '':
-            values = series_response.get("values")
-            if values is not None:
-                self._values = tuple(values)
-            self._str_dates = series_response['dates']
+        if error_text is not None:
+            return Entity(error_text, {'Name': self.__entity_name})
 
-    @property
-    def values(self) -> Tuple[Optional[float], ...]:
-        if self._error_message != '':
-            raise Exception(self._error_message)
-        return self._values
+        return Entity('', cast(Dict[str, Any], response['metadata']))
 
-    @property
-    def dates(self) -> Tuple[datetime, ...]:
-        if self._error_message != '':
-            raise Exception(self._error_message)
-        if self._dates is None:
-            self._dates = tuple(
-                map(lambda s:
-                    datetime.strptime(s, '%Y-%m-%dT%H:%M:%S').replace(tzinfo=timezone.utc),
-                    cast(List[str], self._str_dates)
-                    )
+    def dict(self) -> 'EntityTypedDict':
+        raise NotImplementedError()
+
+    def data_frame(self, *args, **kwargs) -> 'DataFrame':
+        raise NotImplementedError()
+        # pandas = _get_pandas()
+        # args = args[1:]
+        # kwargs['data'] = self.list_of_dicts()
+        # return pandas.DataFrame(*args, **kwargs)
+
+
+class _GetEntitiesReturn(SeriesMethods.GetEntitiesReturn):
+
+    def __init__(self, session: 'Session', entity_names: Tuple[str, ...]) -> None:
+        super().__init__()
+        self.__session = session
+        self.__entity_names = entity_names
+
+    def tuple_of_objects(self) -> Tuple[Entity, ...]:
+        response_list = self.__session.series.fetch_entities(*self.__entity_names)
+
+        ret: List[Entity] = []
+        for i, response in enumerate(response_list):
+            error_text = response.get('errorText')
+
+            if error_text is not None:
+                ret.append(Entity(error_text, {'Name': self.__entity_names[i]}))
+            else:
+                ret.append(Entity('', cast(Dict[str, Any], response['metadata'])))
+
+        return tuple(ret)
+
+    def tuple_of_dicts(self) -> Tuple['EntityTypedDict', ...]:
+        raise NotImplementedError()
+
+    def data_frame(self, *args, **kwargs) -> 'DataFrame':
+        raise NotImplementedError()
+        # pandas = _get_pandas()
+        # args = args[1:]
+        # kwargs['data'] = self.list_of_dicts()
+        # return pandas.DataFrame(*args, **kwargs)
+
+
+class _GetUnifiedSeriesReturn(SeriesMethods.GetUnifiedSeriesReturn):
+
+    def __init__(
+        self,
+        session: 'Session',
+        request: 'UnifiedSeriesRequest'
+    ) -> None:
+        super().__init__()
+        self.__session = session
+        self.__request = request
+
+    def object(self) -> UnifiedSeries:
+        response = self.__session.series.fetch_unified_series(self.__request)
+
+        str_dates = response.get('dates')
+        if str_dates is not None:
+            dates = tuple(
+                map(
+                    lambda s:
+                        datetime.strptime(s, '%Y-%m-%dT%H:%M:%S').replace(tzinfo=timezone.utc),
+                    cast(List[str], str_dates)
+                )
             )
-            self._str_dates = None
-        return self._dates
+        else:
+            dates = tuple()
 
-    @property
-    def start_date(self) -> datetime:
-        return self.dates[0]
+        series: List[UnifiedSerie] = []
+        for one_series in response['series']:
+            error_text = one_series.get('errorText')
 
-    @property
-    def end_date(self) -> datetime:
-        return self.dates[len(self.dates) - 1]
+            if error_text is not None:
+                series.append(UnifiedSerie(error_text, None, None))
+            else:
+                values = cast(Tuple[Optional[float]], one_series['values'])
+                series.append(UnifiedSerie('', one_series['metadata'], values))
 
-    @property
-    def frequency(self) -> SeriesFrequency:
-        if self._error_message != '':
-            raise Exception(self._error_message)
-        return SeriesFrequency[cast(str, self._metadata['Frequency']).upper()]
+        return UnifiedSeries(dates, tuple(series))
 
-    @property
-    def weekdays(self) -> SeriesWeekdays:
-        if self._error_message != '':
-            raise Exception(self._error_message)
-        return SeriesWeekdays(self._metadata['DayMask'])
+    def dict(self) -> 'UnifiedSeriesTypedDict':
+        raise NotImplementedError()
 
-    def get_value_at_date(self, date_time: datetime) -> float:
-        return cast(Tuple[float, ...], self._values)[self.dates.index(date_time)]
-
-    def get_index_at_date(self, date_time: datetime) -> int:
-        return self.dates.index(date_time)
+    def data_frame(self, *args, **kwargs) -> 'DataFrame':
+        raise NotImplementedError()
+        # pandas = _get_pandas()
+        # args = args[1:]
+        # kwargs['data'] = self.list_of_dicts()
+        # return pandas.DataFrame(*args, **kwargs)
 
 
-class _WebSeriesMethods(SeriesMethods):
+class _WebSeriesMethods(SeriesMethods.SeriesMethods):
 
     def __init__(self, session: 'Session') -> None:
         super().__init__()
         self.__session = session
 
-    def get_one_series(self, series_name: str) -> _Series:
-        return self.get_series(series_name)[0]
+    def get_one_series(self, series_name: str) -> SeriesMethods.GetOneSeriesReturn:
+        return _GetOneSeriesReturn(self.__session, series_name)
 
-    def get_series(self, *series_names: str) -> Tuple[_Series, ...]:
-        series_list = self.__session.series.fetch_series(*series_names)
+    def get_series(self, *series_names: str) -> SeriesMethods.GetSeriesReturn:
+        return _GetSeriesReturn(self.__session, series_names)
 
-        ret: list[_Series] = []
-        for i, series in enumerate(series_list):
-            ret.append(_Series(series, series_names[i]))
+    def get_one_entitie(self, entity_name: str) -> SeriesMethods.GetOneEntitieReturn:
+        return _GetOneEntitieReturn(self.__session, entity_name)
 
-        return tuple(ret)
-
-    def get_one_entitie(self, entity_name: str) -> _Entity:
-        return self.get_entities(entity_name)[0]
-
-    def get_entities(self, *entity_names: str) -> Tuple[_Entity, ...]:
-        entities_list = self.__session.series.fetch_entities(*entity_names)
-
-        ret: list[_Entity] = []
-        for i, entitie in enumerate(entities_list):
-            ret.append(_Entity(entitie, entity_names[i]))
-
-        return tuple(ret)
+    def get_entities(self, *entity_names: str) -> SeriesMethods.GetEntitiesReturn:
+        return _GetEntitiesReturn(self.__session, entity_names)
 
     def get_unified_series(
         self,
@@ -203,7 +242,7 @@ class _WebSeriesMethods(SeriesMethods):
         currency: str = None,
         start_point: 'StartOrEndPoint' = None,
         end_point: 'StartOrEndPoint' = None,
-    ) -> Tuple[_UnifiedSeries, ...]:
+    ) -> SeriesMethods.GetUnifiedSeriesReturn:
 
         def convert_to_unified_series_entry(
             entrie_or_name: Union['SeriesEntrie', str]
@@ -236,9 +275,4 @@ class _WebSeriesMethods(SeriesMethods):
             request['endPoint'] = end_point.time
             request['endDateMode'] = end_point.mode
 
-        response = self.__session.series.fetch_unified_series(request)
-
-        ret: list[_UnifiedSeries] = []
-        for i, entrie in enumerate(web_series_entries):
-            ret.append(_UnifiedSeries(response['series'][i], entrie['name']))
-        return tuple(ret)
+        return _GetUnifiedSeriesReturn(self.__session, request)

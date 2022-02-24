@@ -2,8 +2,9 @@
 
 # pylint: disable = missing-module-docstring
 
-from typing import Optional, TypedDict, List
+from typing import Optional, List
 from enum import IntFlag
+from typing_extensions import TypedDict
 
 from ...common.enums import MetadataAttributeType
 

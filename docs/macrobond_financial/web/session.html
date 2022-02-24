@@ -53,7 +53,6 @@ __pdoc__ = {
 
 
 class Session():
-    __token_endpoint: Optional[str] = None
 
     @property
     def metadata(self) -&gt; MetadataMethods:
@@ -96,6 +95,8 @@ class Session():
         api_url: str = API_URL_DEFAULT, authorization_url: str = API_URL_DEFAULT,
         test_auth2_session: Any = None
     ) -&gt; None:
+        self.__token_endpoint: Optional[str] = None
+
         if not authorization_url.endswith(&#39;/&#39;):
             authorization_url = authorization_url + &#39;/&#39;
         self.__authorization_url = authorization_url
@@ -195,7 +196,6 @@ class Session():
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class Session():
-    __token_endpoint: Optional[str] = None
 
     @property
     def metadata(self) -&gt; MetadataMethods:
@@ -238,6 +238,8 @@ class Session():
         api_url: str = API_URL_DEFAULT, authorization_url: str = API_URL_DEFAULT,
         test_auth2_session: Any = None
     ) -&gt; None:
+        self.__token_endpoint: Optional[str] = None
+
         if not authorization_url.endswith(&#39;/&#39;):
             authorization_url = authorization_url + &#39;/&#39;
         self.__authorization_url = authorization_url

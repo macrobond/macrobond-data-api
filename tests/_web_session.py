@@ -1,16 +1,17 @@
 # -*- coding: utf-8 -*-
 
 from typing import Any
-import unittest
-import unittest.mock
+
+from unittest import TestCase  # type: ignore
+from unittest.mock import Mock
 
 from macrobond_financial.web.session import Session
 
 
 def new_response(
     status_code: int, json: Any = None, side_effect: Any = None
-) -> unittest.mock.Mock:
-    response = unittest.mock.Mock()
+) -> Mock:
+    response = Mock()
     response.status_code = status_code
     if json is not None:
         response.json.return_value = json
@@ -19,11 +20,11 @@ def new_response(
     return response
 
 
-class WebSession(unittest.TestCase):
+class WebSession(TestCase):
 
     def test_get_200(self) -> None:
 
-        mock = unittest.mock.Mock()
+        mock = Mock()
         session = Session('', '', api_url='', authorization_url='', test_auth2_session=mock)
 
         mock.get.return_value = new_response(200)
@@ -38,7 +39,7 @@ class WebSession(unittest.TestCase):
 
     def test_retry(self) -> None:
 
-        mock = unittest.mock.Mock()
+        mock = Mock()
         session = Session('', '', api_url='', authorization_url='', test_auth2_session=mock)
 
         mock.get.side_effect = [new_response(401), new_response(200)]
@@ -56,7 +57,7 @@ class WebSession(unittest.TestCase):
 
     def test_discovery_error_status_code(self) -> None:
 
-        mock = unittest.mock.Mock()
+        mock = Mock()
         session = Session('', '', api_url='', authorization_url='', test_auth2_session=mock)
 
         mock.get.return_value = new_response(401)
@@ -76,7 +77,7 @@ class WebSession(unittest.TestCase):
 
     def test_discovery_error_not_valid_json(self) -> None:
 
-        mock = unittest.mock.Mock()
+        mock = Mock()
         session = Session('', '', api_url='', authorization_url='', test_auth2_session=mock)
 
         mock.get.return_value = new_response(401)
@@ -96,7 +97,7 @@ class WebSession(unittest.TestCase):
 
     def test_discovery_error_no_root_obj(self) -> None:
 
-        mock = unittest.mock.Mock()
+        mock = Mock()
         session = Session('', '', api_url='', authorization_url='', test_auth2_session=mock)
 
         mock.get.return_value = new_response(401)
@@ -116,7 +117,7 @@ class WebSession(unittest.TestCase):
 
     def test_discovery_error_token_endpoint_in_root_obj(self) -> None:
 
-        mock = unittest.mock.Mock()
+        mock = Mock()
         session = Session('', '', api_url='', authorization_url='', test_auth2_session=mock)
 
         mock.get.return_value = new_response(401)

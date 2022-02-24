@@ -28,7 +28,9 @@ class ComClient(Client['ComApi']):
     ```
     """
 
-    __api: Optional['ComApi'] = None
+    def __init__(self) -> None:
+        super().__init__()
+        self.__api: Optional['ComApi'] = None
 
     def open(self) -> 'ComApi':
         if self.__api is None:

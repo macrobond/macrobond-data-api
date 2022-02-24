@@ -28,35 +28,86 @@
 </summary>
 <pre><code class="python"># -*- coding: utf-8 -*-
 
-from typing import Tuple, Optional, Union, Any, Dict, TYPE_CHECKING, overload
+# pylint: disable = multiple-statements
+
+from typing import Tuple, Union, TYPE_CHECKING
 from abc import ABC, abstractmethod
 
-from datetime import datetime
-
-from .enums import CalendarDateMode
+from ._return_data_frame import _ReturnDataFrame
 
 if TYPE_CHECKING:  # pragma: no cover
+
     from .enums import SeriesMissingValueMethod, SeriesToLowerFrequencyMethod, \
         SeriesToHigherFrequencyMethod, SeriesPartialPeriodsMethod, SeriesFrequency, \
         SeriesWeekdays, CalendarMergeMode
+
+    from .entity import Entity, EntityColumns, EntityTypedDict
+    from .series import Series, SeriesColumns, SeriesTypedDict
+    from .unified_series import UnifiedSeries, UnifiedSeriesColumns, UnifiedSeriesTypedDict
+    from .start_or_end_point import StartOrEndPoint
+
+
+class GetOneSeriesReturn(_ReturnDataFrame, ABC):
+
+    @abstractmethod
+    def object(self) -&gt; &#39;Series&#39;: ...
+
+    @abstractmethod
+    def dict(self) -&gt; &#39;SeriesTypedDict&#39;: ...
+
+
+class GetSeriesReturn(_ReturnDataFrame, ABC):
+
+    @abstractmethod
+    def tuple_of_objects(self) -&gt; Tuple[&#39;Series&#39;, ...]: ...
+
+    @abstractmethod
+    def tuple_of_dicts(self) -&gt; Tuple[&#39;SeriesTypedDict&#39;, ...]: ...
+
+
+class GetOneEntitieReturn(_ReturnDataFrame, ABC):
+
+    @abstractmethod
+    def object(self) -&gt; &#39;Entity&#39;: ...
+
+    @abstractmethod
+    def dict(self) -&gt; &#39;EntityTypedDict&#39;: ...
+
+
+class GetEntitiesReturn(_ReturnDataFrame, ABC):
+
+    @abstractmethod
+    def tuple_of_objects(self) -&gt; Tuple[&#39;Entity&#39;, ...]: ...
+
+    @abstractmethod
+    def tuple_of_dicts(self) -&gt; Tuple[&#39;EntityTypedDict&#39;, ...]: ...
+
+
+class GetUnifiedSeriesReturn(_ReturnDataFrame, ABC):
+
+    @abstractmethod
+    def object(self) -&gt; &#39;UnifiedSeries&#39;: ...
+
+    @abstractmethod
+    def dict(self) -&gt; &#39;UnifiedSeriesTypedDict&#39;: ...
 
 
 class SeriesMethods(ABC):
 
     @abstractmethod
-    def get_one_series(self, series_name: str) -&gt; &#39;Series&#39;:
+    def get_one_series(self, series_name: str) -&gt; GetOneSeriesReturn:
         &#39;&#39;&#39;Download one series.&#39;&#39;&#39;
 
     @abstractmethod
-    def get_series(self, *series_names: str) -&gt; Tuple[&#39;Series&#39;, ...]:
+    def get_series(self, *series_names: str) -&gt; GetSeriesReturn:
         &#39;&#39;&#39;Download one or more series.&#39;&#39;&#39;
 
     @abstractmethod
-    def get_one_entitie(self, entity_name: str) -&gt; &#39;Entity&#39;:
+    def get_one_entitie(self, entity_name: str) -&gt; GetOneEntitieReturn:
         &#39;&#39;&#39;Download one entity.&#39;&#39;&#39;
 
     @abstractmethod
-    def get_entities(self, *entity_names: str) -&gt; Tuple[&#39;Entity&#39;, ...]:
+    def get_entities(self, *entity_names: str) -&gt; GetEntitiesReturn:
         &#39;&#39;&#39;Download one or more entitys.&#39;&#39;&#39;
 
     @abstractmethod
@@ -69,182 +120,11 @@ class SeriesMethods(ABC):
         currency: str = None,
         start_point: &#39;StartOrEndPoint&#39; = None,
         end_point: &#39;StartOrEndPoint&#39; = None,
-    ) -&gt; Tuple[&#39;UnifiedSeries&#39;, ...]:
+    ) -&gt; GetUnifiedSeriesReturn:
         ...  # pragma: no cover
-
-
-class Entity(ABC):
-    &#39;&#39;&#39;Interface for a database Macrobond entity.&#39;&#39;&#39;
-
-    @abstractmethod
-    def __str__(self):
-        ...  # pragma: no cover
-
-    @abstractmethod
-    def __repr__(self):
-        ...  # pragma: no cover
-
-    @property
-    @abstractmethod
-    def name(self) -&gt; str:
-        &#39;&#39;&#39;The name of the entity.&#39;&#39;&#39;
-
-    @property
-    @abstractmethod
-    def primary_name(self) -&gt; str:
-        &#39;&#39;&#39;The primary name of the entity.&#39;&#39;&#39;
-
-    @property
-    @abstractmethod
-    def is_error(self) -&gt; bool:
-        &#39;&#39;&#39;
-        Is true if the request resulted in an error.
-        The ErrorMessage property contains the error message.
-        &#39;&#39;&#39;
-
-    @property
-    @abstractmethod
-    def error_message(self) -&gt; str:
-        &#39;&#39;&#39;
-        The error message if IsError is true.
-        Otherwise it is empty.
-        &#39;&#39;&#39;
-
-    @property
-    @abstractmethod
-    def title(self) -&gt; str:
-        &#39;&#39;&#39;The title of the entity.&#39;&#39;&#39;
-
-    @property
-    @abstractmethod
-    def entity_type(self) -&gt; str:
-        &#39;&#39;&#39;The type of the entity.&#39;&#39;&#39;
-
-    @property
-    @abstractmethod
-    def metadata(self) -&gt; Dict[str, Any]:
-        &#39;&#39;&#39;The metadata for the entity.&#39;&#39;&#39;
-
-
-class Series(Entity):
-    &#39;&#39;&#39;Interface for a Macrobond time series.&#39;&#39;&#39;
-
-    @property
-    @abstractmethod
-    def values(self) -&gt; Tuple[Optional[float], ...]:
-        &#39;&#39;&#39;The values of the series.&#39;&#39;&#39;
-
-    @property
-    @abstractmethod
-    def dates(self) -&gt; Tuple[datetime, ...]:
-        &#39;&#39;&#39;The dates of the series.&#39;&#39;&#39;
-
-    @property
-    @abstractmethod
-    def start_date(self) -&gt; datetime:
-        &#39;&#39;&#39;The start date.&#39;&#39;&#39;
-
-    @property
-    @abstractmethod
-    def end_date(self) -&gt; datetime:
-        &#39;&#39;&#39;The end date.&#39;&#39;&#39;
-
-    @property
-    @abstractmethod
-    def frequency(self) -&gt; &#39;SeriesFrequency&#39;:
-        &#39;&#39;&#39;The calendar frequency.&#39;&#39;&#39;
-
-    @property
-    @abstractmethod
-    def weekdays(self) -&gt; &#39;SeriesWeekdays&#39;:
-        &#39;&#39;&#39;The days of the week used for daily series.&#39;&#39;&#39;
-
-    @abstractmethod
-    def get_value_at_date(self, date_time: datetime) -&gt; float:
-        &#39;&#39;&#39;Get the value at or preceding a specific date.&#39;&#39;&#39;
-
-    @abstractmethod
-    def get_index_at_date(self, date_time: datetime) -&gt; int:
-        &#39;&#39;&#39;Get the index in the value vector at the specified date. Zero based.&#39;&#39;&#39;
-
-
-class UnifiedSeries(Entity):
-
-    @property
-    @abstractmethod
-    def values(self) -&gt; Tuple[Optional[float], ...]:
-        &#39;&#39;&#39;The values of the series.&#39;&#39;&#39;
-
-
-class StartOrEndPoint():
-
-    def __init__(self, time: str, mode: Optional[CalendarDateMode]) -&gt; None:
-        self.time = time
-        self.mode = CalendarDateMode.DATA_IN_ANY_SERIES if mode is None else mode
-
-    def __str__(self):
-        return self.time + &#39; mode:&#39; + str(self.mode)
-
-    def __repr__(self):
-        return str(self)
-
-    @staticmethod
-    def relative_to_observations(
-        observations: int, mode: CalendarDateMode = None
-    ) -&gt; &#39;StartOrEndPoint&#39;:
-        return StartOrEndPoint(str(observations), mode)
-
-    @staticmethod
-    def relative_to_years(years: int, mode: CalendarDateMode = None) -&gt; &#39;StartOrEndPoint&#39;:
-        return StartOrEndPoint(str(years) + &#34;y&#34;, mode)
-
-    @staticmethod
-    def relative_to_quarters(quarters: int, mode: CalendarDateMode = None) -&gt; &#39;StartOrEndPoint&#39;:
-        return StartOrEndPoint(str(quarters) + &#34;q&#34;, mode)
-
-    @staticmethod
-    def relative_to_months(months: int, mode: CalendarDateMode = None) -&gt; &#39;StartOrEndPoint&#39;:
-        return StartOrEndPoint(str(months) + &#34;m&#34;, mode)
-
-    @staticmethod
-    def relative_to_weeks(weeks: int, mode: CalendarDateMode = None) -&gt; &#39;StartOrEndPoint&#39;:
-        return StartOrEndPoint(str(weeks) + &#34;w&#34;, mode)
-
-    @staticmethod
-    def relative_to_days(days: int, mode: CalendarDateMode = None) -&gt; &#39;StartOrEndPoint&#39;:
-        return StartOrEndPoint(str(days) + &#34;d&#34;, mode)
-
-    @staticmethod
-    def point_in_time(
-        yyyy_or_datetime,
-        mm: int = None,  # pylint: disable = invalid-name
-        dd: int = None  # pylint: disable = invalid-name
-    ) -&gt; &#39;StartOrEndPoint&#39;:
-        if isinstance(yyyy_or_datetime, datetime):
-            return StartOrEndPoint(yyyy_or_datetime.strftime(&#39;%Y-%m-%d&#39;), None)
-        time = str(yyyy_or_datetime).zfill(4)
-        if mm is not None:
-            time += &#39;-&#39; + str(mm).zfill(2)
-            if dd is not None:
-                time += &#39;-&#39; + str(dd).zfill(2)
-        return StartOrEndPoint(time, None)
-
-    @staticmethod
-    def data_in_any_series() -&gt; &#39;StartOrEndPoint&#39;:
-        return StartOrEndPoint(&#39;&#39;, CalendarDateMode.DATA_IN_ANY_SERIES)
-
-    @staticmethod
-    def data_in_all_series() -&gt; &#39;StartOrEndPoint&#39;:
-        return StartOrEndPoint(&#39;&#39;, CalendarDateMode.DATA_IN_ALL_SERIES)
 
 
 class SeriesEntrie():
-
-    name: str
-    missing_value_method: Optional[&#39;SeriesMissingValueMethod&#39;]
-    to_lowerfrequency_method: Optional[&#39;SeriesToLowerFrequencyMethod&#39;]
-    to_higherfrequency_method: Optional[&#39;SeriesToHigherFrequencyMethod&#39;]
-    partial_periods_method: Optional[&#39;SeriesPartialPeriodsMethod&#39;]
 
     def __init__(
         self,
@@ -270,368 +150,295 @@ class SeriesEntrie():
 <section>
 <h2 class="section-title" id="header-classes">Classes</h2>
 <dl>
-<dt id="macrobond_financial.common.series_methods.Entity"><code class="flex name class">
-<span>class <span class="ident">Entity</span></span>
+<dt id="macrobond_financial.common.series_methods.GetEntitiesReturn"><code class="flex name class">
+<span>class <span class="ident">GetEntitiesReturn</span></span>
 </code></dt>
 <dd>
-<div class="desc"><p>Interface for a database Macrobond entity.</p></div>
+<div class="desc"><p>Helper class that provides a standard way to create an ABC using
+inheritance.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class Entity(ABC):
-    &#39;&#39;&#39;Interface for a database Macrobond entity.&#39;&#39;&#39;
+<pre><code class="python">class GetEntitiesReturn(_ReturnDataFrame, ABC):
 
     @abstractmethod
-    def __str__(self):
-        ...  # pragma: no cover
+    def tuple_of_objects(self) -&gt; Tuple[&#39;Entity&#39;, ...]: ...
 
     @abstractmethod
-    def __repr__(self):
-        ...  # pragma: no cover
-
-    @property
-    @abstractmethod
-    def name(self) -&gt; str:
-        &#39;&#39;&#39;The name of the entity.&#39;&#39;&#39;
-
-    @property
-    @abstractmethod
-    def primary_name(self) -&gt; str:
-        &#39;&#39;&#39;The primary name of the entity.&#39;&#39;&#39;
-
-    @property
-    @abstractmethod
-    def is_error(self) -&gt; bool:
-        &#39;&#39;&#39;
-        Is true if the request resulted in an error.
-        The ErrorMessage property contains the error message.
-        &#39;&#39;&#39;
-
-    @property
-    @abstractmethod
-    def error_message(self) -&gt; str:
-        &#39;&#39;&#39;
-        The error message if IsError is true.
-        Otherwise it is empty.
-        &#39;&#39;&#39;
-
-    @property
-    @abstractmethod
-    def title(self) -&gt; str:
-        &#39;&#39;&#39;The title of the entity.&#39;&#39;&#39;
-
-    @property
-    @abstractmethod
-    def entity_type(self) -&gt; str:
-        &#39;&#39;&#39;The type of the entity.&#39;&#39;&#39;
-
-    @property
-    @abstractmethod
-    def metadata(self) -&gt; Dict[str, Any]:
-        &#39;&#39;&#39;The metadata for the entity.&#39;&#39;&#39;</code></pre>
+    def tuple_of_dicts(self) -&gt; Tuple[&#39;EntityTypedDict&#39;, ...]: ...</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
+<li>macrobond_financial.common._return_data_frame._ReturnDataFrame</li>
 <li>abc.ABC</li>
 </ul>
 <h3>Subclasses</h3>
 <ul class="hlist">
-<li>macrobond_financial.com._com_series_methods._Entity</li>
-<li><a title="macrobond_financial.common.series_methods.Series" href="#macrobond_financial.common.series_methods.Series">Series</a></li>
-<li><a title="macrobond_financial.common.series_methods.UnifiedSeries" href="#macrobond_financial.common.series_methods.UnifiedSeries">UnifiedSeries</a></li>
-<li>macrobond_financial.web._web_search_methods._Entity</li>
-<li>macrobond_financial.web._web_series_methods._Entity</li>
+<li>macrobond_financial.com._com_series_methods._GetEntitiesReturn</li>
+<li>macrobond_financial.web._web_series_methods._GetEntitiesReturn</li>
 </ul>
-<h3>Instance variables</h3>
-<dl>
-<dt id="macrobond_financial.common.series_methods.Entity.entity_type"><code class="name">var <span class="ident">entity_type</span> : str</code></dt>
-<dd>
-<div class="desc"><p>The type of the entity.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@property
-@abstractmethod
-def entity_type(self) -&gt; str:
-    &#39;&#39;&#39;The type of the entity.&#39;&#39;&#39;</code></pre>
-</details>
-</dd>
-<dt id="macrobond_financial.common.series_methods.Entity.error_message"><code class="name">var <span class="ident">error_message</span> : str</code></dt>
-<dd>
-<div class="desc"><p>The error message if IsError is true.
-Otherwise it is empty.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@property
-@abstractmethod
-def error_message(self) -&gt; str:
-    &#39;&#39;&#39;
-    The error message if IsError is true.
-    Otherwise it is empty.
-    &#39;&#39;&#39;</code></pre>
-</details>
-</dd>
-<dt id="macrobond_financial.common.series_methods.Entity.is_error"><code class="name">var <span class="ident">is_error</span> : bool</code></dt>
-<dd>
-<div class="desc"><p>Is true if the request resulted in an error.
-The ErrorMessage property contains the error message.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@property
-@abstractmethod
-def is_error(self) -&gt; bool:
-    &#39;&#39;&#39;
-    Is true if the request resulted in an error.
-    The ErrorMessage property contains the error message.
-    &#39;&#39;&#39;</code></pre>
-</details>
-</dd>
-<dt id="macrobond_financial.common.series_methods.Entity.metadata"><code class="name">var <span class="ident">metadata</span> : Dict[str, Any]</code></dt>
-<dd>
-<div class="desc"><p>The metadata for the entity.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@property
-@abstractmethod
-def metadata(self) -&gt; Dict[str, Any]:
-    &#39;&#39;&#39;The metadata for the entity.&#39;&#39;&#39;</code></pre>
-</details>
-</dd>
-<dt id="macrobond_financial.common.series_methods.Entity.name"><code class="name">var <span class="ident">name</span> : str</code></dt>
-<dd>
-<div class="desc"><p>The name of the entity.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@property
-@abstractmethod
-def name(self) -&gt; str:
-    &#39;&#39;&#39;The name of the entity.&#39;&#39;&#39;</code></pre>
-</details>
-</dd>
-<dt id="macrobond_financial.common.series_methods.Entity.primary_name"><code class="name">var <span class="ident">primary_name</span> : str</code></dt>
-<dd>
-<div class="desc"><p>The primary name of the entity.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@property
-@abstractmethod
-def primary_name(self) -&gt; str:
-    &#39;&#39;&#39;The primary name of the entity.&#39;&#39;&#39;</code></pre>
-</details>
-</dd>
-<dt id="macrobond_financial.common.series_methods.Entity.title"><code class="name">var <span class="ident">title</span> : str</code></dt>
-<dd>
-<div class="desc"><p>The title of the entity.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@property
-@abstractmethod
-def title(self) -&gt; str:
-    &#39;&#39;&#39;The title of the entity.&#39;&#39;&#39;</code></pre>
-</details>
-</dd>
-</dl>
-</dd>
-<dt id="macrobond_financial.common.series_methods.Series"><code class="flex name class">
-<span>class <span class="ident">Series</span></span>
-</code></dt>
-<dd>
-<div class="desc"><p>Interface for a Macrobond time series.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">class Series(Entity):
-    &#39;&#39;&#39;Interface for a Macrobond time series.&#39;&#39;&#39;
-
-    @property
-    @abstractmethod
-    def values(self) -&gt; Tuple[Optional[float], ...]:
-        &#39;&#39;&#39;The values of the series.&#39;&#39;&#39;
-
-    @property
-    @abstractmethod
-    def dates(self) -&gt; Tuple[datetime, ...]:
-        &#39;&#39;&#39;The dates of the series.&#39;&#39;&#39;
-
-    @property
-    @abstractmethod
-    def start_date(self) -&gt; datetime:
-        &#39;&#39;&#39;The start date.&#39;&#39;&#39;
-
-    @property
-    @abstractmethod
-    def end_date(self) -&gt; datetime:
-        &#39;&#39;&#39;The end date.&#39;&#39;&#39;
-
-    @property
-    @abstractmethod
-    def frequency(self) -&gt; &#39;SeriesFrequency&#39;:
-        &#39;&#39;&#39;The calendar frequency.&#39;&#39;&#39;
-
-    @property
-    @abstractmethod
-    def weekdays(self) -&gt; &#39;SeriesWeekdays&#39;:
-        &#39;&#39;&#39;The days of the week used for daily series.&#39;&#39;&#39;
-
-    @abstractmethod
-    def get_value_at_date(self, date_time: datetime) -&gt; float:
-        &#39;&#39;&#39;Get the value at or preceding a specific date.&#39;&#39;&#39;
-
-    @abstractmethod
-    def get_index_at_date(self, date_time: datetime) -&gt; int:
-        &#39;&#39;&#39;Get the index in the value vector at the specified date. Zero based.&#39;&#39;&#39;</code></pre>
-</details>
-<h3>Ancestors</h3>
-<ul class="hlist">
-<li><a title="macrobond_financial.common.series_methods.Entity" href="#macrobond_financial.common.series_methods.Entity">Entity</a></li>
-<li>abc.ABC</li>
-</ul>
-<h3>Subclasses</h3>
-<ul class="hlist">
-<li>macrobond_financial.com._com_series_methods._Series</li>
-<li>macrobond_financial.web._web_series_methods._Series</li>
-</ul>
-<h3>Instance variables</h3>
-<dl>
-<dt id="macrobond_financial.common.series_methods.Series.dates"><code class="name">var <span class="ident">dates</span> : Tuple[datetime.datetime, ...]</code></dt>
-<dd>
-<div class="desc"><p>The dates of the series.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@property
-@abstractmethod
-def dates(self) -&gt; Tuple[datetime, ...]:
-    &#39;&#39;&#39;The dates of the series.&#39;&#39;&#39;</code></pre>
-</details>
-</dd>
-<dt id="macrobond_financial.common.series_methods.Series.end_date"><code class="name">var <span class="ident">end_date</span> : datetime.datetime</code></dt>
-<dd>
-<div class="desc"><p>The end date.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@property
-@abstractmethod
-def end_date(self) -&gt; datetime:
-    &#39;&#39;&#39;The end date.&#39;&#39;&#39;</code></pre>
-</details>
-</dd>
-<dt id="macrobond_financial.common.series_methods.Series.frequency"><code class="name">var <span class="ident">frequency</span> : SeriesFrequency</code></dt>
-<dd>
-<div class="desc"><p>The calendar frequency.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@property
-@abstractmethod
-def frequency(self) -&gt; &#39;SeriesFrequency&#39;:
-    &#39;&#39;&#39;The calendar frequency.&#39;&#39;&#39;</code></pre>
-</details>
-</dd>
-<dt id="macrobond_financial.common.series_methods.Series.start_date"><code class="name">var <span class="ident">start_date</span> : datetime.datetime</code></dt>
-<dd>
-<div class="desc"><p>The start date.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@property
-@abstractmethod
-def start_date(self) -&gt; datetime:
-    &#39;&#39;&#39;The start date.&#39;&#39;&#39;</code></pre>
-</details>
-</dd>
-<dt id="macrobond_financial.common.series_methods.Series.values"><code class="name">var <span class="ident">values</span> : Tuple[Optional[float], ...]</code></dt>
-<dd>
-<div class="desc"><p>The values of the series.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@property
-@abstractmethod
-def values(self) -&gt; Tuple[Optional[float], ...]:
-    &#39;&#39;&#39;The values of the series.&#39;&#39;&#39;</code></pre>
-</details>
-</dd>
-<dt id="macrobond_financial.common.series_methods.Series.weekdays"><code class="name">var <span class="ident">weekdays</span> : SeriesWeekdays</code></dt>
-<dd>
-<div class="desc"><p>The days of the week used for daily series.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@property
-@abstractmethod
-def weekdays(self) -&gt; &#39;SeriesWeekdays&#39;:
-    &#39;&#39;&#39;The days of the week used for daily series.&#39;&#39;&#39;</code></pre>
-</details>
-</dd>
-</dl>
 <h3>Methods</h3>
 <dl>
-<dt id="macrobond_financial.common.series_methods.Series.get_index_at_date"><code class="name flex">
-<span>def <span class="ident">get_index_at_date</span></span>(<span>self, date_time: datetime.datetime) ‑> int</span>
+<dt id="macrobond_financial.common.series_methods.GetEntitiesReturn.tuple_of_dicts"><code class="name flex">
+<span>def <span class="ident">tuple_of_dicts</span></span>(<span>self) ‑> Tuple[EntityTypedDict, ...]</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Get the index in the value vector at the specified date. Zero based.</p></div>
+<div class="desc"></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@abstractmethod
-def get_index_at_date(self, date_time: datetime) -&gt; int:
-    &#39;&#39;&#39;Get the index in the value vector at the specified date. Zero based.&#39;&#39;&#39;</code></pre>
+def tuple_of_dicts(self) -&gt; Tuple[&#39;EntityTypedDict&#39;, ...]: ...</code></pre>
 </details>
 </dd>
-<dt id="macrobond_financial.common.series_methods.Series.get_value_at_date"><code class="name flex">
-<span>def <span class="ident">get_value_at_date</span></span>(<span>self, date_time: datetime.datetime) ‑> float</span>
+<dt id="macrobond_financial.common.series_methods.GetEntitiesReturn.tuple_of_objects"><code class="name flex">
+<span>def <span class="ident">tuple_of_objects</span></span>(<span>self) ‑> Tuple[Entity, ...]</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Get the value at or preceding a specific date.</p></div>
+<div class="desc"></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@abstractmethod
-def get_value_at_date(self, date_time: datetime) -&gt; float:
-    &#39;&#39;&#39;Get the value at or preceding a specific date.&#39;&#39;&#39;</code></pre>
+def tuple_of_objects(self) -&gt; Tuple[&#39;Entity&#39;, ...]: ...</code></pre>
 </details>
 </dd>
 </dl>
-<h3>Inherited members</h3>
+</dd>
+<dt id="macrobond_financial.common.series_methods.GetOneEntitieReturn"><code class="flex name class">
+<span>class <span class="ident">GetOneEntitieReturn</span></span>
+</code></dt>
+<dd>
+<div class="desc"><p>Helper class that provides a standard way to create an ABC using
+inheritance.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class GetOneEntitieReturn(_ReturnDataFrame, ABC):
+
+    @abstractmethod
+    def object(self) -&gt; &#39;Entity&#39;: ...
+
+    @abstractmethod
+    def dict(self) -&gt; &#39;EntityTypedDict&#39;: ...</code></pre>
+</details>
+<h3>Ancestors</h3>
 <ul class="hlist">
-<li><code><b><a title="macrobond_financial.common.series_methods.Entity" href="#macrobond_financial.common.series_methods.Entity">Entity</a></b></code>:
+<li>macrobond_financial.common._return_data_frame._ReturnDataFrame</li>
+<li>abc.ABC</li>
+</ul>
+<h3>Subclasses</h3>
 <ul class="hlist">
-<li><code><a title="macrobond_financial.common.series_methods.Entity.entity_type" href="#macrobond_financial.common.series_methods.Entity.entity_type">entity_type</a></code></li>
-<li><code><a title="macrobond_financial.common.series_methods.Entity.error_message" href="#macrobond_financial.common.series_methods.Entity.error_message">error_message</a></code></li>
-<li><code><a title="macrobond_financial.common.series_methods.Entity.is_error" href="#macrobond_financial.common.series_methods.Entity.is_error">is_error</a></code></li>
-<li><code><a title="macrobond_financial.common.series_methods.Entity.metadata" href="#macrobond_financial.common.series_methods.Entity.metadata">metadata</a></code></li>
-<li><code><a title="macrobond_financial.common.series_methods.Entity.name" href="#macrobond_financial.common.series_methods.Entity.name">name</a></code></li>
-<li><code><a title="macrobond_financial.common.series_methods.Entity.primary_name" href="#macrobond_financial.common.series_methods.Entity.primary_name">primary_name</a></code></li>
-<li><code><a title="macrobond_financial.common.series_methods.Entity.title" href="#macrobond_financial.common.series_methods.Entity.title">title</a></code></li>
+<li>macrobond_financial.com._com_series_methods._GetOneEntitieReturn</li>
+<li>macrobond_financial.web._web_series_methods._GetOneEntitieReturn</li>
 </ul>
-</li>
+<h3>Methods</h3>
+<dl>
+<dt id="macrobond_financial.common.series_methods.GetOneEntitieReturn.dict"><code class="name flex">
+<span>def <span class="ident">dict</span></span>(<span>self) ‑> EntityTypedDict</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@abstractmethod
+def dict(self) -&gt; &#39;EntityTypedDict&#39;: ...</code></pre>
+</details>
+</dd>
+<dt id="macrobond_financial.common.series_methods.GetOneEntitieReturn.object"><code class="name flex">
+<span>def <span class="ident">object</span></span>(<span>self) ‑> Entity</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@abstractmethod
+def object(self) -&gt; &#39;Entity&#39;: ...</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="macrobond_financial.common.series_methods.GetOneSeriesReturn"><code class="flex name class">
+<span>class <span class="ident">GetOneSeriesReturn</span></span>
+</code></dt>
+<dd>
+<div class="desc"><p>Helper class that provides a standard way to create an ABC using
+inheritance.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class GetOneSeriesReturn(_ReturnDataFrame, ABC):
+
+    @abstractmethod
+    def object(self) -&gt; &#39;Series&#39;: ...
+
+    @abstractmethod
+    def dict(self) -&gt; &#39;SeriesTypedDict&#39;: ...</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>macrobond_financial.common._return_data_frame._ReturnDataFrame</li>
+<li>abc.ABC</li>
 </ul>
+<h3>Subclasses</h3>
+<ul class="hlist">
+<li>macrobond_financial.com._com_series_methods._GetOneSeriesReturn</li>
+<li>macrobond_financial.web._web_series_methods._GetOneSeriesReturn</li>
+</ul>
+<h3>Methods</h3>
+<dl>
+<dt id="macrobond_financial.common.series_methods.GetOneSeriesReturn.dict"><code class="name flex">
+<span>def <span class="ident">dict</span></span>(<span>self) ‑> SeriesTypedDict</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@abstractmethod
+def dict(self) -&gt; &#39;SeriesTypedDict&#39;: ...</code></pre>
+</details>
+</dd>
+<dt id="macrobond_financial.common.series_methods.GetOneSeriesReturn.object"><code class="name flex">
+<span>def <span class="ident">object</span></span>(<span>self) ‑> Series</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@abstractmethod
+def object(self) -&gt; &#39;Series&#39;: ...</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="macrobond_financial.common.series_methods.GetSeriesReturn"><code class="flex name class">
+<span>class <span class="ident">GetSeriesReturn</span></span>
+</code></dt>
+<dd>
+<div class="desc"><p>Helper class that provides a standard way to create an ABC using
+inheritance.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class GetSeriesReturn(_ReturnDataFrame, ABC):
+
+    @abstractmethod
+    def tuple_of_objects(self) -&gt; Tuple[&#39;Series&#39;, ...]: ...
+
+    @abstractmethod
+    def tuple_of_dicts(self) -&gt; Tuple[&#39;SeriesTypedDict&#39;, ...]: ...</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>macrobond_financial.common._return_data_frame._ReturnDataFrame</li>
+<li>abc.ABC</li>
+</ul>
+<h3>Subclasses</h3>
+<ul class="hlist">
+<li>macrobond_financial.com._com_series_methods._GetSeriesReturn</li>
+<li>macrobond_financial.web._web_series_methods._GetSeriesReturn</li>
+</ul>
+<h3>Methods</h3>
+<dl>
+<dt id="macrobond_financial.common.series_methods.GetSeriesReturn.tuple_of_dicts"><code class="name flex">
+<span>def <span class="ident">tuple_of_dicts</span></span>(<span>self) ‑> Tuple[SeriesTypedDict, ...]</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@abstractmethod
+def tuple_of_dicts(self) -&gt; Tuple[&#39;SeriesTypedDict&#39;, ...]: ...</code></pre>
+</details>
+</dd>
+<dt id="macrobond_financial.common.series_methods.GetSeriesReturn.tuple_of_objects"><code class="name flex">
+<span>def <span class="ident">tuple_of_objects</span></span>(<span>self) ‑> Tuple[Series, ...]</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@abstractmethod
+def tuple_of_objects(self) -&gt; Tuple[&#39;Series&#39;, ...]: ...</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="macrobond_financial.common.series_methods.GetUnifiedSeriesReturn"><code class="flex name class">
+<span>class <span class="ident">GetUnifiedSeriesReturn</span></span>
+</code></dt>
+<dd>
+<div class="desc"><p>Helper class that provides a standard way to create an ABC using
+inheritance.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class GetUnifiedSeriesReturn(_ReturnDataFrame, ABC):
+
+    @abstractmethod
+    def object(self) -&gt; &#39;UnifiedSeries&#39;: ...
+
+    @abstractmethod
+    def dict(self) -&gt; &#39;UnifiedSeriesTypedDict&#39;: ...</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>macrobond_financial.common._return_data_frame._ReturnDataFrame</li>
+<li>abc.ABC</li>
+</ul>
+<h3>Subclasses</h3>
+<ul class="hlist">
+<li>macrobond_financial.com._com_series_methods._GetUnifiedSeriesReturn</li>
+<li>macrobond_financial.web._web_series_methods._GetUnifiedSeriesReturn</li>
+</ul>
+<h3>Methods</h3>
+<dl>
+<dt id="macrobond_financial.common.series_methods.GetUnifiedSeriesReturn.dict"><code class="name flex">
+<span>def <span class="ident">dict</span></span>(<span>self) ‑> UnifiedSeriesTypedDict</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@abstractmethod
+def dict(self) -&gt; &#39;UnifiedSeriesTypedDict&#39;: ...</code></pre>
+</details>
+</dd>
+<dt id="macrobond_financial.common.series_methods.GetUnifiedSeriesReturn.object"><code class="name flex">
+<span>def <span class="ident">object</span></span>(<span>self) ‑> UnifiedSeries</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@abstractmethod
+def object(self) -&gt; &#39;UnifiedSeries&#39;: ...</code></pre>
+</details>
+</dd>
+</dl>
 </dd>
 <dt id="macrobond_financial.common.series_methods.SeriesEntrie"><code class="flex name class">
 <span>class <span class="ident">SeriesEntrie</span></span>
@@ -644,12 +451,6 @@ def get_value_at_date(self, date_time: datetime) -&gt; float:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class SeriesEntrie():
-
-    name: str
-    missing_value_method: Optional[&#39;SeriesMissingValueMethod&#39;]
-    to_lowerfrequency_method: Optional[&#39;SeriesToLowerFrequencyMethod&#39;]
-    to_higherfrequency_method: Optional[&#39;SeriesToHigherFrequencyMethod&#39;]
-    partial_periods_method: Optional[&#39;SeriesPartialPeriodsMethod&#39;]
 
     def __init__(
         self,
@@ -665,29 +466,6 @@ def get_value_at_date(self, date_time: datetime) -&gt; float:
         self.to_higherfrequency_method = to_higherfrequency_method
         self.partial_periods_method = partial_periods_method</code></pre>
 </details>
-<h3>Class variables</h3>
-<dl>
-<dt id="macrobond_financial.common.series_methods.SeriesEntrie.missing_value_method"><code class="name">var <span class="ident">missing_value_method</span> : Optional[SeriesMissingValueMethod]</code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="macrobond_financial.common.series_methods.SeriesEntrie.name"><code class="name">var <span class="ident">name</span> : str</code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="macrobond_financial.common.series_methods.SeriesEntrie.partial_periods_method"><code class="name">var <span class="ident">partial_periods_method</span> : Optional[SeriesPartialPeriodsMethod]</code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="macrobond_financial.common.series_methods.SeriesEntrie.to_higherfrequency_method"><code class="name">var <span class="ident">to_higherfrequency_method</span> : Optional[SeriesToHigherFrequencyMethod]</code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="macrobond_financial.common.series_methods.SeriesEntrie.to_lowerfrequency_method"><code class="name">var <span class="ident">to_lowerfrequency_method</span> : Optional[SeriesToLowerFrequencyMethod]</code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-</dl>
 </dd>
 <dt id="macrobond_financial.common.series_methods.SeriesMethods"><code class="flex name class">
 <span>class <span class="ident">SeriesMethods</span></span>
@@ -702,19 +480,19 @@ inheritance.</p></div>
 <pre><code class="python">class SeriesMethods(ABC):
 
     @abstractmethod
-    def get_one_series(self, series_name: str) -&gt; &#39;Series&#39;:
+    def get_one_series(self, series_name: str) -&gt; GetOneSeriesReturn:
         &#39;&#39;&#39;Download one series.&#39;&#39;&#39;
 
     @abstractmethod
-    def get_series(self, *series_names: str) -&gt; Tuple[&#39;Series&#39;, ...]:
+    def get_series(self, *series_names: str) -&gt; GetSeriesReturn:
         &#39;&#39;&#39;Download one or more series.&#39;&#39;&#39;
 
     @abstractmethod
-    def get_one_entitie(self, entity_name: str) -&gt; &#39;Entity&#39;:
+    def get_one_entitie(self, entity_name: str) -&gt; GetOneEntitieReturn:
         &#39;&#39;&#39;Download one entity.&#39;&#39;&#39;
 
     @abstractmethod
-    def get_entities(self, *entity_names: str) -&gt; Tuple[&#39;Entity&#39;, ...]:
+    def get_entities(self, *entity_names: str) -&gt; GetEntitiesReturn:
         &#39;&#39;&#39;Download one or more entitys.&#39;&#39;&#39;
 
     @abstractmethod
@@ -727,7 +505,7 @@ inheritance.</p></div>
         currency: str = None,
         start_point: &#39;StartOrEndPoint&#39; = None,
         end_point: &#39;StartOrEndPoint&#39; = None,
-    ) -&gt; Tuple[&#39;UnifiedSeries&#39;, ...]:
+    ) -&gt; GetUnifiedSeriesReturn:
         ...  # pragma: no cover</code></pre>
 </details>
 <h3>Ancestors</h3>
@@ -742,7 +520,7 @@ inheritance.</p></div>
 <h3>Methods</h3>
 <dl>
 <dt id="macrobond_financial.common.series_methods.SeriesMethods.get_entities"><code class="name flex">
-<span>def <span class="ident">get_entities</span></span>(<span>self, *entity_names: str) ‑> Tuple[<a title="macrobond_financial.common.series_methods.Entity" href="#macrobond_financial.common.series_methods.Entity">Entity</a>, ...]</span>
+<span>def <span class="ident">get_entities</span></span>(<span>self, *entity_names: str) ‑> <a title="macrobond_financial.common.series_methods.GetEntitiesReturn" href="#macrobond_financial.common.series_methods.GetEntitiesReturn">GetEntitiesReturn</a></span>
 </code></dt>
 <dd>
 <div class="desc"><p>Download one or more entitys.</p></div>
@@ -751,12 +529,12 @@ inheritance.</p></div>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@abstractmethod
-def get_entities(self, *entity_names: str) -&gt; Tuple[&#39;Entity&#39;, ...]:
+def get_entities(self, *entity_names: str) -&gt; GetEntitiesReturn:
     &#39;&#39;&#39;Download one or more entitys.&#39;&#39;&#39;</code></pre>
 </details>
 </dd>
 <dt id="macrobond_financial.common.series_methods.SeriesMethods.get_one_entitie"><code class="name flex">
-<span>def <span class="ident">get_one_entitie</span></span>(<span>self, entity_name: str) ‑> <a title="macrobond_financial.common.series_methods.Entity" href="#macrobond_financial.common.series_methods.Entity">Entity</a></span>
+<span>def <span class="ident">get_one_entitie</span></span>(<span>self, entity_name: str) ‑> <a title="macrobond_financial.common.series_methods.GetOneEntitieReturn" href="#macrobond_financial.common.series_methods.GetOneEntitieReturn">GetOneEntitieReturn</a></span>
 </code></dt>
 <dd>
 <div class="desc"><p>Download one entity.</p></div>
@@ -765,12 +543,12 @@ def get_entities(self, *entity_names: str) -&gt; Tuple[&#39;Entity&#39;, ...]:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@abstractmethod
-def get_one_entitie(self, entity_name: str) -&gt; &#39;Entity&#39;:
+def get_one_entitie(self, entity_name: str) -&gt; GetOneEntitieReturn:
     &#39;&#39;&#39;Download one entity.&#39;&#39;&#39;</code></pre>
 </details>
 </dd>
 <dt id="macrobond_financial.common.series_methods.SeriesMethods.get_one_series"><code class="name flex">
-<span>def <span class="ident">get_one_series</span></span>(<span>self, series_name: str) ‑> <a title="macrobond_financial.common.series_methods.Series" href="#macrobond_financial.common.series_methods.Series">Series</a></span>
+<span>def <span class="ident">get_one_series</span></span>(<span>self, series_name: str) ‑> <a title="macrobond_financial.common.series_methods.GetOneSeriesReturn" href="#macrobond_financial.common.series_methods.GetOneSeriesReturn">GetOneSeriesReturn</a></span>
 </code></dt>
 <dd>
 <div class="desc"><p>Download one series.</p></div>
@@ -779,12 +557,12 @@ def get_one_entitie(self, entity_name: str) -&gt; &#39;Entity&#39;:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@abstractmethod
-def get_one_series(self, series_name: str) -&gt; &#39;Series&#39;:
+def get_one_series(self, series_name: str) -&gt; GetOneSeriesReturn:
     &#39;&#39;&#39;Download one series.&#39;&#39;&#39;</code></pre>
 </details>
 </dd>
 <dt id="macrobond_financial.common.series_methods.SeriesMethods.get_series"><code class="name flex">
-<span>def <span class="ident">get_series</span></span>(<span>self, *series_names: str) ‑> Tuple[<a title="macrobond_financial.common.series_methods.Series" href="#macrobond_financial.common.series_methods.Series">Series</a>, ...]</span>
+<span>def <span class="ident">get_series</span></span>(<span>self, *series_names: str) ‑> <a title="macrobond_financial.common.series_methods.GetSeriesReturn" href="#macrobond_financial.common.series_methods.GetSeriesReturn">GetSeriesReturn</a></span>
 </code></dt>
 <dd>
 <div class="desc"><p>Download one or more series.</p></div>
@@ -793,12 +571,12 @@ def get_one_series(self, series_name: str) -&gt; &#39;Series&#39;:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@abstractmethod
-def get_series(self, *series_names: str) -&gt; Tuple[&#39;Series&#39;, ...]:
+def get_series(self, *series_names: str) -&gt; GetSeriesReturn:
     &#39;&#39;&#39;Download one or more series.&#39;&#39;&#39;</code></pre>
 </details>
 </dd>
 <dt id="macrobond_financial.common.series_methods.SeriesMethods.get_unified_series"><code class="name flex">
-<span>def <span class="ident">get_unified_series</span></span>(<span>self, *series_entries: Union[ForwardRef('<a title="macrobond_financial.common.series_methods.SeriesEntrie" href="#macrobond_financial.common.series_methods.SeriesEntrie">SeriesEntrie</a>'), str], frequency: SeriesFrequency = None, weekdays: SeriesWeekdays = None, calendar_merge_mode: CalendarMergeMode = None, currency: str = None, start_point: <a title="macrobond_financial.common.series_methods.StartOrEndPoint" href="#macrobond_financial.common.series_methods.StartOrEndPoint">StartOrEndPoint</a> = None, end_point: <a title="macrobond_financial.common.series_methods.StartOrEndPoint" href="#macrobond_financial.common.series_methods.StartOrEndPoint">StartOrEndPoint</a> = None) ‑> Tuple[<a title="macrobond_financial.common.series_methods.UnifiedSeries" href="#macrobond_financial.common.series_methods.UnifiedSeries">UnifiedSeries</a>, ...]</span>
+<span>def <span class="ident">get_unified_series</span></span>(<span>self, *series_entries: Union[ForwardRef('<a title="macrobond_financial.common.series_methods.SeriesEntrie" href="#macrobond_financial.common.series_methods.SeriesEntrie">SeriesEntrie</a>'), str], frequency: SeriesFrequency = None, weekdays: SeriesWeekdays = None, calendar_merge_mode: CalendarMergeMode = None, currency: str = None, start_point: StartOrEndPoint = None, end_point: StartOrEndPoint = None) ‑> <a title="macrobond_financial.common.series_methods.GetUnifiedSeriesReturn" href="#macrobond_financial.common.series_methods.GetUnifiedSeriesReturn">GetUnifiedSeriesReturn</a></span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -816,282 +594,11 @@ def get_unified_series(
     currency: str = None,
     start_point: &#39;StartOrEndPoint&#39; = None,
     end_point: &#39;StartOrEndPoint&#39; = None,
-) -&gt; Tuple[&#39;UnifiedSeries&#39;, ...]:
+) -&gt; GetUnifiedSeriesReturn:
     ...  # pragma: no cover</code></pre>
 </details>
 </dd>
 </dl>
-</dd>
-<dt id="macrobond_financial.common.series_methods.StartOrEndPoint"><code class="flex name class">
-<span>class <span class="ident">StartOrEndPoint</span></span>
-<span>(</span><span>time: str, mode: Optional[<a title="macrobond_financial.common.enums.calendar_date_mode.CalendarDateMode" href="enums/calendar_date_mode.html#macrobond_financial.common.enums.calendar_date_mode.CalendarDateMode">CalendarDateMode</a>])</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">class StartOrEndPoint():
-
-    def __init__(self, time: str, mode: Optional[CalendarDateMode]) -&gt; None:
-        self.time = time
-        self.mode = CalendarDateMode.DATA_IN_ANY_SERIES if mode is None else mode
-
-    def __str__(self):
-        return self.time + &#39; mode:&#39; + str(self.mode)
-
-    def __repr__(self):
-        return str(self)
-
-    @staticmethod
-    def relative_to_observations(
-        observations: int, mode: CalendarDateMode = None
-    ) -&gt; &#39;StartOrEndPoint&#39;:
-        return StartOrEndPoint(str(observations), mode)
-
-    @staticmethod
-    def relative_to_years(years: int, mode: CalendarDateMode = None) -&gt; &#39;StartOrEndPoint&#39;:
-        return StartOrEndPoint(str(years) + &#34;y&#34;, mode)
-
-    @staticmethod
-    def relative_to_quarters(quarters: int, mode: CalendarDateMode = None) -&gt; &#39;StartOrEndPoint&#39;:
-        return StartOrEndPoint(str(quarters) + &#34;q&#34;, mode)
-
-    @staticmethod
-    def relative_to_months(months: int, mode: CalendarDateMode = None) -&gt; &#39;StartOrEndPoint&#39;:
-        return StartOrEndPoint(str(months) + &#34;m&#34;, mode)
-
-    @staticmethod
-    def relative_to_weeks(weeks: int, mode: CalendarDateMode = None) -&gt; &#39;StartOrEndPoint&#39;:
-        return StartOrEndPoint(str(weeks) + &#34;w&#34;, mode)
-
-    @staticmethod
-    def relative_to_days(days: int, mode: CalendarDateMode = None) -&gt; &#39;StartOrEndPoint&#39;:
-        return StartOrEndPoint(str(days) + &#34;d&#34;, mode)
-
-    @staticmethod
-    def point_in_time(
-        yyyy_or_datetime,
-        mm: int = None,  # pylint: disable = invalid-name
-        dd: int = None  # pylint: disable = invalid-name
-    ) -&gt; &#39;StartOrEndPoint&#39;:
-        if isinstance(yyyy_or_datetime, datetime):
-            return StartOrEndPoint(yyyy_or_datetime.strftime(&#39;%Y-%m-%d&#39;), None)
-        time = str(yyyy_or_datetime).zfill(4)
-        if mm is not None:
-            time += &#39;-&#39; + str(mm).zfill(2)
-            if dd is not None:
-                time += &#39;-&#39; + str(dd).zfill(2)
-        return StartOrEndPoint(time, None)
-
-    @staticmethod
-    def data_in_any_series() -&gt; &#39;StartOrEndPoint&#39;:
-        return StartOrEndPoint(&#39;&#39;, CalendarDateMode.DATA_IN_ANY_SERIES)
-
-    @staticmethod
-    def data_in_all_series() -&gt; &#39;StartOrEndPoint&#39;:
-        return StartOrEndPoint(&#39;&#39;, CalendarDateMode.DATA_IN_ALL_SERIES)</code></pre>
-</details>
-<h3>Static methods</h3>
-<dl>
-<dt id="macrobond_financial.common.series_methods.StartOrEndPoint.data_in_all_series"><code class="name flex">
-<span>def <span class="ident">data_in_all_series</span></span>(<span>) ‑> <a title="macrobond_financial.common.series_methods.StartOrEndPoint" href="#macrobond_financial.common.series_methods.StartOrEndPoint">StartOrEndPoint</a></span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@staticmethod
-def data_in_all_series() -&gt; &#39;StartOrEndPoint&#39;:
-    return StartOrEndPoint(&#39;&#39;, CalendarDateMode.DATA_IN_ALL_SERIES)</code></pre>
-</details>
-</dd>
-<dt id="macrobond_financial.common.series_methods.StartOrEndPoint.data_in_any_series"><code class="name flex">
-<span>def <span class="ident">data_in_any_series</span></span>(<span>) ‑> <a title="macrobond_financial.common.series_methods.StartOrEndPoint" href="#macrobond_financial.common.series_methods.StartOrEndPoint">StartOrEndPoint</a></span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@staticmethod
-def data_in_any_series() -&gt; &#39;StartOrEndPoint&#39;:
-    return StartOrEndPoint(&#39;&#39;, CalendarDateMode.DATA_IN_ANY_SERIES)</code></pre>
-</details>
-</dd>
-<dt id="macrobond_financial.common.series_methods.StartOrEndPoint.point_in_time"><code class="name flex">
-<span>def <span class="ident">point_in_time</span></span>(<span>yyyy_or_datetime, mm: int = None, dd: int = None) ‑> <a title="macrobond_financial.common.series_methods.StartOrEndPoint" href="#macrobond_financial.common.series_methods.StartOrEndPoint">StartOrEndPoint</a></span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@staticmethod
-def point_in_time(
-    yyyy_or_datetime,
-    mm: int = None,  # pylint: disable = invalid-name
-    dd: int = None  # pylint: disable = invalid-name
-) -&gt; &#39;StartOrEndPoint&#39;:
-    if isinstance(yyyy_or_datetime, datetime):
-        return StartOrEndPoint(yyyy_or_datetime.strftime(&#39;%Y-%m-%d&#39;), None)
-    time = str(yyyy_or_datetime).zfill(4)
-    if mm is not None:
-        time += &#39;-&#39; + str(mm).zfill(2)
-        if dd is not None:
-            time += &#39;-&#39; + str(dd).zfill(2)
-    return StartOrEndPoint(time, None)</code></pre>
-</details>
-</dd>
-<dt id="macrobond_financial.common.series_methods.StartOrEndPoint.relative_to_days"><code class="name flex">
-<span>def <span class="ident">relative_to_days</span></span>(<span>days: int, mode: <a title="macrobond_financial.common.enums.calendar_date_mode.CalendarDateMode" href="enums/calendar_date_mode.html#macrobond_financial.common.enums.calendar_date_mode.CalendarDateMode">CalendarDateMode</a> = None) ‑> <a title="macrobond_financial.common.series_methods.StartOrEndPoint" href="#macrobond_financial.common.series_methods.StartOrEndPoint">StartOrEndPoint</a></span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@staticmethod
-def relative_to_days(days: int, mode: CalendarDateMode = None) -&gt; &#39;StartOrEndPoint&#39;:
-    return StartOrEndPoint(str(days) + &#34;d&#34;, mode)</code></pre>
-</details>
-</dd>
-<dt id="macrobond_financial.common.series_methods.StartOrEndPoint.relative_to_months"><code class="name flex">
-<span>def <span class="ident">relative_to_months</span></span>(<span>months: int, mode: <a title="macrobond_financial.common.enums.calendar_date_mode.CalendarDateMode" href="enums/calendar_date_mode.html#macrobond_financial.common.enums.calendar_date_mode.CalendarDateMode">CalendarDateMode</a> = None) ‑> <a title="macrobond_financial.common.series_methods.StartOrEndPoint" href="#macrobond_financial.common.series_methods.StartOrEndPoint">StartOrEndPoint</a></span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@staticmethod
-def relative_to_months(months: int, mode: CalendarDateMode = None) -&gt; &#39;StartOrEndPoint&#39;:
-    return StartOrEndPoint(str(months) + &#34;m&#34;, mode)</code></pre>
-</details>
-</dd>
-<dt id="macrobond_financial.common.series_methods.StartOrEndPoint.relative_to_observations"><code class="name flex">
-<span>def <span class="ident">relative_to_observations</span></span>(<span>observations: int, mode: <a title="macrobond_financial.common.enums.calendar_date_mode.CalendarDateMode" href="enums/calendar_date_mode.html#macrobond_financial.common.enums.calendar_date_mode.CalendarDateMode">CalendarDateMode</a> = None) ‑> <a title="macrobond_financial.common.series_methods.StartOrEndPoint" href="#macrobond_financial.common.series_methods.StartOrEndPoint">StartOrEndPoint</a></span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@staticmethod
-def relative_to_observations(
-    observations: int, mode: CalendarDateMode = None
-) -&gt; &#39;StartOrEndPoint&#39;:
-    return StartOrEndPoint(str(observations), mode)</code></pre>
-</details>
-</dd>
-<dt id="macrobond_financial.common.series_methods.StartOrEndPoint.relative_to_quarters"><code class="name flex">
-<span>def <span class="ident">relative_to_quarters</span></span>(<span>quarters: int, mode: <a title="macrobond_financial.common.enums.calendar_date_mode.CalendarDateMode" href="enums/calendar_date_mode.html#macrobond_financial.common.enums.calendar_date_mode.CalendarDateMode">CalendarDateMode</a> = None) ‑> <a title="macrobond_financial.common.series_methods.StartOrEndPoint" href="#macrobond_financial.common.series_methods.StartOrEndPoint">StartOrEndPoint</a></span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@staticmethod
-def relative_to_quarters(quarters: int, mode: CalendarDateMode = None) -&gt; &#39;StartOrEndPoint&#39;:
-    return StartOrEndPoint(str(quarters) + &#34;q&#34;, mode)</code></pre>
-</details>
-</dd>
-<dt id="macrobond_financial.common.series_methods.StartOrEndPoint.relative_to_weeks"><code class="name flex">
-<span>def <span class="ident">relative_to_weeks</span></span>(<span>weeks: int, mode: <a title="macrobond_financial.common.enums.calendar_date_mode.CalendarDateMode" href="enums/calendar_date_mode.html#macrobond_financial.common.enums.calendar_date_mode.CalendarDateMode">CalendarDateMode</a> = None) ‑> <a title="macrobond_financial.common.series_methods.StartOrEndPoint" href="#macrobond_financial.common.series_methods.StartOrEndPoint">StartOrEndPoint</a></span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@staticmethod
-def relative_to_weeks(weeks: int, mode: CalendarDateMode = None) -&gt; &#39;StartOrEndPoint&#39;:
-    return StartOrEndPoint(str(weeks) + &#34;w&#34;, mode)</code></pre>
-</details>
-</dd>
-<dt id="macrobond_financial.common.series_methods.StartOrEndPoint.relative_to_years"><code class="name flex">
-<span>def <span class="ident">relative_to_years</span></span>(<span>years: int, mode: <a title="macrobond_financial.common.enums.calendar_date_mode.CalendarDateMode" href="enums/calendar_date_mode.html#macrobond_financial.common.enums.calendar_date_mode.CalendarDateMode">CalendarDateMode</a> = None) ‑> <a title="macrobond_financial.common.series_methods.StartOrEndPoint" href="#macrobond_financial.common.series_methods.StartOrEndPoint">StartOrEndPoint</a></span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@staticmethod
-def relative_to_years(years: int, mode: CalendarDateMode = None) -&gt; &#39;StartOrEndPoint&#39;:
-    return StartOrEndPoint(str(years) + &#34;y&#34;, mode)</code></pre>
-</details>
-</dd>
-</dl>
-</dd>
-<dt id="macrobond_financial.common.series_methods.UnifiedSeries"><code class="flex name class">
-<span>class <span class="ident">UnifiedSeries</span></span>
-</code></dt>
-<dd>
-<div class="desc"><p>Interface for a database Macrobond entity.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">class UnifiedSeries(Entity):
-
-    @property
-    @abstractmethod
-    def values(self) -&gt; Tuple[Optional[float], ...]:
-        &#39;&#39;&#39;The values of the series.&#39;&#39;&#39;</code></pre>
-</details>
-<h3>Ancestors</h3>
-<ul class="hlist">
-<li><a title="macrobond_financial.common.series_methods.Entity" href="#macrobond_financial.common.series_methods.Entity">Entity</a></li>
-<li>abc.ABC</li>
-</ul>
-<h3>Subclasses</h3>
-<ul class="hlist">
-<li>macrobond_financial.com._com_series_methods._UnifiedSeries</li>
-<li>macrobond_financial.web._web_series_methods._UnifiedSeries</li>
-</ul>
-<h3>Instance variables</h3>
-<dl>
-<dt id="macrobond_financial.common.series_methods.UnifiedSeries.values"><code class="name">var <span class="ident">values</span> : Tuple[Optional[float], ...]</code></dt>
-<dd>
-<div class="desc"><p>The values of the series.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@property
-@abstractmethod
-def values(self) -&gt; Tuple[Optional[float], ...]:
-    &#39;&#39;&#39;The values of the series.&#39;&#39;&#39;</code></pre>
-</details>
-</dd>
-</dl>
-<h3>Inherited members</h3>
-<ul class="hlist">
-<li><code><b><a title="macrobond_financial.common.series_methods.Entity" href="#macrobond_financial.common.series_methods.Entity">Entity</a></b></code>:
-<ul class="hlist">
-<li><code><a title="macrobond_financial.common.series_methods.Entity.entity_type" href="#macrobond_financial.common.series_methods.Entity.entity_type">entity_type</a></code></li>
-<li><code><a title="macrobond_financial.common.series_methods.Entity.error_message" href="#macrobond_financial.common.series_methods.Entity.error_message">error_message</a></code></li>
-<li><code><a title="macrobond_financial.common.series_methods.Entity.is_error" href="#macrobond_financial.common.series_methods.Entity.is_error">is_error</a></code></li>
-<li><code><a title="macrobond_financial.common.series_methods.Entity.metadata" href="#macrobond_financial.common.series_methods.Entity.metadata">metadata</a></code></li>
-<li><code><a title="macrobond_financial.common.series_methods.Entity.name" href="#macrobond_financial.common.series_methods.Entity.name">name</a></code></li>
-<li><code><a title="macrobond_financial.common.series_methods.Entity.primary_name" href="#macrobond_financial.common.series_methods.Entity.primary_name">primary_name</a></code></li>
-<li><code><a title="macrobond_financial.common.series_methods.Entity.title" href="#macrobond_financial.common.series_methods.Entity.title">title</a></code></li>
-</ul>
-</li>
-</ul>
 </dd>
 </dl>
 </section>
@@ -1110,39 +617,42 @@ def values(self) -&gt; Tuple[Optional[float], ...]:
 <li><h3><a href="#header-classes">Classes</a></h3>
 <ul>
 <li>
-<h4><code><a title="macrobond_financial.common.series_methods.Entity" href="#macrobond_financial.common.series_methods.Entity">Entity</a></code></h4>
-<ul class="two-column">
-<li><code><a title="macrobond_financial.common.series_methods.Entity.entity_type" href="#macrobond_financial.common.series_methods.Entity.entity_type">entity_type</a></code></li>
-<li><code><a title="macrobond_financial.common.series_methods.Entity.error_message" href="#macrobond_financial.common.series_methods.Entity.error_message">error_message</a></code></li>
-<li><code><a title="macrobond_financial.common.series_methods.Entity.is_error" href="#macrobond_financial.common.series_methods.Entity.is_error">is_error</a></code></li>
-<li><code><a title="macrobond_financial.common.series_methods.Entity.metadata" href="#macrobond_financial.common.series_methods.Entity.metadata">metadata</a></code></li>
-<li><code><a title="macrobond_financial.common.series_methods.Entity.name" href="#macrobond_financial.common.series_methods.Entity.name">name</a></code></li>
-<li><code><a title="macrobond_financial.common.series_methods.Entity.primary_name" href="#macrobond_financial.common.series_methods.Entity.primary_name">primary_name</a></code></li>
-<li><code><a title="macrobond_financial.common.series_methods.Entity.title" href="#macrobond_financial.common.series_methods.Entity.title">title</a></code></li>
+<h4><code><a title="macrobond_financial.common.series_methods.GetEntitiesReturn" href="#macrobond_financial.common.series_methods.GetEntitiesReturn">GetEntitiesReturn</a></code></h4>
+<ul class="">
+<li><code><a title="macrobond_financial.common.series_methods.GetEntitiesReturn.tuple_of_dicts" href="#macrobond_financial.common.series_methods.GetEntitiesReturn.tuple_of_dicts">tuple_of_dicts</a></code></li>
+<li><code><a title="macrobond_financial.common.series_methods.GetEntitiesReturn.tuple_of_objects" href="#macrobond_financial.common.series_methods.GetEntitiesReturn.tuple_of_objects">tuple_of_objects</a></code></li>
 </ul>
 </li>
 <li>
-<h4><code><a title="macrobond_financial.common.series_methods.Series" href="#macrobond_financial.common.series_methods.Series">Series</a></code></h4>
-<ul class="two-column">
-<li><code><a title="macrobond_financial.common.series_methods.Series.dates" href="#macrobond_financial.common.series_methods.Series.dates">dates</a></code></li>
-<li><code><a title="macrobond_financial.common.series_methods.Series.end_date" href="#macrobond_financial.common.series_methods.Series.end_date">end_date</a></code></li>
-<li><code><a title="macrobond_financial.common.series_methods.Series.frequency" href="#macrobond_financial.common.series_methods.Series.frequency">frequency</a></code></li>
-<li><code><a title="macrobond_financial.common.series_methods.Series.get_index_at_date" href="#macrobond_financial.common.series_methods.Series.get_index_at_date">get_index_at_date</a></code></li>
-<li><code><a title="macrobond_financial.common.series_methods.Series.get_value_at_date" href="#macrobond_financial.common.series_methods.Series.get_value_at_date">get_value_at_date</a></code></li>
-<li><code><a title="macrobond_financial.common.series_methods.Series.start_date" href="#macrobond_financial.common.series_methods.Series.start_date">start_date</a></code></li>
-<li><code><a title="macrobond_financial.common.series_methods.Series.values" href="#macrobond_financial.common.series_methods.Series.values">values</a></code></li>
-<li><code><a title="macrobond_financial.common.series_methods.Series.weekdays" href="#macrobond_financial.common.series_methods.Series.weekdays">weekdays</a></code></li>
+<h4><code><a title="macrobond_financial.common.series_methods.GetOneEntitieReturn" href="#macrobond_financial.common.series_methods.GetOneEntitieReturn">GetOneEntitieReturn</a></code></h4>
+<ul class="">
+<li><code><a title="macrobond_financial.common.series_methods.GetOneEntitieReturn.dict" href="#macrobond_financial.common.series_methods.GetOneEntitieReturn.dict">dict</a></code></li>
+<li><code><a title="macrobond_financial.common.series_methods.GetOneEntitieReturn.object" href="#macrobond_financial.common.series_methods.GetOneEntitieReturn.object">object</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="macrobond_financial.common.series_methods.GetOneSeriesReturn" href="#macrobond_financial.common.series_methods.GetOneSeriesReturn">GetOneSeriesReturn</a></code></h4>
+<ul class="">
+<li><code><a title="macrobond_financial.common.series_methods.GetOneSeriesReturn.dict" href="#macrobond_financial.common.series_methods.GetOneSeriesReturn.dict">dict</a></code></li>
+<li><code><a title="macrobond_financial.common.series_methods.GetOneSeriesReturn.object" href="#macrobond_financial.common.series_methods.GetOneSeriesReturn.object">object</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="macrobond_financial.common.series_methods.GetSeriesReturn" href="#macrobond_financial.common.series_methods.GetSeriesReturn">GetSeriesReturn</a></code></h4>
+<ul class="">
+<li><code><a title="macrobond_financial.common.series_methods.GetSeriesReturn.tuple_of_dicts" href="#macrobond_financial.common.series_methods.GetSeriesReturn.tuple_of_dicts">tuple_of_dicts</a></code></li>
+<li><code><a title="macrobond_financial.common.series_methods.GetSeriesReturn.tuple_of_objects" href="#macrobond_financial.common.series_methods.GetSeriesReturn.tuple_of_objects">tuple_of_objects</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="macrobond_financial.common.series_methods.GetUnifiedSeriesReturn" href="#macrobond_financial.common.series_methods.GetUnifiedSeriesReturn">GetUnifiedSeriesReturn</a></code></h4>
+<ul class="">
+<li><code><a title="macrobond_financial.common.series_methods.GetUnifiedSeriesReturn.dict" href="#macrobond_financial.common.series_methods.GetUnifiedSeriesReturn.dict">dict</a></code></li>
+<li><code><a title="macrobond_financial.common.series_methods.GetUnifiedSeriesReturn.object" href="#macrobond_financial.common.series_methods.GetUnifiedSeriesReturn.object">object</a></code></li>
 </ul>
 </li>
 <li>
 <h4><code><a title="macrobond_financial.common.series_methods.SeriesEntrie" href="#macrobond_financial.common.series_methods.SeriesEntrie">SeriesEntrie</a></code></h4>
-<ul class="">
-<li><code><a title="macrobond_financial.common.series_methods.SeriesEntrie.missing_value_method" href="#macrobond_financial.common.series_methods.SeriesEntrie.missing_value_method">missing_value_method</a></code></li>
-<li><code><a title="macrobond_financial.common.series_methods.SeriesEntrie.name" href="#macrobond_financial.common.series_methods.SeriesEntrie.name">name</a></code></li>
-<li><code><a title="macrobond_financial.common.series_methods.SeriesEntrie.partial_periods_method" href="#macrobond_financial.common.series_methods.SeriesEntrie.partial_periods_method">partial_periods_method</a></code></li>
-<li><code><a title="macrobond_financial.common.series_methods.SeriesEntrie.to_higherfrequency_method" href="#macrobond_financial.common.series_methods.SeriesEntrie.to_higherfrequency_method">to_higherfrequency_method</a></code></li>
-<li><code><a title="macrobond_financial.common.series_methods.SeriesEntrie.to_lowerfrequency_method" href="#macrobond_financial.common.series_methods.SeriesEntrie.to_lowerfrequency_method">to_lowerfrequency_method</a></code></li>
-</ul>
 </li>
 <li>
 <h4><code><a title="macrobond_financial.common.series_methods.SeriesMethods" href="#macrobond_financial.common.series_methods.SeriesMethods">SeriesMethods</a></code></h4>
@@ -1152,26 +662,6 @@ def values(self) -&gt; Tuple[Optional[float], ...]:
 <li><code><a title="macrobond_financial.common.series_methods.SeriesMethods.get_one_series" href="#macrobond_financial.common.series_methods.SeriesMethods.get_one_series">get_one_series</a></code></li>
 <li><code><a title="macrobond_financial.common.series_methods.SeriesMethods.get_series" href="#macrobond_financial.common.series_methods.SeriesMethods.get_series">get_series</a></code></li>
 <li><code><a title="macrobond_financial.common.series_methods.SeriesMethods.get_unified_series" href="#macrobond_financial.common.series_methods.SeriesMethods.get_unified_series">get_unified_series</a></code></li>
-</ul>
-</li>
-<li>
-<h4><code><a title="macrobond_financial.common.series_methods.StartOrEndPoint" href="#macrobond_financial.common.series_methods.StartOrEndPoint">StartOrEndPoint</a></code></h4>
-<ul class="">
-<li><code><a title="macrobond_financial.common.series_methods.StartOrEndPoint.data_in_all_series" href="#macrobond_financial.common.series_methods.StartOrEndPoint.data_in_all_series">data_in_all_series</a></code></li>
-<li><code><a title="macrobond_financial.common.series_methods.StartOrEndPoint.data_in_any_series" href="#macrobond_financial.common.series_methods.StartOrEndPoint.data_in_any_series">data_in_any_series</a></code></li>
-<li><code><a title="macrobond_financial.common.series_methods.StartOrEndPoint.point_in_time" href="#macrobond_financial.common.series_methods.StartOrEndPoint.point_in_time">point_in_time</a></code></li>
-<li><code><a title="macrobond_financial.common.series_methods.StartOrEndPoint.relative_to_days" href="#macrobond_financial.common.series_methods.StartOrEndPoint.relative_to_days">relative_to_days</a></code></li>
-<li><code><a title="macrobond_financial.common.series_methods.StartOrEndPoint.relative_to_months" href="#macrobond_financial.common.series_methods.StartOrEndPoint.relative_to_months">relative_to_months</a></code></li>
-<li><code><a title="macrobond_financial.common.series_methods.StartOrEndPoint.relative_to_observations" href="#macrobond_financial.common.series_methods.StartOrEndPoint.relative_to_observations">relative_to_observations</a></code></li>
-<li><code><a title="macrobond_financial.common.series_methods.StartOrEndPoint.relative_to_quarters" href="#macrobond_financial.common.series_methods.StartOrEndPoint.relative_to_quarters">relative_to_quarters</a></code></li>
-<li><code><a title="macrobond_financial.common.series_methods.StartOrEndPoint.relative_to_weeks" href="#macrobond_financial.common.series_methods.StartOrEndPoint.relative_to_weeks">relative_to_weeks</a></code></li>
-<li><code><a title="macrobond_financial.common.series_methods.StartOrEndPoint.relative_to_years" href="#macrobond_financial.common.series_methods.StartOrEndPoint.relative_to_years">relative_to_years</a></code></li>
-</ul>
-</li>
-<li>
-<h4><code><a title="macrobond_financial.common.series_methods.UnifiedSeries" href="#macrobond_financial.common.series_methods.UnifiedSeries">UnifiedSeries</a></code></h4>
-<ul class="">
-<li><code><a title="macrobond_financial.common.series_methods.UnifiedSeries.values" href="#macrobond_financial.common.series_methods.UnifiedSeries.values">values</a></code></li>
 </ul>
 </li>
 </ul>

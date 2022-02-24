@@ -28,13 +28,39 @@
 <span>Expand source code</span>
 </summary>
 <pre><code class="python"># -*- coding: utf-8 -*-
+
 &#39;&#39;&#39;module doc string&#39;&#39;&#39;
 
-from typing import List, Any, Optional, TYPE_CHECKING
+from typing import List, TYPE_CHECKING
 from abc import ABC, abstractmethod
 
+from ._return_data_frame import _ReturnDataFrame
+
 if TYPE_CHECKING:  # pragma: no cover
-    from .enums import MetadataAttributeType
+
+    from .metadata_attribute_information import MetadataAttributeInformation
+    from .metadata_attribute_information import TypedDictMetadataAttributeInformation
+
+    from .metadata_value_information import MetadataValueInformation
+    from .metadata_value_information import TypedDictMetadataValueInformation
+
+
+class ListValuesReturn(_ReturnDataFrame, ABC):
+
+    @abstractmethod
+    def list_of_objects(self) -&gt; List[&#39;MetadataValueInformation&#39;]: ...
+
+    @abstractmethod
+    def list_of_dicts(self) -&gt; List[&#39;TypedDictMetadataValueInformation&#39;]: ...
+
+
+class GetAttributeInformationReturn(_ReturnDataFrame, ABC):
+
+    @abstractmethod
+    def object(self) -&gt; &#39;MetadataAttributeInformation&#39;: ...
+
+    @abstractmethod
+    def dict(self) -&gt; &#39;TypedDictMetadataAttributeInformation&#39;: ...
 
 
 class MetaDirectoryMethods(ABC):
@@ -43,7 +69,7 @@ class MetaDirectoryMethods(ABC):
     &#39;&#39;&#39;
 
     @abstractmethod
-    def list_values(self, name: str) -&gt; List[&#39;MetadataValueInformation&#39;]:
+    def list_values(self, name: str) -&gt; ListValuesReturn:
         &#39;&#39;&#39;
         List all metadata attribute values.
 
@@ -54,155 +80,20 @@ class MetaDirectoryMethods(ABC):
 
         Returns
         -------
-        List[MetadataValueInformation]
-            &#34;success&#34;, result, original record
+        Converter[List[MetadataValueInformation], List[TypedDictMetadataValueInformation]]
 
         Examples
         -------
         ```python
         with ComClient() as api: # or WebClient
-            value_information_list = api.meta_directory.list_values(&#39;RateType&#39;)
-            for info in value_information_list:
-                print(info.value + &#39; &#39; + info.description)
+            list_of_dict = api.meta_directory.list_values(&#39;RateType&#39;).dict
+            print(data_frame)
         ```
         &#39;&#39;&#39;
 
     @abstractmethod
-    def get_attribute_information(self, name: str) -&gt; &#39;MetadataAttributeInformation&#39;:
-        &#39;&#39;&#39;Get information about a type of metadata.&#39;&#39;&#39;
-
-
-class MetadataValueInformation():
-    &#39;&#39;&#39;Information about a metadata value&#39;&#39;&#39;
-
-    attribute_name: str
-    &#39;&#39;&#39;The name of the metadata attribute&#39;&#39;&#39;
-
-    value: Any
-    &#39;&#39;&#39;The value&#39;&#39;&#39;
-
-    description: str
-    &#39;&#39;&#39;The description of the metadata value&#39;&#39;&#39;
-
-    comment: Optional[str]
-    &#39;&#39;&#39;The comment of the metadata value&#39;&#39;&#39;
-
-    def __init__(
-        self, attribute_name: str, value: Any, description: str, comment: Optional[str]
-    ) -&gt; None:
-        self.attribute_name = attribute_name
-        self.value = value
-        self.description = description
-        self.comment = comment
-
-    def __str__(self):
-        return self.attribute_name
-
-    def __repr__(self):
-        return self.attribute_name
-
-    def __eq__(self, other):
-        print(&#39;am here !&#39;)
-        if not isinstance(other, MetadataValueInformation):
-            return NotImplemented
-
-        return \
-            self is other or \
-            (
-                self.attribute_name == other.attribute_name and
-                self.value == other.value and
-                self.description == other.description and
-                self.comment == other.comment
-            )
-
-    def __hash__(self):
-        return hash((
-            self.attribute_name,
-            self.value,
-            self.description,
-            self.comment
-        ))
-
-
-class MetadataAttributeInformation():
-    &#39;&#39;&#39;Information about a metadata attribute&#39;&#39;&#39;
-
-    name: str
-    &#39;&#39;&#39;The name of the metadata attribute&#39;&#39;&#39;
-
-    description: str
-    &#39;&#39;&#39;The description of the metadata attribute&#39;&#39;&#39;
-
-    comment: Optional[str]
-    &#39;&#39;&#39;The comment of the metadata attribute&#39;&#39;&#39;
-
-    value_type: &#39;MetadataAttributeType&#39;
-    &#39;&#39;&#39;The value type of the metadata attribute&#39;&#39;&#39;
-
-    uses_value_list: bool
-    &#39;&#39;&#39;If True, the metadata attribute uses a list of values&#39;&#39;&#39;
-
-    can_list_values: bool
-    &#39;&#39;&#39;
-    If True then the values of this type of
-    metadata can be listen using the ListAllValues function
-    &#39;&#39;&#39;
-
-    can_have_multiple_values: bool
-    &#39;&#39;&#39;If True then this type of metadata can have multiple values in a metadata collection&#39;&#39;&#39;
-
-    is_database_entity: bool
-    &#39;&#39;&#39;
-    If True then this type of metadata is an entity that can be retrieved from the database
-    &#39;&#39;&#39;
-
-    def __init__(
-        self, name: str, description: str, comment: Optional[str],
-        value_type: &#39;MetadataAttributeType&#39;,
-        uses_value_list: bool, can_list_values: bool, can_have_multiple_values: bool,
-        is_database_entity: bool
-    ) -&gt; None:
-        self.name = name
-        self.description = description
-        self.comment = comment
-        self.value_type = value_type
-        self.uses_value_list = uses_value_list
-        self.can_list_values = can_list_values
-        self.can_have_multiple_values = can_have_multiple_values
-        self.is_database_entity = is_database_entity
-
-    def __str__(self):
-        return self.name + &#39; &#39; + self.description
-
-    def __repr__(self):
-        return self.name
-
-    def __eq__(self, other):
-        if not isinstance(other, MetadataAttributeInformation):
-            return NotImplemented
-
-        return \
-            self is other or \
-            (
-                self.name == other.name and
-                self.description == other.description and
-                self.comment == other.comment and
-                self.uses_value_list == other.uses_value_list and
-                self.can_list_values == other.can_list_values and
-                self.can_have_multiple_values == other.can_have_multiple_values and
-                self.is_database_entity == other.is_database_entity
-            )
-
-    def __hash__(self):
-        return hash((
-            self.name,
-            self.description,
-            self.comment,
-            self.uses_value_list,
-            self.can_list_values,
-            self.can_have_multiple_values,
-            self.is_database_entity
-        ))</code></pre>
+    def get_attribute_information(self, name: str) -&gt; GetAttributeInformationReturn:
+        &#39;&#39;&#39;Get information about a type of metadata.&#39;&#39;&#39;</code></pre>
 </details>
 </section>
 <section>
@@ -214,6 +105,122 @@ class MetadataAttributeInformation():
 <section>
 <h2 class="section-title" id="header-classes">Classes</h2>
 <dl>
+<dt id="macrobond_financial.common.meta_directory_methods.GetAttributeInformationReturn"><code class="flex name class">
+<span>class <span class="ident">GetAttributeInformationReturn</span></span>
+</code></dt>
+<dd>
+<div class="desc"><p>Helper class that provides a standard way to create an ABC using
+inheritance.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class GetAttributeInformationReturn(_ReturnDataFrame, ABC):
+
+    @abstractmethod
+    def object(self) -&gt; &#39;MetadataAttributeInformation&#39;: ...
+
+    @abstractmethod
+    def dict(self) -&gt; &#39;TypedDictMetadataAttributeInformation&#39;: ...</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>macrobond_financial.common._return_data_frame._ReturnDataFrame</li>
+<li>abc.ABC</li>
+</ul>
+<h3>Subclasses</h3>
+<ul class="hlist">
+<li>macrobond_financial.com._com_meta_directory_methods._GetAttributeInformationReturn</li>
+<li>macrobond_financial.web._web_meta_directory_methods._GetAttributeInformationReturn</li>
+</ul>
+<h3>Methods</h3>
+<dl>
+<dt id="macrobond_financial.common.meta_directory_methods.GetAttributeInformationReturn.dict"><code class="name flex">
+<span>def <span class="ident">dict</span></span>(<span>self) ‑> TypedDictMetadataAttributeInformation</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@abstractmethod
+def dict(self) -&gt; &#39;TypedDictMetadataAttributeInformation&#39;: ...</code></pre>
+</details>
+</dd>
+<dt id="macrobond_financial.common.meta_directory_methods.GetAttributeInformationReturn.object"><code class="name flex">
+<span>def <span class="ident">object</span></span>(<span>self) ‑> MetadataAttributeInformation</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@abstractmethod
+def object(self) -&gt; &#39;MetadataAttributeInformation&#39;: ...</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="macrobond_financial.common.meta_directory_methods.ListValuesReturn"><code class="flex name class">
+<span>class <span class="ident">ListValuesReturn</span></span>
+</code></dt>
+<dd>
+<div class="desc"><p>Helper class that provides a standard way to create an ABC using
+inheritance.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class ListValuesReturn(_ReturnDataFrame, ABC):
+
+    @abstractmethod
+    def list_of_objects(self) -&gt; List[&#39;MetadataValueInformation&#39;]: ...
+
+    @abstractmethod
+    def list_of_dicts(self) -&gt; List[&#39;TypedDictMetadataValueInformation&#39;]: ...</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>macrobond_financial.common._return_data_frame._ReturnDataFrame</li>
+<li>abc.ABC</li>
+</ul>
+<h3>Subclasses</h3>
+<ul class="hlist">
+<li>macrobond_financial.com._com_meta_directory_methods._ListValuesReturn</li>
+<li>macrobond_financial.web._web_meta_directory_methods._ListValuesReturn</li>
+</ul>
+<h3>Methods</h3>
+<dl>
+<dt id="macrobond_financial.common.meta_directory_methods.ListValuesReturn.list_of_dicts"><code class="name flex">
+<span>def <span class="ident">list_of_dicts</span></span>(<span>self) ‑> List[TypedDictMetadataValueInformation]</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@abstractmethod
+def list_of_dicts(self) -&gt; List[&#39;TypedDictMetadataValueInformation&#39;]: ...</code></pre>
+</details>
+</dd>
+<dt id="macrobond_financial.common.meta_directory_methods.ListValuesReturn.list_of_objects"><code class="name flex">
+<span>def <span class="ident">list_of_objects</span></span>(<span>self) ‑> List[MetadataValueInformation]</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@abstractmethod
+def list_of_objects(self) -&gt; List[&#39;MetadataValueInformation&#39;]: ...</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
 <dt id="macrobond_financial.common.meta_directory_methods.MetaDirectoryMethods"><code class="flex name class">
 <span>class <span class="ident">MetaDirectoryMethods</span></span>
 </code></dt>
@@ -229,7 +236,7 @@ class MetadataAttributeInformation():
     &#39;&#39;&#39;
 
     @abstractmethod
-    def list_values(self, name: str) -&gt; List[&#39;MetadataValueInformation&#39;]:
+    def list_values(self, name: str) -&gt; ListValuesReturn:
         &#39;&#39;&#39;
         List all metadata attribute values.
 
@@ -240,21 +247,19 @@ class MetadataAttributeInformation():
 
         Returns
         -------
-        List[MetadataValueInformation]
-            &#34;success&#34;, result, original record
+        Converter[List[MetadataValueInformation], List[TypedDictMetadataValueInformation]]
 
         Examples
         -------
         ```python
         with ComClient() as api: # or WebClient
-            value_information_list = api.meta_directory.list_values(&#39;RateType&#39;)
-            for info in value_information_list:
-                print(info.value + &#39; &#39; + info.description)
+            list_of_dict = api.meta_directory.list_values(&#39;RateType&#39;).dict
+            print(data_frame)
         ```
         &#39;&#39;&#39;
 
     @abstractmethod
-    def get_attribute_information(self, name: str) -&gt; &#39;MetadataAttributeInformation&#39;:
+    def get_attribute_information(self, name: str) -&gt; GetAttributeInformationReturn:
         &#39;&#39;&#39;Get information about a type of metadata.&#39;&#39;&#39;</code></pre>
 </details>
 <h3>Ancestors</h3>
@@ -269,7 +274,7 @@ class MetadataAttributeInformation():
 <h3>Methods</h3>
 <dl>
 <dt id="macrobond_financial.common.meta_directory_methods.MetaDirectoryMethods.get_attribute_information"><code class="name flex">
-<span>def <span class="ident">get_attribute_information</span></span>(<span>self, name: str) ‑> <a title="macrobond_financial.common.meta_directory_methods.MetadataAttributeInformation" href="#macrobond_financial.common.meta_directory_methods.MetadataAttributeInformation">MetadataAttributeInformation</a></span>
+<span>def <span class="ident">get_attribute_information</span></span>(<span>self, name: str) ‑> <a title="macrobond_financial.common.meta_directory_methods.GetAttributeInformationReturn" href="#macrobond_financial.common.meta_directory_methods.GetAttributeInformationReturn">GetAttributeInformationReturn</a></span>
 </code></dt>
 <dd>
 <div class="desc"><p>Get information about a type of metadata.</p></div>
@@ -278,12 +283,12 @@ class MetadataAttributeInformation():
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@abstractmethod
-def get_attribute_information(self, name: str) -&gt; &#39;MetadataAttributeInformation&#39;:
+def get_attribute_information(self, name: str) -&gt; GetAttributeInformationReturn:
     &#39;&#39;&#39;Get information about a type of metadata.&#39;&#39;&#39;</code></pre>
 </details>
 </dd>
 <dt id="macrobond_financial.common.meta_directory_methods.MetaDirectoryMethods.list_values"><code class="name flex">
-<span>def <span class="ident">list_values</span></span>(<span>self, name: str) ‑> List[<a title="macrobond_financial.common.meta_directory_methods.MetadataValueInformation" href="#macrobond_financial.common.meta_directory_methods.MetadataValueInformation">MetadataValueInformation</a>]</span>
+<span>def <span class="ident">list_values</span></span>(<span>self, name: str) ‑> <a title="macrobond_financial.common.meta_directory_methods.ListValuesReturn" href="#macrobond_financial.common.meta_directory_methods.ListValuesReturn">ListValuesReturn</a></span>
 </code></dt>
 <dd>
 <div class="desc"><p>List all metadata attribute values.</p>
@@ -294,21 +299,20 @@ def get_attribute_information(self, name: str) -&gt; &#39;MetadataAttributeInfor
 </dl>
 <h2 id="returns">Returns</h2>
 <dl>
-<dt><code>List[<a title="macrobond_financial.common.meta_directory_methods.MetadataValueInformation" href="#macrobond_financial.common.meta_directory_methods.MetadataValueInformation">MetadataValueInformation</a>]</code></dt>
-<dd>"success", result, original record</dd>
+<dt><code>Converter[List[MetadataValueInformation], List[TypedDictMetadataValueInformation]]</code></dt>
+<dd>&nbsp;</dd>
 </dl>
 <h2 id="examples">Examples</h2>
 <pre><code class="language-python">with ComClient() as api: # or WebClient
-    value_information_list = api.meta_directory.list_values('RateType')
-    for info in value_information_list:
-        print(info.value + ' ' + info.description)
+    list_of_dict = api.meta_directory.list_values('RateType').dict
+    print(data_frame)
 </code></pre></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@abstractmethod
-def list_values(self, name: str) -&gt; List[&#39;MetadataValueInformation&#39;]:
+def list_values(self, name: str) -&gt; ListValuesReturn:
     &#39;&#39;&#39;
     List all metadata attribute values.
 
@@ -319,227 +323,17 @@ def list_values(self, name: str) -&gt; List[&#39;MetadataValueInformation&#39;]:
 
     Returns
     -------
-    List[MetadataValueInformation]
-        &#34;success&#34;, result, original record
+    Converter[List[MetadataValueInformation], List[TypedDictMetadataValueInformation]]
 
     Examples
     -------
     ```python
     with ComClient() as api: # or WebClient
-        value_information_list = api.meta_directory.list_values(&#39;RateType&#39;)
-        for info in value_information_list:
-            print(info.value + &#39; &#39; + info.description)
+        list_of_dict = api.meta_directory.list_values(&#39;RateType&#39;).dict
+        print(data_frame)
     ```
     &#39;&#39;&#39;</code></pre>
 </details>
-</dd>
-</dl>
-</dd>
-<dt id="macrobond_financial.common.meta_directory_methods.MetadataAttributeInformation"><code class="flex name class">
-<span>class <span class="ident">MetadataAttributeInformation</span></span>
-<span>(</span><span>name: str, description: str, comment: Optional[str], value_type: MetadataAttributeType, uses_value_list: bool, can_list_values: bool, can_have_multiple_values: bool, is_database_entity: bool)</span>
-</code></dt>
-<dd>
-<div class="desc"><p>Information about a metadata attribute</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">class MetadataAttributeInformation():
-    &#39;&#39;&#39;Information about a metadata attribute&#39;&#39;&#39;
-
-    name: str
-    &#39;&#39;&#39;The name of the metadata attribute&#39;&#39;&#39;
-
-    description: str
-    &#39;&#39;&#39;The description of the metadata attribute&#39;&#39;&#39;
-
-    comment: Optional[str]
-    &#39;&#39;&#39;The comment of the metadata attribute&#39;&#39;&#39;
-
-    value_type: &#39;MetadataAttributeType&#39;
-    &#39;&#39;&#39;The value type of the metadata attribute&#39;&#39;&#39;
-
-    uses_value_list: bool
-    &#39;&#39;&#39;If True, the metadata attribute uses a list of values&#39;&#39;&#39;
-
-    can_list_values: bool
-    &#39;&#39;&#39;
-    If True then the values of this type of
-    metadata can be listen using the ListAllValues function
-    &#39;&#39;&#39;
-
-    can_have_multiple_values: bool
-    &#39;&#39;&#39;If True then this type of metadata can have multiple values in a metadata collection&#39;&#39;&#39;
-
-    is_database_entity: bool
-    &#39;&#39;&#39;
-    If True then this type of metadata is an entity that can be retrieved from the database
-    &#39;&#39;&#39;
-
-    def __init__(
-        self, name: str, description: str, comment: Optional[str],
-        value_type: &#39;MetadataAttributeType&#39;,
-        uses_value_list: bool, can_list_values: bool, can_have_multiple_values: bool,
-        is_database_entity: bool
-    ) -&gt; None:
-        self.name = name
-        self.description = description
-        self.comment = comment
-        self.value_type = value_type
-        self.uses_value_list = uses_value_list
-        self.can_list_values = can_list_values
-        self.can_have_multiple_values = can_have_multiple_values
-        self.is_database_entity = is_database_entity
-
-    def __str__(self):
-        return self.name + &#39; &#39; + self.description
-
-    def __repr__(self):
-        return self.name
-
-    def __eq__(self, other):
-        if not isinstance(other, MetadataAttributeInformation):
-            return NotImplemented
-
-        return \
-            self is other or \
-            (
-                self.name == other.name and
-                self.description == other.description and
-                self.comment == other.comment and
-                self.uses_value_list == other.uses_value_list and
-                self.can_list_values == other.can_list_values and
-                self.can_have_multiple_values == other.can_have_multiple_values and
-                self.is_database_entity == other.is_database_entity
-            )
-
-    def __hash__(self):
-        return hash((
-            self.name,
-            self.description,
-            self.comment,
-            self.uses_value_list,
-            self.can_list_values,
-            self.can_have_multiple_values,
-            self.is_database_entity
-        ))</code></pre>
-</details>
-<h3>Class variables</h3>
-<dl>
-<dt id="macrobond_financial.common.meta_directory_methods.MetadataAttributeInformation.can_have_multiple_values"><code class="name">var <span class="ident">can_have_multiple_values</span> : bool</code></dt>
-<dd>
-<div class="desc"><p>If True then this type of metadata can have multiple values in a metadata collection</p></div>
-</dd>
-<dt id="macrobond_financial.common.meta_directory_methods.MetadataAttributeInformation.can_list_values"><code class="name">var <span class="ident">can_list_values</span> : bool</code></dt>
-<dd>
-<div class="desc"><p>If True then the values of this type of
-metadata can be listen using the ListAllValues function</p></div>
-</dd>
-<dt id="macrobond_financial.common.meta_directory_methods.MetadataAttributeInformation.comment"><code class="name">var <span class="ident">comment</span> : Optional[str]</code></dt>
-<dd>
-<div class="desc"><p>The comment of the metadata attribute</p></div>
-</dd>
-<dt id="macrobond_financial.common.meta_directory_methods.MetadataAttributeInformation.description"><code class="name">var <span class="ident">description</span> : str</code></dt>
-<dd>
-<div class="desc"><p>The description of the metadata attribute</p></div>
-</dd>
-<dt id="macrobond_financial.common.meta_directory_methods.MetadataAttributeInformation.is_database_entity"><code class="name">var <span class="ident">is_database_entity</span> : bool</code></dt>
-<dd>
-<div class="desc"><p>If True then this type of metadata is an entity that can be retrieved from the database</p></div>
-</dd>
-<dt id="macrobond_financial.common.meta_directory_methods.MetadataAttributeInformation.name"><code class="name">var <span class="ident">name</span> : str</code></dt>
-<dd>
-<div class="desc"><p>The name of the metadata attribute</p></div>
-</dd>
-<dt id="macrobond_financial.common.meta_directory_methods.MetadataAttributeInformation.uses_value_list"><code class="name">var <span class="ident">uses_value_list</span> : bool</code></dt>
-<dd>
-<div class="desc"><p>If True, the metadata attribute uses a list of values</p></div>
-</dd>
-<dt id="macrobond_financial.common.meta_directory_methods.MetadataAttributeInformation.value_type"><code class="name">var <span class="ident">value_type</span> : MetadataAttributeType</code></dt>
-<dd>
-<div class="desc"><p>The value type of the metadata attribute</p></div>
-</dd>
-</dl>
-</dd>
-<dt id="macrobond_financial.common.meta_directory_methods.MetadataValueInformation"><code class="flex name class">
-<span>class <span class="ident">MetadataValueInformation</span></span>
-<span>(</span><span>attribute_name: str, value: Any, description: str, comment: Optional[str])</span>
-</code></dt>
-<dd>
-<div class="desc"><p>Information about a metadata value</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">class MetadataValueInformation():
-    &#39;&#39;&#39;Information about a metadata value&#39;&#39;&#39;
-
-    attribute_name: str
-    &#39;&#39;&#39;The name of the metadata attribute&#39;&#39;&#39;
-
-    value: Any
-    &#39;&#39;&#39;The value&#39;&#39;&#39;
-
-    description: str
-    &#39;&#39;&#39;The description of the metadata value&#39;&#39;&#39;
-
-    comment: Optional[str]
-    &#39;&#39;&#39;The comment of the metadata value&#39;&#39;&#39;
-
-    def __init__(
-        self, attribute_name: str, value: Any, description: str, comment: Optional[str]
-    ) -&gt; None:
-        self.attribute_name = attribute_name
-        self.value = value
-        self.description = description
-        self.comment = comment
-
-    def __str__(self):
-        return self.attribute_name
-
-    def __repr__(self):
-        return self.attribute_name
-
-    def __eq__(self, other):
-        print(&#39;am here !&#39;)
-        if not isinstance(other, MetadataValueInformation):
-            return NotImplemented
-
-        return \
-            self is other or \
-            (
-                self.attribute_name == other.attribute_name and
-                self.value == other.value and
-                self.description == other.description and
-                self.comment == other.comment
-            )
-
-    def __hash__(self):
-        return hash((
-            self.attribute_name,
-            self.value,
-            self.description,
-            self.comment
-        ))</code></pre>
-</details>
-<h3>Class variables</h3>
-<dl>
-<dt id="macrobond_financial.common.meta_directory_methods.MetadataValueInformation.attribute_name"><code class="name">var <span class="ident">attribute_name</span> : str</code></dt>
-<dd>
-<div class="desc"><p>The name of the metadata attribute</p></div>
-</dd>
-<dt id="macrobond_financial.common.meta_directory_methods.MetadataValueInformation.comment"><code class="name">var <span class="ident">comment</span> : Optional[str]</code></dt>
-<dd>
-<div class="desc"><p>The comment of the metadata value</p></div>
-</dd>
-<dt id="macrobond_financial.common.meta_directory_methods.MetadataValueInformation.description"><code class="name">var <span class="ident">description</span> : str</code></dt>
-<dd>
-<div class="desc"><p>The description of the metadata value</p></div>
-</dd>
-<dt id="macrobond_financial.common.meta_directory_methods.MetadataValueInformation.value"><code class="name">var <span class="ident">value</span> : Any</code></dt>
-<dd>
-<div class="desc"><p>The value</p></div>
 </dd>
 </dl>
 </dd>
@@ -560,32 +354,24 @@ metadata can be listen using the ListAllValues function</p></div>
 <li><h3><a href="#header-classes">Classes</a></h3>
 <ul>
 <li>
+<h4><code><a title="macrobond_financial.common.meta_directory_methods.GetAttributeInformationReturn" href="#macrobond_financial.common.meta_directory_methods.GetAttributeInformationReturn">GetAttributeInformationReturn</a></code></h4>
+<ul class="">
+<li><code><a title="macrobond_financial.common.meta_directory_methods.GetAttributeInformationReturn.dict" href="#macrobond_financial.common.meta_directory_methods.GetAttributeInformationReturn.dict">dict</a></code></li>
+<li><code><a title="macrobond_financial.common.meta_directory_methods.GetAttributeInformationReturn.object" href="#macrobond_financial.common.meta_directory_methods.GetAttributeInformationReturn.object">object</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="macrobond_financial.common.meta_directory_methods.ListValuesReturn" href="#macrobond_financial.common.meta_directory_methods.ListValuesReturn">ListValuesReturn</a></code></h4>
+<ul class="">
+<li><code><a title="macrobond_financial.common.meta_directory_methods.ListValuesReturn.list_of_dicts" href="#macrobond_financial.common.meta_directory_methods.ListValuesReturn.list_of_dicts">list_of_dicts</a></code></li>
+<li><code><a title="macrobond_financial.common.meta_directory_methods.ListValuesReturn.list_of_objects" href="#macrobond_financial.common.meta_directory_methods.ListValuesReturn.list_of_objects">list_of_objects</a></code></li>
+</ul>
+</li>
+<li>
 <h4><code><a title="macrobond_financial.common.meta_directory_methods.MetaDirectoryMethods" href="#macrobond_financial.common.meta_directory_methods.MetaDirectoryMethods">MetaDirectoryMethods</a></code></h4>
 <ul class="">
 <li><code><a title="macrobond_financial.common.meta_directory_methods.MetaDirectoryMethods.get_attribute_information" href="#macrobond_financial.common.meta_directory_methods.MetaDirectoryMethods.get_attribute_information">get_attribute_information</a></code></li>
 <li><code><a title="macrobond_financial.common.meta_directory_methods.MetaDirectoryMethods.list_values" href="#macrobond_financial.common.meta_directory_methods.MetaDirectoryMethods.list_values">list_values</a></code></li>
-</ul>
-</li>
-<li>
-<h4><code><a title="macrobond_financial.common.meta_directory_methods.MetadataAttributeInformation" href="#macrobond_financial.common.meta_directory_methods.MetadataAttributeInformation">MetadataAttributeInformation</a></code></h4>
-<ul class="">
-<li><code><a title="macrobond_financial.common.meta_directory_methods.MetadataAttributeInformation.can_have_multiple_values" href="#macrobond_financial.common.meta_directory_methods.MetadataAttributeInformation.can_have_multiple_values">can_have_multiple_values</a></code></li>
-<li><code><a title="macrobond_financial.common.meta_directory_methods.MetadataAttributeInformation.can_list_values" href="#macrobond_financial.common.meta_directory_methods.MetadataAttributeInformation.can_list_values">can_list_values</a></code></li>
-<li><code><a title="macrobond_financial.common.meta_directory_methods.MetadataAttributeInformation.comment" href="#macrobond_financial.common.meta_directory_methods.MetadataAttributeInformation.comment">comment</a></code></li>
-<li><code><a title="macrobond_financial.common.meta_directory_methods.MetadataAttributeInformation.description" href="#macrobond_financial.common.meta_directory_methods.MetadataAttributeInformation.description">description</a></code></li>
-<li><code><a title="macrobond_financial.common.meta_directory_methods.MetadataAttributeInformation.is_database_entity" href="#macrobond_financial.common.meta_directory_methods.MetadataAttributeInformation.is_database_entity">is_database_entity</a></code></li>
-<li><code><a title="macrobond_financial.common.meta_directory_methods.MetadataAttributeInformation.name" href="#macrobond_financial.common.meta_directory_methods.MetadataAttributeInformation.name">name</a></code></li>
-<li><code><a title="macrobond_financial.common.meta_directory_methods.MetadataAttributeInformation.uses_value_list" href="#macrobond_financial.common.meta_directory_methods.MetadataAttributeInformation.uses_value_list">uses_value_list</a></code></li>
-<li><code><a title="macrobond_financial.common.meta_directory_methods.MetadataAttributeInformation.value_type" href="#macrobond_financial.common.meta_directory_methods.MetadataAttributeInformation.value_type">value_type</a></code></li>
-</ul>
-</li>
-<li>
-<h4><code><a title="macrobond_financial.common.meta_directory_methods.MetadataValueInformation" href="#macrobond_financial.common.meta_directory_methods.MetadataValueInformation">MetadataValueInformation</a></code></h4>
-<ul class="">
-<li><code><a title="macrobond_financial.common.meta_directory_methods.MetadataValueInformation.attribute_name" href="#macrobond_financial.common.meta_directory_methods.MetadataValueInformation.attribute_name">attribute_name</a></code></li>
-<li><code><a title="macrobond_financial.common.meta_directory_methods.MetadataValueInformation.comment" href="#macrobond_financial.common.meta_directory_methods.MetadataValueInformation.comment">comment</a></code></li>
-<li><code><a title="macrobond_financial.common.meta_directory_methods.MetadataValueInformation.description" href="#macrobond_financial.common.meta_directory_methods.MetadataValueInformation.description">description</a></code></li>
-<li><code><a title="macrobond_financial.common.meta_directory_methods.MetadataValueInformation.value" href="#macrobond_financial.common.meta_directory_methods.MetadataValueInformation.value">value</a></code></li>
 </ul>
 </li>
 </ul>

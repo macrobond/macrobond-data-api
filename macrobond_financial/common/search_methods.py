@@ -1,10 +1,7 @@
 # -*- coding: utf-8 -*-
 
-from typing import Dict, Sequence, Union, TYPE_CHECKING, List, overload, Optional
+from typing import Any, Dict, Sequence, Union, Tuple, overload
 from abc import ABC, abstractmethod
-
-if TYPE_CHECKING:  # pragma: no cover
-    from .series_methods import Entity
 
 
 class SearchMethods(ABC):
@@ -42,13 +39,6 @@ class SearchMethods(ABC):
 
 class SearchFilter:
 
-    text: Optional[str]
-    entity_types: Sequence[str]
-    must_have_values: Dict[str, object]
-    must_not_have_values: Dict[str, object]
-    must_have_attributes: Sequence[str]
-    must_not_have_attributes: Sequence[str]
-
     def __init__(
         self,
         text: str = None,
@@ -65,10 +55,10 @@ class SearchFilter:
         else:
             self.entity_types = entity_types if entity_types is not None else []
 
-        self.must_have_values = \
+        self.must_have_values: Dict[str, object] = \
             must_have_values if must_have_values is not None else {}
 
-        self.must_not_have_values = \
+        self.must_not_have_values: Dict[str, object] = \
             must_not_have_values if must_not_have_values is not None else {}
 
         if isinstance(must_have_attributes, str):
@@ -84,13 +74,9 @@ class SearchFilter:
                 must_not_have_attributes if must_not_have_attributes is not None else []
 
 
-class SearchResult(Sequence['Entity']):
+class SearchResult(Sequence[Dict[str, Any]]):
 
-    entities: List['Entity']
-
-    is_truncated: bool
-
-    def __init__(self, entities: List['Entity'], is_truncated: bool) -> None:
+    def __init__(self, entities: Tuple[Dict[str, Any], ...], is_truncated: bool) -> None:
         self.entities = entities
         self.is_truncated = is_truncated
 
@@ -101,15 +87,15 @@ class SearchResult(Sequence['Entity']):
         return str(self)
 
     @overload
-    def __getitem__(self, idx: int) -> 'Entity':
+    def __getitem__(self, idx: int) -> Dict[str, Any]:
         ...
 
     @overload
-    def __getitem__(self, s: slice) -> Sequence['Entity']:
+    def __getitem__(self, _slice: slice) -> Sequence[Dict[str, Any]]:
         ...
 
-    def __getitem__(self, item: Union[int, slice]):
-        return self.entities.__getitem__(item)
+    def __getitem__(self, idx_or_slice: Union[int, slice]):
+        return self.entities.__getitem__(idx_or_slice)
 
     def __len__(self) -> int:
         return len(self.entities)

@@ -46,17 +46,17 @@ __pdoc__ = {
 
 class ComApi(Api):
 
-    @property
-    def connection(self) -&gt; &#39;Connection&#39;:
-        return self.__connection
-
     def __init__(self, connection: &#39;Connection&#39;) -&gt; None:
         super().__init__(
             _ComMetaDirectoryMethods(connection),
             _ComSearchMethods(connection),
             _ComSeriesMethods(connection)
         )
-        self.__connection = connection</code></pre>
+        self.__connection = connection
+
+    @property
+    def connection(self) -&gt; &#39;Connection&#39;:
+        return self.__connection</code></pre>
 </details>
 </section>
 <section>
@@ -80,17 +80,17 @@ inheritance.</p></div>
 </summary>
 <pre><code class="python">class ComApi(Api):
 
-    @property
-    def connection(self) -&gt; &#39;Connection&#39;:
-        return self.__connection
-
     def __init__(self, connection: &#39;Connection&#39;) -&gt; None:
         super().__init__(
             _ComMetaDirectoryMethods(connection),
             _ComSearchMethods(connection),
             _ComSeriesMethods(connection)
         )
-        self.__connection = connection</code></pre>
+        self.__connection = connection
+
+    @property
+    def connection(self) -&gt; &#39;Connection&#39;:
+        return self.__connection</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">

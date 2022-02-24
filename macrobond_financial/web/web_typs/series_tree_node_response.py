@@ -2,7 +2,9 @@
 
 # pylint: disable = missing-module-docstring
 
-from typing import Union, List, TypedDict
+from typing import Union, List
+
+from typing_extensions import TypedDict
 
 
 class SeriesTreeNodeResponse(TypedDict):

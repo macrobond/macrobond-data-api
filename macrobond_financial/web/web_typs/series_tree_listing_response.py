@@ -2,7 +2,8 @@
 
 # pylint: disable = missing-module-docstring
 
-from typing import Optional, List, TypedDict, Dict
+from typing import Optional, List, Dict
+from typing_extensions import TypedDict
 
 
 class SeriesTreeListingSeries(TypedDict):

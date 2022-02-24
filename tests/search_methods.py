@@ -82,13 +82,7 @@ class Common(TestCase):
         com_first = com.entities[0]
         web_first = web.entities[0]
 
-        self.assertEqual(str(com_first), str(web_first), '__str__()')
-        # self.assertEqual(com_first.__repr__(), web_first.__repr__(), '__repr__()')
-        self.assertEqual(com_first.name, web_first.name, 'name')
-        self.assertEqual(com_first.primary_name, web_first.primary_name, 'primary_name')
-        self.assertEqual(com_first.title, web_first.title, 'title')
-        self.assertEqual(com_first.is_error, web_first.is_error, 'is_error')
-        self.assertEqual(com_first.error_message, web_first.error_message, 'error_message')
+        self.assertEqual(com_first.get('PrimName'), web_first.get('PrimName'), '.get("PrimName")')
 
 
 class Web(TestCase):
@@ -151,10 +145,7 @@ def search(test: TestCase, api: Api) -> None:
     test.assertNotEqual(len(search_result.entities), 0, 'len(search_result.entities) != 0')
     first = search_result.entities[0]
 
-    test.assertNotEqual(
-        len(first.metadata), 0,
-        'len(first.metadata) != 0'
-    )
+    test.assertNotEqual(len(first), 0, 'len(first)')
 
 
 def series_multi_filter(test: TestCase, api: Api) -> None:
@@ -163,10 +154,7 @@ def series_multi_filter(test: TestCase, api: Api) -> None:
     test.assertNotEqual(len(search_result.entities), 0, 'len(search_result.entities) != 0')
     first = search_result.entities[0]
 
-    test.assertNotEqual(
-        len(first.metadata), 0,
-        'len(first.metadata) != 0'
-    )
+    test.assertNotEqual(len(first), 0, 'len(first)')
 
 
 def series_multi_filter_must_have_attributes(test: TestCase, api: Api) -> None:
@@ -177,8 +165,8 @@ def series_multi_filter_must_have_attributes(test: TestCase, api: Api) -> None:
     test.assertNotEqual(len(search_result.entities), 0, 'len(com.entities) != 0')
 
     for entitie in search_result.entities:
-        if 'MoveBase' not in entitie.metadata:
-            test.fail('MoveBase not in ' + entitie.name)
+        if 'MoveBase' not in entitie:
+            test.fail('MoveBase not in ' + str(entitie))
 
 
 def series_multi_filter_must_not_have_attributes(test: TestCase, api: Api) -> None:
@@ -189,8 +177,8 @@ def series_multi_filter_must_not_have_attributes(test: TestCase, api: Api) -> No
     test.assertNotEqual(len(search_result.entities), 0, 'len(com.entities) != 0')
 
     for entitie in search_result.entities:
-        if 'MoveBase' in entitie.metadata:
-            test.fail('MoveBase is in ' + entitie.name)
+        if 'MoveBase' in entitie:
+            test.fail('MoveBase is in ' + str(entitie))
 
 
 def series_multi_filter_must_have_values(test: TestCase, api: Api) -> None:
@@ -202,9 +190,9 @@ def series_multi_filter_must_have_values(test: TestCase, api: Api) -> None:
 
     for entitie in search_result.entities:
         test.assertEqual(
-            entitie.metadata.get('MoveBase'),
+            entitie.get('MoveBase'),
             'pp100',
-            'MoveBase != "pp100" ' + entitie.name
+            'MoveBase != "pp100" ' + str(entitie)
         )
 
 
@@ -217,9 +205,9 @@ def series_multi_filter_must_not_have_values(test: TestCase, api: Api) -> None:
 
     for entitie in search_result.entities:
         test.assertNotEqual(
-            entitie.metadata.get('MoveBase'),
+            entitie.get('MoveBase'),
             'pp100',
-            'MoveBase != "pp100" ' + entitie.name
+            'MoveBase != "pp100" ' + str(entitie)
         )
 
 
@@ -256,5 +244,5 @@ def series_multi_filter_entity_types(test: TestCase, api: Api) -> None:
 
     for entitie in security.entities:
         test.assertEqual(
-            entitie.entity_type, 'Security', 'EntityType != "Security" ' + entitie.name
+            entitie.get('EntityType'), 'Security', 'EntityType != "Security" ' + str(entitie)
         )

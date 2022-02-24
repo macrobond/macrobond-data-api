@@ -3,8 +3,7 @@
 from datetime import datetime
 
 from macrobond_financial.common import Api, SeriesEntrie, StartOrEndPoint
-from macrobond_financial.common.enums import SeriesFrequency, SeriesWeekdays, \
-    SeriesMissingValueMethod
+from macrobond_financial.common.enums import SeriesMissingValueMethod
 
 from tests.test_common import TestCase
 
@@ -12,52 +11,42 @@ from tests.test_common import TestCase
 class Common(TestCase):
 
     def test_get_one_series(self) -> None:
-        series1 = self.web_api.series.get_one_series('usgdp')
-        series2 = self.com_api.series.get_one_series('usgdp')
+        web = self.web_api.series.get_one_series('usgdp').object()
+        com = self.com_api.series.get_one_series('usgdp').object()
 
-        self.assertAttributs(
-            series1, series2,
-            ['metadata', 'get_index_at_date', 'get_value_at_date']
-        )
+        # intersection = [
+        #     value for value in web_series.metadata.keys()
+        #     if value in com_series.metadata.keys()
+        # ]
+        #
+        # for key in intersection:
+        #     self.assertEqual(
+        #         web_series.metadata[key], com_series.metadata[key], 'metadata key = ' + key
+        #     )
 
-        self.assertEqual(
-            series1.metadata['Description'],
-            series2.metadata['Description'],
-            'metadata[\'Description\']'
-        )
-
-        self.assertNotEqual(
-            series1.metadata['LastModifiedTimeStamp'],
-            series2.metadata['LastModifiedTimeStamp'],
-            'metadata[\'LastModifiedTimeStamp\']'
-        )
-
-        self.assertEqual(
-            series1.get_value_at_date(series1.start_date),
-            series2.get_value_at_date(series2.start_date),
-            'series.get_value_at_date(series.start_date)'
-        )
-
-        self.assertEqual(
-            series1.get_value_at_date(series1.end_date),
-            series2.get_value_at_date(series2.end_date),
-            'series.get_value_at_date(series.end_date)'
-        )
+        self.assertEqual(web.name, com.name, 'name')
+        self.assertEqual(web.primary_name, com.primary_name, 'primary_name')
+        self.assertEqual(web.title, com.title, 'title')
+        self.assertEqual(web.entity_type, com.entity_type, 'entity_type')
+        self.assertEqual(web.error_message, com.error_message, 'error_message')
+        self.assertEqual(web.is_error, com.is_error, 'is_error')
+        self.assertEqual(str(web), com.__str__(), '__str__() or str(series)')
+        self.assertEqual(web.__repr__(), com.__repr__(), '__repr__')
+        self.assertSequenceEqual(web.values, com.values, 'values')
+        self.assertSequenceEqual(web.dates, com.dates, 'dates')
 
     def test_get_one_entitie(self) -> None:
-        entitie1 = self.web_api.series.get_one_entitie('usgdp')
-        entitie2 = self.com_api.series.get_one_entitie('usgdp')
+        web = self.web_api.series.get_one_entitie('usgdp').object()
+        com = self.com_api.series.get_one_entitie('usgdp').object()
 
-        self.assertAttributs(
-            entitie1, entitie2,
-            ['metadata', 'get_index_at_date', 'get_value_at_date']
-        )
-
-        self.assertEqual(
-            entitie1.metadata['Description'],
-            entitie2.metadata['Description'],
-            'metadata[\'Description\']'
-        )
+        self.assertEqual(web.name, com.name, 'name')
+        self.assertEqual(web.primary_name, com.primary_name, 'primary_name')
+        self.assertEqual(web.title, com.title, 'title')
+        self.assertEqual(web.entity_type, com.entity_type, 'entity_type')
+        self.assertEqual(web.error_message, com.error_message, 'error_message')
+        self.assertEqual(web.is_error, com.is_error, 'is_error')
+        self.assertEqual(str(web), com.__str__(), '__str__() or str(series)')
+        self.assertEqual(web.__repr__(), com.__repr__(), '__repr__')
 
 
 class Web(TestCase):
@@ -97,75 +86,76 @@ class Com(TestCase):
 
 
 def get_one_series(test: TestCase, api: Api) -> None:
-    series = api.series.get_one_series('usgdp')
-
-    test.assertEqual(str(series), 'usgdp', 'str(series)')
+    series = api.series.get_one_series('usgdp').object()
+    test.assertFalse(series.is_error, 'is_error')
 
     test.assertNotEqual(len(series.values), 0, 'values')
-    test.assertIsNotNone(series.start_date, 'start_date')
-    test.assertIsNotNone(series.end_date, 'end_date')
-    test.assertEqual(series.frequency, SeriesFrequency.QUARTERLY, 'frequency')
-    test.assertEqual(series.weekdays, SeriesWeekdays.FULL_WEEK, 'weekdays')
+    test.assertNotEqual(len(series.dates), 0, 'dates')
+    test.assertEqual(
+        len(series.dates), len(series.values), 'len(series.dates) = len(series.values)'
+    )
 
-    series = api.series.get_one_series('noseries!')
+    test.assertEqual(series.entity_type, 'TimeSeries', 'entity_type')
+
+    series = api.series.get_one_series('noseries!').object()
     test.assertTrue(series.is_error, 'is_error')
     test.assertEqual(series.error_message, 'Not found', 'error_message')
 
 
 def get_series(test: TestCase, api: Api) -> None:
-    series = api.series.get_series('usgdp', 'uscpi', 'noseries!')
+    series = api.series.get_series('usgdp', 'uscpi', 'noseries!').tuple_of_objects()
 
-    test.assertEqual(series[0].name, 'usgdp', 'name')
+    # test.assertEqual(series[0].name, 'usgdp', 'name')
     test.assertEqual(series[0].primary_name, 'usnaac0169', 'primary_name')
     test.assertFalse(series[0].is_error, 'is_error')
     test.assertEqual(series[0].error_message, '', 'error_message')
 
-    test.assertEqual(series[1].name, 'uscpi', 'name')
+    # test.assertEqual(series[1].name, 'uscpi', 'name')
     test.assertEqual(series[1].primary_name, 'uspric2156', 'primary_name')
     test.assertFalse(series[1].is_error, 'is_error')
     test.assertEqual(series[1].error_message, '', 'error_message')
 
-    test.assertEqual(series[2].name, 'noseries!', 'name')
-    test.assertEqual(series[2].primary_name, '', 'primary_name')
+    # test.assertEqual(series[2].name, 'noseries!', 'name')
+    # test.assertEqual(series[2].primary_name, '', 'primary_name')
     test.assertTrue(series[2].is_error, 'is_error')
     test.assertEqual(series[2].error_message, 'Not found', 'error_message')
 
 
 def get_one_entitie(test: TestCase, api: Api) -> None:
-    entitie = api.series.get_one_entitie('usgdp')
-    test.assertEqual(entitie.name, 'usgdp', 'name')
+    entitie = api.series.get_one_entitie('usgdp').object()
+    # test.assertEqual(entitie.name, 'usgdp', 'name')
     test.assertEqual(entitie.primary_name, 'usnaac0169', 'primary_name')
     test.assertFalse(entitie.is_error, 'is_error')
     test.assertEqual(entitie.error_message, '', 'error_message')
     test.assertIsNotNone(entitie.metadata, 'metadata')
 
-    entitie = api.series.get_one_entitie('noseries!')
-    test.assertEqual(entitie.name, 'noseries!', 'name')
+    entitie = api.series.get_one_entitie('noseries!').object()
+    # test.assertEqual(entitie.name, 'noseries!', 'name')
     test.assertTrue(entitie.is_error, 'is_error')
     test.assertEqual(entitie.error_message, 'Not found', 'error_message')
 
 
 def get_entities(test: TestCase, api: Api) -> None:
-    series = api.series.get_entities('usgdp', 'uscpi', 'noseries!')
+    series = api.series.get_entities('usgdp', 'uscpi', 'noseries!').tuple_of_objects()
 
-    test.assertEqual(series[0].name, 'usgdp', 'name')
+    # test.assertEqual(series[0].name, 'usgdp', 'name')
     test.assertEqual(series[0].primary_name, 'usnaac0169', 'primary_name')
     test.assertFalse(series[0].is_error, 'is_error')
     test.assertEqual(series[0].error_message, '', 'error_message')
 
-    test.assertEqual(series[1].name, 'uscpi', 'name')
+    # test.assertEqual(series[1].name, 'uscpi', 'name')
     test.assertEqual(series[1].primary_name, 'uspric2156', 'primary_name')
     test.assertFalse(series[1].is_error, 'is_error')
     test.assertEqual(series[1].error_message, '', 'error_message')
 
-    test.assertEqual(series[2].name, 'noseries!', 'name')
-    test.assertEqual(series[2].primary_name, '', 'primary_name')
+    # test.assertEqual(series[2].name, 'noseries!', 'name')
+    # test.assertEqual(series[2].primary_name, '', 'primary_name')
     test.assertTrue(series[2].is_error, 'is_error')
     test.assertEqual(series[2].error_message, 'Not found', 'error_message')
 
 
 def get_unified_series(test: TestCase, api: Api) -> None:
-    series = api.series.get_unified_series(
+    unified = api.series.get_unified_series(
         SeriesEntrie('usgdp'),
         SeriesEntrie('uscpi'),
         'usgdp',
@@ -176,29 +166,26 @@ def get_unified_series(test: TestCase, api: Api) -> None:
         ),
         start_point=StartOrEndPoint.point_in_time(1989, 2, 1),
         end_point=StartOrEndPoint.point_in_time(datetime(2000, 2, 1))
-    )
+    ).object()
 
-    # StartOrEndPoint.relative_to_observations(-1)
-    # StartOrEndPoint.relative_to_quarters(-1)
+    test.assertEqual(str(unified), 'UnifiedSeries of 5 series', '__str__() or str(series)')
 
-    test.assertEqual(series[0].name, 'usgdp', 'name')
-    test.assertEqual(series[0].primary_name, 'usnaac0169', 'primary_name')
-    test.assertFalse(series[0].is_error, 'is_error')
-    test.assertEqual(series[0].error_message, '', 'error_message')
+    test.assertEqual(unified.__repr__(), 'UnifiedSeries of 5 series', '__repr__')
 
-    test.assertEqual(series[1].name, 'uscpi', 'name')
-    test.assertEqual(series[1].primary_name, 'uspric2156', 'primary_name')
-    test.assertFalse(series[1].is_error, 'is_error')
-    test.assertEqual(series[1].error_message, '', 'error_message')
+    test.assertNotEqual(len(unified.dates), 0, 'len(unified.dates)')
 
-    test.assertEqual(series[2].name, 'usgdp', 'name')
+    for i in range(0, 4):
+        test.assertEqual(
+            len(unified.dates), len(unified[i].values),
+            f'len(unified.dates) == len(unified[{i}].values)'
+        )
 
-    test.assertEqual(series[3].name, 'uscpi', 'name')
+        test.assertFalse(unified[i].is_error, f'is_error i = {i}')
+        test.assertEqual(unified[i].error_message, '', f'error_message i = {i}')
 
-    test.assertEqual(series[4].name, 'noseries!', 'name')
-    test.assertEqual(series[4].primary_name, '', 'primary_name')
-    test.assertTrue(series[4].is_error, 'is_error')
-    test.assertEqual(series[4].error_message, 'noseries! : Not found', 'error_message')
+        test.assertFalse(unified[i].is_error, f'is_error i = {i}')
+        test.assertEqual(unified[i].error_message, '', f'error_message i = {i}')
 
-    test.assertIsNotNone(series[0].values, 'series[0].values')
-    test.assertIsNotNone(series[1].values, 'series[1].values')
+    test.assertTrue(unified[4].is_error, 'is_error')
+    test.assertEqual(unified[4].error_message, 'noseries! : Not found', 'error_message')
+    test.assertEqual(len(unified[4].values), 0, 'len(unified[4].values)')

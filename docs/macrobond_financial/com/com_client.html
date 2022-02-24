@@ -56,7 +56,9 @@ class ComClient(Client[&#39;ComApi&#39;]):
     ```
     &#34;&#34;&#34;
 
-    __api: Optional[&#39;ComApi&#39;] = None
+    def __init__(self) -&gt; None:
+        super().__init__()
+        self.__api: Optional[&#39;ComApi&#39;] = None
 
     def open(self) -&gt; &#39;ComApi&#39;:
         if self.__api is None:
@@ -119,7 +121,9 @@ class ComClient(Client[&#39;ComApi&#39;]):
     ```
     &#34;&#34;&#34;
 
-    __api: Optional[&#39;ComApi&#39;] = None
+    def __init__(self) -&gt; None:
+        super().__init__()
+        self.__api: Optional[&#39;ComApi&#39;] = None
 
     def open(self) -&gt; &#39;ComApi&#39;:
         if self.__api is None:

@@ -42,7 +42,7 @@ class MetadataMethods():
     # Get /v1/metadata/getvalueinformation
     def get_value_information(
         self, *metadata_value: Tuple[str, str]
-    ) -> List['MetadataValueInformationResponse']:
+    ) -> 'MetadataValueInformationResponse':
         '''
         Get information about metadata values.
         The result will be in the same order as the request.
@@ -65,12 +65,12 @@ class MetadataMethods():
                 'v': list(map(lambda x: x[0] + ',' + x[1], metadata_value))
             }
         )
-        return cast(List['MetadataValueInformationResponse'], response.json())
+        return cast('MetadataValueInformationResponse', response.json())
 
     # Get /v1/metadata/listattributevalues
     def list_attribute_values(
         self, attribute_name: str
-    ) -> List['MetadataValueInformationResponse']:
+    ) -> 'MetadataValueInformationResponse':
         '''
         List all metadata attribute values.
         The attribute must have the property canListValues.
@@ -91,4 +91,4 @@ class MetadataMethods():
         response = self.__session.get_or_raise(
             'v1/metadata/listattributevalues', params={'n': attribute_name}
         )
-        return cast(List['MetadataValueInformationResponse'], response.json())
+        return cast('MetadataValueInformationResponse', response.json())

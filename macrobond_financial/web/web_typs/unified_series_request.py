@@ -2,7 +2,8 @@
 
 # pylint: disable = missing-module-docstring
 
-from typing import List, Optional, TypedDict
+from typing import List, Optional
+from typing_extensions import TypedDict
 
 from macrobond_financial.common.enums import SeriesWeekdays, SeriesFrequency, CalendarDateMode, \
     CalendarMergeMode, SeriesMissingValueMethod, SeriesToLowerFrequencyMethod, \

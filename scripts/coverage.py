@@ -1,7 +1,8 @@
 
 import sys
+import os
+from unittest import UNITTEST_COMMAND
 from context import Context
-from unittest_310 import UNITTEST_COMMAND
 
 
 def coverage(context: Context) -> None:
@@ -13,6 +14,8 @@ def coverage(context: Context) -> None:
         'report -m',
         'erase'
     )
+    file_url = os.path.join(os.getcwd(), 'htmlcov', 'index.html').replace('\\', '/')
+    print('file:///' + file_url)
 
 
 def main():

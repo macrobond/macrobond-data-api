@@ -4,29 +4,45 @@ import os
 from pathlib import Path
 import importlib.util
 import sys
-from typing import Callable, Optional
+from typing import Callable, List, Optional
 
 PYTHON_36 = '36'
 
 PYTHON_310 = '310'
 
 
+class _ShellCommand:
+
+    def __init__(self, command: str, ignore_exit_code: bool, exit_code: int) -> None:
+        self.command = command
+        self.ignore_exit_code = ignore_exit_code
+        self.exit_code = exit_code
+
+    def __str__(self) -> str:
+        return f'command: "{self.command}", ignore_exit_code: {self.ignore_exit_code}, ' + \
+            f'exit_code: {self.exit_code}'
+
+
 class Context:
 
-    hade_error = False
-
     def __init__(self, *mefs: Callable[['Context'], None]) -> None:
+        self.hade_error = False
+        self.shell_commands: List[_ShellCommand] = []
         if mefs is not None:
-            if len(mefs) != 0:
-                for mef in mefs:
-                    mef(self)
-                self.test_for_error()
+            for mef in mefs:
+                mef(self)
+            print('--- shell commands ---')
+            for shell_command in self.shell_commands:
+                print(str(shell_command))
+
+            self.test_for_error()
 
     def shell_command(self, command: str, ignore_exit_code=False) -> bool:
         print('shell_command start :' + command)
         exit_code = os.system(command)
         print('shell_command end :' + command)
         print('exit_code ' + str(exit_code))
+        self.shell_commands.append(_ShellCommand(command, ignore_exit_code, exit_code))
         if exit_code != 0 and not ignore_exit_code:
             self.hade_error = True
             return False
@@ -50,6 +66,7 @@ class Context:
             self.shell_command(name + ' ' + arg)
 
     def test_for_error(self) -> None:
+        print('Error' if self.hade_error else '')
         if self.hade_error:
             sys.exit(1)
 
@@ -60,7 +77,7 @@ class Context:
             self.error_print('Python' + version_of_python + ' not found, ' + python_dir)
             sys.exit(1)
 
-        return os.path.join(python_dir, 'Python')
+        return f'"{os.path.join(python_dir, "Python")}"'
 
     def try_get_python_path(self, version_of_python: str = PYTHON_310) -> Optional[str]:
         python_dir = self.__get_python_path(version_of_python)
@@ -70,7 +87,7 @@ class Context:
         if not isdir:
             self.warning_print('Python' + version_of_python + ' not found, ' + python_dir)
 
-        return os.path.join(python_dir, 'Python') if isdir else None
+        return f'"{os.path.join(python_dir, "Python")}"' if isdir else None
 
     def __get_python_path(self, version_of_python: str) -> str:
         return os.path.join(

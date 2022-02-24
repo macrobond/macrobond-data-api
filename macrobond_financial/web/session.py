@@ -25,7 +25,6 @@ __pdoc__ = {
 
 
 class Session():
-    __token_endpoint: Optional[str] = None
 
     @property
     def metadata(self) -> MetadataMethods:
@@ -68,6 +67,8 @@ class Session():
         api_url: str = API_URL_DEFAULT, authorization_url: str = API_URL_DEFAULT,
         test_auth2_session: Any = None
     ) -> None:
+        self.__token_endpoint: Optional[str] = None
+
         if not authorization_url.endswith('/'):
             authorization_url = authorization_url + '/'
         self.__authorization_url = authorization_url
