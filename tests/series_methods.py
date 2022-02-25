@@ -15,13 +15,13 @@ class Common(TestCase):
         com = self.com_api.series.get_one_series('usgdp').object()
 
         # intersection = [
-        #     value for value in web_series.metadata.keys()
-        #     if value in com_series.metadata.keys()
+        #     value for value in web.metadata.keys()
+        #     if value in com.metadata.keys()
         # ]
-        #
+
         # for key in intersection:
         #     self.assertEqual(
-        #         web_series.metadata[key], com_series.metadata[key], 'metadata key = ' + key
+        #         web.metadata[key], com.metadata[key], 'metadata key = ' + key
         #     )
 
         self.assertEqual(web.name, com.name, 'name')
@@ -66,6 +66,9 @@ class Web(TestCase):
     def test_get_unified_series(self) -> None:
         get_unified_series(self, self.web_api)
 
+    def test_get_unified_series_use_twice(self) -> None:
+        get_unified_series_use_twice(self.web_api)
+
 
 class Com(TestCase):
 
@@ -83,6 +86,9 @@ class Com(TestCase):
 
     def test_get_unified_series(self) -> None:
         get_unified_series(self, self.com_api)
+
+    def test_get_unified_series_use_twice(self) -> None:
+        get_unified_series_use_twice(self.com_api)
 
 
 def get_one_series(test: TestCase, api: Api) -> None:
@@ -189,3 +195,13 @@ def get_unified_series(test: TestCase, api: Api) -> None:
     test.assertTrue(unified[4].is_error, 'is_error')
     test.assertEqual(unified[4].error_message, 'noseries! : Not found', 'error_message')
     test.assertEqual(len(unified[4].values), 0, 'len(unified[4].values)')
+
+
+def get_unified_series_use_twice(api: Api) -> None:
+    unified_return = api.series.get_unified_series(
+        SeriesEntrie('usgdp'),
+        SeriesEntrie('uscpi'),
+    )
+
+    unified_return.object()
+    unified_return.object()

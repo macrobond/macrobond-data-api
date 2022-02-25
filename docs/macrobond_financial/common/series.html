@@ -28,7 +28,7 @@
 </summary>
 <pre><code class="python"># -*- coding: utf-8 -*-
 
-from typing import Any, Dict, Tuple, Optional, List, cast, TYPE_CHECKING
+from typing import Any, Dict, Tuple, Optional, List, Union, cast, TYPE_CHECKING
 
 from datetime import datetime
 
@@ -38,24 +38,21 @@ from .entity import Entity
 
 if TYPE_CHECKING:  # pragma: no cover
     from pandas import DataFrame  # type: ignore
-    # from .enums import SeriesFrequency, SeriesWeekdays
 
     from .entity import EntityColumnsLiterals, ErrorEntityTypedDict, EntityTypedDict
 
     from typing_extensions import Literal
 
-    SeriesColumns = List[
-        Literal[
-            EntityColumnsLiterals, &#39;values&#39;, &#39;dates&#39;, &#39;start_date&#39;, &#39;end_date&#39;, &#39;frequency&#39;,
-            &#39;weekdays&#39;
-        ]
-    ]
+    SeriesColumns = List[Literal[EntityColumnsLiterals, &#39;Values&#39;, &#39;Dates&#39;]]
 
     class ErrorSeriesTypedDict(ErrorEntityTypedDict):
         ...
 
     class SeriesTypedDict(EntityTypedDict):
-        ...
+        Values: Tuple[Optional[float], ...]
+        Dates: Tuple[datetime, ...]
+
+    SeriesTypedDicts = Union[SeriesTypedDict, ErrorSeriesTypedDict]
 
 
 class Series(Entity):

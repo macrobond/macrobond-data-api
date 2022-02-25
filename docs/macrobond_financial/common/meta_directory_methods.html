@@ -31,21 +31,20 @@
 
 &#39;&#39;&#39;module doc string&#39;&#39;&#39;
 
-from typing import List, TYPE_CHECKING
+from typing import List, Tuple, overload, Union, TYPE_CHECKING
 from abc import ABC, abstractmethod
 
-from ._return_data_frame import _ReturnDataFrame
-
 if TYPE_CHECKING:  # pragma: no cover
+    from pandas import DataFrame, _typing as pandas_typing  # type: ignore
 
-    from .metadata_attribute_information import MetadataAttributeInformation
-    from .metadata_attribute_information import TypedDictMetadataAttributeInformation
+    from .metadata_attribute_information import MetadataAttributeInformation, \
+        TypedDictMetadataAttributeInformation, MetadataAttributeInformationColumns
 
-    from .metadata_value_information import MetadataValueInformation
-    from .metadata_value_information import TypedDictMetadataValueInformation
+    from .metadata_value_information import MetadataValueInformation, \
+        TypedDictMetadataValueInformation, MetadataValueInformationColumns
 
 
-class ListValuesReturn(_ReturnDataFrame, ABC):
+class ListValuesReturn(ABC):
 
     @abstractmethod
     def list_of_objects(self) -&gt; List[&#39;MetadataValueInformation&#39;]: ...
@@ -53,14 +52,48 @@ class ListValuesReturn(_ReturnDataFrame, ABC):
     @abstractmethod
     def list_of_dicts(self) -&gt; List[&#39;TypedDictMetadataValueInformation&#39;]: ...
 
+    @overload
+    def data_frame(self) -&gt; &#39;DataFrame&#39;: ...
 
-class GetAttributeInformationReturn(_ReturnDataFrame, ABC):
+    @overload
+    def data_frame(
+        self,
+        index: &#39;pandas_typing.Axes&#39; = None,
+        columns: Union[
+            &#39;MetadataValueInformationColumns&#39;, &#39;pandas_typing.Axes&#39;
+        ] = None,
+        dtype: &#39;pandas_typing.Dtype&#39; = None,
+        copy: bool = False,
+    ) -&gt; &#39;DataFrame&#39;: ...
+
+    @abstractmethod
+    def data_frame(self, *args, **kwargs) -&gt; &#39;DataFrame&#39;: ...
+
+
+class GetAttributeInformationReturn(ABC):
 
     @abstractmethod
     def object(self) -&gt; &#39;MetadataAttributeInformation&#39;: ...
 
     @abstractmethod
     def dict(self) -&gt; &#39;TypedDictMetadataAttributeInformation&#39;: ...
+
+    @overload
+    def data_frame(self) -&gt; &#39;DataFrame&#39;: ...
+
+    @overload
+    def data_frame(
+        self,
+        index: &#39;pandas_typing.Axes&#39; = None,
+        columns: Union[
+            &#39;MetadataAttributeInformationColumns&#39;, &#39;pandas_typing.Axes&#39;
+        ] = None,
+        dtype: &#39;pandas_typing.Dtype&#39; = None,
+        copy: bool = False,
+    ) -&gt; &#39;DataFrame&#39;: ...
+
+    @abstractmethod
+    def data_frame(self, *args, **kwargs) -&gt; &#39;DataFrame&#39;: ...
 
 
 class MetaDirectoryMethods(ABC):
@@ -115,17 +148,33 @@ inheritance.</p></div>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class GetAttributeInformationReturn(_ReturnDataFrame, ABC):
+<pre><code class="python">class GetAttributeInformationReturn(ABC):
 
     @abstractmethod
     def object(self) -&gt; &#39;MetadataAttributeInformation&#39;: ...
 
     @abstractmethod
-    def dict(self) -&gt; &#39;TypedDictMetadataAttributeInformation&#39;: ...</code></pre>
+    def dict(self) -&gt; &#39;TypedDictMetadataAttributeInformation&#39;: ...
+
+    @overload
+    def data_frame(self) -&gt; &#39;DataFrame&#39;: ...
+
+    @overload
+    def data_frame(
+        self,
+        index: &#39;pandas_typing.Axes&#39; = None,
+        columns: Union[
+            &#39;MetadataAttributeInformationColumns&#39;, &#39;pandas_typing.Axes&#39;
+        ] = None,
+        dtype: &#39;pandas_typing.Dtype&#39; = None,
+        copy: bool = False,
+    ) -&gt; &#39;DataFrame&#39;: ...
+
+    @abstractmethod
+    def data_frame(self, *args, **kwargs) -&gt; &#39;DataFrame&#39;: ...</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
-<li>macrobond_financial.common._return_data_frame._ReturnDataFrame</li>
 <li>abc.ABC</li>
 </ul>
 <h3>Subclasses</h3>
@@ -135,6 +184,19 @@ inheritance.</p></div>
 </ul>
 <h3>Methods</h3>
 <dl>
+<dt id="macrobond_financial.common.meta_directory_methods.GetAttributeInformationReturn.data_frame"><code class="name flex">
+<span>def <span class="ident">data_frame</span></span>(<span>self, *args, **kwargs) ‑> DataFrame</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@abstractmethod
+def data_frame(self, *args, **kwargs) -&gt; &#39;DataFrame&#39;: ...</code></pre>
+</details>
+</dd>
 <dt id="macrobond_financial.common.meta_directory_methods.GetAttributeInformationReturn.dict"><code class="name flex">
 <span>def <span class="ident">dict</span></span>(<span>self) ‑> TypedDictMetadataAttributeInformation</span>
 </code></dt>
@@ -173,17 +235,33 @@ inheritance.</p></div>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class ListValuesReturn(_ReturnDataFrame, ABC):
+<pre><code class="python">class ListValuesReturn(ABC):
 
     @abstractmethod
     def list_of_objects(self) -&gt; List[&#39;MetadataValueInformation&#39;]: ...
 
     @abstractmethod
-    def list_of_dicts(self) -&gt; List[&#39;TypedDictMetadataValueInformation&#39;]: ...</code></pre>
+    def list_of_dicts(self) -&gt; List[&#39;TypedDictMetadataValueInformation&#39;]: ...
+
+    @overload
+    def data_frame(self) -&gt; &#39;DataFrame&#39;: ...
+
+    @overload
+    def data_frame(
+        self,
+        index: &#39;pandas_typing.Axes&#39; = None,
+        columns: Union[
+            &#39;MetadataValueInformationColumns&#39;, &#39;pandas_typing.Axes&#39;
+        ] = None,
+        dtype: &#39;pandas_typing.Dtype&#39; = None,
+        copy: bool = False,
+    ) -&gt; &#39;DataFrame&#39;: ...
+
+    @abstractmethod
+    def data_frame(self, *args, **kwargs) -&gt; &#39;DataFrame&#39;: ...</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
-<li>macrobond_financial.common._return_data_frame._ReturnDataFrame</li>
 <li>abc.ABC</li>
 </ul>
 <h3>Subclasses</h3>
@@ -193,6 +271,19 @@ inheritance.</p></div>
 </ul>
 <h3>Methods</h3>
 <dl>
+<dt id="macrobond_financial.common.meta_directory_methods.ListValuesReturn.data_frame"><code class="name flex">
+<span>def <span class="ident">data_frame</span></span>(<span>self, *args, **kwargs) ‑> DataFrame</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@abstractmethod
+def data_frame(self, *args, **kwargs) -&gt; &#39;DataFrame&#39;: ...</code></pre>
+</details>
+</dd>
 <dt id="macrobond_financial.common.meta_directory_methods.ListValuesReturn.list_of_dicts"><code class="name flex">
 <span>def <span class="ident">list_of_dicts</span></span>(<span>self) ‑> List[TypedDictMetadataValueInformation]</span>
 </code></dt>
@@ -356,6 +447,7 @@ def list_values(self, name: str) -&gt; ListValuesReturn:
 <li>
 <h4><code><a title="macrobond_financial.common.meta_directory_methods.GetAttributeInformationReturn" href="#macrobond_financial.common.meta_directory_methods.GetAttributeInformationReturn">GetAttributeInformationReturn</a></code></h4>
 <ul class="">
+<li><code><a title="macrobond_financial.common.meta_directory_methods.GetAttributeInformationReturn.data_frame" href="#macrobond_financial.common.meta_directory_methods.GetAttributeInformationReturn.data_frame">data_frame</a></code></li>
 <li><code><a title="macrobond_financial.common.meta_directory_methods.GetAttributeInformationReturn.dict" href="#macrobond_financial.common.meta_directory_methods.GetAttributeInformationReturn.dict">dict</a></code></li>
 <li><code><a title="macrobond_financial.common.meta_directory_methods.GetAttributeInformationReturn.object" href="#macrobond_financial.common.meta_directory_methods.GetAttributeInformationReturn.object">object</a></code></li>
 </ul>
@@ -363,6 +455,7 @@ def list_values(self, name: str) -&gt; ListValuesReturn:
 <li>
 <h4><code><a title="macrobond_financial.common.meta_directory_methods.ListValuesReturn" href="#macrobond_financial.common.meta_directory_methods.ListValuesReturn">ListValuesReturn</a></code></h4>
 <ul class="">
+<li><code><a title="macrobond_financial.common.meta_directory_methods.ListValuesReturn.data_frame" href="#macrobond_financial.common.meta_directory_methods.ListValuesReturn.data_frame">data_frame</a></code></li>
 <li><code><a title="macrobond_financial.common.meta_directory_methods.ListValuesReturn.list_of_dicts" href="#macrobond_financial.common.meta_directory_methods.ListValuesReturn.list_of_dicts">list_of_dicts</a></code></li>
 <li><code><a title="macrobond_financial.common.meta_directory_methods.ListValuesReturn.list_of_objects" href="#macrobond_financial.common.meta_directory_methods.ListValuesReturn.list_of_objects">list_of_objects</a></code></li>
 </ul>

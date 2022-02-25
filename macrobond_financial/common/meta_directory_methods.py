@@ -2,21 +2,20 @@
 
 '''module doc string'''
 
-from typing import List, TYPE_CHECKING
+from typing import List, Tuple, overload, Union, TYPE_CHECKING
 from abc import ABC, abstractmethod
 
-from ._return_data_frame import _ReturnDataFrame
-
 if TYPE_CHECKING:  # pragma: no cover
+    from pandas import DataFrame, _typing as pandas_typing  # type: ignore
 
-    from .metadata_attribute_information import MetadataAttributeInformation
-    from .metadata_attribute_information import TypedDictMetadataAttributeInformation
+    from .metadata_attribute_information import MetadataAttributeInformation, \
+        TypedDictMetadataAttributeInformation, MetadataAttributeInformationColumns
 
-    from .metadata_value_information import MetadataValueInformation
-    from .metadata_value_information import TypedDictMetadataValueInformation
+    from .metadata_value_information import MetadataValueInformation, \
+        TypedDictMetadataValueInformation, MetadataValueInformationColumns
 
 
-class ListValuesReturn(_ReturnDataFrame, ABC):
+class ListValuesReturn(ABC):
 
     @abstractmethod
     def list_of_objects(self) -> List['MetadataValueInformation']: ...
@@ -24,14 +23,48 @@ class ListValuesReturn(_ReturnDataFrame, ABC):
     @abstractmethod
     def list_of_dicts(self) -> List['TypedDictMetadataValueInformation']: ...
 
+    @overload
+    def data_frame(self) -> 'DataFrame': ...
 
-class GetAttributeInformationReturn(_ReturnDataFrame, ABC):
+    @overload
+    def data_frame(
+        self,
+        index: 'pandas_typing.Axes' = None,
+        columns: Union[
+            'MetadataValueInformationColumns', 'pandas_typing.Axes'
+        ] = None,
+        dtype: 'pandas_typing.Dtype' = None,
+        copy: bool = False,
+    ) -> 'DataFrame': ...
+
+    @abstractmethod
+    def data_frame(self, *args, **kwargs) -> 'DataFrame': ...
+
+
+class GetAttributeInformationReturn(ABC):
 
     @abstractmethod
     def object(self) -> 'MetadataAttributeInformation': ...
 
     @abstractmethod
     def dict(self) -> 'TypedDictMetadataAttributeInformation': ...
+
+    @overload
+    def data_frame(self) -> 'DataFrame': ...
+
+    @overload
+    def data_frame(
+        self,
+        index: 'pandas_typing.Axes' = None,
+        columns: Union[
+            'MetadataAttributeInformationColumns', 'pandas_typing.Axes'
+        ] = None,
+        dtype: 'pandas_typing.Dtype' = None,
+        copy: bool = False,
+    ) -> 'DataFrame': ...
+
+    @abstractmethod
+    def data_frame(self, *args, **kwargs) -> 'DataFrame': ...
 
 
 class MetaDirectoryMethods(ABC):

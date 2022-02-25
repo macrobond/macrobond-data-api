@@ -12,15 +12,19 @@ from macrobond_financial.common.enums import SeriesWeekdays, SeriesFrequency, Ca
 
 import macrobond_financial.common.series_methods as SeriesMethods
 
-# from macrobond_financial.common._get_pandas import _get_pandas
+from macrobond_financial.common._get_pandas import _get_pandas
 
 if TYPE_CHECKING:  # pragma: no cover
     from .session import Session
     from pandas import DataFrame  # type: ignore
     from macrobond_financial.common import SeriesEntrie, StartOrEndPoint
 
-    from macrobond_financial.common.entity import EntityColumns, EntityTypedDict
-    from macrobond_financial.common.series import SeriesColumns, SeriesTypedDict
+    from macrobond_financial.common.entity import EntityColumns, \
+        EntityTypedDict, ErrorEntityTypedDict, EntityTypedDicts
+
+    from macrobond_financial.common.series import SeriesColumns, \
+        SeriesTypedDict, ErrorSeriesTypedDict, SeriesTypedDicts
+
     from macrobond_financial.common.unified_series import UnifiedSeriesColumns, \
         UnifiedSeriesTypedDict
 
@@ -30,46 +34,98 @@ if TYPE_CHECKING:  # pragma: no cover
     from .web_typs.values_response import ValuesResponse
 
 
+def _create_entity(response: 'EntityResponse', name: str) -> Entity:
+    error_text = response.get('errorText')
+
+    if error_text is not None:
+        return Entity(error_text, {'Name': name})
+
+    return Entity('', cast(Dict[str, Any], response['metadata']))
+
+
+def _create_entity_dicts(response: 'EntityResponse', name: str) -> 'EntityTypedDicts':
+    error_text = response.get('errorText')
+
+    if error_text is not None:
+        error_entity: 'ErrorEntityTypedDict' = {
+            'Name': name,
+            'ErrorMessage': error_text
+        }
+        return error_entity
+
+    return cast('EntityTypedDict', response['metadata'])
+
+
+def _create_series(response: 'SeriesResponse', name: str) -> Series:
+    error_text = response.get('errorText')
+
+    if error_text is not None:
+        metadata: Dict[str, Any] = {'Name': name}
+        return Series(error_text, metadata, None, None)
+
+    dates = tuple(
+        map(lambda s:
+            datetime.strptime(s, '%Y-%m-%dT%H:%M:%S').replace(tzinfo=timezone.utc),
+            cast(List[str], response['dates'])
+            )
+    )
+
+    values = cast(Tuple[Optional[float]], response['values'])
+    return Series('', cast(Dict[str, Any], response['metadata']), values, dates)
+
+
+def _create_series_dicts(response: 'SeriesResponse', name: str) -> 'SeriesTypedDicts':
+    error_text = response.get('errorText')
+
+    if error_text is not None:
+        error_series: 'ErrorSeriesTypedDict' = {
+            'Name': name,
+            'ErrorMessage': error_text
+        }
+        return error_series
+
+    dates = tuple(
+        map(lambda s:
+            datetime.strptime(s, '%Y-%m-%dT%H:%M:%S').replace(tzinfo=timezone.utc),
+            cast(List[str], response['dates'])
+            )
+    )
+
+    values = cast(Tuple[Optional[float]], response['values'])
+
+    series: 'SeriesTypedDict' = {  # type: ignore
+        'Name': name,
+        'Values': values,
+        'Dates': dates
+    }
+
+    return series
+
+
 class _GetOneSeriesReturn(SeriesMethods.GetOneSeriesReturn):
 
     def __init__(self, session: 'Session', series_name: str) -> None:
-        super().__init__()
         self.__session = session
         self.__series_name = series_name
 
     def object(self) -> Series:
         response = self.__session.series.fetch_series(self.__series_name)[0]
-        error_text = response.get('errorText')
+        return _create_series(response, self.__series_name)
 
-        if error_text is not None:
-            return Series(error_text, {'Name': self.__series_name}, None, None)
-
-        dates = tuple(
-            map(lambda s:
-                datetime.strptime(s, '%Y-%m-%dT%H:%M:%S').replace(tzinfo=timezone.utc),
-                cast(List[str], response['dates'])
-                )
-        )
-
-        values = cast(Tuple[Optional[float]], response['values'])
-
-        return Series('', cast(Dict[str, Any], response['metadata']), values, dates)
-
-    def dict(self) -> 'SeriesTypedDict':
-        raise NotImplementedError()
+    def dict(self) -> 'SeriesTypedDicts':
+        response = self.__session.series.fetch_series(self.__series_name)[0]
+        return _create_series_dicts(response, self.__series_name)
 
     def data_frame(self, *args, **kwargs) -> 'DataFrame':
-        raise NotImplementedError()
-        # pandas = _get_pandas()
-        # args = args[1:]
-        # kwargs['data'] = self.list_of_dicts()
-        # return pandas.DataFrame(*args, **kwargs)
+        pandas = _get_pandas()
+        args = args[1:]
+        kwargs['data'] = [self.dict()]
+        return pandas.DataFrame(*args, **kwargs)
 
 
 class _GetSeriesReturn(SeriesMethods.GetSeriesReturn):
 
     def __init__(self, session: 'Session', series_names: Tuple[str, ...]) -> None:
-        super().__init__()
         self.__session = session
         self.__series_names = series_names
 
@@ -78,92 +134,72 @@ class _GetSeriesReturn(SeriesMethods.GetSeriesReturn):
 
         ret: List[Series] = []
         for i, response in enumerate(response_list):
-            error_text = response.get('errorText')
-
-            if error_text is not None:
-                metadata: Dict[str, Any] = {'Name': self.__series_names[i]}
-                ret.append(Series(error_text, metadata, None, None))
-            else:
-                dates = tuple(
-                    map(lambda s:
-                        datetime.strptime(s, '%Y-%m-%dT%H:%M:%S').replace(tzinfo=timezone.utc),
-                        cast(List[str], response['dates'])
-                        )
-                )
-
-                values = cast(Tuple[Optional[float]], response['values'])
-                ret.append(Series('', cast(Dict[str, Any], response['metadata']), values, dates))
+            ret.append(_create_series(response, self.__series_names[i]))
 
         return tuple(ret)
 
-    def tuple_of_dicts(self) -> Tuple['SeriesTypedDict', ...]:
-        raise NotImplementedError()
+    def tuple_of_dicts(self) -> Tuple['SeriesTypedDicts', ...]:
+        response_list = self.__session.series.fetch_series(*self.__series_names)
+
+        ret: List['SeriesTypedDicts'] = []
+        for i, response in enumerate(response_list):
+            ret.append(_create_series_dicts(response, self.__series_names[i]))
+
+        return tuple(ret)
 
     def data_frame(self, *args, **kwargs) -> 'DataFrame':
-        raise NotImplementedError()
-        # pandas = _get_pandas()
-        # args = args[1:]
-        # kwargs['data'] = self.list_of_dicts()
-        # return pandas.DataFrame(*args, **kwargs)
+        pandas = _get_pandas()
+        args = args[1:]
+        kwargs['data'] = self.tuple_of_dicts()
+        return pandas.DataFrame(*args, **kwargs)
 
 
 class _GetOneEntitieReturn(SeriesMethods.GetOneEntitieReturn):
 
     def __init__(self, session: 'Session', entity_name: str) -> None:
-        super().__init__()
         self.__session = session
         self.__entity_name = entity_name
 
     def object(self) -> Entity:
         response = self.__session.series.fetch_entities(self.__entity_name)[0]
-        error_text = response.get('errorText')
+        return _create_entity(response, self.__entity_name)
 
-        if error_text is not None:
-            return Entity(error_text, {'Name': self.__entity_name})
-
-        return Entity('', cast(Dict[str, Any], response['metadata']))
-
-    def dict(self) -> 'EntityTypedDict':
-        raise NotImplementedError()
+    def dict(self) -> 'EntityTypedDicts':
+        response = self.__session.series.fetch_entities(self.__entity_name)[0]
+        return _create_entity_dicts(response, self.__entity_name)
 
     def data_frame(self, *args, **kwargs) -> 'DataFrame':
-        raise NotImplementedError()
-        # pandas = _get_pandas()
-        # args = args[1:]
-        # kwargs['data'] = self.list_of_dicts()
-        # return pandas.DataFrame(*args, **kwargs)
+        pandas = _get_pandas()
+        args = args[1:]
+        kwargs['data'] = [self.dict()]
+        return pandas.DataFrame(*args, **kwargs)
 
 
 class _GetEntitiesReturn(SeriesMethods.GetEntitiesReturn):
 
     def __init__(self, session: 'Session', entity_names: Tuple[str, ...]) -> None:
-        super().__init__()
         self.__session = session
         self.__entity_names = entity_names
 
     def tuple_of_objects(self) -> Tuple[Entity, ...]:
         response_list = self.__session.series.fetch_entities(*self.__entity_names)
-
         ret: List[Entity] = []
         for i, response in enumerate(response_list):
-            error_text = response.get('errorText')
-
-            if error_text is not None:
-                ret.append(Entity(error_text, {'Name': self.__entity_names[i]}))
-            else:
-                ret.append(Entity('', cast(Dict[str, Any], response['metadata'])))
-
+            ret.append(_create_entity(response, self.__entity_names[i]))
         return tuple(ret)
 
-    def tuple_of_dicts(self) -> Tuple['EntityTypedDict', ...]:
-        raise NotImplementedError()
+    def tuple_of_dicts(self) -> Tuple['EntityTypedDicts', ...]:
+        response_list = self.__session.series.fetch_entities(*self.__entity_names)
+        ret: List['EntityTypedDicts'] = []
+        for i, response in enumerate(response_list):
+            ret.append(_create_entity_dicts(response, self.__entity_names[i]))
+        return tuple(ret)
 
     def data_frame(self, *args, **kwargs) -> 'DataFrame':
-        raise NotImplementedError()
-        # pandas = _get_pandas()
-        # args = args[1:]
-        # kwargs['data'] = self.list_of_dicts()
-        # return pandas.DataFrame(*args, **kwargs)
+        pandas = _get_pandas()
+        args = args[1:]
+        kwargs['data'] = self.tuple_of_dicts()
+        return pandas.DataFrame(*args, **kwargs)
 
 
 class _GetUnifiedSeriesReturn(SeriesMethods.GetUnifiedSeriesReturn):

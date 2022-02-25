@@ -8,7 +8,7 @@ from macrobond_financial.common import Entity, UnifiedSeries, UnifiedSerie, Seri
 import macrobond_financial.common.series_methods as SeriesMethods
 from macrobond_financial.common.enums import SeriesWeekdays, SeriesFrequency
 
-# from macrobond_financial.common._get_pandas import _get_pandas
+from macrobond_financial.common._get_pandas import _get_pandas
 
 if TYPE_CHECKING:  # pragma: no cover
     from pandas import DataFrame  # type: ignore
@@ -18,8 +18,12 @@ if TYPE_CHECKING:  # pragma: no cover
 
     from macrobond_financial.common import SeriesEntrie, StartOrEndPoint
 
-    from macrobond_financial.common.entity import EntityColumns, EntityTypedDict
-    from macrobond_financial.common.series import SeriesColumns, SeriesTypedDict
+    from macrobond_financial.common.entity import EntityColumns, \
+        EntityTypedDict, ErrorEntityTypedDict, EntityTypedDicts
+
+    from macrobond_financial.common.series import SeriesColumns, \
+        SeriesTypedDict, ErrorSeriesTypedDict, SeriesTypedDicts
+
     from macrobond_financial.common.unified_series import UnifiedSeriesColumns, \
         UnifiedSeriesTypedDict
 
@@ -36,17 +40,43 @@ def _create_entity(com_entity: 'ComEntity', name: str) -> Entity:
 
     com_metadata = com_entity.Metadata
     for names_and_description in com_metadata.ListNames():
-        name = names_and_description[0]
-        values = com_metadata.GetValues(name)
-        if len(values) == 1:
-            metadata[name] = values[0]
+        meta_name = names_and_description[0]
+        meta_values = com_metadata.GetValues(meta_name)
+        if len(meta_values) == 1:
+            metadata[meta_name] = meta_values[0]
         else:
-            metadata[name] = list(values)
+            metadata[meta_name] = list(meta_values)
 
     if 'FullDescription' not in metadata:
         metadata['FullDescription'] = com_entity.Title
 
     return Entity('', metadata)
+
+
+def _create_entity_dicts(com_entity: 'ComEntity', name: str) -> 'EntityTypedDicts':
+
+    if com_entity.IsError:
+        error_entity: 'ErrorEntityTypedDict' = {
+            'Name': name,
+            'ErrorMessage': com_entity.ErrorMessage
+        }
+        return error_entity
+
+    entity: 'EntityTypedDict' = {'Name': name}  # type: ignore
+
+    com_metadata = com_entity.Metadata
+    for names_and_description in com_metadata.ListNames():
+        meta_name = names_and_description[0]
+        meta_values = com_metadata.GetValues(meta_name)
+        if len(meta_values) == 1:
+            entity[meta_name] = meta_values[0]  # type: ignore
+        else:
+            entity[meta_name] = list(meta_values)  # type: ignore
+
+    if 'FullDescription' not in entity:
+        entity['FullDescription'] = com_entity.Title
+
+    return entity
 
 
 def _create_series(com_series: 'ComSeries', name: str) -> Series:
@@ -57,12 +87,12 @@ def _create_series(com_series: 'ComSeries', name: str) -> Series:
 
     com_metadata = com_series.Metadata
     for names_and_description in com_metadata.ListNames():
-        name = names_and_description[0]
-        values = com_metadata.GetValues(name)
-        if len(values) == 1:
-            metadata[name] = values[0]
+        meta_name = names_and_description[0]
+        meta_values = com_metadata.GetValues(meta_name)
+        if len(meta_values) == 1:
+            metadata[meta_name] = meta_values[0]
         else:
-            metadata[name] = list(values)
+            metadata[meta_name] = list(meta_values)
 
     if 'FullDescription' not in metadata:
         metadata['FullDescription'] = com_series.Title
@@ -70,10 +100,39 @@ def _create_series(com_series: 'ComSeries', name: str) -> Series:
     return Series('', metadata, com_series.Values, com_series.DatesAtStartOfPeriod)
 
 
+def _create_series_dicts(com_series: 'ComSeries', name: str) -> 'SeriesTypedDicts':
+
+    if com_series.IsError:
+        error_series: 'ErrorSeriesTypedDict' = {
+            'Name': name,
+            'ErrorMessage': com_series.ErrorMessage
+        }
+        return error_series
+
+    series: 'SeriesTypedDict' = {  # type: ignore
+        'Name': name,
+        'Values': com_series.Values,
+        'Dates': com_series.DatesAtStartOfPeriod
+    }
+
+    com_metadata = com_series.Metadata
+    for names_and_description in com_metadata.ListNames():
+        meta_name = names_and_description[0]
+        meta_values = com_metadata.GetValues(meta_name)
+        if len(meta_values) == 1:
+            series[meta_name] = meta_values[0]  # type: ignore
+        else:
+            series[meta_name] = list(meta_values)  # type: ignore
+
+    if 'FullDescription' not in series:
+        series['FullDescription'] = com_series.Title
+
+    return series
+
+
 class _GetOneSeriesReturn(SeriesMethods.GetOneSeriesReturn):
 
     def __init__(self, database: 'Database', series_name: str) -> None:
-        super().__init__()
         self.__database = database
         self.__series_name = series_name
 
@@ -81,21 +140,20 @@ class _GetOneSeriesReturn(SeriesMethods.GetOneSeriesReturn):
         com_series = self.__database.FetchOneSeries(self.__series_name)
         return _create_series(com_series, self.__series_name)
 
-    def dict(self) -> 'SeriesTypedDict':
-        raise NotImplementedError()
+    def dict(self) -> 'SeriesTypedDicts':
+        com_series = self.__database.FetchOneSeries(self.__series_name)
+        return _create_series_dicts(com_series, self.__series_name)
 
     def data_frame(self, *args, **kwargs) -> 'DataFrame':
-        raise NotImplementedError()
-        # pandas = _get_pandas()
-        # args = args[1:]
-        # kwargs['data'] = self.list_of_dicts()
-        # return pandas.DataFrame(*args, **kwargs)
+        pandas = _get_pandas()
+        args = args[1:]
+        kwargs['data'] = [self.dict()]
+        return pandas.DataFrame(*args, **kwargs)
 
 
 class _GetSeriesReturn(SeriesMethods.GetSeriesReturn):
 
     def __init__(self, database: 'Database', series_names: Tuple[str, ...]) -> None:
-        super().__init__()
         self.__database = database
         self.__series_names = series_names
 
@@ -107,21 +165,24 @@ class _GetSeriesReturn(SeriesMethods.GetSeriesReturn):
             ret.append(_create_series(com_one_series, self.__series_names[i]))
         return tuple(ret)
 
-    def tuple_of_dicts(self) -> Tuple['SeriesTypedDict', ...]:
-        raise NotImplementedError()
+    def tuple_of_dicts(self) -> Tuple['SeriesTypedDicts', ...]:
+        com_series = self.__database.FetchSeries(self.__series_names)
+
+        ret: List['SeriesTypedDicts'] = []
+        for i, com_one_series in enumerate(com_series):
+            ret.append(_create_series_dicts(com_one_series, self.__series_names[i]))
+        return tuple(ret)
 
     def data_frame(self, *args, **kwargs) -> 'DataFrame':
-        raise NotImplementedError()
-        # pandas = _get_pandas()
-        # args = args[1:]
-        # kwargs['data'] = self.list_of_dicts()
-        # return pandas.DataFrame(*args, **kwargs)
+        pandas = _get_pandas()
+        args = args[1:]
+        kwargs['data'] = self.tuple_of_dicts()
+        return pandas.DataFrame(*args, **kwargs)
 
 
 class _GetOneEntitieReturn(SeriesMethods.GetOneEntitieReturn):
 
     def __init__(self, database: 'Database', entity_name: str) -> None:
-        super().__init__()
         self.__database = database
         self.__entity_name = entity_name
 
@@ -129,21 +190,20 @@ class _GetOneEntitieReturn(SeriesMethods.GetOneEntitieReturn):
         com_entity = self.__database.FetchOneEntity(self.__entity_name)
         return _create_entity(com_entity, self.__entity_name)
 
-    def dict(self) -> 'EntityTypedDict':
-        raise NotImplementedError()
+    def dict(self) -> 'EntityTypedDicts':
+        com_entity = self.__database.FetchOneEntity(self.__entity_name)
+        return _create_entity_dicts(com_entity, self.__entity_name)
 
     def data_frame(self, *args, **kwargs) -> 'DataFrame':
-        raise NotImplementedError()
-        # pandas = _get_pandas()
-        # args = args[1:]
-        # kwargs['data'] = self.list_of_dicts()
-        # return pandas.DataFrame(*args, **kwargs)
+        pandas = _get_pandas()
+        args = args[1:]
+        kwargs['data'] = [self.dict()]
+        return pandas.DataFrame(*args, **kwargs)
 
 
 class _GetEntitiesReturn(SeriesMethods.GetEntitiesReturn):
 
     def __init__(self, database: 'Database', entity_names: Tuple[str, ...]) -> None:
-        super().__init__()
         self.__database = database
         self.__entity_names = entity_names
 
@@ -155,15 +215,19 @@ class _GetEntitiesReturn(SeriesMethods.GetEntitiesReturn):
             ret.append(_create_entity(com_one_entity, self.__entity_names[i]))
         return tuple(ret)
 
-    def tuple_of_dicts(self) -> Tuple['EntityTypedDict', ...]:
-        raise NotImplementedError()
+    def tuple_of_dicts(self) -> Tuple['EntityTypedDicts', ...]:
+        com_entitys = self.__database.FetchEntities(self.__entity_names)
+
+        ret: List['EntityTypedDicts'] = []
+        for i, com_one_entity in enumerate(com_entitys):
+            ret.append(_create_entity_dicts(com_one_entity, self.__entity_names[i]))
+        return tuple(ret)
 
     def data_frame(self, *args, **kwargs) -> 'DataFrame':
-        raise NotImplementedError()
-        # pandas = _get_pandas()
-        # args = args[1:]
-        # kwargs['data'] = self.list_of_dicts()
-        # return pandas.DataFrame(*args, **kwargs)
+        pandas = _get_pandas()
+        args = args[1:]
+        kwargs['data'] = self.tuple_of_dicts()
+        return pandas.DataFrame(*args, **kwargs)
 
 
 class _GetUnifiedSeriesReturn(SeriesMethods.GetUnifiedSeriesReturn):

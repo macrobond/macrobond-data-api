@@ -30,66 +30,150 @@
 
 # pylint: disable = multiple-statements
 
-from typing import Tuple, Union, TYPE_CHECKING
+from typing import Tuple, Union, overload, TYPE_CHECKING
 from abc import ABC, abstractmethod
 
-from ._return_data_frame import _ReturnDataFrame
-
 if TYPE_CHECKING:  # pragma: no cover
+    from pandas import DataFrame, _typing as pandas_typing  # type: ignore
 
     from .enums import SeriesMissingValueMethod, SeriesToLowerFrequencyMethod, \
         SeriesToHigherFrequencyMethod, SeriesPartialPeriodsMethod, SeriesFrequency, \
         SeriesWeekdays, CalendarMergeMode
 
-    from .entity import Entity, EntityColumns, EntityTypedDict
-    from .series import Series, SeriesColumns, SeriesTypedDict
+    from .entity import Entity, EntityColumns, EntityTypedDicts
+    from .series import Series, SeriesColumns, SeriesTypedDicts
     from .unified_series import UnifiedSeries, UnifiedSeriesColumns, UnifiedSeriesTypedDict
     from .start_or_end_point import StartOrEndPoint
 
 
-class GetOneSeriesReturn(_ReturnDataFrame, ABC):
+class GetOneSeriesReturn(ABC):
 
     @abstractmethod
     def object(self) -&gt; &#39;Series&#39;: ...
 
     @abstractmethod
-    def dict(self) -&gt; &#39;SeriesTypedDict&#39;: ...
+    def dict(self) -&gt; &#39;SeriesTypedDicts&#39;: ...
+
+    @overload
+    def data_frame(self) -&gt; &#39;DataFrame&#39;: ...
+
+    @overload
+    def data_frame(
+        self,
+        index: &#39;pandas_typing.Axes&#39; = None,
+        columns: Union[
+            &#39;SeriesColumns&#39;, &#39;pandas_typing.Axes&#39;
+        ] = None,
+        dtype: &#39;pandas_typing.Dtype&#39; = None,
+        copy: bool = False,
+    ) -&gt; &#39;DataFrame&#39;: ...
+
+    @abstractmethod
+    def data_frame(self, *args, **kwargs) -&gt; &#39;DataFrame&#39;: ...
 
 
-class GetSeriesReturn(_ReturnDataFrame, ABC):
+class GetSeriesReturn(ABC):
 
     @abstractmethod
     def tuple_of_objects(self) -&gt; Tuple[&#39;Series&#39;, ...]: ...
 
     @abstractmethod
-    def tuple_of_dicts(self) -&gt; Tuple[&#39;SeriesTypedDict&#39;, ...]: ...
+    def tuple_of_dicts(self) -&gt; Tuple[&#39;SeriesTypedDicts&#39;, ...]: ...
+
+    @overload
+    def data_frame(self) -&gt; &#39;DataFrame&#39;: ...
+
+    @overload
+    def data_frame(
+        self,
+        index: &#39;pandas_typing.Axes&#39; = None,
+        columns: Union[
+            &#39;SeriesColumns&#39;, &#39;pandas_typing.Axes&#39;
+        ] = None,
+        dtype: &#39;pandas_typing.Dtype&#39; = None,
+        copy: bool = False,
+    ) -&gt; &#39;DataFrame&#39;: ...
+
+    @abstractmethod
+    def data_frame(self, *args, **kwargs) -&gt; &#39;DataFrame&#39;: ...
 
 
-class GetOneEntitieReturn(_ReturnDataFrame, ABC):
+class GetOneEntitieReturn(ABC):
 
     @abstractmethod
     def object(self) -&gt; &#39;Entity&#39;: ...
 
     @abstractmethod
-    def dict(self) -&gt; &#39;EntityTypedDict&#39;: ...
+    def dict(self) -&gt; &#39;EntityTypedDicts&#39;: ...
+
+    @overload
+    def data_frame(self) -&gt; &#39;DataFrame&#39;: ...
+
+    @overload
+    def data_frame(
+        self,
+        index: &#39;pandas_typing.Axes&#39; = None,
+        columns: Union[
+            &#39;EntityColumns&#39;, &#39;pandas_typing.Axes&#39;
+        ] = None,
+        dtype: &#39;pandas_typing.Dtype&#39; = None,
+        copy: bool = False,
+    ) -&gt; &#39;DataFrame&#39;: ...
+
+    @abstractmethod
+    def data_frame(self, *args, **kwargs) -&gt; &#39;DataFrame&#39;: ...
 
 
-class GetEntitiesReturn(_ReturnDataFrame, ABC):
+class GetEntitiesReturn(ABC):
 
     @abstractmethod
     def tuple_of_objects(self) -&gt; Tuple[&#39;Entity&#39;, ...]: ...
 
     @abstractmethod
-    def tuple_of_dicts(self) -&gt; Tuple[&#39;EntityTypedDict&#39;, ...]: ...
+    def tuple_of_dicts(self) -&gt; Tuple[&#39;EntityTypedDicts&#39;, ...]: ...
+
+    @overload
+    def data_frame(self) -&gt; &#39;DataFrame&#39;: ...
+
+    @overload
+    def data_frame(
+        self,
+        index: &#39;pandas_typing.Axes&#39; = None,
+        columns: Union[
+            &#39;EntityColumns&#39;, &#39;pandas_typing.Axes&#39;
+        ] = None,
+        dtype: &#39;pandas_typing.Dtype&#39; = None,
+        copy: bool = False,
+    ) -&gt; &#39;DataFrame&#39;: ...
+
+    @abstractmethod
+    def data_frame(self, *args, **kwargs) -&gt; &#39;DataFrame&#39;: ...
 
 
-class GetUnifiedSeriesReturn(_ReturnDataFrame, ABC):
+class GetUnifiedSeriesReturn(ABC):
 
     @abstractmethod
     def object(self) -&gt; &#39;UnifiedSeries&#39;: ...
 
     @abstractmethod
     def dict(self) -&gt; &#39;UnifiedSeriesTypedDict&#39;: ...
+
+    @overload
+    def data_frame(self) -&gt; &#39;DataFrame&#39;: ...
+
+    @overload
+    def data_frame(
+        self,
+        index: &#39;pandas_typing.Axes&#39; = None,
+        columns: Union[
+            &#39;UnifiedSeriesColumns&#39;, &#39;pandas_typing.Axes&#39;
+        ] = None,
+        dtype: &#39;pandas_typing.Dtype&#39; = None,
+        copy: bool = False,
+    ) -&gt; &#39;DataFrame&#39;: ...
+
+    @abstractmethod
+    def data_frame(self, *args, **kwargs) -&gt; &#39;DataFrame&#39;: ...
 
 
 class SeriesMethods(ABC):
@@ -160,17 +244,33 @@ inheritance.</p></div>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class GetEntitiesReturn(_ReturnDataFrame, ABC):
+<pre><code class="python">class GetEntitiesReturn(ABC):
 
     @abstractmethod
     def tuple_of_objects(self) -&gt; Tuple[&#39;Entity&#39;, ...]: ...
 
     @abstractmethod
-    def tuple_of_dicts(self) -&gt; Tuple[&#39;EntityTypedDict&#39;, ...]: ...</code></pre>
+    def tuple_of_dicts(self) -&gt; Tuple[&#39;EntityTypedDicts&#39;, ...]: ...
+
+    @overload
+    def data_frame(self) -&gt; &#39;DataFrame&#39;: ...
+
+    @overload
+    def data_frame(
+        self,
+        index: &#39;pandas_typing.Axes&#39; = None,
+        columns: Union[
+            &#39;EntityColumns&#39;, &#39;pandas_typing.Axes&#39;
+        ] = None,
+        dtype: &#39;pandas_typing.Dtype&#39; = None,
+        copy: bool = False,
+    ) -&gt; &#39;DataFrame&#39;: ...
+
+    @abstractmethod
+    def data_frame(self, *args, **kwargs) -&gt; &#39;DataFrame&#39;: ...</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
-<li>macrobond_financial.common._return_data_frame._ReturnDataFrame</li>
 <li>abc.ABC</li>
 </ul>
 <h3>Subclasses</h3>
@@ -180,8 +280,8 @@ inheritance.</p></div>
 </ul>
 <h3>Methods</h3>
 <dl>
-<dt id="macrobond_financial.common.series_methods.GetEntitiesReturn.tuple_of_dicts"><code class="name flex">
-<span>def <span class="ident">tuple_of_dicts</span></span>(<span>self) ‑> Tuple[EntityTypedDict, ...]</span>
+<dt id="macrobond_financial.common.series_methods.GetEntitiesReturn.data_frame"><code class="name flex">
+<span>def <span class="ident">data_frame</span></span>(<span>self, *args, **kwargs) ‑> DataFrame</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -190,7 +290,20 @@ inheritance.</p></div>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@abstractmethod
-def tuple_of_dicts(self) -&gt; Tuple[&#39;EntityTypedDict&#39;, ...]: ...</code></pre>
+def data_frame(self, *args, **kwargs) -&gt; &#39;DataFrame&#39;: ...</code></pre>
+</details>
+</dd>
+<dt id="macrobond_financial.common.series_methods.GetEntitiesReturn.tuple_of_dicts"><code class="name flex">
+<span>def <span class="ident">tuple_of_dicts</span></span>(<span>self) ‑> Tuple[EntityTypedDicts, ...]</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@abstractmethod
+def tuple_of_dicts(self) -&gt; Tuple[&#39;EntityTypedDicts&#39;, ...]: ...</code></pre>
 </details>
 </dd>
 <dt id="macrobond_financial.common.series_methods.GetEntitiesReturn.tuple_of_objects"><code class="name flex">
@@ -218,17 +331,33 @@ inheritance.</p></div>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class GetOneEntitieReturn(_ReturnDataFrame, ABC):
+<pre><code class="python">class GetOneEntitieReturn(ABC):
 
     @abstractmethod
     def object(self) -&gt; &#39;Entity&#39;: ...
 
     @abstractmethod
-    def dict(self) -&gt; &#39;EntityTypedDict&#39;: ...</code></pre>
+    def dict(self) -&gt; &#39;EntityTypedDicts&#39;: ...
+
+    @overload
+    def data_frame(self) -&gt; &#39;DataFrame&#39;: ...
+
+    @overload
+    def data_frame(
+        self,
+        index: &#39;pandas_typing.Axes&#39; = None,
+        columns: Union[
+            &#39;EntityColumns&#39;, &#39;pandas_typing.Axes&#39;
+        ] = None,
+        dtype: &#39;pandas_typing.Dtype&#39; = None,
+        copy: bool = False,
+    ) -&gt; &#39;DataFrame&#39;: ...
+
+    @abstractmethod
+    def data_frame(self, *args, **kwargs) -&gt; &#39;DataFrame&#39;: ...</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
-<li>macrobond_financial.common._return_data_frame._ReturnDataFrame</li>
 <li>abc.ABC</li>
 </ul>
 <h3>Subclasses</h3>
@@ -238,8 +367,8 @@ inheritance.</p></div>
 </ul>
 <h3>Methods</h3>
 <dl>
-<dt id="macrobond_financial.common.series_methods.GetOneEntitieReturn.dict"><code class="name flex">
-<span>def <span class="ident">dict</span></span>(<span>self) ‑> EntityTypedDict</span>
+<dt id="macrobond_financial.common.series_methods.GetOneEntitieReturn.data_frame"><code class="name flex">
+<span>def <span class="ident">data_frame</span></span>(<span>self, *args, **kwargs) ‑> DataFrame</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -248,7 +377,20 @@ inheritance.</p></div>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@abstractmethod
-def dict(self) -&gt; &#39;EntityTypedDict&#39;: ...</code></pre>
+def data_frame(self, *args, **kwargs) -&gt; &#39;DataFrame&#39;: ...</code></pre>
+</details>
+</dd>
+<dt id="macrobond_financial.common.series_methods.GetOneEntitieReturn.dict"><code class="name flex">
+<span>def <span class="ident">dict</span></span>(<span>self) ‑> EntityTypedDicts</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@abstractmethod
+def dict(self) -&gt; &#39;EntityTypedDicts&#39;: ...</code></pre>
 </details>
 </dd>
 <dt id="macrobond_financial.common.series_methods.GetOneEntitieReturn.object"><code class="name flex">
@@ -276,17 +418,33 @@ inheritance.</p></div>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class GetOneSeriesReturn(_ReturnDataFrame, ABC):
+<pre><code class="python">class GetOneSeriesReturn(ABC):
 
     @abstractmethod
     def object(self) -&gt; &#39;Series&#39;: ...
 
     @abstractmethod
-    def dict(self) -&gt; &#39;SeriesTypedDict&#39;: ...</code></pre>
+    def dict(self) -&gt; &#39;SeriesTypedDicts&#39;: ...
+
+    @overload
+    def data_frame(self) -&gt; &#39;DataFrame&#39;: ...
+
+    @overload
+    def data_frame(
+        self,
+        index: &#39;pandas_typing.Axes&#39; = None,
+        columns: Union[
+            &#39;SeriesColumns&#39;, &#39;pandas_typing.Axes&#39;
+        ] = None,
+        dtype: &#39;pandas_typing.Dtype&#39; = None,
+        copy: bool = False,
+    ) -&gt; &#39;DataFrame&#39;: ...
+
+    @abstractmethod
+    def data_frame(self, *args, **kwargs) -&gt; &#39;DataFrame&#39;: ...</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
-<li>macrobond_financial.common._return_data_frame._ReturnDataFrame</li>
 <li>abc.ABC</li>
 </ul>
 <h3>Subclasses</h3>
@@ -296,8 +454,8 @@ inheritance.</p></div>
 </ul>
 <h3>Methods</h3>
 <dl>
-<dt id="macrobond_financial.common.series_methods.GetOneSeriesReturn.dict"><code class="name flex">
-<span>def <span class="ident">dict</span></span>(<span>self) ‑> SeriesTypedDict</span>
+<dt id="macrobond_financial.common.series_methods.GetOneSeriesReturn.data_frame"><code class="name flex">
+<span>def <span class="ident">data_frame</span></span>(<span>self, *args, **kwargs) ‑> DataFrame</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -306,7 +464,20 @@ inheritance.</p></div>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@abstractmethod
-def dict(self) -&gt; &#39;SeriesTypedDict&#39;: ...</code></pre>
+def data_frame(self, *args, **kwargs) -&gt; &#39;DataFrame&#39;: ...</code></pre>
+</details>
+</dd>
+<dt id="macrobond_financial.common.series_methods.GetOneSeriesReturn.dict"><code class="name flex">
+<span>def <span class="ident">dict</span></span>(<span>self) ‑> SeriesTypedDicts</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@abstractmethod
+def dict(self) -&gt; &#39;SeriesTypedDicts&#39;: ...</code></pre>
 </details>
 </dd>
 <dt id="macrobond_financial.common.series_methods.GetOneSeriesReturn.object"><code class="name flex">
@@ -334,17 +505,33 @@ inheritance.</p></div>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class GetSeriesReturn(_ReturnDataFrame, ABC):
+<pre><code class="python">class GetSeriesReturn(ABC):
 
     @abstractmethod
     def tuple_of_objects(self) -&gt; Tuple[&#39;Series&#39;, ...]: ...
 
     @abstractmethod
-    def tuple_of_dicts(self) -&gt; Tuple[&#39;SeriesTypedDict&#39;, ...]: ...</code></pre>
+    def tuple_of_dicts(self) -&gt; Tuple[&#39;SeriesTypedDicts&#39;, ...]: ...
+
+    @overload
+    def data_frame(self) -&gt; &#39;DataFrame&#39;: ...
+
+    @overload
+    def data_frame(
+        self,
+        index: &#39;pandas_typing.Axes&#39; = None,
+        columns: Union[
+            &#39;SeriesColumns&#39;, &#39;pandas_typing.Axes&#39;
+        ] = None,
+        dtype: &#39;pandas_typing.Dtype&#39; = None,
+        copy: bool = False,
+    ) -&gt; &#39;DataFrame&#39;: ...
+
+    @abstractmethod
+    def data_frame(self, *args, **kwargs) -&gt; &#39;DataFrame&#39;: ...</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
-<li>macrobond_financial.common._return_data_frame._ReturnDataFrame</li>
 <li>abc.ABC</li>
 </ul>
 <h3>Subclasses</h3>
@@ -354,8 +541,8 @@ inheritance.</p></div>
 </ul>
 <h3>Methods</h3>
 <dl>
-<dt id="macrobond_financial.common.series_methods.GetSeriesReturn.tuple_of_dicts"><code class="name flex">
-<span>def <span class="ident">tuple_of_dicts</span></span>(<span>self) ‑> Tuple[SeriesTypedDict, ...]</span>
+<dt id="macrobond_financial.common.series_methods.GetSeriesReturn.data_frame"><code class="name flex">
+<span>def <span class="ident">data_frame</span></span>(<span>self, *args, **kwargs) ‑> DataFrame</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -364,7 +551,20 @@ inheritance.</p></div>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@abstractmethod
-def tuple_of_dicts(self) -&gt; Tuple[&#39;SeriesTypedDict&#39;, ...]: ...</code></pre>
+def data_frame(self, *args, **kwargs) -&gt; &#39;DataFrame&#39;: ...</code></pre>
+</details>
+</dd>
+<dt id="macrobond_financial.common.series_methods.GetSeriesReturn.tuple_of_dicts"><code class="name flex">
+<span>def <span class="ident">tuple_of_dicts</span></span>(<span>self) ‑> Tuple[SeriesTypedDicts, ...]</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@abstractmethod
+def tuple_of_dicts(self) -&gt; Tuple[&#39;SeriesTypedDicts&#39;, ...]: ...</code></pre>
 </details>
 </dd>
 <dt id="macrobond_financial.common.series_methods.GetSeriesReturn.tuple_of_objects"><code class="name flex">
@@ -392,17 +592,33 @@ inheritance.</p></div>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class GetUnifiedSeriesReturn(_ReturnDataFrame, ABC):
+<pre><code class="python">class GetUnifiedSeriesReturn(ABC):
 
     @abstractmethod
     def object(self) -&gt; &#39;UnifiedSeries&#39;: ...
 
     @abstractmethod
-    def dict(self) -&gt; &#39;UnifiedSeriesTypedDict&#39;: ...</code></pre>
+    def dict(self) -&gt; &#39;UnifiedSeriesTypedDict&#39;: ...
+
+    @overload
+    def data_frame(self) -&gt; &#39;DataFrame&#39;: ...
+
+    @overload
+    def data_frame(
+        self,
+        index: &#39;pandas_typing.Axes&#39; = None,
+        columns: Union[
+            &#39;UnifiedSeriesColumns&#39;, &#39;pandas_typing.Axes&#39;
+        ] = None,
+        dtype: &#39;pandas_typing.Dtype&#39; = None,
+        copy: bool = False,
+    ) -&gt; &#39;DataFrame&#39;: ...
+
+    @abstractmethod
+    def data_frame(self, *args, **kwargs) -&gt; &#39;DataFrame&#39;: ...</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
-<li>macrobond_financial.common._return_data_frame._ReturnDataFrame</li>
 <li>abc.ABC</li>
 </ul>
 <h3>Subclasses</h3>
@@ -412,6 +628,19 @@ inheritance.</p></div>
 </ul>
 <h3>Methods</h3>
 <dl>
+<dt id="macrobond_financial.common.series_methods.GetUnifiedSeriesReturn.data_frame"><code class="name flex">
+<span>def <span class="ident">data_frame</span></span>(<span>self, *args, **kwargs) ‑> DataFrame</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@abstractmethod
+def data_frame(self, *args, **kwargs) -&gt; &#39;DataFrame&#39;: ...</code></pre>
+</details>
+</dd>
 <dt id="macrobond_financial.common.series_methods.GetUnifiedSeriesReturn.dict"><code class="name flex">
 <span>def <span class="ident">dict</span></span>(<span>self) ‑> UnifiedSeriesTypedDict</span>
 </code></dt>
@@ -619,6 +848,7 @@ def get_unified_series(
 <li>
 <h4><code><a title="macrobond_financial.common.series_methods.GetEntitiesReturn" href="#macrobond_financial.common.series_methods.GetEntitiesReturn">GetEntitiesReturn</a></code></h4>
 <ul class="">
+<li><code><a title="macrobond_financial.common.series_methods.GetEntitiesReturn.data_frame" href="#macrobond_financial.common.series_methods.GetEntitiesReturn.data_frame">data_frame</a></code></li>
 <li><code><a title="macrobond_financial.common.series_methods.GetEntitiesReturn.tuple_of_dicts" href="#macrobond_financial.common.series_methods.GetEntitiesReturn.tuple_of_dicts">tuple_of_dicts</a></code></li>
 <li><code><a title="macrobond_financial.common.series_methods.GetEntitiesReturn.tuple_of_objects" href="#macrobond_financial.common.series_methods.GetEntitiesReturn.tuple_of_objects">tuple_of_objects</a></code></li>
 </ul>
@@ -626,6 +856,7 @@ def get_unified_series(
 <li>
 <h4><code><a title="macrobond_financial.common.series_methods.GetOneEntitieReturn" href="#macrobond_financial.common.series_methods.GetOneEntitieReturn">GetOneEntitieReturn</a></code></h4>
 <ul class="">
+<li><code><a title="macrobond_financial.common.series_methods.GetOneEntitieReturn.data_frame" href="#macrobond_financial.common.series_methods.GetOneEntitieReturn.data_frame">data_frame</a></code></li>
 <li><code><a title="macrobond_financial.common.series_methods.GetOneEntitieReturn.dict" href="#macrobond_financial.common.series_methods.GetOneEntitieReturn.dict">dict</a></code></li>
 <li><code><a title="macrobond_financial.common.series_methods.GetOneEntitieReturn.object" href="#macrobond_financial.common.series_methods.GetOneEntitieReturn.object">object</a></code></li>
 </ul>
@@ -633,6 +864,7 @@ def get_unified_series(
 <li>
 <h4><code><a title="macrobond_financial.common.series_methods.GetOneSeriesReturn" href="#macrobond_financial.common.series_methods.GetOneSeriesReturn">GetOneSeriesReturn</a></code></h4>
 <ul class="">
+<li><code><a title="macrobond_financial.common.series_methods.GetOneSeriesReturn.data_frame" href="#macrobond_financial.common.series_methods.GetOneSeriesReturn.data_frame">data_frame</a></code></li>
 <li><code><a title="macrobond_financial.common.series_methods.GetOneSeriesReturn.dict" href="#macrobond_financial.common.series_methods.GetOneSeriesReturn.dict">dict</a></code></li>
 <li><code><a title="macrobond_financial.common.series_methods.GetOneSeriesReturn.object" href="#macrobond_financial.common.series_methods.GetOneSeriesReturn.object">object</a></code></li>
 </ul>
@@ -640,6 +872,7 @@ def get_unified_series(
 <li>
 <h4><code><a title="macrobond_financial.common.series_methods.GetSeriesReturn" href="#macrobond_financial.common.series_methods.GetSeriesReturn">GetSeriesReturn</a></code></h4>
 <ul class="">
+<li><code><a title="macrobond_financial.common.series_methods.GetSeriesReturn.data_frame" href="#macrobond_financial.common.series_methods.GetSeriesReturn.data_frame">data_frame</a></code></li>
 <li><code><a title="macrobond_financial.common.series_methods.GetSeriesReturn.tuple_of_dicts" href="#macrobond_financial.common.series_methods.GetSeriesReturn.tuple_of_dicts">tuple_of_dicts</a></code></li>
 <li><code><a title="macrobond_financial.common.series_methods.GetSeriesReturn.tuple_of_objects" href="#macrobond_financial.common.series_methods.GetSeriesReturn.tuple_of_objects">tuple_of_objects</a></code></li>
 </ul>
@@ -647,6 +880,7 @@ def get_unified_series(
 <li>
 <h4><code><a title="macrobond_financial.common.series_methods.GetUnifiedSeriesReturn" href="#macrobond_financial.common.series_methods.GetUnifiedSeriesReturn">GetUnifiedSeriesReturn</a></code></h4>
 <ul class="">
+<li><code><a title="macrobond_financial.common.series_methods.GetUnifiedSeriesReturn.data_frame" href="#macrobond_financial.common.series_methods.GetUnifiedSeriesReturn.data_frame">data_frame</a></code></li>
 <li><code><a title="macrobond_financial.common.series_methods.GetUnifiedSeriesReturn.dict" href="#macrobond_financial.common.series_methods.GetUnifiedSeriesReturn.dict">dict</a></code></li>
 <li><code><a title="macrobond_financial.common.series_methods.GetUnifiedSeriesReturn.object" href="#macrobond_financial.common.series_methods.GetUnifiedSeriesReturn.object">object</a></code></li>
 </ul>

@@ -2,66 +2,150 @@
 
 # pylint: disable = multiple-statements
 
-from typing import Tuple, Union, TYPE_CHECKING
+from typing import Tuple, Union, overload, TYPE_CHECKING
 from abc import ABC, abstractmethod
 
-from ._return_data_frame import _ReturnDataFrame
-
 if TYPE_CHECKING:  # pragma: no cover
+    from pandas import DataFrame, _typing as pandas_typing  # type: ignore
 
     from .enums import SeriesMissingValueMethod, SeriesToLowerFrequencyMethod, \
         SeriesToHigherFrequencyMethod, SeriesPartialPeriodsMethod, SeriesFrequency, \
         SeriesWeekdays, CalendarMergeMode
 
-    from .entity import Entity, EntityColumns, EntityTypedDict
-    from .series import Series, SeriesColumns, SeriesTypedDict
+    from .entity import Entity, EntityColumns, EntityTypedDicts
+    from .series import Series, SeriesColumns, SeriesTypedDicts
     from .unified_series import UnifiedSeries, UnifiedSeriesColumns, UnifiedSeriesTypedDict
     from .start_or_end_point import StartOrEndPoint
 
 
-class GetOneSeriesReturn(_ReturnDataFrame, ABC):
+class GetOneSeriesReturn(ABC):
 
     @abstractmethod
     def object(self) -> 'Series': ...
 
     @abstractmethod
-    def dict(self) -> 'SeriesTypedDict': ...
+    def dict(self) -> 'SeriesTypedDicts': ...
+
+    @overload
+    def data_frame(self) -> 'DataFrame': ...
+
+    @overload
+    def data_frame(
+        self,
+        index: 'pandas_typing.Axes' = None,
+        columns: Union[
+            'SeriesColumns', 'pandas_typing.Axes'
+        ] = None,
+        dtype: 'pandas_typing.Dtype' = None,
+        copy: bool = False,
+    ) -> 'DataFrame': ...
+
+    @abstractmethod
+    def data_frame(self, *args, **kwargs) -> 'DataFrame': ...
 
 
-class GetSeriesReturn(_ReturnDataFrame, ABC):
+class GetSeriesReturn(ABC):
 
     @abstractmethod
     def tuple_of_objects(self) -> Tuple['Series', ...]: ...
 
     @abstractmethod
-    def tuple_of_dicts(self) -> Tuple['SeriesTypedDict', ...]: ...
+    def tuple_of_dicts(self) -> Tuple['SeriesTypedDicts', ...]: ...
+
+    @overload
+    def data_frame(self) -> 'DataFrame': ...
+
+    @overload
+    def data_frame(
+        self,
+        index: 'pandas_typing.Axes' = None,
+        columns: Union[
+            'SeriesColumns', 'pandas_typing.Axes'
+        ] = None,
+        dtype: 'pandas_typing.Dtype' = None,
+        copy: bool = False,
+    ) -> 'DataFrame': ...
+
+    @abstractmethod
+    def data_frame(self, *args, **kwargs) -> 'DataFrame': ...
 
 
-class GetOneEntitieReturn(_ReturnDataFrame, ABC):
+class GetOneEntitieReturn(ABC):
 
     @abstractmethod
     def object(self) -> 'Entity': ...
 
     @abstractmethod
-    def dict(self) -> 'EntityTypedDict': ...
+    def dict(self) -> 'EntityTypedDicts': ...
+
+    @overload
+    def data_frame(self) -> 'DataFrame': ...
+
+    @overload
+    def data_frame(
+        self,
+        index: 'pandas_typing.Axes' = None,
+        columns: Union[
+            'EntityColumns', 'pandas_typing.Axes'
+        ] = None,
+        dtype: 'pandas_typing.Dtype' = None,
+        copy: bool = False,
+    ) -> 'DataFrame': ...
+
+    @abstractmethod
+    def data_frame(self, *args, **kwargs) -> 'DataFrame': ...
 
 
-class GetEntitiesReturn(_ReturnDataFrame, ABC):
+class GetEntitiesReturn(ABC):
 
     @abstractmethod
     def tuple_of_objects(self) -> Tuple['Entity', ...]: ...
 
     @abstractmethod
-    def tuple_of_dicts(self) -> Tuple['EntityTypedDict', ...]: ...
+    def tuple_of_dicts(self) -> Tuple['EntityTypedDicts', ...]: ...
+
+    @overload
+    def data_frame(self) -> 'DataFrame': ...
+
+    @overload
+    def data_frame(
+        self,
+        index: 'pandas_typing.Axes' = None,
+        columns: Union[
+            'EntityColumns', 'pandas_typing.Axes'
+        ] = None,
+        dtype: 'pandas_typing.Dtype' = None,
+        copy: bool = False,
+    ) -> 'DataFrame': ...
+
+    @abstractmethod
+    def data_frame(self, *args, **kwargs) -> 'DataFrame': ...
 
 
-class GetUnifiedSeriesReturn(_ReturnDataFrame, ABC):
+class GetUnifiedSeriesReturn(ABC):
 
     @abstractmethod
     def object(self) -> 'UnifiedSeries': ...
 
     @abstractmethod
     def dict(self) -> 'UnifiedSeriesTypedDict': ...
+
+    @overload
+    def data_frame(self) -> 'DataFrame': ...
+
+    @overload
+    def data_frame(
+        self,
+        index: 'pandas_typing.Axes' = None,
+        columns: Union[
+            'UnifiedSeriesColumns', 'pandas_typing.Axes'
+        ] = None,
+        dtype: 'pandas_typing.Dtype' = None,
+        copy: bool = False,
+    ) -> 'DataFrame': ...
+
+    @abstractmethod
+    def data_frame(self, *args, **kwargs) -> 'DataFrame': ...
 
 
 class SeriesMethods(ABC):

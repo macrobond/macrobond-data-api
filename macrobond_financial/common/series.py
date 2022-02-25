@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from typing import Any, Dict, Tuple, Optional, List, cast, TYPE_CHECKING
+from typing import Any, Dict, Tuple, Optional, List, Union, cast, TYPE_CHECKING
 
 from datetime import datetime
 
@@ -10,24 +10,21 @@ from .entity import Entity
 
 if TYPE_CHECKING:  # pragma: no cover
     from pandas import DataFrame  # type: ignore
-    # from .enums import SeriesFrequency, SeriesWeekdays
 
     from .entity import EntityColumnsLiterals, ErrorEntityTypedDict, EntityTypedDict
 
     from typing_extensions import Literal
 
-    SeriesColumns = List[
-        Literal[
-            EntityColumnsLiterals, 'values', 'dates', 'start_date', 'end_date', 'frequency',
-            'weekdays'
-        ]
-    ]
+    SeriesColumns = List[Literal[EntityColumnsLiterals, 'Values', 'Dates']]
 
     class ErrorSeriesTypedDict(ErrorEntityTypedDict):
         ...
 
     class SeriesTypedDict(EntityTypedDict):
-        ...
+        Values: Tuple[Optional[float], ...]
+        Dates: Tuple[datetime, ...]
+
+    SeriesTypedDicts = Union[SeriesTypedDict, ErrorSeriesTypedDict]
 
 
 class Series(Entity):

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from typing import Any, Dict, List, TYPE_CHECKING
+from typing import Any, Dict, List, Union, TYPE_CHECKING
 
 from ._get_pandas import _get_pandas
 
@@ -11,16 +11,22 @@ if TYPE_CHECKING:  # pragma: no cover
     from typing_extensions import TypedDict, Literal
 
     EntityColumnsLiterals = Literal[
-        'name', 'primary_name', 'error_message', 'title', 'entity_type', 'metadata'
+        'Name', 'PrimName', 'ErrorMessage', 'FullDescription', 'EntityType'
     ]
 
     EntityColumns = List[EntityColumnsLiterals]
 
     class ErrorEntityTypedDict(TypedDict):
-        error_message: str
+        Name: str
+        ErrorMessage: str
 
     class EntityTypedDict(TypedDict):
-        ...
+        Name: str
+        PrimName: str
+        FullDescription: str
+        EntityType: str
+
+    EntityTypedDicts = Union[EntityTypedDict, ErrorEntityTypedDict]
 
 
 class Entity():
