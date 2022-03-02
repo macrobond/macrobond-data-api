@@ -28,8 +28,13 @@
 </summary>
 <pre><code class="python"># -*- coding: utf-8 -*-
 
-from typing import Any, Dict, Sequence, Union, Tuple, overload
+from typing import Any, Dict, Sequence, Union, Tuple, overload, TYPE_CHECKING
 from abc import ABC, abstractmethod
+
+from macrobond_financial.common._get_pandas import _get_pandas
+
+if TYPE_CHECKING:  # pragma: no cover
+    from pandas import DataFrame, _typing as pandas_typing  # type: ignore
 
 
 class SearchMethods(ABC):
@@ -126,7 +131,25 @@ class SearchResult(Sequence[Dict[str, Any]]):
         return self.entities.__getitem__(idx_or_slice)
 
     def __len__(self) -&gt; int:
-        return len(self.entities)</code></pre>
+        return len(self.entities)
+
+    @overload
+    def data_frame(self) -&gt; &#39;DataFrame&#39;: ...
+
+    @overload
+    def data_frame(
+        self,
+        index: &#39;pandas_typing.Axes&#39; = None,
+        columns: &#39;pandas_typing.Axes&#39; = None,
+        dtype: &#39;pandas_typing.Dtype&#39; = None,
+        copy: bool = False,
+    ) -&gt; &#39;DataFrame&#39;: ...
+
+    def data_frame(self, *args, **kwargs) -&gt; &#39;DataFrame&#39;:
+        pandas = _get_pandas()
+        args = args[1:]
+        kwargs[&#39;data&#39;] = self.entities
+        return pandas.DataFrame(*args, **kwargs)</code></pre>
 </details>
 </section>
 <section>
@@ -326,7 +349,25 @@ def series_multi_filter(
         return self.entities.__getitem__(idx_or_slice)
 
     def __len__(self) -&gt; int:
-        return len(self.entities)</code></pre>
+        return len(self.entities)
+
+    @overload
+    def data_frame(self) -&gt; &#39;DataFrame&#39;: ...
+
+    @overload
+    def data_frame(
+        self,
+        index: &#39;pandas_typing.Axes&#39; = None,
+        columns: &#39;pandas_typing.Axes&#39; = None,
+        dtype: &#39;pandas_typing.Dtype&#39; = None,
+        copy: bool = False,
+    ) -&gt; &#39;DataFrame&#39;: ...
+
+    def data_frame(self, *args, **kwargs) -&gt; &#39;DataFrame&#39;:
+        pandas = _get_pandas()
+        args = args[1:]
+        kwargs[&#39;data&#39;] = self.entities
+        return pandas.DataFrame(*args, **kwargs)</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
@@ -338,6 +379,25 @@ def series_multi_filter(
 <li>collections.abc.Container</li>
 <li>typing.Generic</li>
 </ul>
+<h3>Methods</h3>
+<dl>
+<dt id="macrobond_financial.common.search_methods.SearchResult.data_frame"><code class="name flex">
+<span>def <span class="ident">data_frame</span></span>(<span>self, *args, **kwargs) ‑> DataFrame</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def data_frame(self, *args, **kwargs) -&gt; &#39;DataFrame&#39;:
+    pandas = _get_pandas()
+    args = args[1:]
+    kwargs[&#39;data&#39;] = self.entities
+    return pandas.DataFrame(*args, **kwargs)</code></pre>
+</details>
+</dd>
+</dl>
 </dd>
 </dl>
 </section>
@@ -367,6 +427,9 @@ def series_multi_filter(
 </li>
 <li>
 <h4><code><a title="macrobond_financial.common.search_methods.SearchResult" href="#macrobond_financial.common.search_methods.SearchResult">SearchResult</a></code></h4>
+<ul class="">
+<li><code><a title="macrobond_financial.common.search_methods.SearchResult.data_frame" href="#macrobond_financial.common.search_methods.SearchResult.data_frame">data_frame</a></code></li>
+</ul>
 </li>
 </ul>
 </li>

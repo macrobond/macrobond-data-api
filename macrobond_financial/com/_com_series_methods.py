@@ -32,12 +32,7 @@ if TYPE_CHECKING:  # pragma: no cover
     from macrobond_financial.common.unified_series import UnifiedSeriesColumns
 
 
-def _create_entity(com_entity: 'ComEntity', name: str) -> Entity:
-    metadata: Dict[str, Any] = {'Name': name}
-
-    if com_entity.IsError:
-        return Entity(com_entity.ErrorMessage, metadata)
-
+def _fill_metadata_from_entity(com_entity: 'ComEntity', metadata: Union[dict, Any]) -> None:
     com_metadata = com_entity.Metadata
     for names_and_description in com_metadata.ListNames():
         meta_name = names_and_description[0]
@@ -49,6 +44,15 @@ def _create_entity(com_entity: 'ComEntity', name: str) -> Entity:
 
     if 'FullDescription' not in metadata:
         metadata['FullDescription'] = com_entity.Title
+
+
+def _create_entity(com_entity: 'ComEntity', name: str) -> Entity:
+    metadata: Dict[str, Any] = {'Name': name}
+
+    if com_entity.IsError:
+        return Entity(com_entity.ErrorMessage, metadata)
+
+    _fill_metadata_from_entity(com_entity, metadata)
 
     return Entity('', metadata)
 
@@ -62,21 +66,11 @@ def _create_entity_dicts(com_entity: 'ComEntity', name: str) -> 'EntityTypedDict
         }
         return error_entity
 
-    entity: 'EntityTypedDict' = {'Name': name}  # type: ignore
+    metadata: 'EntityTypedDict' = {'Name': name}  # type: ignore
 
-    com_metadata = com_entity.Metadata
-    for names_and_description in com_metadata.ListNames():
-        meta_name = names_and_description[0]
-        meta_values = com_metadata.GetValues(meta_name)
-        if len(meta_values) == 1:
-            entity[meta_name] = meta_values[0]  # type: ignore
-        else:
-            entity[meta_name] = list(meta_values)  # type: ignore
+    _fill_metadata_from_entity(com_entity, metadata)
 
-    if 'FullDescription' not in entity:
-        entity['FullDescription'] = com_entity.Title
-
-    return entity
+    return metadata
 
 
 def _create_series(com_series: 'ComSeries', name: str) -> Series:
@@ -85,17 +79,7 @@ def _create_series(com_series: 'ComSeries', name: str) -> Series:
     if com_series.IsError:
         return Series(com_series.ErrorMessage, metadata, None, None)
 
-    com_metadata = com_series.Metadata
-    for names_and_description in com_metadata.ListNames():
-        meta_name = names_and_description[0]
-        meta_values = com_metadata.GetValues(meta_name)
-        if len(meta_values) == 1:
-            metadata[meta_name] = meta_values[0]
-        else:
-            metadata[meta_name] = list(meta_values)
-
-    if 'FullDescription' not in metadata:
-        metadata['FullDescription'] = com_series.Title
+    _fill_metadata_from_entity(com_series, metadata)
 
     return Series('', metadata, com_series.Values, com_series.DatesAtStartOfPeriod)
 
@@ -109,25 +93,15 @@ def _create_series_dicts(com_series: 'ComSeries', name: str) -> 'SeriesTypedDict
         }
         return error_series
 
-    series: 'SeriesTypedDict' = {  # type: ignore
+    metadata: 'SeriesTypedDict' = {  # type: ignore
         'Name': name,
         'Values': com_series.Values,
         'Dates': com_series.DatesAtStartOfPeriod
     }
 
-    com_metadata = com_series.Metadata
-    for names_and_description in com_metadata.ListNames():
-        meta_name = names_and_description[0]
-        meta_values = com_metadata.GetValues(meta_name)
-        if len(meta_values) == 1:
-            series[meta_name] = meta_values[0]  # type: ignore
-        else:
-            series[meta_name] = list(meta_values)  # type: ignore
+    _fill_metadata_from_entity(com_series, metadata)
 
-    if 'FullDescription' not in series:
-        series['FullDescription'] = com_series.Title
-
-    return series
+    return metadata
 
 
 class _GetOneSeriesReturn(SeriesMethods.GetOneSeriesReturn):
@@ -148,6 +122,29 @@ class _GetOneSeriesReturn(SeriesMethods.GetOneSeriesReturn):
         pandas = _get_pandas()
         args = args[1:]
         kwargs['data'] = [self.dict()]
+        return pandas.DataFrame(*args, **kwargs)
+
+    def values_and_dates_as_data_frame(self, *args, **kwargs) -> 'DataFrame':
+        pandas = _get_pandas()
+        com_series = self.__database.FetchOneSeries(self.__series_name)
+
+        if com_series.IsError:
+            error_series: 'ErrorSeriesTypedDict' = {
+                'Name': self.__series_name,
+                'ErrorMessage': com_series.ErrorMessage
+            }
+            kwargs['data'] = error_series
+
+            return error_series
+        else:
+            series: 'SeriesTypedDict' = {  # type: ignore
+                'Values': com_series.Values,
+                'Dates': com_series.DatesAtStartOfPeriod
+            }
+
+            kwargs['data'] = series
+
+        args = args[1:]
         return pandas.DataFrame(*args, **kwargs)
 
 
@@ -199,6 +196,13 @@ class _GetOneEntitieReturn(SeriesMethods.GetOneEntitieReturn):
         args = args[1:]
         kwargs['data'] = [self.dict()]
         return pandas.DataFrame(*args, **kwargs)
+
+    def metadata_as_data_frame(self) -> 'DataFrame':
+        pandas = _get_pandas()
+
+        return pandas.DataFrame.from_dict(
+            self.dict(), orient='index', columns=['Attributes']
+        )
 
 
 class _GetEntitiesReturn(SeriesMethods.GetEntitiesReturn):

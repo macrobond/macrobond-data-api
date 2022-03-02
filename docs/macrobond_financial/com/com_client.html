@@ -37,6 +37,7 @@ from .com_api import ComApi
 
 if TYPE_CHECKING:  # pragma: no cover
     from .com_typs.connection import Connection
+    from macrobond_financial.common import Credentials
 
 
 class ComClient(Client[&#39;ComApi&#39;]):
@@ -56,8 +57,11 @@ class ComClient(Client[&#39;ComApi&#39;]):
     ```
     &#34;&#34;&#34;
 
-    def __init__(self) -&gt; None:
-        super().__init__()
+    def __init__(
+        self,
+        credentials: &#39;Credentials&#39; = None  # pylint: disable=unused-argument
+    ) -&gt; None:
+        super().__init__(False)
         self.__api: Optional[&#39;ComApi&#39;] = None
 
     def open(self) -&gt; &#39;ComApi&#39;:
@@ -88,6 +92,7 @@ class ComClient(Client[&#39;ComApi&#39;]):
 <dl>
 <dt id="macrobond_financial.com.com_client.ComClient"><code class="flex name class">
 <span>class <span class="ident">ComClient</span></span>
+<span>(</span><span>credentials: Credentials = None)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>ComClient to get data from the web</p>
@@ -121,8 +126,11 @@ class ComClient(Client[&#39;ComApi&#39;]):
     ```
     &#34;&#34;&#34;
 
-    def __init__(self) -&gt; None:
-        super().__init__()
+    def __init__(
+        self,
+        credentials: &#39;Credentials&#39; = None  # pylint: disable=unused-argument
+    ) -&gt; None:
+        super().__init__(False)
         self.__api: Optional[&#39;ComApi&#39;] = None
 
     def open(self) -&gt; &#39;ComApi&#39;:

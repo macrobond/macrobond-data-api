@@ -30,20 +30,26 @@
 
 # pylint: disable = multiple-statements
 
-from typing import Tuple, Union, overload, TYPE_CHECKING
+from typing import Tuple, Union, overload, List, TYPE_CHECKING
 from abc import ABC, abstractmethod
 
-if TYPE_CHECKING:  # pragma: no cover
-    from pandas import DataFrame, _typing as pandas_typing  # type: ignore
+from .enums import SeriesMissingValueMethod, SeriesToLowerFrequencyMethod, \
+    SeriesToHigherFrequencyMethod, SeriesPartialPeriodsMethod
 
-    from .enums import SeriesMissingValueMethod, SeriesToLowerFrequencyMethod, \
-        SeriesToHigherFrequencyMethod, SeriesPartialPeriodsMethod, SeriesFrequency, \
-        SeriesWeekdays, CalendarMergeMode
+if TYPE_CHECKING:  # pragma: no cover
+
+    from .enums import SeriesFrequency, SeriesWeekdays, CalendarMergeMode
+
+    from pandas import DataFrame, _typing as pandas_typing  # type: ignore
 
     from .entity import Entity, EntityColumns, EntityTypedDicts
     from .series import Series, SeriesColumns, SeriesTypedDicts
     from .unified_series import UnifiedSeries, UnifiedSeriesColumns, UnifiedSeriesTypedDict
     from .start_or_end_point import StartOrEndPoint
+
+    from typing_extensions import Literal
+
+    SeriesValuesAndDatesColumns = List[Literal[&#39;Values&#39;, &#39;Dates&#39;]]
 
 
 class GetOneSeriesReturn(ABC):
@@ -70,6 +76,23 @@ class GetOneSeriesReturn(ABC):
 
     @abstractmethod
     def data_frame(self, *args, **kwargs) -&gt; &#39;DataFrame&#39;: ...
+
+    @overload
+    def values_and_dates_as_data_frame(self) -&gt; &#39;DataFrame&#39;: ...
+
+    @overload
+    def values_and_dates_as_data_frame(
+        self,
+        index: &#39;pandas_typing.Axes&#39; = None,
+        columns: Union[
+            &#39;SeriesValuesAndDatesColumns&#39;, &#39;pandas_typing.Axes&#39;
+        ] = None,
+        dtype: &#39;pandas_typing.Dtype&#39; = None,
+        copy: bool = False,
+    ) -&gt; &#39;DataFrame&#39;: ...
+
+    @abstractmethod
+    def values_and_dates_as_data_frame(self, *args, **kwargs) -&gt; &#39;DataFrame&#39;: ...
 
 
 class GetSeriesReturn(ABC):
@@ -123,6 +146,11 @@ class GetOneEntitieReturn(ABC):
     @abstractmethod
     def data_frame(self, *args, **kwargs) -&gt; &#39;DataFrame&#39;: ...
 
+    @abstractmethod
+    def metadata_as_data_frame(self) -&gt; &#39;DataFrame&#39;: ...
+
+    # .from_dict(i[&#39;metadata&#39;], orient=&#39;index&#39;)
+
 
 class GetEntitiesReturn(ABC):
 
@@ -158,22 +186,8 @@ class GetUnifiedSeriesReturn(ABC):
     @abstractmethod
     def dict(self) -&gt; &#39;UnifiedSeriesTypedDict&#39;: ...
 
-    @overload
-    def data_frame(self) -&gt; &#39;DataFrame&#39;: ...
-
-    @overload
-    def data_frame(
-        self,
-        index: &#39;pandas_typing.Axes&#39; = None,
-        columns: Union[
-            &#39;UnifiedSeriesColumns&#39;, &#39;pandas_typing.Axes&#39;
-        ] = None,
-        dtype: &#39;pandas_typing.Dtype&#39; = None,
-        copy: bool = False,
-    ) -&gt; &#39;DataFrame&#39;: ...
-
     @abstractmethod
-    def data_frame(self, *args, **kwargs) -&gt; &#39;DataFrame&#39;: ...
+    def data_frame(self, columns: List[str] = None) -&gt; &#39;DataFrame&#39;: ...
 
 
 class SeriesMethods(ABC):
@@ -213,16 +227,24 @@ class SeriesEntrie():
     def __init__(
         self,
         name: str,
-        missing_value_method: &#39;SeriesMissingValueMethod&#39; = None,
-        to_lowerfrequency_method: &#39;SeriesToLowerFrequencyMethod&#39; = None,
-        to_higherfrequency_method: &#39;SeriesToHigherFrequencyMethod&#39; = None,
-        partial_periods_method: &#39;SeriesPartialPeriodsMethod&#39; = None,
+        missing_value_method: SeriesMissingValueMethod = None,
+        to_lowerfrequency_method: SeriesToLowerFrequencyMethod = None,
+        to_higherfrequency_method: SeriesToHigherFrequencyMethod = None,
+        partial_periods_method: SeriesPartialPeriodsMethod = None,
     ) -&gt; None:
         self.name = name
-        self.missing_value_method = missing_value_method
-        self.to_lowerfrequency_method = to_lowerfrequency_method
-        self.to_higherfrequency_method = to_higherfrequency_method
-        self.partial_periods_method = partial_periods_method</code></pre>
+
+        self.missing_value_method = \
+            missing_value_method or SeriesMissingValueMethod.NONE
+
+        self.to_lowerfrequency_method = \
+            to_lowerfrequency_method or SeriesToLowerFrequencyMethod.AUTO
+
+        self.to_higherfrequency_method = \
+            to_higherfrequency_method or SeriesToHigherFrequencyMethod.AUTO
+
+        self.partial_periods_method = \
+            partial_periods_method or SeriesPartialPeriodsMethod.NONE</code></pre>
 </details>
 </section>
 <section>
@@ -354,7 +376,12 @@ inheritance.</p></div>
     ) -&gt; &#39;DataFrame&#39;: ...
 
     @abstractmethod
-    def data_frame(self, *args, **kwargs) -&gt; &#39;DataFrame&#39;: ...</code></pre>
+    def data_frame(self, *args, **kwargs) -&gt; &#39;DataFrame&#39;: ...
+
+    @abstractmethod
+    def metadata_as_data_frame(self) -&gt; &#39;DataFrame&#39;: ...
+
+    # .from_dict(i[&#39;metadata&#39;], orient=&#39;index&#39;)</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
@@ -391,6 +418,19 @@ def data_frame(self, *args, **kwargs) -&gt; &#39;DataFrame&#39;: ...</code></pre
 </summary>
 <pre><code class="python">@abstractmethod
 def dict(self) -&gt; &#39;EntityTypedDicts&#39;: ...</code></pre>
+</details>
+</dd>
+<dt id="macrobond_financial.common.series_methods.GetOneEntitieReturn.metadata_as_data_frame"><code class="name flex">
+<span>def <span class="ident">metadata_as_data_frame</span></span>(<span>self) ‑> DataFrame</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@abstractmethod
+def metadata_as_data_frame(self) -&gt; &#39;DataFrame&#39;: ...</code></pre>
 </details>
 </dd>
 <dt id="macrobond_financial.common.series_methods.GetOneEntitieReturn.object"><code class="name flex">
@@ -441,7 +481,24 @@ inheritance.</p></div>
     ) -&gt; &#39;DataFrame&#39;: ...
 
     @abstractmethod
-    def data_frame(self, *args, **kwargs) -&gt; &#39;DataFrame&#39;: ...</code></pre>
+    def data_frame(self, *args, **kwargs) -&gt; &#39;DataFrame&#39;: ...
+
+    @overload
+    def values_and_dates_as_data_frame(self) -&gt; &#39;DataFrame&#39;: ...
+
+    @overload
+    def values_and_dates_as_data_frame(
+        self,
+        index: &#39;pandas_typing.Axes&#39; = None,
+        columns: Union[
+            &#39;SeriesValuesAndDatesColumns&#39;, &#39;pandas_typing.Axes&#39;
+        ] = None,
+        dtype: &#39;pandas_typing.Dtype&#39; = None,
+        copy: bool = False,
+    ) -&gt; &#39;DataFrame&#39;: ...
+
+    @abstractmethod
+    def values_and_dates_as_data_frame(self, *args, **kwargs) -&gt; &#39;DataFrame&#39;: ...</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
@@ -491,6 +548,19 @@ def dict(self) -&gt; &#39;SeriesTypedDicts&#39;: ...</code></pre>
 </summary>
 <pre><code class="python">@abstractmethod
 def object(self) -&gt; &#39;Series&#39;: ...</code></pre>
+</details>
+</dd>
+<dt id="macrobond_financial.common.series_methods.GetOneSeriesReturn.values_and_dates_as_data_frame"><code class="name flex">
+<span>def <span class="ident">values_and_dates_as_data_frame</span></span>(<span>self, *args, **kwargs) ‑> DataFrame</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@abstractmethod
+def values_and_dates_as_data_frame(self, *args, **kwargs) -&gt; &#39;DataFrame&#39;: ...</code></pre>
 </details>
 </dd>
 </dl>
@@ -600,22 +670,8 @@ inheritance.</p></div>
     @abstractmethod
     def dict(self) -&gt; &#39;UnifiedSeriesTypedDict&#39;: ...
 
-    @overload
-    def data_frame(self) -&gt; &#39;DataFrame&#39;: ...
-
-    @overload
-    def data_frame(
-        self,
-        index: &#39;pandas_typing.Axes&#39; = None,
-        columns: Union[
-            &#39;UnifiedSeriesColumns&#39;, &#39;pandas_typing.Axes&#39;
-        ] = None,
-        dtype: &#39;pandas_typing.Dtype&#39; = None,
-        copy: bool = False,
-    ) -&gt; &#39;DataFrame&#39;: ...
-
     @abstractmethod
-    def data_frame(self, *args, **kwargs) -&gt; &#39;DataFrame&#39;: ...</code></pre>
+    def data_frame(self, columns: List[str] = None) -&gt; &#39;DataFrame&#39;: ...</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
@@ -629,7 +685,7 @@ inheritance.</p></div>
 <h3>Methods</h3>
 <dl>
 <dt id="macrobond_financial.common.series_methods.GetUnifiedSeriesReturn.data_frame"><code class="name flex">
-<span>def <span class="ident">data_frame</span></span>(<span>self, *args, **kwargs) ‑> DataFrame</span>
+<span>def <span class="ident">data_frame</span></span>(<span>self, columns: List[str] = None) ‑> DataFrame</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -638,7 +694,7 @@ inheritance.</p></div>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@abstractmethod
-def data_frame(self, *args, **kwargs) -&gt; &#39;DataFrame&#39;: ...</code></pre>
+def data_frame(self, columns: List[str] = None) -&gt; &#39;DataFrame&#39;: ...</code></pre>
 </details>
 </dd>
 <dt id="macrobond_financial.common.series_methods.GetUnifiedSeriesReturn.dict"><code class="name flex">
@@ -671,7 +727,7 @@ def object(self) -&gt; &#39;UnifiedSeries&#39;: ...</code></pre>
 </dd>
 <dt id="macrobond_financial.common.series_methods.SeriesEntrie"><code class="flex name class">
 <span>class <span class="ident">SeriesEntrie</span></span>
-<span>(</span><span>name: str, missing_value_method: SeriesMissingValueMethod = None, to_lowerfrequency_method: SeriesToLowerFrequencyMethod = None, to_higherfrequency_method: SeriesToHigherFrequencyMethod = None, partial_periods_method: SeriesPartialPeriodsMethod = None)</span>
+<span>(</span><span>name: str, missing_value_method: <a title="macrobond_financial.common.enums.series_missing_value_method.SeriesMissingValueMethod" href="enums/series_missing_value_method.html#macrobond_financial.common.enums.series_missing_value_method.SeriesMissingValueMethod">SeriesMissingValueMethod</a> = None, to_lowerfrequency_method: <a title="macrobond_financial.common.enums.series_to_lower_frequency_method.SeriesToLowerFrequencyMethod" href="enums/series_to_lower_frequency_method.html#macrobond_financial.common.enums.series_to_lower_frequency_method.SeriesToLowerFrequencyMethod">SeriesToLowerFrequencyMethod</a> = None, to_higherfrequency_method: <a title="macrobond_financial.common.enums.series_to_higher_frequency_method.SeriesToHigherFrequencyMethod" href="enums/series_to_higher_frequency_method.html#macrobond_financial.common.enums.series_to_higher_frequency_method.SeriesToHigherFrequencyMethod">SeriesToHigherFrequencyMethod</a> = None, partial_periods_method: <a title="macrobond_financial.common.enums.series_partial_periods_method.SeriesPartialPeriodsMethod" href="enums/series_partial_periods_method.html#macrobond_financial.common.enums.series_partial_periods_method.SeriesPartialPeriodsMethod">SeriesPartialPeriodsMethod</a> = None)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -684,16 +740,24 @@ def object(self) -&gt; &#39;UnifiedSeries&#39;: ...</code></pre>
     def __init__(
         self,
         name: str,
-        missing_value_method: &#39;SeriesMissingValueMethod&#39; = None,
-        to_lowerfrequency_method: &#39;SeriesToLowerFrequencyMethod&#39; = None,
-        to_higherfrequency_method: &#39;SeriesToHigherFrequencyMethod&#39; = None,
-        partial_periods_method: &#39;SeriesPartialPeriodsMethod&#39; = None,
+        missing_value_method: SeriesMissingValueMethod = None,
+        to_lowerfrequency_method: SeriesToLowerFrequencyMethod = None,
+        to_higherfrequency_method: SeriesToHigherFrequencyMethod = None,
+        partial_periods_method: SeriesPartialPeriodsMethod = None,
     ) -&gt; None:
         self.name = name
-        self.missing_value_method = missing_value_method
-        self.to_lowerfrequency_method = to_lowerfrequency_method
-        self.to_higherfrequency_method = to_higherfrequency_method
-        self.partial_periods_method = partial_periods_method</code></pre>
+
+        self.missing_value_method = \
+            missing_value_method or SeriesMissingValueMethod.NONE
+
+        self.to_lowerfrequency_method = \
+            to_lowerfrequency_method or SeriesToLowerFrequencyMethod.AUTO
+
+        self.to_higherfrequency_method = \
+            to_higherfrequency_method or SeriesToHigherFrequencyMethod.AUTO
+
+        self.partial_periods_method = \
+            partial_periods_method or SeriesPartialPeriodsMethod.NONE</code></pre>
 </details>
 </dd>
 <dt id="macrobond_financial.common.series_methods.SeriesMethods"><code class="flex name class">
@@ -858,6 +922,7 @@ def get_unified_series(
 <ul class="">
 <li><code><a title="macrobond_financial.common.series_methods.GetOneEntitieReturn.data_frame" href="#macrobond_financial.common.series_methods.GetOneEntitieReturn.data_frame">data_frame</a></code></li>
 <li><code><a title="macrobond_financial.common.series_methods.GetOneEntitieReturn.dict" href="#macrobond_financial.common.series_methods.GetOneEntitieReturn.dict">dict</a></code></li>
+<li><code><a title="macrobond_financial.common.series_methods.GetOneEntitieReturn.metadata_as_data_frame" href="#macrobond_financial.common.series_methods.GetOneEntitieReturn.metadata_as_data_frame">metadata_as_data_frame</a></code></li>
 <li><code><a title="macrobond_financial.common.series_methods.GetOneEntitieReturn.object" href="#macrobond_financial.common.series_methods.GetOneEntitieReturn.object">object</a></code></li>
 </ul>
 </li>
@@ -867,6 +932,7 @@ def get_unified_series(
 <li><code><a title="macrobond_financial.common.series_methods.GetOneSeriesReturn.data_frame" href="#macrobond_financial.common.series_methods.GetOneSeriesReturn.data_frame">data_frame</a></code></li>
 <li><code><a title="macrobond_financial.common.series_methods.GetOneSeriesReturn.dict" href="#macrobond_financial.common.series_methods.GetOneSeriesReturn.dict">dict</a></code></li>
 <li><code><a title="macrobond_financial.common.series_methods.GetOneSeriesReturn.object" href="#macrobond_financial.common.series_methods.GetOneSeriesReturn.object">object</a></code></li>
+<li><code><a title="macrobond_financial.common.series_methods.GetOneSeriesReturn.values_and_dates_as_data_frame" href="#macrobond_financial.common.series_methods.GetOneSeriesReturn.values_and_dates_as_data_frame">values_and_dates_as_data_frame</a></code></li>
 </ul>
 </li>
 <li>

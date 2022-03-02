@@ -29,14 +29,24 @@
 <pre><code class="python"># -*- coding: utf-8 -*-
 
 from abc import ABC, abstractmethod
-from typing import Generic, TypeVar
+from typing import Generic, TypeVar, Union, TYPE_CHECKING
+from typing_extensions import Literal
 
 from .api import Api
-
 TypeVarApi = TypeVar(&#39;TypeVarApi&#39;, bound=Api)
+
+if TYPE_CHECKING:
+    from .credentials import Credentials
 
 
 class Client(ABC, Generic[TypeVarApi]):
+
+    def __init__(
+        self,
+        credentials: Union[&#39;Credentials&#39;, Literal[False]] = None  # pylint: disable=unused-argument
+    ) -&gt; None:
+        ...  # pragma: no cover
+
     def __enter__(self) -&gt; TypeVarApi:
         return self.open()  # pragma: no cover
 
@@ -63,6 +73,7 @@ class Client(ABC, Generic[TypeVarApi]):
 <dl>
 <dt id="macrobond_financial.common.client.Client"><code class="flex name class">
 <span>class <span class="ident">Client</span></span>
+<span>(</span><span>credentials: Union[ForwardRef('Credentials'), Literal[False]] = None)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Helper class that provides a standard way to create an ABC using
@@ -72,6 +83,13 @@ inheritance.</p></div>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class Client(ABC, Generic[TypeVarApi]):
+
+    def __init__(
+        self,
+        credentials: Union[&#39;Credentials&#39;, Literal[False]] = None  # pylint: disable=unused-argument
+    ) -&gt; None:
+        ...  # pragma: no cover
+
     def __enter__(self) -&gt; TypeVarApi:
         return self.open()  # pragma: no cover
 

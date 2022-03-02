@@ -171,7 +171,7 @@ def series_multi_filter_must_have_attributes(test: TestCase, api: Api) -> None:
 
 def series_multi_filter_must_not_have_attributes(test: TestCase, api: Api) -> None:
     search_result = api.search.series_multi_filter(
-        SearchFilter(must_not_have_attributes=["MoveBase"])
+        SearchFilter('abc', must_not_have_attributes=["MoveBase"])
     )
 
     test.assertNotEqual(len(search_result.entities), 0, 'len(com.entities) != 0')
@@ -198,7 +198,7 @@ def series_multi_filter_must_have_values(test: TestCase, api: Api) -> None:
 
 def series_multi_filter_must_not_have_values(test: TestCase, api: Api) -> None:
     search_result = api.search.series_multi_filter(
-        SearchFilter(must_not_have_values={"MoveBase": 'pp100'})
+        SearchFilter('abc', must_not_have_values={"MoveBase": 'pp100'})
     )
 
     test.assertNotEqual(len(search_result.entities), 0, 'len(com.entities) != 0')

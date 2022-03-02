@@ -28,9 +28,9 @@
 </summary>
 <pre><code class="python"># -*- coding: utf-8 -*-
 
-from typing import Optional
+from typing import Optional, overload, Union, List
 
-from macrobond_financial.common import Client
+from macrobond_financial.common import Client, Credentials
 
 from .session import Session, API_URL_DEFAULT, AUTHORIZATION_URL_DEFAULT
 from .scope import Scope
@@ -71,11 +71,55 @@ class WebClient(Client[&#39;WebApi&#39;]):
     ```
     &#34;&#34;&#34;
 
+    @overload
     def __init__(
-            self, client_id: str, client_secret: str, *scopes: Scope,
-            api_url: str = API_URL_DEFAULT, authorization_url: str = AUTHORIZATION_URL_DEFAULT
+        self, client_id_or_credentials: str, client_secret: str,
+        scopes: List[Scope] = None,
+        api_url: str = API_URL_DEFAULT, authorization_url: str = AUTHORIZATION_URL_DEFAULT
+    ) -&gt; None: ...
+
+    @overload
+    def __init__(
+        self, client_id_or_credentials: Credentials, client_secret: str = ...,
+        scopes: List[Scope] = None,
+        api_url: str = API_URL_DEFAULT, authorization_url: str = AUTHORIZATION_URL_DEFAULT
+    ) -&gt; None: ...
+
+    @overload
+    def __init__(
+        self, client_id_or_credentials: str = None, client_secret: str = ...,
+        scopes: List[Scope] = None,
+        api_url: str = API_URL_DEFAULT, authorization_url: str = AUTHORIZATION_URL_DEFAULT
+    ) -&gt; None: ...
+
+    def __init__(
+            self, client_id_or_credentials: Union[str, Credentials] = None,
+            client_secret: str = None,
+            scopes: List[Scope] = None,
+            api_url: str = API_URL_DEFAULT,
+            authorization_url: str = AUTHORIZATION_URL_DEFAULT
     ) -&gt; None:
-        super().__init__()
+        if client_id_or_credentials is None:
+            client_id_or_credentials = Credentials()
+
+        if isinstance(client_id_or_credentials, Credentials):
+            super().__init__(client_id_or_credentials)
+            credentials = client_id_or_credentials
+            client_id = credentials.client_id
+            client_secret = credentials.client_secret
+        else:
+            super().__init__(False)
+            client_id = client_id_or_credentials
+
+        if client_id is None:
+            raise ValueError(&#39;client_id is None&#39;)
+
+        if client_secret is None:
+            raise ValueError(&#39;client_secret is None&#39;)
+
+        if scopes is None:
+            scopes = []
+
         self.__api: Optional[&#39;WebApi&#39;] = None
         self.__session = Session(
             client_id, client_secret, *scopes,
@@ -103,7 +147,7 @@ class WebClient(Client[&#39;WebApi&#39;]):
 <dl>
 <dt id="macrobond_financial.web.web_client.WebClient"><code class="flex name class">
 <span>class <span class="ident">WebClient</span></span>
-<span>(</span><span>client_id: str, client_secret: str, *scopes: <a title="macrobond_financial.web.scope.Scope" href="scope.html#macrobond_financial.web.scope.Scope">Scope</a>, api_url: str = 'https://api.macrobondfinancial.com/', authorization_url: str = 'https://apiauth.macrobondfinancial.com/mbauth/')</span>
+<span>(</span><span>client_id_or_credentials: Union[str, <a title="macrobond_financial.common.credentials.Credentials" href="../common/credentials.html#macrobond_financial.common.credentials.Credentials">Credentials</a>] = None, client_secret: str = None, scopes: List[<a title="macrobond_financial.web.scope.Scope" href="scope.html#macrobond_financial.web.scope.Scope">Scope</a>] = None, api_url: str = 'https://api.macrobondfinancial.com/', authorization_url: str = 'https://apiauth.macrobondfinancial.com/mbauth/')</span>
 </code></dt>
 <dd>
 <div class="desc"><p>WebClient to get data from the web</p>
@@ -167,11 +211,55 @@ class WebClient(Client[&#39;WebApi&#39;]):
     ```
     &#34;&#34;&#34;
 
+    @overload
     def __init__(
-            self, client_id: str, client_secret: str, *scopes: Scope,
-            api_url: str = API_URL_DEFAULT, authorization_url: str = AUTHORIZATION_URL_DEFAULT
+        self, client_id_or_credentials: str, client_secret: str,
+        scopes: List[Scope] = None,
+        api_url: str = API_URL_DEFAULT, authorization_url: str = AUTHORIZATION_URL_DEFAULT
+    ) -&gt; None: ...
+
+    @overload
+    def __init__(
+        self, client_id_or_credentials: Credentials, client_secret: str = ...,
+        scopes: List[Scope] = None,
+        api_url: str = API_URL_DEFAULT, authorization_url: str = AUTHORIZATION_URL_DEFAULT
+    ) -&gt; None: ...
+
+    @overload
+    def __init__(
+        self, client_id_or_credentials: str = None, client_secret: str = ...,
+        scopes: List[Scope] = None,
+        api_url: str = API_URL_DEFAULT, authorization_url: str = AUTHORIZATION_URL_DEFAULT
+    ) -&gt; None: ...
+
+    def __init__(
+            self, client_id_or_credentials: Union[str, Credentials] = None,
+            client_secret: str = None,
+            scopes: List[Scope] = None,
+            api_url: str = API_URL_DEFAULT,
+            authorization_url: str = AUTHORIZATION_URL_DEFAULT
     ) -&gt; None:
-        super().__init__()
+        if client_id_or_credentials is None:
+            client_id_or_credentials = Credentials()
+
+        if isinstance(client_id_or_credentials, Credentials):
+            super().__init__(client_id_or_credentials)
+            credentials = client_id_or_credentials
+            client_id = credentials.client_id
+            client_secret = credentials.client_secret
+        else:
+            super().__init__(False)
+            client_id = client_id_or_credentials
+
+        if client_id is None:
+            raise ValueError(&#39;client_id is None&#39;)
+
+        if client_secret is None:
+            raise ValueError(&#39;client_secret is None&#39;)
+
+        if scopes is None:
+            scopes = []
+
         self.__api: Optional[&#39;WebApi&#39;] = None
         self.__session = Session(
             client_id, client_secret, *scopes,

@@ -32,8 +32,6 @@ from typing import Any, Dict, Sequence, Tuple, Optional, List, Union, cast, TYPE
 
 from datetime import datetime
 
-# from ._get_pandas import _get_pandas
-
 if TYPE_CHECKING:  # pragma: no cover
     from pandas import DataFrame  # type: ignore
 
@@ -68,14 +66,6 @@ class UnifiedSerie:
             self.metadata = cast(Dict[str, Any], metadata)
             self.values = cast(Tuple[Optional[float], ...], values)
 
-    def get_values_and_dates_as_data_frame(self) -&gt; &#39;DataFrame&#39;:
-        raise NotImplementedError()
-        # metadata = self.metadata
-        # pandas = _get_pandas()
-        # return pandas.DataFrame.from_dict(
-        #     metadata, orient=&#39;index&#39;, columns=[&#39;Attributes&#39;]
-        # )
-
 
 class UnifiedSeries(Sequence[UnifiedSerie]):
 
@@ -103,15 +93,7 @@ class UnifiedSeries(Sequence[UnifiedSerie]):
         return self.series.__getitem__(idx_or_slice)
 
     def __len__(self) -&gt; int:
-        return len(self.series)
-
-    def get_values_as_data_frame(self) -&gt; &#39;DataFrame&#39;:
-        raise NotImplementedError()
-        # metadata = self.metadata
-        # pandas = _get_pandas()
-        # return pandas.DataFrame.from_dict(
-        #     metadata, orient=&#39;index&#39;, columns=[&#39;Attributes&#39;]
-        # )</code></pre>
+        return len(self.series)</code></pre>
 </details>
 </section>
 <section>
@@ -152,15 +134,7 @@ class UnifiedSeries(Sequence[UnifiedSerie]):
             self.values: Tuple[Optional[float], ...] = tuple()
         else:
             self.metadata = cast(Dict[str, Any], metadata)
-            self.values = cast(Tuple[Optional[float], ...], values)
-
-    def get_values_and_dates_as_data_frame(self) -&gt; &#39;DataFrame&#39;:
-        raise NotImplementedError()
-        # metadata = self.metadata
-        # pandas = _get_pandas()
-        # return pandas.DataFrame.from_dict(
-        #     metadata, orient=&#39;index&#39;, columns=[&#39;Attributes&#39;]
-        # )</code></pre>
+            self.values = cast(Tuple[Optional[float], ...], values)</code></pre>
 </details>
 <h3>Instance variables</h3>
 <dl>
@@ -174,27 +148,6 @@ class UnifiedSeries(Sequence[UnifiedSerie]):
 <pre><code class="python">@property
 def is_error(self) -&gt; bool:
     return self.error_message != &#39;&#39;</code></pre>
-</details>
-</dd>
-</dl>
-<h3>Methods</h3>
-<dl>
-<dt id="macrobond_financial.common.unified_series.UnifiedSerie.get_values_and_dates_as_data_frame"><code class="name flex">
-<span>def <span class="ident">get_values_and_dates_as_data_frame</span></span>(<span>self) ‑> DataFrame</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def get_values_and_dates_as_data_frame(self) -&gt; &#39;DataFrame&#39;:
-    raise NotImplementedError()
-    # metadata = self.metadata
-    # pandas = _get_pandas()
-    # return pandas.DataFrame.from_dict(
-    #     metadata, orient=&#39;index&#39;, columns=[&#39;Attributes&#39;]
-    # )</code></pre>
 </details>
 </dd>
 </dl>
@@ -237,15 +190,7 @@ def is_error(self) -&gt; bool:
         return self.series.__getitem__(idx_or_slice)
 
     def __len__(self) -&gt; int:
-        return len(self.series)
-
-    def get_values_as_data_frame(self) -&gt; &#39;DataFrame&#39;:
-        raise NotImplementedError()
-        # metadata = self.metadata
-        # pandas = _get_pandas()
-        # return pandas.DataFrame.from_dict(
-        #     metadata, orient=&#39;index&#39;, columns=[&#39;Attributes&#39;]
-        # )</code></pre>
+        return len(self.series)</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
@@ -257,27 +202,6 @@ def is_error(self) -&gt; bool:
 <li>collections.abc.Container</li>
 <li>typing.Generic</li>
 </ul>
-<h3>Methods</h3>
-<dl>
-<dt id="macrobond_financial.common.unified_series.UnifiedSeries.get_values_as_data_frame"><code class="name flex">
-<span>def <span class="ident">get_values_as_data_frame</span></span>(<span>self) ‑> DataFrame</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def get_values_as_data_frame(self) -&gt; &#39;DataFrame&#39;:
-    raise NotImplementedError()
-    # metadata = self.metadata
-    # pandas = _get_pandas()
-    # return pandas.DataFrame.from_dict(
-    #     metadata, orient=&#39;index&#39;, columns=[&#39;Attributes&#39;]
-    # )</code></pre>
-</details>
-</dd>
-</dl>
 </dd>
 </dl>
 </section>
@@ -298,15 +222,11 @@ def is_error(self) -&gt; bool:
 <li>
 <h4><code><a title="macrobond_financial.common.unified_series.UnifiedSerie" href="#macrobond_financial.common.unified_series.UnifiedSerie">UnifiedSerie</a></code></h4>
 <ul class="">
-<li><code><a title="macrobond_financial.common.unified_series.UnifiedSerie.get_values_and_dates_as_data_frame" href="#macrobond_financial.common.unified_series.UnifiedSerie.get_values_and_dates_as_data_frame">get_values_and_dates_as_data_frame</a></code></li>
 <li><code><a title="macrobond_financial.common.unified_series.UnifiedSerie.is_error" href="#macrobond_financial.common.unified_series.UnifiedSerie.is_error">is_error</a></code></li>
 </ul>
 </li>
 <li>
 <h4><code><a title="macrobond_financial.common.unified_series.UnifiedSeries" href="#macrobond_financial.common.unified_series.UnifiedSeries">UnifiedSeries</a></code></h4>
-<ul class="">
-<li><code><a title="macrobond_financial.common.unified_series.UnifiedSeries.get_values_as_data_frame" href="#macrobond_financial.common.unified_series.UnifiedSeries.get_values_as_data_frame">get_values_as_data_frame</a></code></li>
-</ul>
 </li>
 </ul>
 </li>

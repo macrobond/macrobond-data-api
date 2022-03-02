@@ -11,7 +11,7 @@ if TYPE_CHECKING:  # pragma: no cover
     from typing_extensions import TypedDict, Literal
 
     EntityColumnsLiterals = Literal[
-        'Name', 'PrimName', 'ErrorMessage', 'FullDescription', 'EntityType'
+        'ErrorMessage', 'Name', 'PrimName', 'FullDescription', 'EntityType'
     ]
 
     EntityColumns = List[EntityColumnsLiterals]

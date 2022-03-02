@@ -4,8 +4,6 @@ from typing import Any, Dict, Sequence, Tuple, Optional, List, Union, cast, TYPE
 
 from datetime import datetime
 
-# from ._get_pandas import _get_pandas
-
 if TYPE_CHECKING:  # pragma: no cover
     from pandas import DataFrame  # type: ignore
 
@@ -40,14 +38,6 @@ class UnifiedSerie:
             self.metadata = cast(Dict[str, Any], metadata)
             self.values = cast(Tuple[Optional[float], ...], values)
 
-    def get_values_and_dates_as_data_frame(self) -> 'DataFrame':
-        raise NotImplementedError()
-        # metadata = self.metadata
-        # pandas = _get_pandas()
-        # return pandas.DataFrame.from_dict(
-        #     metadata, orient='index', columns=['Attributes']
-        # )
-
 
 class UnifiedSeries(Sequence[UnifiedSerie]):
 
@@ -76,11 +66,3 @@ class UnifiedSeries(Sequence[UnifiedSerie]):
 
     def __len__(self) -> int:
         return len(self.series)
-
-    def get_values_as_data_frame(self) -> 'DataFrame':
-        raise NotImplementedError()
-        # metadata = self.metadata
-        # pandas = _get_pandas()
-        # return pandas.DataFrame.from_dict(
-        #     metadata, orient='index', columns=['Attributes']
-        # )

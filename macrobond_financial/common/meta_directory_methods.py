@@ -2,7 +2,7 @@
 
 '''module doc string'''
 
-from typing import List, Tuple, overload, Union, TYPE_CHECKING
+from typing import List, overload, Union, TYPE_CHECKING
 from abc import ABC, abstractmethod
 
 if TYPE_CHECKING:  # pragma: no cover

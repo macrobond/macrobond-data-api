@@ -2,6 +2,7 @@
 
 # pylint: disable = missing-module-docstring
 
+from collections import OrderedDict
 from typing import Any, Dict, Tuple, List, Optional, Union, cast, TYPE_CHECKING
 
 from datetime import datetime, timezone
@@ -122,6 +123,39 @@ class _GetOneSeriesReturn(SeriesMethods.GetOneSeriesReturn):
         kwargs['data'] = [self.dict()]
         return pandas.DataFrame(*args, **kwargs)
 
+    def values_and_dates_as_data_frame(self, *args, **kwargs) -> 'DataFrame':
+        pandas = _get_pandas()
+
+        response = self.__session.series.fetch_series(self.__series_name)[0]
+        error_text = response.get('errorText')
+
+        if error_text is not None:
+            error_series: 'ErrorSeriesTypedDict' = {
+                'Name': self.__series_name,
+                'ErrorMessage': error_text
+            }
+            kwargs['data'] = error_series
+        else:
+
+            dates = tuple(
+                map(lambda s:
+                    datetime.strptime(s, '%Y-%m-%dT%H:%M:%S').replace(tzinfo=timezone.utc),
+                    cast(List[str], response['dates'])
+                    )
+            )
+
+            values = cast(Tuple[Optional[float]], response['values'])
+
+            series: 'SeriesTypedDict' = {  # type: ignore
+                'Values': values,
+                'Dates': dates
+            }
+
+            kwargs['data'] = series
+
+        args = args[1:]
+        return pandas.DataFrame(*args, **kwargs)
+
 
 class _GetSeriesReturn(SeriesMethods.GetSeriesReturn):
 
@@ -173,6 +207,13 @@ class _GetOneEntitieReturn(SeriesMethods.GetOneEntitieReturn):
         args = args[1:]
         kwargs['data'] = [self.dict()]
         return pandas.DataFrame(*args, **kwargs)
+
+    def metadata_as_data_frame(self) -> 'DataFrame':
+        pandas = _get_pandas()
+
+        return pandas.DataFrame.from_dict(
+            self.dict(), orient='index', columns=['Attributes']
+        )
 
 
 class _GetEntitiesReturn(SeriesMethods.GetEntitiesReturn):
@@ -243,12 +284,37 @@ class _GetUnifiedSeriesReturn(SeriesMethods.GetUnifiedSeriesReturn):
     def dict(self) -> 'UnifiedSeriesTypedDict':
         raise NotImplementedError()
 
-    def data_frame(self, *args, **kwargs) -> 'DataFrame':
-        raise NotImplementedError()
-        # pandas = _get_pandas()
-        # args = args[1:]
-        # kwargs['data'] = self.list_of_dicts()
-        # return pandas.DataFrame(*args, **kwargs)
+    def data_frame(self, columns: List[str] = None) -> 'DataFrame':
+        pandas = _get_pandas()
+        response = self.__session.series.fetch_unified_series(self.__request)
+        data: Dict[str, Any] = OrderedDict()
+
+        dates_name = 'dates' if not columns else columns[0]
+        str_dates = response.get('dates')
+        if str_dates is not None:
+            data[dates_name] = tuple(
+                map(
+                    lambda s:
+                        datetime.strptime(s, '%Y-%m-%dT%H:%M:%S').replace(tzinfo=timezone.utc),
+                    cast(List[str], str_dates)
+                )
+            )
+        else:
+            data[dates_name] = tuple()
+
+        series_entries_names = list(map(lambda x: x['name'], self.__request['seriesEntries']))
+
+        for i, one_series in enumerate(response['series']):
+            error_text = one_series.get('errorText')
+
+            if error_text is not None:
+                ...
+            else:
+                values = cast(Tuple[Optional[float]], one_series['values'])
+                name = series_entries_names[i] if not columns else columns[i + 1]
+                data[name] = values
+
+        return pandas.DataFrame.from_dict(data)
 
 
 class _WebSeriesMethods(SeriesMethods.SeriesMethods):

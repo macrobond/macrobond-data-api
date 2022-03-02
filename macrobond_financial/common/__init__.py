@@ -12,10 +12,14 @@ from .start_or_end_point import StartOrEndPoint
 
 from .client import Client
 from .api import Api
+from .credentials import Credentials
+
+from .enums.series_frequency import SeriesFrequency
 
 __all__ = [
     'Client', 'Api', 'Series', 'Entity', 'UnifiedSeries', 'UnifiedSerie', 'StartOrEndPoint',
-    'SeriesEntrie', 'SeriesMethods', 'SearchMethods', 'SearchFilter', 'SearchResult'
+    'SeriesEntrie', 'SeriesMethods', 'SearchMethods', 'SearchFilter', 'SearchResult',
+    'Credentials', 'SeriesFrequency'
 ]
 
 __pdoc__ = {

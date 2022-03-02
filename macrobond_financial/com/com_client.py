@@ -9,6 +9,7 @@ from .com_api import ComApi
 
 if TYPE_CHECKING:  # pragma: no cover
     from .com_typs.connection import Connection
+    from macrobond_financial.common import Credentials
 
 
 class ComClient(Client['ComApi']):
@@ -28,8 +29,11 @@ class ComClient(Client['ComApi']):
     ```
     """
 
-    def __init__(self) -> None:
-        super().__init__()
+    def __init__(
+        self,
+        credentials: 'Credentials' = None  # pylint: disable=unused-argument
+    ) -> None:
+        super().__init__(False)
         self.__api: Optional['ComApi'] = None
 
     def open(self) -> 'ComApi':
