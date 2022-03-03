@@ -10,7 +10,6 @@ if TYPE_CHECKING:  # pragma: no cover
 
 
 class SearchMethods(ABC):
-
     def search(
         self,
         text: str = None,
@@ -19,8 +18,8 @@ class SearchMethods(ABC):
         must_not_have_values: Dict[str, object] = None,
         must_have_attributes: Union[Sequence[str], str] = None,
         must_not_have_attributes: Union[Sequence[str], str] = None,
-        include_discontinued: bool = None
-    ) -> 'SearchResult':
+        include_discontinued: bool = None,
+    ) -> "SearchResult":
         return self.series_multi_filter(
             SearchFilter(
                 text=text,
@@ -30,20 +29,17 @@ class SearchMethods(ABC):
                 must_have_attributes=must_have_attributes,
                 must_not_have_attributes=must_not_have_attributes,
             ),
-            include_discontinued=include_discontinued
+            include_discontinued=include_discontinued,
         )
 
     @abstractmethod
     def series_multi_filter(
-        self,
-        *filters: 'SearchFilter',
-        include_discontinued: bool = None
-    ) -> 'SearchResult':
+        self, *filters: "SearchFilter", include_discontinued: bool = None
+    ) -> "SearchResult":
         ...  # pragma: no cover
 
 
 class SearchFilter:
-
     def __init__(
         self,
         text: str = None,
@@ -60,33 +56,40 @@ class SearchFilter:
         else:
             self.entity_types = entity_types if entity_types is not None else []
 
-        self.must_have_values: Dict[str, object] = \
+        self.must_have_values: Dict[str, object] = (
             must_have_values if must_have_values is not None else {}
+        )
 
-        self.must_not_have_values: Dict[str, object] = \
+        self.must_not_have_values: Dict[str, object] = (
             must_not_have_values if must_not_have_values is not None else {}
+        )
 
         if isinstance(must_have_attributes, str):
             self.must_have_attributes: Sequence[str] = [must_have_attributes]
         else:
-            self.must_have_attributes = must_have_attributes if \
-                must_have_attributes is not None else []
+            self.must_have_attributes = (
+                must_have_attributes if must_have_attributes is not None else []
+            )
 
         if isinstance(must_not_have_attributes, str):
             self.must_not_have_attributes: Sequence[str] = [must_not_have_attributes]
         else:
-            self.must_not_have_attributes = \
+            self.must_not_have_attributes = (
                 must_not_have_attributes if must_not_have_attributes is not None else []
+            )
 
 
 class SearchResult(Sequence[Dict[str, Any]]):
-
-    def __init__(self, entities: Tuple[Dict[str, Any], ...], is_truncated: bool) -> None:
+    def __init__(
+        self, entities: Tuple[Dict[str, Any], ...], is_truncated: bool
+    ) -> None:
         self.entities = entities
         self.is_truncated = is_truncated
 
     def __str__(self):
-        return f'SearchResult of {len(self)} entities, is is_truncated {self.is_truncated}'
+        return (
+            f"SearchResult of {len(self)} entities, is is_truncated {self.is_truncated}"
+        )
 
     def __repr__(self):
         return str(self)
@@ -106,19 +109,21 @@ class SearchResult(Sequence[Dict[str, Any]]):
         return len(self.entities)
 
     @overload
-    def data_frame(self) -> 'DataFrame': ...
+    def data_frame(self) -> "DataFrame":
+        ...
 
     @overload
     def data_frame(
         self,
-        index: 'pandas_typing.Axes' = None,
-        columns: 'pandas_typing.Axes' = None,
-        dtype: 'pandas_typing.Dtype' = None,
+        index: "pandas_typing.Axes" = None,
+        columns: "pandas_typing.Axes" = None,
+        dtype: "pandas_typing.Dtype" = None,
         copy: bool = False,
-    ) -> 'DataFrame': ...
+    ) -> "DataFrame":
+        ...
 
-    def data_frame(self, *args, **kwargs) -> 'DataFrame':
+    def data_frame(self, *args, **kwargs) -> "DataFrame":
         pandas = _get_pandas()
         args = args[1:]
-        kwargs['data'] = self.entities
+        kwargs["data"] = self.entities
         return pandas.DataFrame(*args, **kwargs)

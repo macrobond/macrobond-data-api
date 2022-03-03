@@ -14,14 +14,27 @@ from .client import Client
 from .api import Api
 from .credentials import Credentials
 
+from .get_entitie_error import EntitieErrorInfo, GetEntitiesError
+
 from .enums.series_frequency import SeriesFrequency
 
 __all__ = [
-    'Client', 'Api', 'Series', 'Entity', 'UnifiedSeries', 'UnifiedSerie', 'StartOrEndPoint',
-    'SeriesEntrie', 'SeriesMethods', 'SearchMethods', 'SearchFilter', 'SearchResult',
-    'Credentials', 'SeriesFrequency'
+    "Client",
+    "Api",
+    "Series",
+    "Entity",
+    "UnifiedSeries",
+    "UnifiedSerie",
+    "StartOrEndPoint",
+    "SeriesEntrie",
+    "SeriesMethods",
+    "SearchMethods",
+    "SearchFilter",
+    "SearchResult",
+    "Credentials",
+    "SeriesFrequency",
+    "EntitieErrorInfo",
+    "GetEntitiesError",
 ]
 
-__pdoc__ = {
-    'StartOrEndPoint.__init__': False
-}
+__pdoc__ = {"StartOrEndPoint.__init__": False}

@@ -42,17 +42,30 @@ from .client import Client
 from .api import Api
 from .credentials import Credentials
 
+from .get_entitie_error import EntitieErrorInfo, GetEntitiesError
+
 from .enums.series_frequency import SeriesFrequency
 
 __all__ = [
-    &#39;Client&#39;, &#39;Api&#39;, &#39;Series&#39;, &#39;Entity&#39;, &#39;UnifiedSeries&#39;, &#39;UnifiedSerie&#39;, &#39;StartOrEndPoint&#39;,
-    &#39;SeriesEntrie&#39;, &#39;SeriesMethods&#39;, &#39;SearchMethods&#39;, &#39;SearchFilter&#39;, &#39;SearchResult&#39;,
-    &#39;Credentials&#39;, &#39;SeriesFrequency&#39;
+    &#34;Client&#34;,
+    &#34;Api&#34;,
+    &#34;Series&#34;,
+    &#34;Entity&#34;,
+    &#34;UnifiedSeries&#34;,
+    &#34;UnifiedSerie&#34;,
+    &#34;StartOrEndPoint&#34;,
+    &#34;SeriesEntrie&#34;,
+    &#34;SeriesMethods&#34;,
+    &#34;SearchMethods&#34;,
+    &#34;SearchFilter&#34;,
+    &#34;SearchResult&#34;,
+    &#34;Credentials&#34;,
+    &#34;SeriesFrequency&#34;,
+    &#34;EntitieErrorInfo&#34;,
+    &#34;GetEntitiesError&#34;,
 ]
 
-__pdoc__ = {
-    &#39;StartOrEndPoint.__init__&#39;: False
-}</code></pre>
+__pdoc__ = {&#34;StartOrEndPoint.__init__&#34;: False}</code></pre>
 </details>
 </section>
 <section>
@@ -75,6 +88,10 @@ __pdoc__ = {
 <div class="desc"></div>
 </dd>
 <dt><code class="name"><a title="macrobond_financial.common.enums" href="enums/index.html">macrobond_financial.common.enums</a></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt><code class="name"><a title="macrobond_financial.common.get_entitie_error" href="get_entitie_error.html">macrobond_financial.common.get_entitie_error</a></code></dt>
 <dd>
 <div class="desc"></div>
 </dd>
@@ -401,6 +418,28 @@ def has_config(cls, paths: List[str] = None) -&gt; bool:
 </dd>
 </dl>
 </dd>
+<dt id="macrobond_financial.common.EntitieErrorInfo"><code class="flex name class">
+<span>class <span class="ident">EntitieErrorInfo</span></span>
+<span>(</span><span>name: str, error_message: str)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class EntitieErrorInfo:
+    def __init__(self, name: str, error_message: str):
+        self.name = name
+        self.error_message = error_message
+
+    def __str__(self):
+        return f&#34;name: {self.name} error_message: {self.error_message}&#34;
+
+    def __repr__(self):
+        return str(self)</code></pre>
+</details>
+</dd>
 <dt id="macrobond_financial.common.Entity"><code class="flex name class">
 <span>class <span class="ident">Entity</span></span>
 <span>(</span><span>error_message: str, metadata: Dict[str, Any])</span>
@@ -581,6 +620,28 @@ def title(self) -&gt; str:
 </dd>
 </dl>
 </dd>
+<dt id="macrobond_financial.common.GetEntitiesError"><code class="flex name class">
+<span>class <span class="ident">GetEntitiesError</span></span>
+<span>(</span><span>entities: List[<a title="macrobond_financial.common.get_entitie_error.EntitieErrorInfo" href="get_entitie_error.html#macrobond_financial.common.get_entitie_error.EntitieErrorInfo">EntitieErrorInfo</a>])</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Common base class for all non-exit exceptions.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class GetEntitiesError(Exception):
+    def __init__(self, entities: List[EntitieErrorInfo]):
+        self.entities = entities
+        message = &#34;&#34;
+        super().__init__(message)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>builtins.Exception</li>
+<li>builtins.BaseException</li>
+</ul>
+</dd>
 <dt id="macrobond_financial.common.SearchFilter"><code class="flex name class">
 <span>class <span class="ident">SearchFilter</span></span>
 <span>(</span><span>text: str = None, entity_types: Union[Sequence[str], str] = None, must_have_values: Dict[str, object] = None, must_not_have_values: Dict[str, object] = None, must_have_attributes: Union[Sequence[str], str] = None, must_not_have_attributes: Union[Sequence[str], str] = None)</span>
@@ -592,7 +653,6 @@ def title(self) -&gt; str:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class SearchFilter:
-
     def __init__(
         self,
         text: str = None,
@@ -609,23 +669,27 @@ def title(self) -&gt; str:
         else:
             self.entity_types = entity_types if entity_types is not None else []
 
-        self.must_have_values: Dict[str, object] = \
+        self.must_have_values: Dict[str, object] = (
             must_have_values if must_have_values is not None else {}
+        )
 
-        self.must_not_have_values: Dict[str, object] = \
+        self.must_not_have_values: Dict[str, object] = (
             must_not_have_values if must_not_have_values is not None else {}
+        )
 
         if isinstance(must_have_attributes, str):
             self.must_have_attributes: Sequence[str] = [must_have_attributes]
         else:
-            self.must_have_attributes = must_have_attributes if \
-                must_have_attributes is not None else []
+            self.must_have_attributes = (
+                must_have_attributes if must_have_attributes is not None else []
+            )
 
         if isinstance(must_not_have_attributes, str):
             self.must_not_have_attributes: Sequence[str] = [must_not_have_attributes]
         else:
-            self.must_not_have_attributes = \
-                must_not_have_attributes if must_not_have_attributes is not None else []</code></pre>
+            self.must_not_have_attributes = (
+                must_not_have_attributes if must_not_have_attributes is not None else []
+            )</code></pre>
 </details>
 </dd>
 <dt id="macrobond_financial.common.SearchMethods"><code class="flex name class">
@@ -639,7 +703,6 @@ inheritance.</p></div>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class SearchMethods(ABC):
-
     def search(
         self,
         text: str = None,
@@ -648,8 +711,8 @@ inheritance.</p></div>
         must_not_have_values: Dict[str, object] = None,
         must_have_attributes: Union[Sequence[str], str] = None,
         must_not_have_attributes: Union[Sequence[str], str] = None,
-        include_discontinued: bool = None
-    ) -&gt; &#39;SearchResult&#39;:
+        include_discontinued: bool = None,
+    ) -&gt; &#34;SearchResult&#34;:
         return self.series_multi_filter(
             SearchFilter(
                 text=text,
@@ -659,15 +722,13 @@ inheritance.</p></div>
                 must_have_attributes=must_have_attributes,
                 must_not_have_attributes=must_not_have_attributes,
             ),
-            include_discontinued=include_discontinued
+            include_discontinued=include_discontinued,
         )
 
     @abstractmethod
     def series_multi_filter(
-        self,
-        *filters: &#39;SearchFilter&#39;,
-        include_discontinued: bool = None
-    ) -&gt; &#39;SearchResult&#39;:
+        self, *filters: &#34;SearchFilter&#34;, include_discontinued: bool = None
+    ) -&gt; &#34;SearchResult&#34;:
         ...  # pragma: no cover</code></pre>
 </details>
 <h3>Ancestors</h3>
@@ -698,8 +759,8 @@ inheritance.</p></div>
     must_not_have_values: Dict[str, object] = None,
     must_have_attributes: Union[Sequence[str], str] = None,
     must_not_have_attributes: Union[Sequence[str], str] = None,
-    include_discontinued: bool = None
-) -&gt; &#39;SearchResult&#39;:
+    include_discontinued: bool = None,
+) -&gt; &#34;SearchResult&#34;:
     return self.series_multi_filter(
         SearchFilter(
             text=text,
@@ -709,7 +770,7 @@ inheritance.</p></div>
             must_have_attributes=must_have_attributes,
             must_not_have_attributes=must_not_have_attributes,
         ),
-        include_discontinued=include_discontinued
+        include_discontinued=include_discontinued,
     )</code></pre>
 </details>
 </dd>
@@ -724,10 +785,8 @@ inheritance.</p></div>
 </summary>
 <pre><code class="python">@abstractmethod
 def series_multi_filter(
-    self,
-    *filters: &#39;SearchFilter&#39;,
-    include_discontinued: bool = None
-) -&gt; &#39;SearchResult&#39;:
+    self, *filters: &#34;SearchFilter&#34;, include_discontinued: bool = None
+) -&gt; &#34;SearchResult&#34;:
     ...  # pragma: no cover</code></pre>
 </details>
 </dd>
@@ -746,13 +805,16 @@ def series_multi_filter(
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class SearchResult(Sequence[Dict[str, Any]]):
-
-    def __init__(self, entities: Tuple[Dict[str, Any], ...], is_truncated: bool) -&gt; None:
+    def __init__(
+        self, entities: Tuple[Dict[str, Any], ...], is_truncated: bool
+    ) -&gt; None:
         self.entities = entities
         self.is_truncated = is_truncated
 
     def __str__(self):
-        return f&#39;SearchResult of {len(self)} entities, is is_truncated {self.is_truncated}&#39;
+        return (
+            f&#34;SearchResult of {len(self)} entities, is is_truncated {self.is_truncated}&#34;
+        )
 
     def __repr__(self):
         return str(self)
@@ -772,21 +834,23 @@ def series_multi_filter(
         return len(self.entities)
 
     @overload
-    def data_frame(self) -&gt; &#39;DataFrame&#39;: ...
+    def data_frame(self) -&gt; &#34;DataFrame&#34;:
+        ...
 
     @overload
     def data_frame(
         self,
-        index: &#39;pandas_typing.Axes&#39; = None,
-        columns: &#39;pandas_typing.Axes&#39; = None,
-        dtype: &#39;pandas_typing.Dtype&#39; = None,
+        index: &#34;pandas_typing.Axes&#34; = None,
+        columns: &#34;pandas_typing.Axes&#34; = None,
+        dtype: &#34;pandas_typing.Dtype&#34; = None,
         copy: bool = False,
-    ) -&gt; &#39;DataFrame&#39;: ...
+    ) -&gt; &#34;DataFrame&#34;:
+        ...
 
-    def data_frame(self, *args, **kwargs) -&gt; &#39;DataFrame&#39;:
+    def data_frame(self, *args, **kwargs) -&gt; &#34;DataFrame&#34;:
         pandas = _get_pandas()
         args = args[1:]
-        kwargs[&#39;data&#39;] = self.entities
+        kwargs[&#34;data&#34;] = self.entities
         return pandas.DataFrame(*args, **kwargs)</code></pre>
 </details>
 <h3>Ancestors</h3>
@@ -810,10 +874,10 @@ def series_multi_filter(
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def data_frame(self, *args, **kwargs) -&gt; &#39;DataFrame&#39;:
+<pre><code class="python">def data_frame(self, *args, **kwargs) -&gt; &#34;DataFrame&#34;:
     pandas = _get_pandas()
     args = args[1:]
-    kwargs[&#39;data&#39;] = self.entities
+    kwargs[&#34;data&#34;] = self.entities
     return pandas.DataFrame(*args, **kwargs)</code></pre>
 </details>
 </dd>
@@ -1034,19 +1098,21 @@ inheritance.</p></div>
 <pre><code class="python">class SeriesMethods(ABC):
 
     @abstractmethod
-    def get_one_series(self, series_name: str) -&gt; GetOneSeriesReturn:
+    def get_one_series(self, series_name: str, raise_get_entities_error=True) -&gt; GetOneSeriesReturn:
         &#39;&#39;&#39;Download one series.&#39;&#39;&#39;
 
     @abstractmethod
-    def get_series(self, *series_names: str) -&gt; GetSeriesReturn:
+    def get_series(self, *series_names: str, raise_get_entities_error=True) -&gt; GetSeriesReturn:
         &#39;&#39;&#39;Download one or more series.&#39;&#39;&#39;
 
     @abstractmethod
-    def get_one_entitie(self, entity_name: str) -&gt; GetOneEntitieReturn:
+    def get_one_entitie(
+        self, entity_name: str, raise_get_entities_error=True
+    ) -&gt; GetOneEntitieReturn:
         &#39;&#39;&#39;Download one entity.&#39;&#39;&#39;
 
     @abstractmethod
-    def get_entities(self, *entity_names: str) -&gt; GetEntitiesReturn:
+    def get_entities(self, *entity_names: str, raise_get_entities_error=True) -&gt; GetEntitiesReturn:
         &#39;&#39;&#39;Download one or more entitys.&#39;&#39;&#39;
 
     @abstractmethod
@@ -1059,6 +1125,7 @@ inheritance.</p></div>
         currency: str = None,
         start_point: &#39;StartOrEndPoint&#39; = None,
         end_point: &#39;StartOrEndPoint&#39; = None,
+        raise_get_entities_error=True
     ) -&gt; GetUnifiedSeriesReturn:
         ...  # pragma: no cover</code></pre>
 </details>
@@ -1074,7 +1141,7 @@ inheritance.</p></div>
 <h3>Methods</h3>
 <dl>
 <dt id="macrobond_financial.common.SeriesMethods.get_entities"><code class="name flex">
-<span>def <span class="ident">get_entities</span></span>(<span>self, *entity_names: str) ‑> <a title="macrobond_financial.common.series_methods.GetEntitiesReturn" href="series_methods.html#macrobond_financial.common.series_methods.GetEntitiesReturn">GetEntitiesReturn</a></span>
+<span>def <span class="ident">get_entities</span></span>(<span>self, *entity_names: str, raise_get_entities_error=True) ‑> <a title="macrobond_financial.common.series_methods.GetEntitiesReturn" href="series_methods.html#macrobond_financial.common.series_methods.GetEntitiesReturn">GetEntitiesReturn</a></span>
 </code></dt>
 <dd>
 <div class="desc"><p>Download one or more entitys.</p></div>
@@ -1083,12 +1150,12 @@ inheritance.</p></div>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@abstractmethod
-def get_entities(self, *entity_names: str) -&gt; GetEntitiesReturn:
+def get_entities(self, *entity_names: str, raise_get_entities_error=True) -&gt; GetEntitiesReturn:
     &#39;&#39;&#39;Download one or more entitys.&#39;&#39;&#39;</code></pre>
 </details>
 </dd>
 <dt id="macrobond_financial.common.SeriesMethods.get_one_entitie"><code class="name flex">
-<span>def <span class="ident">get_one_entitie</span></span>(<span>self, entity_name: str) ‑> <a title="macrobond_financial.common.series_methods.GetOneEntitieReturn" href="series_methods.html#macrobond_financial.common.series_methods.GetOneEntitieReturn">GetOneEntitieReturn</a></span>
+<span>def <span class="ident">get_one_entitie</span></span>(<span>self, entity_name: str, raise_get_entities_error=True) ‑> <a title="macrobond_financial.common.series_methods.GetOneEntitieReturn" href="series_methods.html#macrobond_financial.common.series_methods.GetOneEntitieReturn">GetOneEntitieReturn</a></span>
 </code></dt>
 <dd>
 <div class="desc"><p>Download one entity.</p></div>
@@ -1097,12 +1164,14 @@ def get_entities(self, *entity_names: str) -&gt; GetEntitiesReturn:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@abstractmethod
-def get_one_entitie(self, entity_name: str) -&gt; GetOneEntitieReturn:
+def get_one_entitie(
+    self, entity_name: str, raise_get_entities_error=True
+) -&gt; GetOneEntitieReturn:
     &#39;&#39;&#39;Download one entity.&#39;&#39;&#39;</code></pre>
 </details>
 </dd>
 <dt id="macrobond_financial.common.SeriesMethods.get_one_series"><code class="name flex">
-<span>def <span class="ident">get_one_series</span></span>(<span>self, series_name: str) ‑> <a title="macrobond_financial.common.series_methods.GetOneSeriesReturn" href="series_methods.html#macrobond_financial.common.series_methods.GetOneSeriesReturn">GetOneSeriesReturn</a></span>
+<span>def <span class="ident">get_one_series</span></span>(<span>self, series_name: str, raise_get_entities_error=True) ‑> <a title="macrobond_financial.common.series_methods.GetOneSeriesReturn" href="series_methods.html#macrobond_financial.common.series_methods.GetOneSeriesReturn">GetOneSeriesReturn</a></span>
 </code></dt>
 <dd>
 <div class="desc"><p>Download one series.</p></div>
@@ -1111,12 +1180,12 @@ def get_one_entitie(self, entity_name: str) -&gt; GetOneEntitieReturn:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@abstractmethod
-def get_one_series(self, series_name: str) -&gt; GetOneSeriesReturn:
+def get_one_series(self, series_name: str, raise_get_entities_error=True) -&gt; GetOneSeriesReturn:
     &#39;&#39;&#39;Download one series.&#39;&#39;&#39;</code></pre>
 </details>
 </dd>
 <dt id="macrobond_financial.common.SeriesMethods.get_series"><code class="name flex">
-<span>def <span class="ident">get_series</span></span>(<span>self, *series_names: str) ‑> <a title="macrobond_financial.common.series_methods.GetSeriesReturn" href="series_methods.html#macrobond_financial.common.series_methods.GetSeriesReturn">GetSeriesReturn</a></span>
+<span>def <span class="ident">get_series</span></span>(<span>self, *series_names: str, raise_get_entities_error=True) ‑> <a title="macrobond_financial.common.series_methods.GetSeriesReturn" href="series_methods.html#macrobond_financial.common.series_methods.GetSeriesReturn">GetSeriesReturn</a></span>
 </code></dt>
 <dd>
 <div class="desc"><p>Download one or more series.</p></div>
@@ -1125,12 +1194,12 @@ def get_one_series(self, series_name: str) -&gt; GetOneSeriesReturn:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@abstractmethod
-def get_series(self, *series_names: str) -&gt; GetSeriesReturn:
+def get_series(self, *series_names: str, raise_get_entities_error=True) -&gt; GetSeriesReturn:
     &#39;&#39;&#39;Download one or more series.&#39;&#39;&#39;</code></pre>
 </details>
 </dd>
 <dt id="macrobond_financial.common.SeriesMethods.get_unified_series"><code class="name flex">
-<span>def <span class="ident">get_unified_series</span></span>(<span>self, *series_entries: Union[ForwardRef('<a title="macrobond_financial.common.SeriesEntrie" href="#macrobond_financial.common.SeriesEntrie">SeriesEntrie</a>'), str], frequency: <a title="macrobond_financial.common.SeriesFrequency" href="#macrobond_financial.common.SeriesFrequency">SeriesFrequency</a> = None, weekdays: SeriesWeekdays = None, calendar_merge_mode: CalendarMergeMode = None, currency: str = None, start_point: <a title="macrobond_financial.common.StartOrEndPoint" href="#macrobond_financial.common.StartOrEndPoint">StartOrEndPoint</a> = None, end_point: <a title="macrobond_financial.common.StartOrEndPoint" href="#macrobond_financial.common.StartOrEndPoint">StartOrEndPoint</a> = None) ‑> <a title="macrobond_financial.common.series_methods.GetUnifiedSeriesReturn" href="series_methods.html#macrobond_financial.common.series_methods.GetUnifiedSeriesReturn">GetUnifiedSeriesReturn</a></span>
+<span>def <span class="ident">get_unified_series</span></span>(<span>self, *series_entries: Union[ForwardRef('<a title="macrobond_financial.common.SeriesEntrie" href="#macrobond_financial.common.SeriesEntrie">SeriesEntrie</a>'), str], frequency: <a title="macrobond_financial.common.SeriesFrequency" href="#macrobond_financial.common.SeriesFrequency">SeriesFrequency</a> = None, weekdays: SeriesWeekdays = None, calendar_merge_mode: CalendarMergeMode = None, currency: str = None, start_point: <a title="macrobond_financial.common.StartOrEndPoint" href="#macrobond_financial.common.StartOrEndPoint">StartOrEndPoint</a> = None, end_point: <a title="macrobond_financial.common.StartOrEndPoint" href="#macrobond_financial.common.StartOrEndPoint">StartOrEndPoint</a> = None, raise_get_entities_error=True) ‑> <a title="macrobond_financial.common.series_methods.GetUnifiedSeriesReturn" href="series_methods.html#macrobond_financial.common.series_methods.GetUnifiedSeriesReturn">GetUnifiedSeriesReturn</a></span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -1148,6 +1217,7 @@ def get_unified_series(
     currency: str = None,
     start_point: &#39;StartOrEndPoint&#39; = None,
     end_point: &#39;StartOrEndPoint&#39; = None,
+    raise_get_entities_error=True
 ) -&gt; GetUnifiedSeriesReturn:
     ...  # pragma: no cover</code></pre>
 </details>
@@ -1502,6 +1572,7 @@ def is_error(self) -&gt; bool:
 <li><code><a title="macrobond_financial.common.credentials" href="credentials.html">macrobond_financial.common.credentials</a></code></li>
 <li><code><a title="macrobond_financial.common.entity" href="entity.html">macrobond_financial.common.entity</a></code></li>
 <li><code><a title="macrobond_financial.common.enums" href="enums/index.html">macrobond_financial.common.enums</a></code></li>
+<li><code><a title="macrobond_financial.common.get_entitie_error" href="get_entitie_error.html">macrobond_financial.common.get_entitie_error</a></code></li>
 <li><code><a title="macrobond_financial.common.meta_directory_methods" href="meta_directory_methods.html">macrobond_financial.common.meta_directory_methods</a></code></li>
 <li><code><a title="macrobond_financial.common.metadata_attribute_information" href="metadata_attribute_information.html">macrobond_financial.common.metadata_attribute_information</a></code></li>
 <li><code><a title="macrobond_financial.common.metadata_value_information" href="metadata_value_information.html">macrobond_financial.common.metadata_value_information</a></code></li>
@@ -1537,6 +1608,9 @@ def is_error(self) -&gt; bool:
 </ul>
 </li>
 <li>
+<h4><code><a title="macrobond_financial.common.EntitieErrorInfo" href="#macrobond_financial.common.EntitieErrorInfo">EntitieErrorInfo</a></code></h4>
+</li>
+<li>
 <h4><code><a title="macrobond_financial.common.Entity" href="#macrobond_financial.common.Entity">Entity</a></code></h4>
 <ul class="">
 <li><code><a title="macrobond_financial.common.Entity.entity_type" href="#macrobond_financial.common.Entity.entity_type">entity_type</a></code></li>
@@ -1546,6 +1620,9 @@ def is_error(self) -&gt; bool:
 <li><code><a title="macrobond_financial.common.Entity.primary_name" href="#macrobond_financial.common.Entity.primary_name">primary_name</a></code></li>
 <li><code><a title="macrobond_financial.common.Entity.title" href="#macrobond_financial.common.Entity.title">title</a></code></li>
 </ul>
+</li>
+<li>
+<h4><code><a title="macrobond_financial.common.GetEntitiesError" href="#macrobond_financial.common.GetEntitiesError">GetEntitiesError</a></code></h4>
 </li>
 <li>
 <h4><code><a title="macrobond_financial.common.SearchFilter" href="#macrobond_financial.common.SearchFilter">SearchFilter</a></code></h4>

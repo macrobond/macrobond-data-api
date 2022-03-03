@@ -38,7 +38,6 @@ if TYPE_CHECKING:  # pragma: no cover
 
 
 class SearchMethods(ABC):
-
     def search(
         self,
         text: str = None,
@@ -47,8 +46,8 @@ class SearchMethods(ABC):
         must_not_have_values: Dict[str, object] = None,
         must_have_attributes: Union[Sequence[str], str] = None,
         must_not_have_attributes: Union[Sequence[str], str] = None,
-        include_discontinued: bool = None
-    ) -&gt; &#39;SearchResult&#39;:
+        include_discontinued: bool = None,
+    ) -&gt; &#34;SearchResult&#34;:
         return self.series_multi_filter(
             SearchFilter(
                 text=text,
@@ -58,20 +57,17 @@ class SearchMethods(ABC):
                 must_have_attributes=must_have_attributes,
                 must_not_have_attributes=must_not_have_attributes,
             ),
-            include_discontinued=include_discontinued
+            include_discontinued=include_discontinued,
         )
 
     @abstractmethod
     def series_multi_filter(
-        self,
-        *filters: &#39;SearchFilter&#39;,
-        include_discontinued: bool = None
-    ) -&gt; &#39;SearchResult&#39;:
+        self, *filters: &#34;SearchFilter&#34;, include_discontinued: bool = None
+    ) -&gt; &#34;SearchResult&#34;:
         ...  # pragma: no cover
 
 
 class SearchFilter:
-
     def __init__(
         self,
         text: str = None,
@@ -88,33 +84,40 @@ class SearchFilter:
         else:
             self.entity_types = entity_types if entity_types is not None else []
 
-        self.must_have_values: Dict[str, object] = \
+        self.must_have_values: Dict[str, object] = (
             must_have_values if must_have_values is not None else {}
+        )
 
-        self.must_not_have_values: Dict[str, object] = \
+        self.must_not_have_values: Dict[str, object] = (
             must_not_have_values if must_not_have_values is not None else {}
+        )
 
         if isinstance(must_have_attributes, str):
             self.must_have_attributes: Sequence[str] = [must_have_attributes]
         else:
-            self.must_have_attributes = must_have_attributes if \
-                must_have_attributes is not None else []
+            self.must_have_attributes = (
+                must_have_attributes if must_have_attributes is not None else []
+            )
 
         if isinstance(must_not_have_attributes, str):
             self.must_not_have_attributes: Sequence[str] = [must_not_have_attributes]
         else:
-            self.must_not_have_attributes = \
+            self.must_not_have_attributes = (
                 must_not_have_attributes if must_not_have_attributes is not None else []
+            )
 
 
 class SearchResult(Sequence[Dict[str, Any]]):
-
-    def __init__(self, entities: Tuple[Dict[str, Any], ...], is_truncated: bool) -&gt; None:
+    def __init__(
+        self, entities: Tuple[Dict[str, Any], ...], is_truncated: bool
+    ) -&gt; None:
         self.entities = entities
         self.is_truncated = is_truncated
 
     def __str__(self):
-        return f&#39;SearchResult of {len(self)} entities, is is_truncated {self.is_truncated}&#39;
+        return (
+            f&#34;SearchResult of {len(self)} entities, is is_truncated {self.is_truncated}&#34;
+        )
 
     def __repr__(self):
         return str(self)
@@ -134,21 +137,23 @@ class SearchResult(Sequence[Dict[str, Any]]):
         return len(self.entities)
 
     @overload
-    def data_frame(self) -&gt; &#39;DataFrame&#39;: ...
+    def data_frame(self) -&gt; &#34;DataFrame&#34;:
+        ...
 
     @overload
     def data_frame(
         self,
-        index: &#39;pandas_typing.Axes&#39; = None,
-        columns: &#39;pandas_typing.Axes&#39; = None,
-        dtype: &#39;pandas_typing.Dtype&#39; = None,
+        index: &#34;pandas_typing.Axes&#34; = None,
+        columns: &#34;pandas_typing.Axes&#34; = None,
+        dtype: &#34;pandas_typing.Dtype&#34; = None,
         copy: bool = False,
-    ) -&gt; &#39;DataFrame&#39;: ...
+    ) -&gt; &#34;DataFrame&#34;:
+        ...
 
-    def data_frame(self, *args, **kwargs) -&gt; &#39;DataFrame&#39;:
+    def data_frame(self, *args, **kwargs) -&gt; &#34;DataFrame&#34;:
         pandas = _get_pandas()
         args = args[1:]
-        kwargs[&#39;data&#39;] = self.entities
+        kwargs[&#34;data&#34;] = self.entities
         return pandas.DataFrame(*args, **kwargs)</code></pre>
 </details>
 </section>
@@ -172,7 +177,6 @@ class SearchResult(Sequence[Dict[str, Any]]):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class SearchFilter:
-
     def __init__(
         self,
         text: str = None,
@@ -189,23 +193,27 @@ class SearchResult(Sequence[Dict[str, Any]]):
         else:
             self.entity_types = entity_types if entity_types is not None else []
 
-        self.must_have_values: Dict[str, object] = \
+        self.must_have_values: Dict[str, object] = (
             must_have_values if must_have_values is not None else {}
+        )
 
-        self.must_not_have_values: Dict[str, object] = \
+        self.must_not_have_values: Dict[str, object] = (
             must_not_have_values if must_not_have_values is not None else {}
+        )
 
         if isinstance(must_have_attributes, str):
             self.must_have_attributes: Sequence[str] = [must_have_attributes]
         else:
-            self.must_have_attributes = must_have_attributes if \
-                must_have_attributes is not None else []
+            self.must_have_attributes = (
+                must_have_attributes if must_have_attributes is not None else []
+            )
 
         if isinstance(must_not_have_attributes, str):
             self.must_not_have_attributes: Sequence[str] = [must_not_have_attributes]
         else:
-            self.must_not_have_attributes = \
-                must_not_have_attributes if must_not_have_attributes is not None else []</code></pre>
+            self.must_not_have_attributes = (
+                must_not_have_attributes if must_not_have_attributes is not None else []
+            )</code></pre>
 </details>
 </dd>
 <dt id="macrobond_financial.common.search_methods.SearchMethods"><code class="flex name class">
@@ -219,7 +227,6 @@ inheritance.</p></div>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class SearchMethods(ABC):
-
     def search(
         self,
         text: str = None,
@@ -228,8 +235,8 @@ inheritance.</p></div>
         must_not_have_values: Dict[str, object] = None,
         must_have_attributes: Union[Sequence[str], str] = None,
         must_not_have_attributes: Union[Sequence[str], str] = None,
-        include_discontinued: bool = None
-    ) -&gt; &#39;SearchResult&#39;:
+        include_discontinued: bool = None,
+    ) -&gt; &#34;SearchResult&#34;:
         return self.series_multi_filter(
             SearchFilter(
                 text=text,
@@ -239,15 +246,13 @@ inheritance.</p></div>
                 must_have_attributes=must_have_attributes,
                 must_not_have_attributes=must_not_have_attributes,
             ),
-            include_discontinued=include_discontinued
+            include_discontinued=include_discontinued,
         )
 
     @abstractmethod
     def series_multi_filter(
-        self,
-        *filters: &#39;SearchFilter&#39;,
-        include_discontinued: bool = None
-    ) -&gt; &#39;SearchResult&#39;:
+        self, *filters: &#34;SearchFilter&#34;, include_discontinued: bool = None
+    ) -&gt; &#34;SearchResult&#34;:
         ...  # pragma: no cover</code></pre>
 </details>
 <h3>Ancestors</h3>
@@ -278,8 +283,8 @@ inheritance.</p></div>
     must_not_have_values: Dict[str, object] = None,
     must_have_attributes: Union[Sequence[str], str] = None,
     must_not_have_attributes: Union[Sequence[str], str] = None,
-    include_discontinued: bool = None
-) -&gt; &#39;SearchResult&#39;:
+    include_discontinued: bool = None,
+) -&gt; &#34;SearchResult&#34;:
     return self.series_multi_filter(
         SearchFilter(
             text=text,
@@ -289,7 +294,7 @@ inheritance.</p></div>
             must_have_attributes=must_have_attributes,
             must_not_have_attributes=must_not_have_attributes,
         ),
-        include_discontinued=include_discontinued
+        include_discontinued=include_discontinued,
     )</code></pre>
 </details>
 </dd>
@@ -304,10 +309,8 @@ inheritance.</p></div>
 </summary>
 <pre><code class="python">@abstractmethod
 def series_multi_filter(
-    self,
-    *filters: &#39;SearchFilter&#39;,
-    include_discontinued: bool = None
-) -&gt; &#39;SearchResult&#39;:
+    self, *filters: &#34;SearchFilter&#34;, include_discontinued: bool = None
+) -&gt; &#34;SearchResult&#34;:
     ...  # pragma: no cover</code></pre>
 </details>
 </dd>
@@ -326,13 +329,16 @@ def series_multi_filter(
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class SearchResult(Sequence[Dict[str, Any]]):
-
-    def __init__(self, entities: Tuple[Dict[str, Any], ...], is_truncated: bool) -&gt; None:
+    def __init__(
+        self, entities: Tuple[Dict[str, Any], ...], is_truncated: bool
+    ) -&gt; None:
         self.entities = entities
         self.is_truncated = is_truncated
 
     def __str__(self):
-        return f&#39;SearchResult of {len(self)} entities, is is_truncated {self.is_truncated}&#39;
+        return (
+            f&#34;SearchResult of {len(self)} entities, is is_truncated {self.is_truncated}&#34;
+        )
 
     def __repr__(self):
         return str(self)
@@ -352,21 +358,23 @@ def series_multi_filter(
         return len(self.entities)
 
     @overload
-    def data_frame(self) -&gt; &#39;DataFrame&#39;: ...
+    def data_frame(self) -&gt; &#34;DataFrame&#34;:
+        ...
 
     @overload
     def data_frame(
         self,
-        index: &#39;pandas_typing.Axes&#39; = None,
-        columns: &#39;pandas_typing.Axes&#39; = None,
-        dtype: &#39;pandas_typing.Dtype&#39; = None,
+        index: &#34;pandas_typing.Axes&#34; = None,
+        columns: &#34;pandas_typing.Axes&#34; = None,
+        dtype: &#34;pandas_typing.Dtype&#34; = None,
         copy: bool = False,
-    ) -&gt; &#39;DataFrame&#39;: ...
+    ) -&gt; &#34;DataFrame&#34;:
+        ...
 
-    def data_frame(self, *args, **kwargs) -&gt; &#39;DataFrame&#39;:
+    def data_frame(self, *args, **kwargs) -&gt; &#34;DataFrame&#34;:
         pandas = _get_pandas()
         args = args[1:]
-        kwargs[&#39;data&#39;] = self.entities
+        kwargs[&#34;data&#34;] = self.entities
         return pandas.DataFrame(*args, **kwargs)</code></pre>
 </details>
 <h3>Ancestors</h3>
@@ -390,10 +398,10 @@ def series_multi_filter(
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def data_frame(self, *args, **kwargs) -&gt; &#39;DataFrame&#39;:
+<pre><code class="python">def data_frame(self, *args, **kwargs) -&gt; &#34;DataFrame&#34;:
     pandas = _get_pandas()
     args = args[1:]
-    kwargs[&#39;data&#39;] = self.entities
+    kwargs[&#34;data&#34;] = self.entities
     return pandas.DataFrame(*args, **kwargs)</code></pre>
 </details>
 </dd>

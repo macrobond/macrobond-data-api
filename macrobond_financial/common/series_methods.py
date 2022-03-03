@@ -165,19 +165,21 @@ class GetUnifiedSeriesReturn(ABC):
 class SeriesMethods(ABC):
 
     @abstractmethod
-    def get_one_series(self, series_name: str) -> GetOneSeriesReturn:
+    def get_one_series(self, series_name: str, raise_get_entities_error=True) -> GetOneSeriesReturn:
         '''Download one series.'''
 
     @abstractmethod
-    def get_series(self, *series_names: str) -> GetSeriesReturn:
+    def get_series(self, *series_names: str, raise_get_entities_error=True) -> GetSeriesReturn:
         '''Download one or more series.'''
 
     @abstractmethod
-    def get_one_entitie(self, entity_name: str) -> GetOneEntitieReturn:
+    def get_one_entitie(
+        self, entity_name: str, raise_get_entities_error=True
+    ) -> GetOneEntitieReturn:
         '''Download one entity.'''
 
     @abstractmethod
-    def get_entities(self, *entity_names: str) -> GetEntitiesReturn:
+    def get_entities(self, *entity_names: str, raise_get_entities_error=True) -> GetEntitiesReturn:
         '''Download one or more entitys.'''
 
     @abstractmethod
@@ -190,6 +192,7 @@ class SeriesMethods(ABC):
         currency: str = None,
         start_point: 'StartOrEndPoint' = None,
         end_point: 'StartOrEndPoint' = None,
+        raise_get_entities_error=True
     ) -> GetUnifiedSeriesReturn:
         ...  # pragma: no cover
 

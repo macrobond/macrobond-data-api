@@ -12,7 +12,7 @@ if TYPE_CHECKING:  # pragma: no cover
     from macrobond_financial.common import Credentials
 
 
-class ComClient(Client['ComApi']):
+class ComClient(Client["ComApi"]):
     """
     ComClient to get data from the web
 
@@ -30,24 +30,23 @@ class ComClient(Client['ComApi']):
     """
 
     def __init__(
-        self,
-        credentials: 'Credentials' = None  # pylint: disable=unused-argument
+        self, credentials: "Credentials" = None  # pylint: disable=unused-argument
     ) -> None:
         super().__init__(False)
-        self.__api: Optional['ComApi'] = None
+        self.__api: Optional["ComApi"] = None
 
-    def open(self) -> 'ComApi':
+    def open(self) -> "ComApi":
         if self.__api is None:
-            connection: 'Connection' = client.Dispatch("Macrobond.Connection")
+            connection: "Connection" = client.Dispatch("Macrobond.Connection")
             self.__api = ComApi(connection)
         return self.__api
 
     def close(self) -> None:
-        '''
+        """
         free all resources used by the Macrobond API.
         Opening and closing sessions can be slow,
         so it is usually not a good idea to open and close them for each request
-        '''
+        """
         if self.__api is not None:
             self.__api.connection.Close()
             self.__api = None
