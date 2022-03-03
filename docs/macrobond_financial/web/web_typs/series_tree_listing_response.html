@@ -35,74 +35,74 @@ from typing_extensions import TypedDict
 
 
 class SeriesTreeListingSeries(TypedDict):
-    &#39;&#39;&#39;Defines an aspect in a structured series list&#39;&#39;&#39;
+    &#34;&#34;&#34;Defines an aspect in a structured series list&#34;&#34;&#34;
 
     discontinued: Optional[bool]
-    &#39;&#39;&#39;
+    &#34;&#34;&#34;
     If True then the series is discontinued.
     This is typically indicated by drawing the series title in red.
-    &#39;&#39;&#39;
+    &#34;&#34;&#34;
 
     Indentation: Optional[int]
-    &#39;&#39;&#39;The indentation level.&#39;&#39;&#39;
+    &#34;&#34;&#34;The indentation level.&#34;&#34;&#34;
 
     emphasized: Optional[bool]
-    &#39;&#39;&#39;
+    &#34;&#34;&#34;
     If True then the series is emphasized.
     This is typically indicated by drawing the series title in bold.
-    &#39;&#39;&#39;
+    &#34;&#34;&#34;
 
     spaceAbove: Optional[bool]
-    &#39;&#39;&#39;If True then some extra space should be drawn above this series.&#39;&#39;&#39;
+    &#34;&#34;&#34;If True then some extra space should be drawn above this series.&#34;&#34;&#34;
 
     properties: Dict[str, object]
-    &#39;&#39;&#39;
+    &#34;&#34;&#34;
     Properties that can be used for display purposes. It will always contain a property
     called Description. If there is a series,
     the property Name will contain the series name.
     If there is no Name, the series is missing and the description is typically shown as &#39;disabled&#39;.
-    &#39;&#39;&#39;
+    &#34;&#34;&#34;
 
 
 class SeriesTreeListingGroup(TypedDict):
-    &#39;&#39;&#39;Defines an aspect in a structured series list&#39;&#39;&#39;
+    &#34;&#34;&#34;Defines an aspect in a structured series list&#34;&#34;&#34;
 
     title: Optional[str]
-    &#39;&#39;&#39;The title of the group. This is might be omitted if there is only one group.&#39;&#39;&#39;
+    &#34;&#34;&#34;The title of the group. This is might be omitted if there is only one group.&#34;&#34;&#34;
 
     series: List[SeriesTreeListingSeries]
-    &#39;&#39;&#39;The list of series in this group.&#39;&#39;&#39;
+    &#34;&#34;&#34;The list of series in this group.&#34;&#34;&#34;
 
 
 class SeriesTreeListingAspect(TypedDict):
-    &#39;&#39;&#39;Defines an aspect in a structured series list&#39;&#39;&#39;
+    &#34;&#34;&#34;Defines an aspect in a structured series list&#34;&#34;&#34;
 
     title: Optional[str]
-    &#39;&#39;&#39;The title of the aspect. This is might be omitted if there is only one aspect.&#39;&#39;&#39;
+    &#34;&#34;&#34;The title of the aspect. This is might be omitted if there is only one aspect.&#34;&#34;&#34;
 
     description: Optional[str]
-    &#39;&#39;&#39;
+    &#34;&#34;&#34;
     A longer description of the aspect that can be used as a tooltip.
     This is might be omitted if there is only one aspect.
-    &#39;&#39;&#39;
+    &#34;&#34;&#34;
 
     groups: List[SeriesTreeListingGroup]
 
 
 class SeriesTreeListingResponse(TypedDict):
-    &#39;&#39;&#39;A structured list of series for a leaf in the series database tree&#39;&#39;&#39;
+    &#34;&#34;&#34;A structured list of series for a leaf in the series database tree&#34;&#34;&#34;
 
     commonTitle: str
-    &#39;&#39;&#39;The common part of the series titles&#39;&#39;&#39;
+    &#34;&#34;&#34;The common part of the series titles&#34;&#34;&#34;
 
     hasAspects: bool
-    &#39;&#39;&#39;If True then there are several aspects of the series which is typically displayed as tabs&#39;&#39;&#39;
+    &#34;&#34;&#34;If True then there are several aspects of the series which is typically displayed as tabs&#34;&#34;&#34;
 
     hasGroups: bool
-    &#39;&#39;&#39;If True then the list is grouped&#39;&#39;&#39;
+    &#34;&#34;&#34;If True then the list is grouped&#34;&#34;&#34;
 
     aspects: List[SeriesTreeListingAspect]
-    &#39;&#39;&#39;The list of aspects. There will always be at least one.&#39;&#39;&#39;</code></pre>
+    &#34;&#34;&#34;The list of aspects. There will always be at least one.&#34;&#34;&#34;</code></pre>
 </details>
 </section>
 <section>
@@ -125,16 +125,16 @@ class SeriesTreeListingResponse(TypedDict):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class SeriesTreeListingAspect(TypedDict):
-    &#39;&#39;&#39;Defines an aspect in a structured series list&#39;&#39;&#39;
+    &#34;&#34;&#34;Defines an aspect in a structured series list&#34;&#34;&#34;
 
     title: Optional[str]
-    &#39;&#39;&#39;The title of the aspect. This is might be omitted if there is only one aspect.&#39;&#39;&#39;
+    &#34;&#34;&#34;The title of the aspect. This is might be omitted if there is only one aspect.&#34;&#34;&#34;
 
     description: Optional[str]
-    &#39;&#39;&#39;
+    &#34;&#34;&#34;
     A longer description of the aspect that can be used as a tooltip.
     This is might be omitted if there is only one aspect.
-    &#39;&#39;&#39;
+    &#34;&#34;&#34;
 
     groups: List[SeriesTreeListingGroup]</code></pre>
 </details>
@@ -170,13 +170,13 @@ This is might be omitted if there is only one aspect.</p></div>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class SeriesTreeListingGroup(TypedDict):
-    &#39;&#39;&#39;Defines an aspect in a structured series list&#39;&#39;&#39;
+    &#34;&#34;&#34;Defines an aspect in a structured series list&#34;&#34;&#34;
 
     title: Optional[str]
-    &#39;&#39;&#39;The title of the group. This is might be omitted if there is only one group.&#39;&#39;&#39;
+    &#34;&#34;&#34;The title of the group. This is might be omitted if there is only one group.&#34;&#34;&#34;
 
     series: List[SeriesTreeListingSeries]
-    &#39;&#39;&#39;The list of series in this group.&#39;&#39;&#39;</code></pre>
+    &#34;&#34;&#34;The list of series in this group.&#34;&#34;&#34;</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
@@ -205,19 +205,19 @@ This is might be omitted if there is only one aspect.</p></div>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class SeriesTreeListingResponse(TypedDict):
-    &#39;&#39;&#39;A structured list of series for a leaf in the series database tree&#39;&#39;&#39;
+    &#34;&#34;&#34;A structured list of series for a leaf in the series database tree&#34;&#34;&#34;
 
     commonTitle: str
-    &#39;&#39;&#39;The common part of the series titles&#39;&#39;&#39;
+    &#34;&#34;&#34;The common part of the series titles&#34;&#34;&#34;
 
     hasAspects: bool
-    &#39;&#39;&#39;If True then there are several aspects of the series which is typically displayed as tabs&#39;&#39;&#39;
+    &#34;&#34;&#34;If True then there are several aspects of the series which is typically displayed as tabs&#34;&#34;&#34;
 
     hasGroups: bool
-    &#39;&#39;&#39;If True then the list is grouped&#39;&#39;&#39;
+    &#34;&#34;&#34;If True then the list is grouped&#34;&#34;&#34;
 
     aspects: List[SeriesTreeListingAspect]
-    &#39;&#39;&#39;The list of aspects. There will always be at least one.&#39;&#39;&#39;</code></pre>
+    &#34;&#34;&#34;The list of aspects. There will always be at least one.&#34;&#34;&#34;</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
@@ -254,33 +254,33 @@ This is might be omitted if there is only one aspect.</p></div>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class SeriesTreeListingSeries(TypedDict):
-    &#39;&#39;&#39;Defines an aspect in a structured series list&#39;&#39;&#39;
+    &#34;&#34;&#34;Defines an aspect in a structured series list&#34;&#34;&#34;
 
     discontinued: Optional[bool]
-    &#39;&#39;&#39;
+    &#34;&#34;&#34;
     If True then the series is discontinued.
     This is typically indicated by drawing the series title in red.
-    &#39;&#39;&#39;
+    &#34;&#34;&#34;
 
     Indentation: Optional[int]
-    &#39;&#39;&#39;The indentation level.&#39;&#39;&#39;
+    &#34;&#34;&#34;The indentation level.&#34;&#34;&#34;
 
     emphasized: Optional[bool]
-    &#39;&#39;&#39;
+    &#34;&#34;&#34;
     If True then the series is emphasized.
     This is typically indicated by drawing the series title in bold.
-    &#39;&#39;&#39;
+    &#34;&#34;&#34;
 
     spaceAbove: Optional[bool]
-    &#39;&#39;&#39;If True then some extra space should be drawn above this series.&#39;&#39;&#39;
+    &#34;&#34;&#34;If True then some extra space should be drawn above this series.&#34;&#34;&#34;
 
     properties: Dict[str, object]
-    &#39;&#39;&#39;
+    &#34;&#34;&#34;
     Properties that can be used for display purposes. It will always contain a property
     called Description. If there is a series,
     the property Name will contain the series name.
     If there is no Name, the series is missing and the description is typically shown as &#39;disabled&#39;.
-    &#39;&#39;&#39;</code></pre>
+    &#34;&#34;&#34;</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">

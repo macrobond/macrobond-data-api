@@ -12,20 +12,19 @@ if TYPE_CHECKING:  # pragma: no cover
     from macrobond_financial.com.com_typs.connection import Connection
 
 __pdoc__ = {
-    'ComApi.__init__': False,
+    "ComApi.__init__": False,
 }
 
 
 class ComApi(Api):
-
-    def __init__(self, connection: 'Connection') -> None:
+    def __init__(self, connection: "Connection") -> None:
         super().__init__(
             _ComMetaDirectoryMethods(connection),
             _ComSearchMethods(connection),
-            _ComSeriesMethods(connection)
+            _ComSeriesMethods(connection),
         )
         self.__connection = connection
 
     @property
-    def connection(self) -> 'Connection':
+    def connection(self) -> "Connection":
         return self.__connection

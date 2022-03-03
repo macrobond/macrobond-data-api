@@ -148,7 +148,6 @@ inheritance.</p></div>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class Api(ABC):
-
     @property
     def meta_directory(self) -&gt; MetaDirectoryMethods:
         return self.__meta_directory
@@ -162,7 +161,10 @@ inheritance.</p></div>
         return self.__series
 
     def __init__(
-        self, meta_directory: MetaDirectoryMethods, search: SearchMethods, series: SeriesMethods
+        self,
+        meta_directory: MetaDirectoryMethods,
+        search: SearchMethods,
+        series: SeriesMethods,
     ) -&gt; None:
         self.__meta_directory = meta_directory
         self.__search = search
@@ -229,10 +231,11 @@ inheritance.</p></div>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class Client(ABC, Generic[TypeVarApi]):
-
     def __init__(
         self,
-        credentials: Union[&#39;Credentials&#39;, Literal[False]] = None  # pylint: disable=unused-argument
+        credentials: Union[  # pylint: disable=unused-argument
+            &#34;Credentials&#34;, Literal[False]
+        ] = None,
     ) -&gt; None:
         ...  # pragma: no cover
 
@@ -304,14 +307,14 @@ def open(self) -&gt; TypeVarApi:
 </summary>
 <pre><code class="python">class Credentials:
 
-    default_file_name = &#39;data-api-python_credentials.py&#39;
+    default_file_name = &#34;data-api-python_credentials.py&#34;
 
     def __init__(self, paths: List[str] = None) -&gt; None:
 
         paths = self._get_paths(paths)
 
         if len(paths) == 0:
-            raise Exception(&#39;paths is an empty&#39;)
+            raise Exception(&#34;paths is an empty&#34;)
 
         for path in paths:
             module = self._test_path(path)
@@ -320,7 +323,7 @@ def open(self) -&gt; TypeVarApi:
                 self.client_secret: str = module.CLIENT_SECRET
                 return
 
-        error = &#34;Credentials not was not found.\npaths tested\n&#34; + str(&#39;\n&#39;.join(paths))
+        error = &#34;Credentials not was not found.\npaths tested\n&#34; + str(&#34;\n&#34;.join(paths))
         raise Exception(error)
 
     @classmethod
@@ -332,11 +335,11 @@ def open(self) -&gt; TypeVarApi:
     def _get_paths(cls, paths: Union[List[str], None]) -&gt; List[str]:
         if not paths:
             default_file_name = cls.default_file_name
-            if cls._platform_system() == &#39;Windows&#39;:
+            if cls._platform_system() == &#34;Windows&#34;:
                 paths = [
                     cls._path_join(cls._get_home_path(), default_file_name),
-                    cls._path_join(&#39;c:\\&#39;, default_file_name),
-                    cls._path_join(cls._getcwd(), default_file_name)
+                    cls._path_join(&#34;c:\\&#34;, default_file_name),
+                    cls._path_join(cls._getcwd(), default_file_name),
                 ]
             else:
                 paths = [
@@ -350,9 +353,7 @@ def open(self) -&gt; TypeVarApi:
         if not cls._is_file(path):
             return False
 
-        spec = spec_from_file_location(
-            &#34;credentials&#34;, path
-        )
+        spec = spec_from_file_location(&#34;credentials&#34;, path)
 
         if not spec:
             return None
@@ -364,10 +365,10 @@ def open(self) -&gt; TypeVarApi:
 
         spec.loader.exec_module(module)
 
-        if not hasattr(module, &#39;CLIENT_ID&#39;):
+        if not hasattr(module, &#34;CLIENT_ID&#34;):
             raise Exception(f&#34;missing &#39;CLIENT_ID&#39; in file {path}&#34;)
 
-        if not hasattr(module, &#39;CLIENT_SECRET&#39;):
+        if not hasattr(module, &#34;CLIENT_SECRET&#34;):
             raise Exception(f&#34;missing &#39;CLIENT_SECRET&#39; in file {path}&#34;)
 
         return module
@@ -450,70 +451,68 @@ def has_config(cls, paths: List[str] = None) -&gt; bool:
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class Entity():
-    &#39;&#39;&#39;Interface for a database Macrobond entity.&#39;&#39;&#39;
+<pre><code class="python">class Entity:
+    &#34;&#34;&#34;Interface for a database Macrobond entity.&#34;&#34;&#34;
 
     @property
     def is_error(self) -&gt; bool:
-        return self.error_message != &#39;&#39;
+        return self.error_message != &#34;&#34;
 
     @property
     def primary_name(self) -&gt; str:
-        &#39;&#39;&#39;The primary name of the entity.&#39;&#39;&#39;
-        prim_name = self.metadata[&#39;PrimName&#39;]
+        &#34;&#34;&#34;The primary name of the entity.&#34;&#34;&#34;
+        prim_name = self.metadata[&#34;PrimName&#34;]
         if isinstance(prim_name, list):
             prim_name = prim_name[0]
         return prim_name
 
     @property
     def name(self) -&gt; str:
-        &#39;&#39;&#39;The name of the entity.&#39;&#39;&#39;
-        name = self.metadata[&#39;Name&#39;]
+        &#34;&#34;&#34;The name of the entity.&#34;&#34;&#34;
+        name = self.metadata[&#34;Name&#34;]
         if isinstance(name, list):
             name = name[0]
         return name
 
     @property
     def title(self) -&gt; str:
-        &#39;&#39;&#39;The title of the entity.&#39;&#39;&#39;
-        full_description = self.metadata[&#39;FullDescription&#39;]
+        &#34;&#34;&#34;The title of the entity.&#34;&#34;&#34;
+        full_description = self.metadata[&#34;FullDescription&#34;]
         if isinstance(full_description, list):
             full_description = full_description[0]
         return full_description
 
     @property
     def entity_type(self) -&gt; str:
-        &#39;&#39;&#39;The type of the entity.&#39;&#39;&#39;
-        entity_type = self.metadata[&#39;EntityType&#39;]
+        &#34;&#34;&#34;The type of the entity.&#34;&#34;&#34;
+        entity_type = self.metadata[&#34;EntityType&#34;]
         if isinstance(entity_type, list):
             entity_type = entity_type[0]
         return entity_type
 
-    def __init__(
-        self, error_message: str, metadata: Dict[str, Any]
-    ) -&gt; None:
+    def __init__(self, error_message: str, metadata: Dict[str, Any]) -&gt; None:
         self.error_message = error_message
         self.metadata = metadata
 
     def __str__(self):
         if self.is_error:
-            return f&#39;Entity with error, error message: {self.error_message}&#39;
+            return f&#34;Entity with error, error message: {self.error_message}&#34;
 
         # no name in meta data in web
         # name = self.metadata.get(&#39;Name&#39;) or &#39;&#39;
         # if isinstance(name, list):
         #     name = name[0]
 
-        return f&#39;{self.__class__.__name__}, PrimName: {self.primary_name}&#39;
+        return f&#34;{self.__class__.__name__}, PrimName: {self.primary_name}&#34;
 
     def __repr__(self):
         return str(self)
 
-    def get_metadata_as_data_frame(self) -&gt; &#39;DataFrame&#39;:
+    def get_metadata_as_data_frame(self) -&gt; &#34;DataFrame&#34;:
         metadata = self.metadata
         pandas = _get_pandas()
         return pandas.DataFrame.from_dict(
-            metadata, orient=&#39;index&#39;, columns=[&#39;Attributes&#39;]
+            metadata, orient=&#34;index&#34;, columns=[&#34;Attributes&#34;]
         )</code></pre>
 </details>
 <h3>Subclasses</h3>
@@ -531,8 +530,8 @@ def has_config(cls, paths: List[str] = None) -&gt; bool:
 </summary>
 <pre><code class="python">@property
 def entity_type(self) -&gt; str:
-    &#39;&#39;&#39;The type of the entity.&#39;&#39;&#39;
-    entity_type = self.metadata[&#39;EntityType&#39;]
+    &#34;&#34;&#34;The type of the entity.&#34;&#34;&#34;
+    entity_type = self.metadata[&#34;EntityType&#34;]
     if isinstance(entity_type, list):
         entity_type = entity_type[0]
     return entity_type</code></pre>
@@ -547,7 +546,7 @@ def entity_type(self) -&gt; str:
 </summary>
 <pre><code class="python">@property
 def is_error(self) -&gt; bool:
-    return self.error_message != &#39;&#39;</code></pre>
+    return self.error_message != &#34;&#34;</code></pre>
 </details>
 </dd>
 <dt id="macrobond_financial.common.Entity.name"><code class="name">var <span class="ident">name</span> : str</code></dt>
@@ -559,8 +558,8 @@ def is_error(self) -&gt; bool:
 </summary>
 <pre><code class="python">@property
 def name(self) -&gt; str:
-    &#39;&#39;&#39;The name of the entity.&#39;&#39;&#39;
-    name = self.metadata[&#39;Name&#39;]
+    &#34;&#34;&#34;The name of the entity.&#34;&#34;&#34;
+    name = self.metadata[&#34;Name&#34;]
     if isinstance(name, list):
         name = name[0]
     return name</code></pre>
@@ -575,8 +574,8 @@ def name(self) -&gt; str:
 </summary>
 <pre><code class="python">@property
 def primary_name(self) -&gt; str:
-    &#39;&#39;&#39;The primary name of the entity.&#39;&#39;&#39;
-    prim_name = self.metadata[&#39;PrimName&#39;]
+    &#34;&#34;&#34;The primary name of the entity.&#34;&#34;&#34;
+    prim_name = self.metadata[&#34;PrimName&#34;]
     if isinstance(prim_name, list):
         prim_name = prim_name[0]
     return prim_name</code></pre>
@@ -591,8 +590,8 @@ def primary_name(self) -&gt; str:
 </summary>
 <pre><code class="python">@property
 def title(self) -&gt; str:
-    &#39;&#39;&#39;The title of the entity.&#39;&#39;&#39;
-    full_description = self.metadata[&#39;FullDescription&#39;]
+    &#34;&#34;&#34;The title of the entity.&#34;&#34;&#34;
+    full_description = self.metadata[&#34;FullDescription&#34;]
     if isinstance(full_description, list):
         full_description = full_description[0]
     return full_description</code></pre>
@@ -610,11 +609,11 @@ def title(self) -&gt; str:
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def get_metadata_as_data_frame(self) -&gt; &#39;DataFrame&#39;:
+<pre><code class="python">def get_metadata_as_data_frame(self) -&gt; &#34;DataFrame&#34;:
     metadata = self.metadata
     pandas = _get_pandas()
     return pandas.DataFrame.from_dict(
-        metadata, orient=&#39;index&#39;, columns=[&#39;Attributes&#39;]
+        metadata, orient=&#34;index&#34;, columns=[&#34;Attributes&#34;]
     )</code></pre>
 </details>
 </dd>
@@ -894,14 +893,14 @@ def series_multi_filter(
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class Series(Entity):
-    &#39;&#39;&#39;Interface for a Macrobond time series.&#39;&#39;&#39;
+    &#34;&#34;&#34;Interface for a Macrobond time series.&#34;&#34;&#34;
 
     def __init__(
         self,
         error_message: str,
         metadata: Dict[str, Any],
         values: Optional[Tuple[Optional[float], ...]],
-        dates: Optional[Tuple[datetime, ...]]
+        dates: Optional[Tuple[datetime, ...]],
     ) -&gt; None:
         super().__init__(error_message, metadata)
         if values is None:
@@ -911,7 +910,7 @@ def series_multi_filter(
             self.values = values
             self.dates = cast(Tuple[datetime, ...], dates)
 
-    def get_values_and_dates_as_data_frame(self) -&gt; &#39;DataFrame&#39;:
+    def get_values_and_dates_as_data_frame(self) -&gt; &#34;DataFrame&#34;:
         raise NotImplementedError()
         # metadata = self.metadata
         # pandas = _get_pandas()
@@ -934,7 +933,7 @@ def series_multi_filter(
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def get_values_and_dates_as_data_frame(self) -&gt; &#39;DataFrame&#39;:
+<pre><code class="python">def get_values_and_dates_as_data_frame(self) -&gt; &#34;DataFrame&#34;:
     raise NotImplementedError()
     # metadata = self.metadata
     # pandas = _get_pandas()
@@ -966,8 +965,7 @@ def series_multi_filter(
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class SeriesEntrie():
-
+<pre><code class="python">class SeriesEntrie:
     def __init__(
         self,
         name: str,
@@ -978,17 +976,21 @@ def series_multi_filter(
     ) -&gt; None:
         self.name = name
 
-        self.missing_value_method = \
+        self.missing_value_method = (
             missing_value_method or SeriesMissingValueMethod.NONE
+        )
 
-        self.to_lowerfrequency_method = \
+        self.to_lowerfrequency_method = (
             to_lowerfrequency_method or SeriesToLowerFrequencyMethod.AUTO
+        )
 
-        self.to_higherfrequency_method = \
+        self.to_higherfrequency_method = (
             to_higherfrequency_method or SeriesToHigherFrequencyMethod.AUTO
+        )
 
-        self.partial_periods_method = \
-            partial_periods_method or SeriesPartialPeriodsMethod.NONE</code></pre>
+        self.partial_periods_method = (
+            partial_periods_method or SeriesPartialPeriodsMethod.NONE
+        )</code></pre>
 </details>
 </dd>
 <dt id="macrobond_financial.common.SeriesFrequency"><code class="flex name class">
@@ -1002,37 +1004,37 @@ def series_multi_filter(
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class SeriesFrequency(IntFlag):
-    &#39;&#39;&#39;The series frequency. This must match SeriesCalendarFrequency.&#39;&#39;&#39;
+    &#34;&#34;&#34;The series frequency. This must match SeriesCalendarFrequency.&#34;&#34;&#34;
 
     ANNUAL = 1
-    &#39;&#39;&#39;Once a year.&#39;&#39;&#39;
+    &#34;&#34;&#34;Once a year.&#34;&#34;&#34;
 
     SEMIANNUAL = 2
-    &#39;&#39;&#39;Once in half a year.&#39;&#39;&#39;
+    &#34;&#34;&#34;Once in half a year.&#34;&#34;&#34;
 
     QUADMONTHLY = 3
-    &#39;&#39;&#39;Once in 4 months.&#39;&#39;&#39;
+    &#34;&#34;&#34;Once in 4 months.&#34;&#34;&#34;
 
     QUARTERLY = 4
-    &#39;&#39;&#39;Once a quarter.&#39;&#39;&#39;
+    &#34;&#34;&#34;Once a quarter.&#34;&#34;&#34;
 
     BIMONTHLY = 5
-    &#39;&#39;&#39;Once every 2 months.&#39;&#39;&#39;
+    &#34;&#34;&#34;Once every 2 months.&#34;&#34;&#34;
 
     MONTHLY = 6
-    &#39;&#39;&#39;Once a month.&#39;&#39;&#39;
+    &#34;&#34;&#34;Once a month.&#34;&#34;&#34;
 
     WEEKLY = 7
-    &#39;&#39;&#39;Once a week.&#39;&#39;&#39;
+    &#34;&#34;&#34;Once a week.&#34;&#34;&#34;
 
     DAILY = 8
-    &#39;&#39;&#39;Once a day.&#39;&#39;&#39;
+    &#34;&#34;&#34;Once a day.&#34;&#34;&#34;
 
     LOWEST = 100
-    &#39;&#39;&#39;The lowest frequency.&#39;&#39;&#39;
+    &#34;&#34;&#34;The lowest frequency.&#34;&#34;&#34;
 
     HIGHEST = 101
-    &#39;&#39;&#39;The highest frequency.&#39;&#39;&#39;</code></pre>
+    &#34;&#34;&#34;The highest frequency.&#34;&#34;&#34;</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
@@ -1096,35 +1098,40 @@ inheritance.</p></div>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class SeriesMethods(ABC):
+    @abstractmethod
+    def get_one_series(
+        self, series_name: str, raise_get_entities_error=True
+    ) -&gt; GetOneSeriesReturn:
+        &#34;&#34;&#34;Download one series.&#34;&#34;&#34;
 
     @abstractmethod
-    def get_one_series(self, series_name: str, raise_get_entities_error=True) -&gt; GetOneSeriesReturn:
-        &#39;&#39;&#39;Download one series.&#39;&#39;&#39;
-
-    @abstractmethod
-    def get_series(self, *series_names: str, raise_get_entities_error=True) -&gt; GetSeriesReturn:
-        &#39;&#39;&#39;Download one or more series.&#39;&#39;&#39;
+    def get_series(
+        self, *series_names: str, raise_get_entities_error=True
+    ) -&gt; GetSeriesReturn:
+        &#34;&#34;&#34;Download one or more series.&#34;&#34;&#34;
 
     @abstractmethod
     def get_one_entitie(
         self, entity_name: str, raise_get_entities_error=True
     ) -&gt; GetOneEntitieReturn:
-        &#39;&#39;&#39;Download one entity.&#39;&#39;&#39;
+        &#34;&#34;&#34;Download one entity.&#34;&#34;&#34;
 
     @abstractmethod
-    def get_entities(self, *entity_names: str, raise_get_entities_error=True) -&gt; GetEntitiesReturn:
-        &#39;&#39;&#39;Download one or more entitys.&#39;&#39;&#39;
+    def get_entities(
+        self, *entity_names: str, raise_get_entities_error=True
+    ) -&gt; GetEntitiesReturn:
+        &#34;&#34;&#34;Download one or more entitys.&#34;&#34;&#34;
 
     @abstractmethod
     def get_unified_series(
         self,
-        *series_entries: Union[&#39;SeriesEntrie&#39;, str],
-        frequency: &#39;SeriesFrequency&#39; = None,
-        weekdays: &#39;SeriesWeekdays&#39; = None,
-        calendar_merge_mode: &#39;CalendarMergeMode&#39; = None,
+        *series_entries: Union[&#34;SeriesEntrie&#34;, str],
+        frequency: &#34;SeriesFrequency&#34; = None,
+        weekdays: &#34;SeriesWeekdays&#34; = None,
+        calendar_merge_mode: &#34;CalendarMergeMode&#34; = None,
         currency: str = None,
-        start_point: &#39;StartOrEndPoint&#39; = None,
-        end_point: &#39;StartOrEndPoint&#39; = None,
+        start_point: &#34;StartOrEndPoint&#34; = None,
+        end_point: &#34;StartOrEndPoint&#34; = None,
         raise_get_entities_error=True
     ) -&gt; GetUnifiedSeriesReturn:
         ...  # pragma: no cover</code></pre>
@@ -1150,8 +1157,10 @@ inheritance.</p></div>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@abstractmethod
-def get_entities(self, *entity_names: str, raise_get_entities_error=True) -&gt; GetEntitiesReturn:
-    &#39;&#39;&#39;Download one or more entitys.&#39;&#39;&#39;</code></pre>
+def get_entities(
+    self, *entity_names: str, raise_get_entities_error=True
+) -&gt; GetEntitiesReturn:
+    &#34;&#34;&#34;Download one or more entitys.&#34;&#34;&#34;</code></pre>
 </details>
 </dd>
 <dt id="macrobond_financial.common.SeriesMethods.get_one_entitie"><code class="name flex">
@@ -1167,7 +1176,7 @@ def get_entities(self, *entity_names: str, raise_get_entities_error=True) -&gt; 
 def get_one_entitie(
     self, entity_name: str, raise_get_entities_error=True
 ) -&gt; GetOneEntitieReturn:
-    &#39;&#39;&#39;Download one entity.&#39;&#39;&#39;</code></pre>
+    &#34;&#34;&#34;Download one entity.&#34;&#34;&#34;</code></pre>
 </details>
 </dd>
 <dt id="macrobond_financial.common.SeriesMethods.get_one_series"><code class="name flex">
@@ -1180,8 +1189,10 @@ def get_one_entitie(
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@abstractmethod
-def get_one_series(self, series_name: str, raise_get_entities_error=True) -&gt; GetOneSeriesReturn:
-    &#39;&#39;&#39;Download one series.&#39;&#39;&#39;</code></pre>
+def get_one_series(
+    self, series_name: str, raise_get_entities_error=True
+) -&gt; GetOneSeriesReturn:
+    &#34;&#34;&#34;Download one series.&#34;&#34;&#34;</code></pre>
 </details>
 </dd>
 <dt id="macrobond_financial.common.SeriesMethods.get_series"><code class="name flex">
@@ -1194,8 +1205,10 @@ def get_one_series(self, series_name: str, raise_get_entities_error=True) -&gt; 
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@abstractmethod
-def get_series(self, *series_names: str, raise_get_entities_error=True) -&gt; GetSeriesReturn:
-    &#39;&#39;&#39;Download one or more series.&#39;&#39;&#39;</code></pre>
+def get_series(
+    self, *series_names: str, raise_get_entities_error=True
+) -&gt; GetSeriesReturn:
+    &#34;&#34;&#34;Download one or more series.&#34;&#34;&#34;</code></pre>
 </details>
 </dd>
 <dt id="macrobond_financial.common.SeriesMethods.get_unified_series"><code class="name flex">
@@ -1210,13 +1223,13 @@ def get_series(self, *series_names: str, raise_get_entities_error=True) -&gt; Ge
 <pre><code class="python">@abstractmethod
 def get_unified_series(
     self,
-    *series_entries: Union[&#39;SeriesEntrie&#39;, str],
-    frequency: &#39;SeriesFrequency&#39; = None,
-    weekdays: &#39;SeriesWeekdays&#39; = None,
-    calendar_merge_mode: &#39;CalendarMergeMode&#39; = None,
+    *series_entries: Union[&#34;SeriesEntrie&#34;, str],
+    frequency: &#34;SeriesFrequency&#34; = None,
+    weekdays: &#34;SeriesWeekdays&#34; = None,
+    calendar_merge_mode: &#34;CalendarMergeMode&#34; = None,
     currency: str = None,
-    start_point: &#39;StartOrEndPoint&#39; = None,
-    end_point: &#39;StartOrEndPoint&#39; = None,
+    start_point: &#34;StartOrEndPoint&#34; = None,
+    end_point: &#34;StartOrEndPoint&#34; = None,
     raise_get_entities_error=True
 ) -&gt; GetUnifiedSeriesReturn:
     ...  # pragma: no cover</code></pre>
@@ -1233,14 +1246,13 @@ def get_unified_series(
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class StartOrEndPoint():
-
+<pre><code class="python">class StartOrEndPoint:
     def __init__(self, time: str, mode: Optional[CalendarDateMode]) -&gt; None:
         self.time = time
         self.mode = CalendarDateMode.DATA_IN_ANY_SERIES if mode is None else mode
 
     def __str__(self):
-        return self.time + &#39; mode:&#39; + str(self.mode)
+        return self.time + &#34; mode:&#34; + str(self.mode)
 
     def __repr__(self):
         return str(self)
@@ -1248,27 +1260,35 @@ def get_unified_series(
     @staticmethod
     def relative_to_observations(
         observations: int, mode: CalendarDateMode = None
-    ) -&gt; &#39;StartOrEndPoint&#39;:
+    ) -&gt; &#34;StartOrEndPoint&#34;:
         return StartOrEndPoint(str(observations), mode)
 
     @staticmethod
-    def relative_to_years(years: int, mode: CalendarDateMode = None) -&gt; &#39;StartOrEndPoint&#39;:
+    def relative_to_years(
+        years: int, mode: CalendarDateMode = None
+    ) -&gt; &#34;StartOrEndPoint&#34;:
         return StartOrEndPoint(str(years) + &#34;y&#34;, mode)
 
     @staticmethod
-    def relative_to_quarters(quarters: int, mode: CalendarDateMode = None) -&gt; &#39;StartOrEndPoint&#39;:
+    def relative_to_quarters(
+        quarters: int, mode: CalendarDateMode = None
+    ) -&gt; &#34;StartOrEndPoint&#34;:
         return StartOrEndPoint(str(quarters) + &#34;q&#34;, mode)
 
     @staticmethod
-    def relative_to_months(months: int, mode: CalendarDateMode = None) -&gt; &#39;StartOrEndPoint&#39;:
+    def relative_to_months(
+        months: int, mode: CalendarDateMode = None
+    ) -&gt; &#34;StartOrEndPoint&#34;:
         return StartOrEndPoint(str(months) + &#34;m&#34;, mode)
 
     @staticmethod
-    def relative_to_weeks(weeks: int, mode: CalendarDateMode = None) -&gt; &#39;StartOrEndPoint&#39;:
+    def relative_to_weeks(
+        weeks: int, mode: CalendarDateMode = None
+    ) -&gt; &#34;StartOrEndPoint&#34;:
         return StartOrEndPoint(str(weeks) + &#34;w&#34;, mode)
 
     @staticmethod
-    def relative_to_days(days: int, mode: CalendarDateMode = None) -&gt; &#39;StartOrEndPoint&#39;:
+    def relative_to_days(days: int, mode: CalendarDateMode = None) -&gt; &#34;StartOrEndPoint&#34;:
         return StartOrEndPoint(str(days) + &#34;d&#34;, mode)
 
     @overload
@@ -1276,39 +1296,37 @@ def get_unified_series(
     def point_in_time(
         yyyy_or_datetime: int,
         mm: int = None,  # pylint: disable = invalid-name
-        dd: int = None  # pylint: disable = invalid-name
-    ) -&gt; &#39;StartOrEndPoint&#39;:
+        dd: int = None,  # pylint: disable = invalid-name
+    ) -&gt; &#34;StartOrEndPoint&#34;:
         ...
 
     @overload
     @staticmethod
-    def point_in_time(
-        yyyy_or_datetime: datetime
-    ) -&gt; &#39;StartOrEndPoint&#39;:
+    def point_in_time(yyyy_or_datetime: datetime) -&gt; &#34;StartOrEndPoint&#34;:
         ...
 
     @staticmethod
     def point_in_time(
         yyyy_or_datetime: Union[int, datetime],
         mm: int = None,  # pylint: disable = invalid-name
-        dd: int = None  # pylint: disable = invalid-name
-    ) -&gt; &#39;StartOrEndPoint&#39;:
+        dd: int = None,  # pylint: disable = invalid-name
+    ) -&gt; &#34;StartOrEndPoint&#34;:
         if isinstance(yyyy_or_datetime, datetime):
-            return StartOrEndPoint(yyyy_or_datetime.strftime(&#39;%Y-%m-%d&#39;), None)
+            return StartOrEndPoint(yyyy_or_datetime.strftime(&#34;%Y-%m-%d&#34;), None)
         time = str(yyyy_or_datetime).zfill(4)
         if mm is not None:
-            time += &#39;-&#39; + str(mm).zfill(2)
+            time += &#34;-&#34; + str(mm).zfill(2)
             if dd is not None:
-                time += &#39;-&#39; + str(dd).zfill(2)
+                time += &#34;-&#34; + str(dd).zfill(2)
         return StartOrEndPoint(time, None)
 
     @staticmethod
-    def data_in_any_series() -&gt; &#39;StartOrEndPoint&#39;:
-        return StartOrEndPoint(&#39;&#39;, CalendarDateMode.DATA_IN_ANY_SERIES)
+    def data_in_any_series() -&gt; &#34;StartOrEndPoint&#34;:
+        return StartOrEndPoint(&#34;&#34;, CalendarDateMode.DATA_IN_ANY_SERIES)
 
     @staticmethod
-    def data_in_all_series() -&gt; &#39;StartOrEndPoint&#39;:
-        return StartOrEndPoint(&#39;&#39;, CalendarDateMode.DATA_IN_ALL_SERIES)</code></pre>
+    def data_in_all_series() -&gt; &#34;StartOrEndPoint&#34;:
+        return StartOrEndPoint(&#34;&#34;, CalendarDateMode.DATA_IN_ALL_SERIES)</code></pre>
 </details>
 <h3>Static methods</h3>
 <dl>
@@ -1322,8 +1340,8 @@ def get_unified_series(
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@staticmethod
-def data_in_all_series() -&gt; &#39;StartOrEndPoint&#39;:
-    return StartOrEndPoint(&#39;&#39;, CalendarDateMode.DATA_IN_ALL_SERIES)</code></pre>
+def data_in_all_series() -&gt; &#34;StartOrEndPoint&#34;:
+    return StartOrEndPoint(&#34;&#34;, CalendarDateMode.DATA_IN_ALL_SERIES)</code></pre>
 </details>
 </dd>
 <dt id="macrobond_financial.common.StartOrEndPoint.data_in_any_series"><code class="name flex">
@@ -1336,8 +1354,8 @@ def data_in_all_series() -&gt; &#39;StartOrEndPoint&#39;:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@staticmethod
-def data_in_any_series() -&gt; &#39;StartOrEndPoint&#39;:
-    return StartOrEndPoint(&#39;&#39;, CalendarDateMode.DATA_IN_ANY_SERIES)</code></pre>
+def data_in_any_series() -&gt; &#34;StartOrEndPoint&#34;:
+    return StartOrEndPoint(&#34;&#34;, CalendarDateMode.DATA_IN_ANY_SERIES)</code></pre>
 </details>
 </dd>
 <dt id="macrobond_financial.common.StartOrEndPoint.point_in_time"><code class="name flex">
@@ -1353,15 +1371,15 @@ def data_in_any_series() -&gt; &#39;StartOrEndPoint&#39;:
 def point_in_time(
     yyyy_or_datetime: Union[int, datetime],
     mm: int = None,  # pylint: disable = invalid-name
-    dd: int = None  # pylint: disable = invalid-name
-) -&gt; &#39;StartOrEndPoint&#39;:
+    dd: int = None,  # pylint: disable = invalid-name
+) -&gt; &#34;StartOrEndPoint&#34;:
     if isinstance(yyyy_or_datetime, datetime):
-        return StartOrEndPoint(yyyy_or_datetime.strftime(&#39;%Y-%m-%d&#39;), None)
+        return StartOrEndPoint(yyyy_or_datetime.strftime(&#34;%Y-%m-%d&#34;), None)
     time = str(yyyy_or_datetime).zfill(4)
     if mm is not None:
-        time += &#39;-&#39; + str(mm).zfill(2)
+        time += &#34;-&#34; + str(mm).zfill(2)
         if dd is not None:
-            time += &#39;-&#39; + str(dd).zfill(2)
+            time += &#34;-&#34; + str(dd).zfill(2)
     return StartOrEndPoint(time, None)</code></pre>
 </details>
 </dd>
@@ -1375,7 +1393,7 @@ def point_in_time(
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@staticmethod
-def relative_to_days(days: int, mode: CalendarDateMode = None) -&gt; &#39;StartOrEndPoint&#39;:
+def relative_to_days(days: int, mode: CalendarDateMode = None) -&gt; &#34;StartOrEndPoint&#34;:
     return StartOrEndPoint(str(days) + &#34;d&#34;, mode)</code></pre>
 </details>
 </dd>
@@ -1389,7 +1407,9 @@ def relative_to_days(days: int, mode: CalendarDateMode = None) -&gt; &#39;StartO
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@staticmethod
-def relative_to_months(months: int, mode: CalendarDateMode = None) -&gt; &#39;StartOrEndPoint&#39;:
+def relative_to_months(
+    months: int, mode: CalendarDateMode = None
+) -&gt; &#34;StartOrEndPoint&#34;:
     return StartOrEndPoint(str(months) + &#34;m&#34;, mode)</code></pre>
 </details>
 </dd>
@@ -1405,7 +1425,7 @@ def relative_to_months(months: int, mode: CalendarDateMode = None) -&gt; &#39;St
 <pre><code class="python">@staticmethod
 def relative_to_observations(
     observations: int, mode: CalendarDateMode = None
-) -&gt; &#39;StartOrEndPoint&#39;:
+) -&gt; &#34;StartOrEndPoint&#34;:
     return StartOrEndPoint(str(observations), mode)</code></pre>
 </details>
 </dd>
@@ -1419,7 +1439,9 @@ def relative_to_observations(
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@staticmethod
-def relative_to_quarters(quarters: int, mode: CalendarDateMode = None) -&gt; &#39;StartOrEndPoint&#39;:
+def relative_to_quarters(
+    quarters: int, mode: CalendarDateMode = None
+) -&gt; &#34;StartOrEndPoint&#34;:
     return StartOrEndPoint(str(quarters) + &#34;q&#34;, mode)</code></pre>
 </details>
 </dd>
@@ -1433,7 +1455,9 @@ def relative_to_quarters(quarters: int, mode: CalendarDateMode = None) -&gt; &#3
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@staticmethod
-def relative_to_weeks(weeks: int, mode: CalendarDateMode = None) -&gt; &#39;StartOrEndPoint&#39;:
+def relative_to_weeks(
+    weeks: int, mode: CalendarDateMode = None
+) -&gt; &#34;StartOrEndPoint&#34;:
     return StartOrEndPoint(str(weeks) + &#34;w&#34;, mode)</code></pre>
 </details>
 </dd>
@@ -1447,7 +1471,9 @@ def relative_to_weeks(weeks: int, mode: CalendarDateMode = None) -&gt; &#39;Star
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@staticmethod
-def relative_to_years(years: int, mode: CalendarDateMode = None) -&gt; &#39;StartOrEndPoint&#39;:
+def relative_to_years(
+    years: int, mode: CalendarDateMode = None
+) -&gt; &#34;StartOrEndPoint&#34;:
     return StartOrEndPoint(str(years) + &#34;y&#34;, mode)</code></pre>
 </details>
 </dd>
@@ -1464,11 +1490,11 @@ def relative_to_years(years: int, mode: CalendarDateMode = None) -&gt; &#39;Star
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class UnifiedSerie:
-    &#39;&#39;&#39;Interface for a Macrobond time series.&#39;&#39;&#39;
+    &#34;&#34;&#34;Interface for a Macrobond time series.&#34;&#34;&#34;
 
     @property
     def is_error(self) -&gt; bool:
-        return self.error_message != &#39;&#39;
+        return self.error_message != &#34;&#34;
 
     def __init__(
         self,
@@ -1477,7 +1503,7 @@ def relative_to_years(years: int, mode: CalendarDateMode = None) -&gt; &#39;Star
         values: Optional[Tuple[Optional[float], ...]],
     ) -&gt; None:
         self.error_message = error_message
-        if error_message != &#39;&#39;:
+        if error_message != &#34;&#34;:
             self.metadata: Dict[str, Any] = {}
             self.values: Tuple[Optional[float], ...] = tuple()
         else:
@@ -1495,7 +1521,7 @@ def relative_to_years(years: int, mode: CalendarDateMode = None) -&gt; &#39;Star
 </summary>
 <pre><code class="python">@property
 def is_error(self) -&gt; bool:
-    return self.error_message != &#39;&#39;</code></pre>
+    return self.error_message != &#34;&#34;</code></pre>
 </details>
 </dd>
 </dl>
@@ -1513,7 +1539,6 @@ def is_error(self) -&gt; bool:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class UnifiedSeries(Sequence[UnifiedSerie]):
-
     def __init__(
         self,
         dates: Optional[Tuple[datetime, ...]],
@@ -1523,16 +1548,18 @@ def is_error(self) -&gt; bool:
         self.series = series
 
     def __str__(self):
-        return f&#39;UnifiedSeries of {len(self)} series&#39;
+        return f&#34;UnifiedSeries of {len(self)} series&#34;
 
     def __repr__(self):
         return str(self)
 
     @overload
-    def __getitem__(self, idx: int) -&gt; UnifiedSerie: ...
+    def __getitem__(self, idx: int) -&gt; UnifiedSerie:
+        ...
 
     @overload
-    def __getitem__(self, _slice: slice) -&gt; Sequence[UnifiedSerie]: ...
+    def __getitem__(self, _slice: slice) -&gt; Sequence[UnifiedSerie]:
+        ...
 
     def __getitem__(self, idx_or_slice: Union[int, slice]):
         return self.series.__getitem__(idx_or_slice)

@@ -33,8 +33,12 @@
 from typing import Tuple, Union, overload, List, TYPE_CHECKING
 from abc import ABC, abstractmethod
 
-from .enums import SeriesMissingValueMethod, SeriesToLowerFrequencyMethod, \
-    SeriesToHigherFrequencyMethod, SeriesPartialPeriodsMethod
+from .enums import (
+    SeriesMissingValueMethod,
+    SeriesToLowerFrequencyMethod,
+    SeriesToHigherFrequencyMethod,
+    SeriesPartialPeriodsMethod,
+)
 
 if TYPE_CHECKING:  # pragma: no cover
 
@@ -44,189 +48,209 @@ if TYPE_CHECKING:  # pragma: no cover
 
     from .entity import Entity, EntityColumns, EntityTypedDicts
     from .series import Series, SeriesColumns, SeriesTypedDicts
-    from .unified_series import UnifiedSeries, UnifiedSeriesColumns, UnifiedSeriesTypedDict
+    from .unified_series import (
+        UnifiedSeries,
+        UnifiedSeriesColumns,
+        UnifiedSeriesTypedDict,
+    )
     from .start_or_end_point import StartOrEndPoint
 
     from typing_extensions import Literal
 
-    SeriesValuesAndDatesColumns = List[Literal[&#39;Values&#39;, &#39;Dates&#39;]]
+    SeriesValuesAndDatesColumns = List[Literal[&#34;Values&#34;, &#34;Dates&#34;]]
 
 
 class GetOneSeriesReturn(ABC):
+    @abstractmethod
+    def object(self) -&gt; &#34;Series&#34;:
+        ...
 
     @abstractmethod
-    def object(self) -&gt; &#39;Series&#39;: ...
-
-    @abstractmethod
-    def dict(self) -&gt; &#39;SeriesTypedDicts&#39;: ...
+    def dict(self) -&gt; &#34;SeriesTypedDicts&#34;:
+        ...
 
     @overload
-    def data_frame(self) -&gt; &#39;DataFrame&#39;: ...
+    def data_frame(self) -&gt; &#34;DataFrame&#34;:
+        ...
 
     @overload
     def data_frame(
         self,
-        index: &#39;pandas_typing.Axes&#39; = None,
-        columns: Union[
-            &#39;SeriesColumns&#39;, &#39;pandas_typing.Axes&#39;
-        ] = None,
-        dtype: &#39;pandas_typing.Dtype&#39; = None,
+        index: &#34;pandas_typing.Axes&#34; = None,
+        columns: Union[&#34;SeriesColumns&#34;, &#34;pandas_typing.Axes&#34;] = None,
+        dtype: &#34;pandas_typing.Dtype&#34; = None,
         copy: bool = False,
-    ) -&gt; &#39;DataFrame&#39;: ...
+    ) -&gt; &#34;DataFrame&#34;:
+        ...
 
     @abstractmethod
-    def data_frame(self, *args, **kwargs) -&gt; &#39;DataFrame&#39;: ...
+    def data_frame(self, *args, **kwargs) -&gt; &#34;DataFrame&#34;:
+        ...
 
     @overload
-    def values_and_dates_as_data_frame(self) -&gt; &#39;DataFrame&#39;: ...
+    def values_and_dates_as_data_frame(self) -&gt; &#34;DataFrame&#34;:
+        ...
 
     @overload
     def values_and_dates_as_data_frame(
         self,
-        index: &#39;pandas_typing.Axes&#39; = None,
-        columns: Union[
-            &#39;SeriesValuesAndDatesColumns&#39;, &#39;pandas_typing.Axes&#39;
-        ] = None,
-        dtype: &#39;pandas_typing.Dtype&#39; = None,
+        index: &#34;pandas_typing.Axes&#34; = None,
+        columns: Union[&#34;SeriesValuesAndDatesColumns&#34;, &#34;pandas_typing.Axes&#34;] = None,
+        dtype: &#34;pandas_typing.Dtype&#34; = None,
         copy: bool = False,
-    ) -&gt; &#39;DataFrame&#39;: ...
+    ) -&gt; &#34;DataFrame&#34;:
+        ...
 
     @abstractmethod
-    def values_and_dates_as_data_frame(self, *args, **kwargs) -&gt; &#39;DataFrame&#39;: ...
+    def values_and_dates_as_data_frame(self, *args, **kwargs) -&gt; &#34;DataFrame&#34;:
+        ...
 
 
 class GetSeriesReturn(ABC):
+    @abstractmethod
+    def tuple_of_objects(self) -&gt; Tuple[&#34;Series&#34;, ...]:
+        ...
 
     @abstractmethod
-    def tuple_of_objects(self) -&gt; Tuple[&#39;Series&#39;, ...]: ...
-
-    @abstractmethod
-    def tuple_of_dicts(self) -&gt; Tuple[&#39;SeriesTypedDicts&#39;, ...]: ...
+    def tuple_of_dicts(self) -&gt; Tuple[&#34;SeriesTypedDicts&#34;, ...]:
+        ...
 
     @overload
-    def data_frame(self) -&gt; &#39;DataFrame&#39;: ...
+    def data_frame(self) -&gt; &#34;DataFrame&#34;:
+        ...
 
     @overload
     def data_frame(
         self,
-        index: &#39;pandas_typing.Axes&#39; = None,
-        columns: Union[
-            &#39;SeriesColumns&#39;, &#39;pandas_typing.Axes&#39;
-        ] = None,
-        dtype: &#39;pandas_typing.Dtype&#39; = None,
+        index: &#34;pandas_typing.Axes&#34; = None,
+        columns: Union[&#34;SeriesColumns&#34;, &#34;pandas_typing.Axes&#34;] = None,
+        dtype: &#34;pandas_typing.Dtype&#34; = None,
         copy: bool = False,
-    ) -&gt; &#39;DataFrame&#39;: ...
+    ) -&gt; &#34;DataFrame&#34;:
+        ...
 
     @abstractmethod
-    def data_frame(self, *args, **kwargs) -&gt; &#39;DataFrame&#39;: ...
+    def data_frame(self, *args, **kwargs) -&gt; &#34;DataFrame&#34;:
+        ...
 
 
 class GetOneEntitieReturn(ABC):
+    @abstractmethod
+    def object(self) -&gt; &#34;Entity&#34;:
+        ...
 
     @abstractmethod
-    def object(self) -&gt; &#39;Entity&#39;: ...
-
-    @abstractmethod
-    def dict(self) -&gt; &#39;EntityTypedDicts&#39;: ...
+    def dict(self) -&gt; &#34;EntityTypedDicts&#34;:
+        ...
 
     @overload
-    def data_frame(self) -&gt; &#39;DataFrame&#39;: ...
+    def data_frame(self) -&gt; &#34;DataFrame&#34;:
+        ...
 
     @overload
     def data_frame(
         self,
-        index: &#39;pandas_typing.Axes&#39; = None,
-        columns: Union[
-            &#39;EntityColumns&#39;, &#39;pandas_typing.Axes&#39;
-        ] = None,
-        dtype: &#39;pandas_typing.Dtype&#39; = None,
+        index: &#34;pandas_typing.Axes&#34; = None,
+        columns: Union[&#34;EntityColumns&#34;, &#34;pandas_typing.Axes&#34;] = None,
+        dtype: &#34;pandas_typing.Dtype&#34; = None,
         copy: bool = False,
-    ) -&gt; &#39;DataFrame&#39;: ...
+    ) -&gt; &#34;DataFrame&#34;:
+        ...
 
     @abstractmethod
-    def data_frame(self, *args, **kwargs) -&gt; &#39;DataFrame&#39;: ...
+    def data_frame(self, *args, **kwargs) -&gt; &#34;DataFrame&#34;:
+        ...
 
     @abstractmethod
-    def metadata_as_data_frame(self) -&gt; &#39;DataFrame&#39;: ...
+    def metadata_as_data_frame(self) -&gt; &#34;DataFrame&#34;:
+        ...
 
     # .from_dict(i[&#39;metadata&#39;], orient=&#39;index&#39;)
 
 
 class GetEntitiesReturn(ABC):
+    @abstractmethod
+    def tuple_of_objects(self) -&gt; Tuple[&#34;Entity&#34;, ...]:
+        ...
 
     @abstractmethod
-    def tuple_of_objects(self) -&gt; Tuple[&#39;Entity&#39;, ...]: ...
-
-    @abstractmethod
-    def tuple_of_dicts(self) -&gt; Tuple[&#39;EntityTypedDicts&#39;, ...]: ...
+    def tuple_of_dicts(self) -&gt; Tuple[&#34;EntityTypedDicts&#34;, ...]:
+        ...
 
     @overload
-    def data_frame(self) -&gt; &#39;DataFrame&#39;: ...
+    def data_frame(self) -&gt; &#34;DataFrame&#34;:
+        ...
 
     @overload
     def data_frame(
         self,
-        index: &#39;pandas_typing.Axes&#39; = None,
-        columns: Union[
-            &#39;EntityColumns&#39;, &#39;pandas_typing.Axes&#39;
-        ] = None,
-        dtype: &#39;pandas_typing.Dtype&#39; = None,
+        index: &#34;pandas_typing.Axes&#34; = None,
+        columns: Union[&#34;EntityColumns&#34;, &#34;pandas_typing.Axes&#34;] = None,
+        dtype: &#34;pandas_typing.Dtype&#34; = None,
         copy: bool = False,
-    ) -&gt; &#39;DataFrame&#39;: ...
+    ) -&gt; &#34;DataFrame&#34;:
+        ...
 
     @abstractmethod
-    def data_frame(self, *args, **kwargs) -&gt; &#39;DataFrame&#39;: ...
+    def data_frame(self, *args, **kwargs) -&gt; &#34;DataFrame&#34;:
+        ...
 
 
 class GetUnifiedSeriesReturn(ABC):
+    @abstractmethod
+    def object(self) -&gt; &#34;UnifiedSeries&#34;:
+        ...
 
     @abstractmethod
-    def object(self) -&gt; &#39;UnifiedSeries&#39;: ...
+    def dict(self) -&gt; &#34;UnifiedSeriesTypedDict&#34;:
+        ...
 
     @abstractmethod
-    def dict(self) -&gt; &#39;UnifiedSeriesTypedDict&#39;: ...
-
-    @abstractmethod
-    def data_frame(self, columns: List[str] = None) -&gt; &#39;DataFrame&#39;: ...
+    def data_frame(self, columns: List[str] = None) -&gt; &#34;DataFrame&#34;:
+        ...
 
 
 class SeriesMethods(ABC):
+    @abstractmethod
+    def get_one_series(
+        self, series_name: str, raise_get_entities_error=True
+    ) -&gt; GetOneSeriesReturn:
+        &#34;&#34;&#34;Download one series.&#34;&#34;&#34;
 
     @abstractmethod
-    def get_one_series(self, series_name: str, raise_get_entities_error=True) -&gt; GetOneSeriesReturn:
-        &#39;&#39;&#39;Download one series.&#39;&#39;&#39;
-
-    @abstractmethod
-    def get_series(self, *series_names: str, raise_get_entities_error=True) -&gt; GetSeriesReturn:
-        &#39;&#39;&#39;Download one or more series.&#39;&#39;&#39;
+    def get_series(
+        self, *series_names: str, raise_get_entities_error=True
+    ) -&gt; GetSeriesReturn:
+        &#34;&#34;&#34;Download one or more series.&#34;&#34;&#34;
 
     @abstractmethod
     def get_one_entitie(
         self, entity_name: str, raise_get_entities_error=True
     ) -&gt; GetOneEntitieReturn:
-        &#39;&#39;&#39;Download one entity.&#39;&#39;&#39;
+        &#34;&#34;&#34;Download one entity.&#34;&#34;&#34;
 
     @abstractmethod
-    def get_entities(self, *entity_names: str, raise_get_entities_error=True) -&gt; GetEntitiesReturn:
-        &#39;&#39;&#39;Download one or more entitys.&#39;&#39;&#39;
+    def get_entities(
+        self, *entity_names: str, raise_get_entities_error=True
+    ) -&gt; GetEntitiesReturn:
+        &#34;&#34;&#34;Download one or more entitys.&#34;&#34;&#34;
 
     @abstractmethod
     def get_unified_series(
         self,
-        *series_entries: Union[&#39;SeriesEntrie&#39;, str],
-        frequency: &#39;SeriesFrequency&#39; = None,
-        weekdays: &#39;SeriesWeekdays&#39; = None,
-        calendar_merge_mode: &#39;CalendarMergeMode&#39; = None,
+        *series_entries: Union[&#34;SeriesEntrie&#34;, str],
+        frequency: &#34;SeriesFrequency&#34; = None,
+        weekdays: &#34;SeriesWeekdays&#34; = None,
+        calendar_merge_mode: &#34;CalendarMergeMode&#34; = None,
         currency: str = None,
-        start_point: &#39;StartOrEndPoint&#39; = None,
-        end_point: &#39;StartOrEndPoint&#39; = None,
+        start_point: &#34;StartOrEndPoint&#34; = None,
+        end_point: &#34;StartOrEndPoint&#34; = None,
         raise_get_entities_error=True
     ) -&gt; GetUnifiedSeriesReturn:
         ...  # pragma: no cover
 
 
-class SeriesEntrie():
-
+class SeriesEntrie:
     def __init__(
         self,
         name: str,
@@ -237,17 +261,21 @@ class SeriesEntrie():
     ) -&gt; None:
         self.name = name
 
-        self.missing_value_method = \
+        self.missing_value_method = (
             missing_value_method or SeriesMissingValueMethod.NONE
+        )
 
-        self.to_lowerfrequency_method = \
+        self.to_lowerfrequency_method = (
             to_lowerfrequency_method or SeriesToLowerFrequencyMethod.AUTO
+        )
 
-        self.to_higherfrequency_method = \
+        self.to_higherfrequency_method = (
             to_higherfrequency_method or SeriesToHigherFrequencyMethod.AUTO
+        )
 
-        self.partial_periods_method = \
-            partial_periods_method or SeriesPartialPeriodsMethod.NONE</code></pre>
+        self.partial_periods_method = (
+            partial_periods_method or SeriesPartialPeriodsMethod.NONE
+        )</code></pre>
 </details>
 </section>
 <section>
@@ -270,29 +298,31 @@ inheritance.</p></div>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class GetEntitiesReturn(ABC):
+    @abstractmethod
+    def tuple_of_objects(self) -&gt; Tuple[&#34;Entity&#34;, ...]:
+        ...
 
     @abstractmethod
-    def tuple_of_objects(self) -&gt; Tuple[&#39;Entity&#39;, ...]: ...
-
-    @abstractmethod
-    def tuple_of_dicts(self) -&gt; Tuple[&#39;EntityTypedDicts&#39;, ...]: ...
+    def tuple_of_dicts(self) -&gt; Tuple[&#34;EntityTypedDicts&#34;, ...]:
+        ...
 
     @overload
-    def data_frame(self) -&gt; &#39;DataFrame&#39;: ...
+    def data_frame(self) -&gt; &#34;DataFrame&#34;:
+        ...
 
     @overload
     def data_frame(
         self,
-        index: &#39;pandas_typing.Axes&#39; = None,
-        columns: Union[
-            &#39;EntityColumns&#39;, &#39;pandas_typing.Axes&#39;
-        ] = None,
-        dtype: &#39;pandas_typing.Dtype&#39; = None,
+        index: &#34;pandas_typing.Axes&#34; = None,
+        columns: Union[&#34;EntityColumns&#34;, &#34;pandas_typing.Axes&#34;] = None,
+        dtype: &#34;pandas_typing.Dtype&#34; = None,
         copy: bool = False,
-    ) -&gt; &#39;DataFrame&#39;: ...
+    ) -&gt; &#34;DataFrame&#34;:
+        ...
 
     @abstractmethod
-    def data_frame(self, *args, **kwargs) -&gt; &#39;DataFrame&#39;: ...</code></pre>
+    def data_frame(self, *args, **kwargs) -&gt; &#34;DataFrame&#34;:
+        ...</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
@@ -315,7 +345,8 @@ inheritance.</p></div>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@abstractmethod
-def data_frame(self, *args, **kwargs) -&gt; &#39;DataFrame&#39;: ...</code></pre>
+def data_frame(self, *args, **kwargs) -&gt; &#34;DataFrame&#34;:
+    ...</code></pre>
 </details>
 </dd>
 <dt id="macrobond_financial.common.series_methods.GetEntitiesReturn.tuple_of_dicts"><code class="name flex">
@@ -328,7 +359,8 @@ def data_frame(self, *args, **kwargs) -&gt; &#39;DataFrame&#39;: ...</code></pre
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@abstractmethod
-def tuple_of_dicts(self) -&gt; Tuple[&#39;EntityTypedDicts&#39;, ...]: ...</code></pre>
+def tuple_of_dicts(self) -&gt; Tuple[&#34;EntityTypedDicts&#34;, ...]:
+    ...</code></pre>
 </details>
 </dd>
 <dt id="macrobond_financial.common.series_methods.GetEntitiesReturn.tuple_of_objects"><code class="name flex">
@@ -341,7 +373,8 @@ def tuple_of_dicts(self) -&gt; Tuple[&#39;EntityTypedDicts&#39;, ...]: ...</code
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@abstractmethod
-def tuple_of_objects(self) -&gt; Tuple[&#39;Entity&#39;, ...]: ...</code></pre>
+def tuple_of_objects(self) -&gt; Tuple[&#34;Entity&#34;, ...]:
+    ...</code></pre>
 </details>
 </dd>
 </dl>
@@ -357,32 +390,35 @@ inheritance.</p></div>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class GetOneEntitieReturn(ABC):
+    @abstractmethod
+    def object(self) -&gt; &#34;Entity&#34;:
+        ...
 
     @abstractmethod
-    def object(self) -&gt; &#39;Entity&#39;: ...
-
-    @abstractmethod
-    def dict(self) -&gt; &#39;EntityTypedDicts&#39;: ...
+    def dict(self) -&gt; &#34;EntityTypedDicts&#34;:
+        ...
 
     @overload
-    def data_frame(self) -&gt; &#39;DataFrame&#39;: ...
+    def data_frame(self) -&gt; &#34;DataFrame&#34;:
+        ...
 
     @overload
     def data_frame(
         self,
-        index: &#39;pandas_typing.Axes&#39; = None,
-        columns: Union[
-            &#39;EntityColumns&#39;, &#39;pandas_typing.Axes&#39;
-        ] = None,
-        dtype: &#39;pandas_typing.Dtype&#39; = None,
+        index: &#34;pandas_typing.Axes&#34; = None,
+        columns: Union[&#34;EntityColumns&#34;, &#34;pandas_typing.Axes&#34;] = None,
+        dtype: &#34;pandas_typing.Dtype&#34; = None,
         copy: bool = False,
-    ) -&gt; &#39;DataFrame&#39;: ...
+    ) -&gt; &#34;DataFrame&#34;:
+        ...
 
     @abstractmethod
-    def data_frame(self, *args, **kwargs) -&gt; &#39;DataFrame&#39;: ...
+    def data_frame(self, *args, **kwargs) -&gt; &#34;DataFrame&#34;:
+        ...
 
     @abstractmethod
-    def metadata_as_data_frame(self) -&gt; &#39;DataFrame&#39;: ...
+    def metadata_as_data_frame(self) -&gt; &#34;DataFrame&#34;:
+        ...
 
     # .from_dict(i[&#39;metadata&#39;], orient=&#39;index&#39;)</code></pre>
 </details>
@@ -407,7 +443,8 @@ inheritance.</p></div>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@abstractmethod
-def data_frame(self, *args, **kwargs) -&gt; &#39;DataFrame&#39;: ...</code></pre>
+def data_frame(self, *args, **kwargs) -&gt; &#34;DataFrame&#34;:
+    ...</code></pre>
 </details>
 </dd>
 <dt id="macrobond_financial.common.series_methods.GetOneEntitieReturn.dict"><code class="name flex">
@@ -420,7 +457,8 @@ def data_frame(self, *args, **kwargs) -&gt; &#39;DataFrame&#39;: ...</code></pre
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@abstractmethod
-def dict(self) -&gt; &#39;EntityTypedDicts&#39;: ...</code></pre>
+def dict(self) -&gt; &#34;EntityTypedDicts&#34;:
+    ...</code></pre>
 </details>
 </dd>
 <dt id="macrobond_financial.common.series_methods.GetOneEntitieReturn.metadata_as_data_frame"><code class="name flex">
@@ -433,7 +471,8 @@ def dict(self) -&gt; &#39;EntityTypedDicts&#39;: ...</code></pre>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@abstractmethod
-def metadata_as_data_frame(self) -&gt; &#39;DataFrame&#39;: ...</code></pre>
+def metadata_as_data_frame(self) -&gt; &#34;DataFrame&#34;:
+    ...</code></pre>
 </details>
 </dd>
 <dt id="macrobond_financial.common.series_methods.GetOneEntitieReturn.object"><code class="name flex">
@@ -446,7 +485,8 @@ def metadata_as_data_frame(self) -&gt; &#39;DataFrame&#39;: ...</code></pre>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@abstractmethod
-def object(self) -&gt; &#39;Entity&#39;: ...</code></pre>
+def object(self) -&gt; &#34;Entity&#34;:
+    ...</code></pre>
 </details>
 </dd>
 </dl>
@@ -462,46 +502,49 @@ inheritance.</p></div>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class GetOneSeriesReturn(ABC):
+    @abstractmethod
+    def object(self) -&gt; &#34;Series&#34;:
+        ...
 
     @abstractmethod
-    def object(self) -&gt; &#39;Series&#39;: ...
-
-    @abstractmethod
-    def dict(self) -&gt; &#39;SeriesTypedDicts&#39;: ...
+    def dict(self) -&gt; &#34;SeriesTypedDicts&#34;:
+        ...
 
     @overload
-    def data_frame(self) -&gt; &#39;DataFrame&#39;: ...
+    def data_frame(self) -&gt; &#34;DataFrame&#34;:
+        ...
 
     @overload
     def data_frame(
         self,
-        index: &#39;pandas_typing.Axes&#39; = None,
-        columns: Union[
-            &#39;SeriesColumns&#39;, &#39;pandas_typing.Axes&#39;
-        ] = None,
-        dtype: &#39;pandas_typing.Dtype&#39; = None,
+        index: &#34;pandas_typing.Axes&#34; = None,
+        columns: Union[&#34;SeriesColumns&#34;, &#34;pandas_typing.Axes&#34;] = None,
+        dtype: &#34;pandas_typing.Dtype&#34; = None,
         copy: bool = False,
-    ) -&gt; &#39;DataFrame&#39;: ...
+    ) -&gt; &#34;DataFrame&#34;:
+        ...
 
     @abstractmethod
-    def data_frame(self, *args, **kwargs) -&gt; &#39;DataFrame&#39;: ...
+    def data_frame(self, *args, **kwargs) -&gt; &#34;DataFrame&#34;:
+        ...
 
     @overload
-    def values_and_dates_as_data_frame(self) -&gt; &#39;DataFrame&#39;: ...
+    def values_and_dates_as_data_frame(self) -&gt; &#34;DataFrame&#34;:
+        ...
 
     @overload
     def values_and_dates_as_data_frame(
         self,
-        index: &#39;pandas_typing.Axes&#39; = None,
-        columns: Union[
-            &#39;SeriesValuesAndDatesColumns&#39;, &#39;pandas_typing.Axes&#39;
-        ] = None,
-        dtype: &#39;pandas_typing.Dtype&#39; = None,
+        index: &#34;pandas_typing.Axes&#34; = None,
+        columns: Union[&#34;SeriesValuesAndDatesColumns&#34;, &#34;pandas_typing.Axes&#34;] = None,
+        dtype: &#34;pandas_typing.Dtype&#34; = None,
         copy: bool = False,
-    ) -&gt; &#39;DataFrame&#39;: ...
+    ) -&gt; &#34;DataFrame&#34;:
+        ...
 
     @abstractmethod
-    def values_and_dates_as_data_frame(self, *args, **kwargs) -&gt; &#39;DataFrame&#39;: ...</code></pre>
+    def values_and_dates_as_data_frame(self, *args, **kwargs) -&gt; &#34;DataFrame&#34;:
+        ...</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
@@ -524,7 +567,8 @@ inheritance.</p></div>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@abstractmethod
-def data_frame(self, *args, **kwargs) -&gt; &#39;DataFrame&#39;: ...</code></pre>
+def data_frame(self, *args, **kwargs) -&gt; &#34;DataFrame&#34;:
+    ...</code></pre>
 </details>
 </dd>
 <dt id="macrobond_financial.common.series_methods.GetOneSeriesReturn.dict"><code class="name flex">
@@ -537,7 +581,8 @@ def data_frame(self, *args, **kwargs) -&gt; &#39;DataFrame&#39;: ...</code></pre
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@abstractmethod
-def dict(self) -&gt; &#39;SeriesTypedDicts&#39;: ...</code></pre>
+def dict(self) -&gt; &#34;SeriesTypedDicts&#34;:
+    ...</code></pre>
 </details>
 </dd>
 <dt id="macrobond_financial.common.series_methods.GetOneSeriesReturn.object"><code class="name flex">
@@ -550,7 +595,8 @@ def dict(self) -&gt; &#39;SeriesTypedDicts&#39;: ...</code></pre>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@abstractmethod
-def object(self) -&gt; &#39;Series&#39;: ...</code></pre>
+def object(self) -&gt; &#34;Series&#34;:
+    ...</code></pre>
 </details>
 </dd>
 <dt id="macrobond_financial.common.series_methods.GetOneSeriesReturn.values_and_dates_as_data_frame"><code class="name flex">
@@ -563,7 +609,8 @@ def object(self) -&gt; &#39;Series&#39;: ...</code></pre>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@abstractmethod
-def values_and_dates_as_data_frame(self, *args, **kwargs) -&gt; &#39;DataFrame&#39;: ...</code></pre>
+def values_and_dates_as_data_frame(self, *args, **kwargs) -&gt; &#34;DataFrame&#34;:
+    ...</code></pre>
 </details>
 </dd>
 </dl>
@@ -579,29 +626,31 @@ inheritance.</p></div>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class GetSeriesReturn(ABC):
+    @abstractmethod
+    def tuple_of_objects(self) -&gt; Tuple[&#34;Series&#34;, ...]:
+        ...
 
     @abstractmethod
-    def tuple_of_objects(self) -&gt; Tuple[&#39;Series&#39;, ...]: ...
-
-    @abstractmethod
-    def tuple_of_dicts(self) -&gt; Tuple[&#39;SeriesTypedDicts&#39;, ...]: ...
+    def tuple_of_dicts(self) -&gt; Tuple[&#34;SeriesTypedDicts&#34;, ...]:
+        ...
 
     @overload
-    def data_frame(self) -&gt; &#39;DataFrame&#39;: ...
+    def data_frame(self) -&gt; &#34;DataFrame&#34;:
+        ...
 
     @overload
     def data_frame(
         self,
-        index: &#39;pandas_typing.Axes&#39; = None,
-        columns: Union[
-            &#39;SeriesColumns&#39;, &#39;pandas_typing.Axes&#39;
-        ] = None,
-        dtype: &#39;pandas_typing.Dtype&#39; = None,
+        index: &#34;pandas_typing.Axes&#34; = None,
+        columns: Union[&#34;SeriesColumns&#34;, &#34;pandas_typing.Axes&#34;] = None,
+        dtype: &#34;pandas_typing.Dtype&#34; = None,
         copy: bool = False,
-    ) -&gt; &#39;DataFrame&#39;: ...
+    ) -&gt; &#34;DataFrame&#34;:
+        ...
 
     @abstractmethod
-    def data_frame(self, *args, **kwargs) -&gt; &#39;DataFrame&#39;: ...</code></pre>
+    def data_frame(self, *args, **kwargs) -&gt; &#34;DataFrame&#34;:
+        ...</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
@@ -624,7 +673,8 @@ inheritance.</p></div>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@abstractmethod
-def data_frame(self, *args, **kwargs) -&gt; &#39;DataFrame&#39;: ...</code></pre>
+def data_frame(self, *args, **kwargs) -&gt; &#34;DataFrame&#34;:
+    ...</code></pre>
 </details>
 </dd>
 <dt id="macrobond_financial.common.series_methods.GetSeriesReturn.tuple_of_dicts"><code class="name flex">
@@ -637,7 +687,8 @@ def data_frame(self, *args, **kwargs) -&gt; &#39;DataFrame&#39;: ...</code></pre
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@abstractmethod
-def tuple_of_dicts(self) -&gt; Tuple[&#39;SeriesTypedDicts&#39;, ...]: ...</code></pre>
+def tuple_of_dicts(self) -&gt; Tuple[&#34;SeriesTypedDicts&#34;, ...]:
+    ...</code></pre>
 </details>
 </dd>
 <dt id="macrobond_financial.common.series_methods.GetSeriesReturn.tuple_of_objects"><code class="name flex">
@@ -650,7 +701,8 @@ def tuple_of_dicts(self) -&gt; Tuple[&#39;SeriesTypedDicts&#39;, ...]: ...</code
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@abstractmethod
-def tuple_of_objects(self) -&gt; Tuple[&#39;Series&#39;, ...]: ...</code></pre>
+def tuple_of_objects(self) -&gt; Tuple[&#34;Series&#34;, ...]:
+    ...</code></pre>
 </details>
 </dd>
 </dl>
@@ -666,15 +718,17 @@ inheritance.</p></div>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class GetUnifiedSeriesReturn(ABC):
+    @abstractmethod
+    def object(self) -&gt; &#34;UnifiedSeries&#34;:
+        ...
 
     @abstractmethod
-    def object(self) -&gt; &#39;UnifiedSeries&#39;: ...
+    def dict(self) -&gt; &#34;UnifiedSeriesTypedDict&#34;:
+        ...
 
     @abstractmethod
-    def dict(self) -&gt; &#39;UnifiedSeriesTypedDict&#39;: ...
-
-    @abstractmethod
-    def data_frame(self, columns: List[str] = None) -&gt; &#39;DataFrame&#39;: ...</code></pre>
+    def data_frame(self, columns: List[str] = None) -&gt; &#34;DataFrame&#34;:
+        ...</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
@@ -697,7 +751,8 @@ inheritance.</p></div>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@abstractmethod
-def data_frame(self, columns: List[str] = None) -&gt; &#39;DataFrame&#39;: ...</code></pre>
+def data_frame(self, columns: List[str] = None) -&gt; &#34;DataFrame&#34;:
+    ...</code></pre>
 </details>
 </dd>
 <dt id="macrobond_financial.common.series_methods.GetUnifiedSeriesReturn.dict"><code class="name flex">
@@ -710,7 +765,8 @@ def data_frame(self, columns: List[str] = None) -&gt; &#39;DataFrame&#39;: ...</
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@abstractmethod
-def dict(self) -&gt; &#39;UnifiedSeriesTypedDict&#39;: ...</code></pre>
+def dict(self) -&gt; &#34;UnifiedSeriesTypedDict&#34;:
+    ...</code></pre>
 </details>
 </dd>
 <dt id="macrobond_financial.common.series_methods.GetUnifiedSeriesReturn.object"><code class="name flex">
@@ -723,7 +779,8 @@ def dict(self) -&gt; &#39;UnifiedSeriesTypedDict&#39;: ...</code></pre>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@abstractmethod
-def object(self) -&gt; &#39;UnifiedSeries&#39;: ...</code></pre>
+def object(self) -&gt; &#34;UnifiedSeries&#34;:
+    ...</code></pre>
 </details>
 </dd>
 </dl>
@@ -738,8 +795,7 @@ def object(self) -&gt; &#39;UnifiedSeries&#39;: ...</code></pre>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class SeriesEntrie():
-
+<pre><code class="python">class SeriesEntrie:
     def __init__(
         self,
         name: str,
@@ -750,17 +806,21 @@ def object(self) -&gt; &#39;UnifiedSeries&#39;: ...</code></pre>
     ) -&gt; None:
         self.name = name
 
-        self.missing_value_method = \
+        self.missing_value_method = (
             missing_value_method or SeriesMissingValueMethod.NONE
+        )
 
-        self.to_lowerfrequency_method = \
+        self.to_lowerfrequency_method = (
             to_lowerfrequency_method or SeriesToLowerFrequencyMethod.AUTO
+        )
 
-        self.to_higherfrequency_method = \
+        self.to_higherfrequency_method = (
             to_higherfrequency_method or SeriesToHigherFrequencyMethod.AUTO
+        )
 
-        self.partial_periods_method = \
-            partial_periods_method or SeriesPartialPeriodsMethod.NONE</code></pre>
+        self.partial_periods_method = (
+            partial_periods_method or SeriesPartialPeriodsMethod.NONE
+        )</code></pre>
 </details>
 </dd>
 <dt id="macrobond_financial.common.series_methods.SeriesMethods"><code class="flex name class">
@@ -774,35 +834,40 @@ inheritance.</p></div>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class SeriesMethods(ABC):
+    @abstractmethod
+    def get_one_series(
+        self, series_name: str, raise_get_entities_error=True
+    ) -&gt; GetOneSeriesReturn:
+        &#34;&#34;&#34;Download one series.&#34;&#34;&#34;
 
     @abstractmethod
-    def get_one_series(self, series_name: str, raise_get_entities_error=True) -&gt; GetOneSeriesReturn:
-        &#39;&#39;&#39;Download one series.&#39;&#39;&#39;
-
-    @abstractmethod
-    def get_series(self, *series_names: str, raise_get_entities_error=True) -&gt; GetSeriesReturn:
-        &#39;&#39;&#39;Download one or more series.&#39;&#39;&#39;
+    def get_series(
+        self, *series_names: str, raise_get_entities_error=True
+    ) -&gt; GetSeriesReturn:
+        &#34;&#34;&#34;Download one or more series.&#34;&#34;&#34;
 
     @abstractmethod
     def get_one_entitie(
         self, entity_name: str, raise_get_entities_error=True
     ) -&gt; GetOneEntitieReturn:
-        &#39;&#39;&#39;Download one entity.&#39;&#39;&#39;
+        &#34;&#34;&#34;Download one entity.&#34;&#34;&#34;
 
     @abstractmethod
-    def get_entities(self, *entity_names: str, raise_get_entities_error=True) -&gt; GetEntitiesReturn:
-        &#39;&#39;&#39;Download one or more entitys.&#39;&#39;&#39;
+    def get_entities(
+        self, *entity_names: str, raise_get_entities_error=True
+    ) -&gt; GetEntitiesReturn:
+        &#34;&#34;&#34;Download one or more entitys.&#34;&#34;&#34;
 
     @abstractmethod
     def get_unified_series(
         self,
-        *series_entries: Union[&#39;SeriesEntrie&#39;, str],
-        frequency: &#39;SeriesFrequency&#39; = None,
-        weekdays: &#39;SeriesWeekdays&#39; = None,
-        calendar_merge_mode: &#39;CalendarMergeMode&#39; = None,
+        *series_entries: Union[&#34;SeriesEntrie&#34;, str],
+        frequency: &#34;SeriesFrequency&#34; = None,
+        weekdays: &#34;SeriesWeekdays&#34; = None,
+        calendar_merge_mode: &#34;CalendarMergeMode&#34; = None,
         currency: str = None,
-        start_point: &#39;StartOrEndPoint&#39; = None,
-        end_point: &#39;StartOrEndPoint&#39; = None,
+        start_point: &#34;StartOrEndPoint&#34; = None,
+        end_point: &#34;StartOrEndPoint&#34; = None,
         raise_get_entities_error=True
     ) -&gt; GetUnifiedSeriesReturn:
         ...  # pragma: no cover</code></pre>
@@ -828,8 +893,10 @@ inheritance.</p></div>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@abstractmethod
-def get_entities(self, *entity_names: str, raise_get_entities_error=True) -&gt; GetEntitiesReturn:
-    &#39;&#39;&#39;Download one or more entitys.&#39;&#39;&#39;</code></pre>
+def get_entities(
+    self, *entity_names: str, raise_get_entities_error=True
+) -&gt; GetEntitiesReturn:
+    &#34;&#34;&#34;Download one or more entitys.&#34;&#34;&#34;</code></pre>
 </details>
 </dd>
 <dt id="macrobond_financial.common.series_methods.SeriesMethods.get_one_entitie"><code class="name flex">
@@ -845,7 +912,7 @@ def get_entities(self, *entity_names: str, raise_get_entities_error=True) -&gt; 
 def get_one_entitie(
     self, entity_name: str, raise_get_entities_error=True
 ) -&gt; GetOneEntitieReturn:
-    &#39;&#39;&#39;Download one entity.&#39;&#39;&#39;</code></pre>
+    &#34;&#34;&#34;Download one entity.&#34;&#34;&#34;</code></pre>
 </details>
 </dd>
 <dt id="macrobond_financial.common.series_methods.SeriesMethods.get_one_series"><code class="name flex">
@@ -858,8 +925,10 @@ def get_one_entitie(
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@abstractmethod
-def get_one_series(self, series_name: str, raise_get_entities_error=True) -&gt; GetOneSeriesReturn:
-    &#39;&#39;&#39;Download one series.&#39;&#39;&#39;</code></pre>
+def get_one_series(
+    self, series_name: str, raise_get_entities_error=True
+) -&gt; GetOneSeriesReturn:
+    &#34;&#34;&#34;Download one series.&#34;&#34;&#34;</code></pre>
 </details>
 </dd>
 <dt id="macrobond_financial.common.series_methods.SeriesMethods.get_series"><code class="name flex">
@@ -872,8 +941,10 @@ def get_one_series(self, series_name: str, raise_get_entities_error=True) -&gt; 
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@abstractmethod
-def get_series(self, *series_names: str, raise_get_entities_error=True) -&gt; GetSeriesReturn:
-    &#39;&#39;&#39;Download one or more series.&#39;&#39;&#39;</code></pre>
+def get_series(
+    self, *series_names: str, raise_get_entities_error=True
+) -&gt; GetSeriesReturn:
+    &#34;&#34;&#34;Download one or more series.&#34;&#34;&#34;</code></pre>
 </details>
 </dd>
 <dt id="macrobond_financial.common.series_methods.SeriesMethods.get_unified_series"><code class="name flex">
@@ -888,13 +959,13 @@ def get_series(self, *series_names: str, raise_get_entities_error=True) -&gt; Ge
 <pre><code class="python">@abstractmethod
 def get_unified_series(
     self,
-    *series_entries: Union[&#39;SeriesEntrie&#39;, str],
-    frequency: &#39;SeriesFrequency&#39; = None,
-    weekdays: &#39;SeriesWeekdays&#39; = None,
-    calendar_merge_mode: &#39;CalendarMergeMode&#39; = None,
+    *series_entries: Union[&#34;SeriesEntrie&#34;, str],
+    frequency: &#34;SeriesFrequency&#34; = None,
+    weekdays: &#34;SeriesWeekdays&#34; = None,
+    calendar_merge_mode: &#34;CalendarMergeMode&#34; = None,
     currency: str = None,
-    start_point: &#39;StartOrEndPoint&#39; = None,
-    end_point: &#39;StartOrEndPoint&#39; = None,
+    start_point: &#34;StartOrEndPoint&#34; = None,
+    end_point: &#34;StartOrEndPoint&#34; = None,
     raise_get_entities_error=True
 ) -&gt; GetUnifiedSeriesReturn:
     ...  # pragma: no cover</code></pre>

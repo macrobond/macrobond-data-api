@@ -15,7 +15,7 @@ if TYPE_CHECKING:  # pragma: no cover
 
     from typing_extensions import Literal
 
-    SeriesColumns = List[Literal[EntityColumnsLiterals, 'Values', 'Dates']]
+    SeriesColumns = List[Literal[EntityColumnsLiterals, "Values", "Dates"]]
 
     class ErrorSeriesTypedDict(ErrorEntityTypedDict):
         ...
@@ -28,14 +28,14 @@ if TYPE_CHECKING:  # pragma: no cover
 
 
 class Series(Entity):
-    '''Interface for a Macrobond time series.'''
+    """Interface for a Macrobond time series."""
 
     def __init__(
         self,
         error_message: str,
         metadata: Dict[str, Any],
         values: Optional[Tuple[Optional[float], ...]],
-        dates: Optional[Tuple[datetime, ...]]
+        dates: Optional[Tuple[datetime, ...]],
     ) -> None:
         super().__init__(error_message, metadata)
         if values is None:
@@ -45,7 +45,7 @@ class Series(Entity):
             self.values = values
             self.dates = cast(Tuple[datetime, ...], dates)
 
-    def get_values_and_dates_as_data_frame(self) -> 'DataFrame':
+    def get_values_and_dates_as_data_frame(self) -> "DataFrame":
         raise NotImplementedError()
         # metadata = self.metadata
         # pandas = _get_pandas()

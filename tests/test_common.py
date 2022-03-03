@@ -13,21 +13,24 @@ from macrobond_financial.com import ComClient, ComApi
 from macrobond_financial.web import WebClient, WebApi
 
 
-class UserSecrets():
-
+class UserSecrets:
     def __init__(self) -> None:
         with open(self.path(), encoding="utf-8") as f:
             j = json.load(f)
 
-        self.api_url: str = j['apiUrl']
-        self.authorization_url: str = j['authorizationUrl']
-        self.client_id: str = j['clientId']
-        self.client_secret: str = j['clientSecret']
+        self.api_url: str = j["apiUrl"]
+        self.authorization_url: str = j["authorizationUrl"]
+        self.client_id: str = j["clientId"]
+        self.client_secret: str = j["clientSecret"]
 
         if self.client_id == "":
-            raise Exception('UserSecrets.client_id is "", add client_id to ' + self.path())
+            raise Exception(
+                'UserSecrets.client_id is "", add client_id to ' + self.path()
+            )
         if self.client_secret == "":
-            raise Exception('UserSecrets.client_secret is "", add client_secret to ' + self.path())
+            raise Exception(
+                'UserSecrets.client_secret is "", add client_secret to ' + self.path()
+            )
 
     @classmethod
     def guid(cls) -> str:
@@ -36,17 +39,12 @@ class UserSecrets():
     @classmethod
     def dir_path(cls) -> str:
         return os.path.join(
-            Path.home(),
-            'AppData',
-            'Roaming',
-            'Microsoft',
-            'UserSecrets',
-            cls.guid()
+            Path.home(), "AppData", "Roaming", "Microsoft", "UserSecrets", cls.guid()
         )
 
     @classmethod
     def path(cls) -> str:
-        return os.path.join(cls.dir_path(), 'secrets.json')
+        return os.path.join(cls.dir_path(), "secrets.json")
 
     @classmethod
     def exists(cls) -> bool:
@@ -55,13 +53,16 @@ class UserSecrets():
     @classmethod
     def write_example(cls) -> None:
         os.makedirs(cls.dir_path(), exist_ok=True)
-        with open(cls.path(), 'w+', encoding='utf-8') as f:
-            json_str = json.dumps({
-                'apiUrl': 'https://api.macrobondfinancial.com/',
-                'authorizationUrl': 'https://apiauth.macrobondfinancial.com/mbauth',
-                'clientId': '',
-                'clientSecret': '',
-            }, indent=4)
+        with open(cls.path(), "w+", encoding="utf-8") as f:
+            json_str = json.dumps(
+                {
+                    "apiUrl": "https://api.macrobondfinancial.com/",
+                    "authorizationUrl": "https://apiauth.macrobondfinancial.com/mbauth",
+                    "clientId": "",
+                    "clientSecret": "",
+                },
+                indent=4,
+            )
             f.write(json_str)
 
 
@@ -82,8 +83,9 @@ class TestCase(UnittestTestCase):
             if not UserSecrets.exists():
                 UserSecrets.write_example()
                 raise Exception(
-                    'UserSecrets has been created at ' + UserSecrets.path() +
-                    ', add your clientId amd clientSecret'
+                    "UserSecrets has been created at "
+                    + UserSecrets.path()
+                    + ", add your clientId amd clientSecret"
                 )
             TestCase.__userSecrets = UserSecrets()
 
@@ -93,7 +95,7 @@ class TestCase(UnittestTestCase):
                 user_secrets.client_id,
                 user_secrets.client_secret,
                 api_url=user_secrets.api_url,
-                authorization_url=user_secrets.authorization_url
+                authorization_url=user_secrets.authorization_url,
             )
 
         return self.__web_client

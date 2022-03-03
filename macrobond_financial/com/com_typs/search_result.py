@@ -8,12 +8,12 @@ from .entity import Entity
 
 
 class SearchResult:
-    ''''Interface for the Macrobond search result.'''
+    """'Interface for the Macrobond search result."""
 
     @property
     def Entities(self) -> List[Entity]:
-        '''The entities returned from search.'''
+        """The entities returned from search."""
 
     @property
     def IsTruncated(self) -> bool:
-        '''A boolean that shows whether the result was too large and is truncated.'''
+        """A boolean that shows whether the result was too large and is truncated."""

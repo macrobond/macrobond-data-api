@@ -29,5 +29,9 @@
     "python.linting.mypyEnabled": true,
 
     "python.linting.pycodestyleEnabled": true,
-    "python.linting.pycodestyleArgs": ["--config=setup.cfg"]
+    "python.linting.pycodestyleArgs": [
+        "--config=setup.cfg"
+    ],
+
+    "python.formatting.provider": "black"
 }

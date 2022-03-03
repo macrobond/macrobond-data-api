@@ -5,17 +5,19 @@ from typing import Generic, TypeVar, Union, TYPE_CHECKING
 from typing_extensions import Literal
 
 from .api import Api
-TypeVarApi = TypeVar('TypeVarApi', bound=Api)
+
+TypeVarApi = TypeVar("TypeVarApi", bound=Api)
 
 if TYPE_CHECKING:
     from .credentials import Credentials
 
 
 class Client(ABC, Generic[TypeVarApi]):
-
     def __init__(
         self,
-        credentials: Union['Credentials', Literal[False]] = None  # pylint: disable=unused-argument
+        credentials: Union[  # pylint: disable=unused-argument
+            "Credentials", Literal[False]
+        ] = None,
     ) -> None:
         ...  # pragma: no cover
 

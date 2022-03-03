@@ -35,32 +35,32 @@ from typing_extensions import TypedDict
 
 
 class EntityNameWithTimeStamp(TypedDict):
-    &#39;&#39;&#39;Name and timestamp of an entity&#39;&#39;&#39;
+    &#34;&#34;&#34;Name and timestamp of an entity&#34;&#34;&#34;
 
     name: str
-    &#39;&#39;&#39;The entity name&#39;&#39;&#39;
+    &#34;&#34;&#34;The entity name&#34;&#34;&#34;
 
     modified: str
-    &#39;&#39;&#39;Timestamp when this entity was last modified&#39;&#39;&#39;
+    &#34;&#34;&#34;Timestamp when this entity was last modified&#34;&#34;&#34;
 
 
 class FeedEntitiesResponse(TypedDict):
-    &#39;&#39;&#39;List of entities available in a feed&#39;&#39;&#39;
+    &#34;&#34;&#34;List of entities available in a feed&#34;&#34;&#34;
 
     timeStampForIfModifiedSince: str
-    &#39;&#39;&#39;
+    &#34;&#34;&#34;
     A timestamp to pass as the ifModifiedSince parameter
     in the next request to get incremental updates.
-    &#39;&#39;&#39;
+    &#34;&#34;&#34;
 
     truncated: bool
-    &#39;&#39;&#39;
+    &#34;&#34;&#34;
     Indicates if the list of entities is complete.
     If the list of feedable items is too long, all entities will not be included.
-    &#39;&#39;&#39;
+    &#34;&#34;&#34;
 
-    entities: List[&#39;EntityNameWithTimeStamp&#39;]
-    &#39;&#39;&#39;A list of entity names and timestamps when they were last modified.&#39;&#39;&#39;</code></pre>
+    entities: List[&#34;EntityNameWithTimeStamp&#34;]
+    &#34;&#34;&#34;A list of entity names and timestamps when they were last modified.&#34;&#34;&#34;</code></pre>
 </details>
 </section>
 <section>
@@ -83,13 +83,13 @@ class FeedEntitiesResponse(TypedDict):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class EntityNameWithTimeStamp(TypedDict):
-    &#39;&#39;&#39;Name and timestamp of an entity&#39;&#39;&#39;
+    &#34;&#34;&#34;Name and timestamp of an entity&#34;&#34;&#34;
 
     name: str
-    &#39;&#39;&#39;The entity name&#39;&#39;&#39;
+    &#34;&#34;&#34;The entity name&#34;&#34;&#34;
 
     modified: str
-    &#39;&#39;&#39;Timestamp when this entity was last modified&#39;&#39;&#39;</code></pre>
+    &#34;&#34;&#34;Timestamp when this entity was last modified&#34;&#34;&#34;</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
@@ -118,22 +118,22 @@ class FeedEntitiesResponse(TypedDict):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class FeedEntitiesResponse(TypedDict):
-    &#39;&#39;&#39;List of entities available in a feed&#39;&#39;&#39;
+    &#34;&#34;&#34;List of entities available in a feed&#34;&#34;&#34;
 
     timeStampForIfModifiedSince: str
-    &#39;&#39;&#39;
+    &#34;&#34;&#34;
     A timestamp to pass as the ifModifiedSince parameter
     in the next request to get incremental updates.
-    &#39;&#39;&#39;
+    &#34;&#34;&#34;
 
     truncated: bool
-    &#39;&#39;&#39;
+    &#34;&#34;&#34;
     Indicates if the list of entities is complete.
     If the list of feedable items is too long, all entities will not be included.
-    &#39;&#39;&#39;
+    &#34;&#34;&#34;
 
-    entities: List[&#39;EntityNameWithTimeStamp&#39;]
-    &#39;&#39;&#39;A list of entity names and timestamps when they were last modified.&#39;&#39;&#39;</code></pre>
+    entities: List[&#34;EntityNameWithTimeStamp&#34;]
+    &#34;&#34;&#34;A list of entity names and timestamps when they were last modified.&#34;&#34;&#34;</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">

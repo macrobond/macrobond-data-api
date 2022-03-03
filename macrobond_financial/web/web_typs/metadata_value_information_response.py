@@ -7,19 +7,19 @@ from typing_extensions import TypedDict
 
 
 class MetadataValueInformationItem(TypedDict, total=False):
-    '''Information about a metadata value'''
+    """Information about a metadata value"""
 
     attributeName: str
-    '''The name of the metadata attribute'''
+    """The name of the metadata attribute"""
 
     value: Any
-    '''The value'''
+    """The value"""
 
     description: str
-    '''The description of the metadata value'''
+    """The description of the metadata value"""
 
     comment: Optional[str]
-    '''The comment of the metadata value'''
+    """The comment of the metadata value"""
 
 
 MetadataValueInformationResponse = List[MetadataValueInformationItem]

@@ -30,33 +30,36 @@
 
 # pylint: disable = invalid-name , missing-module-docstring
 
+
 class SearchQuery:
-    &#39;&#39;&#39;Interface for the Macrobond search query.&#39;&#39;&#39;
+    &#34;&#34;&#34;Interface for the Macrobond search query.&#34;&#34;&#34;
 
     @property
     def Text(self) -&gt; str:
-        &#39;&#39;&#39;The free text search property.&#39;&#39;&#39;
+        &#34;&#34;&#34;The free text search property.&#34;&#34;&#34;
+
     @Text.setter
     def Text(self, new_text: str):
-        &#39;&#39;&#39;The free text search property.&#39;&#39;&#39;
+        &#34;&#34;&#34;The free text search property.&#34;&#34;&#34;
 
     @property
     def IncludeDiscontinued(self) -&gt; bool:
-        &#39;&#39;&#39;If to include discontinued series, false by default.&#39;&#39;&#39;
+        &#34;&#34;&#34;If to include discontinued series, false by default.&#34;&#34;&#34;
+
     @IncludeDiscontinued.setter
     def IncludeDiscontinued(self, new_include_discontinued: bool):
-        &#39;&#39;&#39;If to include discontinued series, false by default.&#39;&#39;&#39;
+        &#34;&#34;&#34;If to include discontinued series, false by default.&#34;&#34;&#34;
 
     def SetEntityTypeFilter(self, entity_types: object) -&gt; None:
-        &#39;&#39;&#39;Add an entity type filter.&#39;&#39;&#39;
+        &#34;&#34;&#34;Add an entity type filter.&#34;&#34;&#34;
 
     def AddAttributeFilter(self, attribute_name: str, include: bool = True) -&gt; None:
-        &#39;&#39;&#39;Add an attribute filter.&#39;&#39;&#39;
+        &#34;&#34;&#34;Add an attribute filter.&#34;&#34;&#34;
 
     def AddAttributeValueFilter(
         self, attribute_name: str, attribute_values: object, include: bool = True
     ) -&gt; None:
-        &#39;&#39;&#39;Add an attribute value filter.&#39;&#39;&#39;</code></pre>
+        &#34;&#34;&#34;Add an attribute value filter.&#34;&#34;&#34;</code></pre>
 </details>
 </section>
 <section>
@@ -78,32 +81,34 @@ class SearchQuery:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class SearchQuery:
-    &#39;&#39;&#39;Interface for the Macrobond search query.&#39;&#39;&#39;
+    &#34;&#34;&#34;Interface for the Macrobond search query.&#34;&#34;&#34;
 
     @property
     def Text(self) -&gt; str:
-        &#39;&#39;&#39;The free text search property.&#39;&#39;&#39;
+        &#34;&#34;&#34;The free text search property.&#34;&#34;&#34;
+
     @Text.setter
     def Text(self, new_text: str):
-        &#39;&#39;&#39;The free text search property.&#39;&#39;&#39;
+        &#34;&#34;&#34;The free text search property.&#34;&#34;&#34;
 
     @property
     def IncludeDiscontinued(self) -&gt; bool:
-        &#39;&#39;&#39;If to include discontinued series, false by default.&#39;&#39;&#39;
+        &#34;&#34;&#34;If to include discontinued series, false by default.&#34;&#34;&#34;
+
     @IncludeDiscontinued.setter
     def IncludeDiscontinued(self, new_include_discontinued: bool):
-        &#39;&#39;&#39;If to include discontinued series, false by default.&#39;&#39;&#39;
+        &#34;&#34;&#34;If to include discontinued series, false by default.&#34;&#34;&#34;
 
     def SetEntityTypeFilter(self, entity_types: object) -&gt; None:
-        &#39;&#39;&#39;Add an entity type filter.&#39;&#39;&#39;
+        &#34;&#34;&#34;Add an entity type filter.&#34;&#34;&#34;
 
     def AddAttributeFilter(self, attribute_name: str, include: bool = True) -&gt; None:
-        &#39;&#39;&#39;Add an attribute filter.&#39;&#39;&#39;
+        &#34;&#34;&#34;Add an attribute filter.&#34;&#34;&#34;
 
     def AddAttributeValueFilter(
         self, attribute_name: str, attribute_values: object, include: bool = True
     ) -&gt; None:
-        &#39;&#39;&#39;Add an attribute value filter.&#39;&#39;&#39;</code></pre>
+        &#34;&#34;&#34;Add an attribute value filter.&#34;&#34;&#34;</code></pre>
 </details>
 <h3>Instance variables</h3>
 <dl>
@@ -116,7 +121,7 @@ class SearchQuery:
 </summary>
 <pre><code class="python">@property
 def IncludeDiscontinued(self) -&gt; bool:
-    &#39;&#39;&#39;If to include discontinued series, false by default.&#39;&#39;&#39;</code></pre>
+    &#34;&#34;&#34;If to include discontinued series, false by default.&#34;&#34;&#34;</code></pre>
 </details>
 </dd>
 <dt id="macrobond_financial.com.com_typs.search_query.SearchQuery.Text"><code class="name">var <span class="ident">Text</span> : str</code></dt>
@@ -128,7 +133,7 @@ def IncludeDiscontinued(self) -&gt; bool:
 </summary>
 <pre><code class="python">@property
 def Text(self) -&gt; str:
-    &#39;&#39;&#39;The free text search property.&#39;&#39;&#39;</code></pre>
+    &#34;&#34;&#34;The free text search property.&#34;&#34;&#34;</code></pre>
 </details>
 </dd>
 </dl>
@@ -144,7 +149,7 @@ def Text(self) -&gt; str:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def AddAttributeFilter(self, attribute_name: str, include: bool = True) -&gt; None:
-    &#39;&#39;&#39;Add an attribute filter.&#39;&#39;&#39;</code></pre>
+    &#34;&#34;&#34;Add an attribute filter.&#34;&#34;&#34;</code></pre>
 </details>
 </dd>
 <dt id="macrobond_financial.com.com_typs.search_query.SearchQuery.AddAttributeValueFilter"><code class="name flex">
@@ -159,7 +164,7 @@ def Text(self) -&gt; str:
 <pre><code class="python">def AddAttributeValueFilter(
     self, attribute_name: str, attribute_values: object, include: bool = True
 ) -&gt; None:
-    &#39;&#39;&#39;Add an attribute value filter.&#39;&#39;&#39;</code></pre>
+    &#34;&#34;&#34;Add an attribute value filter.&#34;&#34;&#34;</code></pre>
 </details>
 </dd>
 <dt id="macrobond_financial.com.com_typs.search_query.SearchQuery.SetEntityTypeFilter"><code class="name flex">
@@ -172,7 +177,7 @@ def Text(self) -&gt; str:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def SetEntityTypeFilter(self, entity_types: object) -&gt; None:
-    &#39;&#39;&#39;Add an entity type filter.&#39;&#39;&#39;</code></pre>
+    &#34;&#34;&#34;Add an entity type filter.&#34;&#34;&#34;</code></pre>
 </details>
 </dd>
 </dl>

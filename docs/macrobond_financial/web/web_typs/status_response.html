@@ -36,29 +36,29 @@ from typing_extensions import TypedDict
 
 
 class ResponseErrorCode(IntFlag):
-    &#39;&#39;&#39;Response Error Codes&#39;&#39;&#39;
+    &#34;&#34;&#34;Response Error Codes&#34;&#34;&#34;
 
     NOT_MODIFIED = 304
-    &#39;&#39;&#39;The item was not modified and is not included in the response&#39;&#39;&#39;
+    &#34;&#34;&#34;The item was not modified and is not included in the response&#34;&#34;&#34;
 
     NOT_FOUND = 404
-    &#39;&#39;&#39;The item was not found&#39;&#39;&#39;
+    &#34;&#34;&#34;The item was not found&#34;&#34;&#34;
 
     FORBIDDEN = 403
-    &#39;&#39;&#39;Access to the item was denied&#39;&#39;&#39;
+    &#34;&#34;&#34;Access to the item was denied&#34;&#34;&#34;
 
     OTHER = 500
-    &#39;&#39;&#39;There was an error and it is described in the error text&#39;&#39;&#39;
+    &#34;&#34;&#34;There was an error and it is described in the error text&#34;&#34;&#34;
 
 
 class StatusResponse(TypedDict):
-    &#39;&#39;&#39;A status response&#39;&#39;&#39;
+    &#34;&#34;&#34;A status response&#34;&#34;&#34;
 
     errorText: Optional[str]
-    &#39;&#39;&#39;The error text if there was an error or not specified if there was no error&#39;&#39;&#39;
+    &#34;&#34;&#34;The error text if there was an error or not specified if there was no error&#34;&#34;&#34;
 
     errorCode: Optional[ResponseErrorCode]
-    &#39;&#39;&#39;Set if there was an error and not specified if there was no error&#39;&#39;&#39;</code></pre>
+    &#34;&#34;&#34;Set if there was an error and not specified if there was no error&#34;&#34;&#34;</code></pre>
 </details>
 </section>
 <section>
@@ -81,19 +81,19 @@ class StatusResponse(TypedDict):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class ResponseErrorCode(IntFlag):
-    &#39;&#39;&#39;Response Error Codes&#39;&#39;&#39;
+    &#34;&#34;&#34;Response Error Codes&#34;&#34;&#34;
 
     NOT_MODIFIED = 304
-    &#39;&#39;&#39;The item was not modified and is not included in the response&#39;&#39;&#39;
+    &#34;&#34;&#34;The item was not modified and is not included in the response&#34;&#34;&#34;
 
     NOT_FOUND = 404
-    &#39;&#39;&#39;The item was not found&#39;&#39;&#39;
+    &#34;&#34;&#34;The item was not found&#34;&#34;&#34;
 
     FORBIDDEN = 403
-    &#39;&#39;&#39;Access to the item was denied&#39;&#39;&#39;
+    &#34;&#34;&#34;Access to the item was denied&#34;&#34;&#34;
 
     OTHER = 500
-    &#39;&#39;&#39;There was an error and it is described in the error text&#39;&#39;&#39;</code></pre>
+    &#34;&#34;&#34;There was an error and it is described in the error text&#34;&#34;&#34;</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
@@ -133,13 +133,13 @@ class StatusResponse(TypedDict):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class StatusResponse(TypedDict):
-    &#39;&#39;&#39;A status response&#39;&#39;&#39;
+    &#34;&#34;&#34;A status response&#34;&#34;&#34;
 
     errorText: Optional[str]
-    &#39;&#39;&#39;The error text if there was an error or not specified if there was no error&#39;&#39;&#39;
+    &#34;&#34;&#34;The error text if there was an error or not specified if there was no error&#34;&#34;&#34;
 
     errorCode: Optional[ResponseErrorCode]
-    &#39;&#39;&#39;Set if there was an error and not specified if there was no error&#39;&#39;&#39;</code></pre>
+    &#34;&#34;&#34;Set if there was an error and not specified if there was no error&#34;&#34;&#34;</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">

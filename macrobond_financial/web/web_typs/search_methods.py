@@ -13,10 +13,10 @@ if TYPE_CHECKING:  # pragma: no cover
     from .item_listing_response import ItemListingResponse
 
 
-class SearchMethods():
-    '''Search for time series and other entites'''
+class SearchMethods:
+    """Search for time series and other entites"""
 
-    def __init__(self, session: 'Session') -> None:
+    def __init__(self, session: "Session") -> None:
         self.__session = session
 
     # get /entities
@@ -27,8 +27,8 @@ class SearchMethods():
         include_discontinued: bool = None,
         _filter: Dict[str, str] = None,
         no_meta_data: bool = None,
-    ) -> 'SearchResponse':
-        '''
+    ) -> "SearchResponse":
+        """
         Search for time series and other entites matching attribute values.
         If the same attribute name is specified more than once,
         then entities matching any of them will be included. If the value is *,
@@ -47,27 +47,27 @@ class SearchMethods():
             403 Forbidden. Not authorized.
 
             404 At least one attribute was not found.
-        '''
+        """
 
         params = {
-            'entityType': entity_type,
-            'text': text,
-            'filter': _filter,
+            "entityType": entity_type,
+            "text": text,
+            "filter": _filter,
         }
 
         if no_meta_data is not None:
-            params['noMetaData'] = 'true' if no_meta_data else 'false'
+            params["noMetaData"] = "true" if no_meta_data else "false"
 
         if include_discontinued is not None:
-            params['includeDiscontinued'] = 'true' if include_discontinued else 'false'
+            params["includeDiscontinued"] = "true" if include_discontinued else "false"
 
-        response = self.__session.get_or_raise('v1/search/entities', params=params)
+        response = self.__session.get_or_raise("v1/search/entities", params=params)
 
-        return cast('SearchResponse', response.json())
+        return cast("SearchResponse", response.json())
 
     # post /entities
-    def post_entities(self, request: 'SearchRequest') -> 'SearchResponse':
-        '''
+    def post_entities(self, request: "SearchRequest") -> "SearchResponse":
+        """
         Search for time series and other entites matching attribute values.
 
         OAuth scope: macrobond_web_api.search_mb
@@ -82,12 +82,12 @@ class SearchMethods():
             403 Forbidden. Not authorized.
 
             404 At least one attribute was not found.
-        '''
-        response = self.__session.post_or_raise('v1/search/entities', json=request)
-        return cast('SearchResponse', response.json())
+        """
+        response = self.__session.post_or_raise("v1/search/entities", json=request)
+        return cast("SearchResponse", response.json())
 
-    def filter_lists(self, entity_type: str) -> List['ItemListingResponse']:
-        '''
+    def filter_lists(self, entity_type: str) -> List["ItemListingResponse"]:
+        """
         Get a structured list of all saved filter lists of the specified type.
 
         OAuth scope: macrobond_web_api.read_structure or macrobond_web_api.search_mb
@@ -100,19 +100,16 @@ class SearchMethods():
             401 Unauthorized. Missing, invalid or expired access token.
 
             403 Forbidden. Not authorized.
-        '''
+        """
         response = self.__session.get_or_raise(
-            'v1/search/filterlists',
-            params={
-                'entityType': entity_type
-            }
+            "v1/search/filterlists", params={"entityType": entity_type}
         )
-        return cast(List['ItemListingResponse'], response.json())
+        return cast(List["ItemListingResponse"], response.json())
 
     def entities_for_display(
-        self, request: 'SearchForDisplayRequest'
-    ) -> 'SearchForDisplayResponse':
-        '''
+        self, request: "SearchForDisplayRequest"
+    ) -> "SearchForDisplayResponse":
+        """
         Search for time series and other entites matching attribute values and return the
         selected metadata formatted for presentation purposes.
 
@@ -128,6 +125,8 @@ class SearchMethods():
             403 Forbidden. Not authorized.
 
             404 At least one attribute was not found.
-        '''
-        response = self.__session.post_or_raise('v1/search/entitiesfordisplay', json=request)
-        return cast('SearchForDisplayResponse', response.json())
+        """
+        response = self.__session.post_or_raise(
+            "v1/search/entitiesfordisplay", json=request
+        )
+        return cast("SearchForDisplayResponse", response.json())

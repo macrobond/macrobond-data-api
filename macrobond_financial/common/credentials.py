@@ -1,4 +1,3 @@
-
 from typing import Any, List, Union
 
 import os
@@ -9,14 +8,14 @@ import platform
 
 class Credentials:
 
-    default_file_name = 'data-api-python_credentials.py'
+    default_file_name = "data-api-python_credentials.py"
 
     def __init__(self, paths: List[str] = None) -> None:
 
         paths = self._get_paths(paths)
 
         if len(paths) == 0:
-            raise Exception('paths is an empty')
+            raise Exception("paths is an empty")
 
         for path in paths:
             module = self._test_path(path)
@@ -25,7 +24,7 @@ class Credentials:
                 self.client_secret: str = module.CLIENT_SECRET
                 return
 
-        error = "Credentials not was not found.\npaths tested\n" + str('\n'.join(paths))
+        error = "Credentials not was not found.\npaths tested\n" + str("\n".join(paths))
         raise Exception(error)
 
     @classmethod
@@ -37,11 +36,11 @@ class Credentials:
     def _get_paths(cls, paths: Union[List[str], None]) -> List[str]:
         if not paths:
             default_file_name = cls.default_file_name
-            if cls._platform_system() == 'Windows':
+            if cls._platform_system() == "Windows":
                 paths = [
                     cls._path_join(cls._get_home_path(), default_file_name),
-                    cls._path_join('c:\\', default_file_name),
-                    cls._path_join(cls._getcwd(), default_file_name)
+                    cls._path_join("c:\\", default_file_name),
+                    cls._path_join(cls._getcwd(), default_file_name),
                 ]
             else:
                 paths = [
@@ -55,9 +54,7 @@ class Credentials:
         if not cls._is_file(path):
             return False
 
-        spec = spec_from_file_location(
-            "credentials", path
-        )
+        spec = spec_from_file_location("credentials", path)
 
         if not spec:
             return None
@@ -69,10 +66,10 @@ class Credentials:
 
         spec.loader.exec_module(module)
 
-        if not hasattr(module, 'CLIENT_ID'):
+        if not hasattr(module, "CLIENT_ID"):
             raise Exception(f"missing 'CLIENT_ID' in file {path}")
 
-        if not hasattr(module, 'CLIENT_SECRET'):
+        if not hasattr(module, "CLIENT_SECRET"):
             raise Exception(f"missing 'CLIENT_SECRET' in file {path}")
 
         return module

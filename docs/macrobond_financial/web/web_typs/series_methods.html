@@ -49,15 +49,15 @@ if TYPE_CHECKING:  # pragma: no cover
     from .unified_series_request import UnifiedSeriesRequest
 
 
-class SeriesMethods():
-    &#39;&#39;&#39;Time series and entity operations&#39;&#39;&#39;
+class SeriesMethods:
+    &#34;&#34;&#34;Time series and entity operations&#34;&#34;&#34;
 
-    def __init__(self, session: &#39;Session&#39;) -&gt; None:
+    def __init__(self, session: &#34;Session&#34;) -&gt; None:
         self.__session = session
 
     # Get /fetchentities
-    def fetch_entities(self, *entitie_names: str) -&gt; List[&#39;EntityResponse&#39;]:
-        &#39;&#39;&#39;
+    def fetch_entities(self, *entitie_names: str) -&gt; List[&#34;EntityResponse&#34;]:
+        &#34;&#34;&#34;
         Fetch one or more entities.
         The result will be in the same order as the request.
 
@@ -68,14 +68,15 @@ class SeriesMethods():
         400 The operation failed.
         401 Unauthorized. Missing, invalid or expired access token.
         403 Forbidden. Not authorized.
-        &#39;&#39;&#39;
+        &#34;&#34;&#34;
         response = self.__session.get_or_raise(
-            &#39;v1/series/fetchentities&#39;, params={&#39;n&#39;: entitie_names})
-        return cast(List[&#39;EntityResponse&#39;], response.json())
+            &#34;v1/series/fetchentities&#34;, params={&#34;n&#34;: entitie_names}
+        )
+        return cast(List[&#34;EntityResponse&#34;], response.json())
 
     # Get /v1/series/fetchseries
-    def fetch_series(self, *series_names: str) -&gt; List[&#39;SeriesResponse&#39;]:
-        &#39;&#39;&#39;
+    def fetch_series(self, *series_names: str) -&gt; List[&#34;SeriesResponse&#34;]:
+        &#34;&#34;&#34;
         Fetch one or more entities.
         The result will be in the same order as the request.
 
@@ -89,15 +90,17 @@ class SeriesMethods():
             401 Unauthorized. Missing, invalid or expired access token.
 
             403 Forbidden. Not authorized.
-        &#39;&#39;&#39;
-        response = self.__session.get_or_raise(&#39;v1/series/fetchseries&#39;, params={&#39;n&#39;: series_names})
-        return cast(List[&#39;SeriesResponse&#39;], response.json())
+        &#34;&#34;&#34;
+        response = self.__session.get_or_raise(
+            &#34;v1/series/fetchseries&#34;, params={&#34;n&#34;: series_names}
+        )
+        return cast(List[&#34;SeriesResponse&#34;], response.json())
 
     # Post /fetchseries
     def fetch_series_last_modified_time_stamp(
-        self, *requests: &#39;EntityRequest&#39;
-    ) -&gt; List[&#39;SeriesResponse&#39;]:
-        &#39;&#39;&#39;
+        self, *requests: &#34;EntityRequest&#34;
+    ) -&gt; List[&#34;SeriesResponse&#34;]:
+        &#34;&#34;&#34;
         Fetch one or more series.
         A timestamp can be specified for each series to conditionally retrieve a result.
         This is typically the value of the metadata LastModifiedTimeStamp from a previous request.
@@ -113,13 +116,15 @@ class SeriesMethods():
             401 Unauthorized. Missing, invalid or expired access token.
 
             403 Forbidden. Not authorized.
-        &#39;&#39;&#39;
-        response = self.__session.post_or_raise(&#39;v1/series/fetchseries&#39;, json=requests)
-        return cast(List[&#39;SeriesResponse&#39;], response.json())
+        &#34;&#34;&#34;
+        response = self.__session.post_or_raise(&#34;v1/series/fetchseries&#34;, json=requests)
+        return cast(List[&#34;SeriesResponse&#34;], response.json())
 
     # Get /v1/series/getrevisioninfo
-    def get_revision_info(self, *series_names: str) -&gt; List[&#39;SeriesWithRevisionsInfoResponse&#39;]:
-        &#39;&#39;&#39;
+    def get_revision_info(
+        self, *series_names: str
+    ) -&gt; List[&#34;SeriesWithRevisionsInfoResponse&#34;]:
+        &#34;&#34;&#34;
         Get information about if a record of updates is stored
         for one or more series and the dates of changes.
 
@@ -131,16 +136,20 @@ class SeriesMethods():
             401 Unauthorized. Missing, invalid or expired access token.
 
             403 Forbidden. Not authorized.
-        &#39;&#39;&#39;
+        &#34;&#34;&#34;
         response = self.__session.get_or_raise(
-            &#39;v1/series/getrevisioninfo&#39;, params={&#39;n&#39;: series_names})
-        return cast(List[&#39;SeriesWithRevisionsInfoResponse&#39;], response.json())
+            &#34;v1/series/getrevisioninfo&#34;, params={&#34;n&#34;: series_names}
+        )
+        return cast(List[&#34;SeriesWithRevisionsInfoResponse&#34;], response.json())
 
     # Get /v1/series/fetchvintageseries
     def fetch_vintage_series(
-        self, time_of_vintage: datetime, *series_names: str, get_times_of_change: bool = None
-    ) -&gt; List[&#39;VintageSeriesResponse&#39;]:
-        &#39;&#39;&#39;
+        self,
+        time_of_vintage: datetime,
+        *series_names: str,
+        get_times_of_change: bool = None
+    ) -&gt; List[&#34;VintageSeriesResponse&#34;]:
+        &#34;&#34;&#34;
         Fetch one or more vintage series.
         The result will be in the same order as the request.
 
@@ -152,23 +161,22 @@ class SeriesMethods():
             401 Unauthorized. Missing, invalid or expired access token.
 
             403 Forbidden. Not authorized.
-        &#39;&#39;&#39;
-        params = {
-            &#39;t&#39;: time_of_vintage.isoformat(),
-            &#39;n&#39;: series_names
-        }
+        &#34;&#34;&#34;
+        params = {&#34;t&#34;: time_of_vintage.isoformat(), &#34;n&#34;: series_names}
 
         if get_times_of_change is not None:
-            params[&#39;getTimesOfChange&#39;] = &#39;true&#39; if get_times_of_change else &#39;false&#39;
+            params[&#34;getTimesOfChange&#34;] = &#34;true&#34; if get_times_of_change else &#34;false&#34;
 
-        response = self.__session.get_or_raise(&#39;v1/series/fetchvintageseries&#39;, params=params)
-        return cast(List[&#39;VintageSeriesResponse&#39;], response.json())
+        response = self.__session.get_or_raise(
+            &#34;v1/series/fetchvintageseries&#34;, params=params
+        )
+        return cast(List[&#34;VintageSeriesResponse&#34;], response.json())
 
     # Get /v1/series/fetchallvintageseries
     def fetch_all_vintage_series(
         self, series_names: List[str], if_modified_since: datetime
-    ) -&gt; List[&#39;VintageSeriesResponse&#39;]:
-        &#39;&#39;&#39;
+    ) -&gt; List[&#34;VintageSeriesResponse&#34;]:
+        &#34;&#34;&#34;
         Fetch all vintage series and the complete history of changes.
 
         OAuth scope: macrobond_web_api.read_mb
@@ -183,21 +191,21 @@ class SeriesMethods():
             403 Forbidden. Not authorized.
 
             404 The series could not be found
-        &#39;&#39;&#39;
+        &#34;&#34;&#34;
         response = self.__session.get_or_raise(
-            &#39;v1/series/fetchallvintageseries&#39;,
+            &#34;v1/series/fetchallvintageseries&#34;,
             params={
-                &#39;n&#39;: series_names,
-                &#39;ifModifiedSince&#39;: if_modified_since.isoformat()
-            }
+                &#34;n&#34;: series_names,
+                &#34;ifModifiedSince&#34;: if_modified_since.isoformat(),
+            },
         )
-        return cast(List[&#39;VintageSeriesResponse&#39;], response.json())
+        return cast(List[&#34;VintageSeriesResponse&#34;], response.json())
 
     # Get /v1/series/fetchnthreleaseseries
     def fetch_nth_release_series(
         self, nth: int, *series_names: str, get_times_of_change: bool = None
-    ) -&gt; List[&#39;SeriesWithTimesOfChangeResponse&#39;]:
-        &#39;&#39;&#39;
+    ) -&gt; List[&#34;SeriesWithTimesOfChangeResponse&#34;]:
+        &#34;&#34;&#34;
         Fetch one or more series where each value is the nth change of the value.
         The result will be in the same order as the request.
 
@@ -209,23 +217,25 @@ class SeriesMethods():
             401 Unauthorized. Missing, invalid or expired access token.
 
             403 Forbidden. Not authorized.
-        &#39;&#39;&#39;
+        &#34;&#34;&#34;
         params = {
-            &#39;n&#39;: series_names,
-            &#39;nth&#39;: nth,
+            &#34;n&#34;: series_names,
+            &#34;nth&#34;: nth,
         }
 
         if get_times_of_change is not None:
-            params[&#39;getTimesOfChange&#39;] = &#39;true&#39; if get_times_of_change else &#39;false&#39;
+            params[&#34;getTimesOfChange&#34;] = &#34;true&#34; if get_times_of_change else &#34;false&#34;
 
-        response = self.__session.get_or_raise(&#39;v1/series/fetchallvintageseries&#39;, params=params)
-        return cast(List[&#39;SeriesWithTimesOfChangeResponse&#39;], response.json())
+        response = self.__session.get_or_raise(
+            &#34;v1/series/fetchallvintageseries&#34;, params=params
+        )
+        return cast(List[&#34;SeriesWithTimesOfChangeResponse&#34;], response.json())
 
     # Get /v1/series/fetchobservationhistory
     def fetch_observation_history(
         self, series_names: List[str], date_of_the_observation: List[datetime]
-    ) -&gt; List[&#39;SeriesObservationHistoryResponse&#39;]:
-        &#39;&#39;&#39;
+    ) -&gt; List[&#34;SeriesObservationHistoryResponse&#34;]:
+        &#34;&#34;&#34;
         Fetch the history of one or more observations in a time series.
         The result will be in the same order as the request.
 
@@ -241,21 +251,21 @@ class SeriesMethods():
             403 Forbidden. Not authorized.
 
             404 The series could not be found
-        &#39;&#39;&#39;
+        &#34;&#34;&#34;
         response = self.__session.get_or_raise(
-            &#39;v1/series/fetchobservationhistory&#39;,
+            &#34;v1/series/fetchobservationhistory&#34;,
             params={
-                &#39;n&#39;: series_names,
-                &#39;t&#39;: list(map(lambda x: x.isoformat(), date_of_the_observation))
-            }
+                &#34;n&#34;: series_names,
+                &#34;t&#34;: list(map(lambda x: x.isoformat(), date_of_the_observation)),
+            },
         )
-        return cast(List[&#39;SeriesObservationHistoryResponse&#39;], response.json())
+        return cast(List[&#34;SeriesObservationHistoryResponse&#34;], response.json())
 
     # Get /v1/series/getsubscriptionlist
     def get_subscription_list(
         self, if_modified_since: datetime = None
-    ) -&gt; &#39;FeedEntitiesResponse&#39;:
-        &#39;&#39;&#39;
+    ) -&gt; &#34;FeedEntitiesResponse&#34;:
+        &#34;&#34;&#34;
         Get a list of entities in the subscription list and timestamps when they were last changed.
         You can specify a timestamp to see what has changed since then. For this the
         timeStampForIfModifiedSince in the response from a previous call is typically used.
@@ -270,20 +280,22 @@ class SeriesMethods():
             401 Unauthorized. Missing, invalid or expired access token.
 
             403 The account is not set up to use a subscription list.
-        &#39;&#39;&#39;
+        &#34;&#34;&#34;
         params = {}
 
         if if_modified_since is not None:
-            params[&#39;ifModifiedSince&#39;] = if_modified_since.isoformat()
+            params[&#34;ifModifiedSince&#34;] = if_modified_since.isoformat()
 
-        response = self.__session.get_or_raise(&#39;v1/series/getsubscriptionlist&#39;, params=params)
-        return cast(&#39;FeedEntitiesResponse&#39;, response.json())
+        response = self.__session.get_or_raise(
+            &#34;v1/series/getsubscriptionlist&#34;, params=params
+        )
+        return cast(&#34;FeedEntitiesResponse&#34;, response.json())
 
     # Get /v1/series/entityinfofordisplay
     def entity_info_for_display(
         self, *entitie_names: str
-    ) -&gt; &#39;EntityInfoForDisplayResponse&#39;:
-        &#39;&#39;&#39;
+    ) -&gt; &#34;EntityInfoForDisplayResponse&#34;:
+        &#34;&#34;&#34;
         Get formatted information about a time series intended to be displayed to the user
 
         OAuth scope: macrobond_web_api.read_structure
@@ -296,20 +308,17 @@ class SeriesMethods():
             403 Forbidden. Not authorized.
 
             404 The series could not be found.
-        &#39;&#39;&#39;
+        &#34;&#34;&#34;
         response = self.__session.get_or_raise(
-            &#39;v1/series/entityinfofordisplay&#39;,
-            params={
-                &#39;n&#39;: entitie_names
-            }
+            &#34;v1/series/entityinfofordisplay&#34;, params={&#34;n&#34;: entitie_names}
         )
-        return cast(&#39;EntityInfoForDisplayResponse&#39;, response.json())
+        return cast(&#34;EntityInfoForDisplayResponse&#34;, response.json())
 
     # Post /v1/series/fetchunifiedseries
     def fetch_unified_series(
-        self, request: &#39;UnifiedSeriesRequest&#39;
-    ) -&gt; &#39;UnifiedSeriesResponse&#39;:
-        &#39;&#39;&#39;
+        self, request: &#34;UnifiedSeriesRequest&#34;
+    ) -&gt; &#34;UnifiedSeriesResponse&#34;:
+        &#34;&#34;&#34;
         Fetch one or more series and convert them to a common frequency,
         calendar and optionally a common currency.
         Specify properties for frequency conversion and method to fill in missing values.
@@ -325,9 +334,11 @@ class SeriesMethods():
             401 Unauthorized. Missing, invalid or expired access token.
 
             403 Forbidden. Not authorized.
-        &#39;&#39;&#39;
-        response = self.__session.post_or_raise(&#39;v1/series/fetchunifiedseries&#39;, json=request)
-        return cast(&#39;UnifiedSeriesResponse&#39;, response.json())</code></pre>
+        &#34;&#34;&#34;
+        response = self.__session.post_or_raise(
+            &#34;v1/series/fetchunifiedseries&#34;, json=request
+        )
+        return cast(&#34;UnifiedSeriesResponse&#34;, response.json())</code></pre>
 </details>
 </section>
 <section>
@@ -349,15 +360,15 @@ class SeriesMethods():
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class SeriesMethods():
-    &#39;&#39;&#39;Time series and entity operations&#39;&#39;&#39;
+<pre><code class="python">class SeriesMethods:
+    &#34;&#34;&#34;Time series and entity operations&#34;&#34;&#34;
 
-    def __init__(self, session: &#39;Session&#39;) -&gt; None:
+    def __init__(self, session: &#34;Session&#34;) -&gt; None:
         self.__session = session
 
     # Get /fetchentities
-    def fetch_entities(self, *entitie_names: str) -&gt; List[&#39;EntityResponse&#39;]:
-        &#39;&#39;&#39;
+    def fetch_entities(self, *entitie_names: str) -&gt; List[&#34;EntityResponse&#34;]:
+        &#34;&#34;&#34;
         Fetch one or more entities.
         The result will be in the same order as the request.
 
@@ -368,14 +379,15 @@ class SeriesMethods():
         400 The operation failed.
         401 Unauthorized. Missing, invalid or expired access token.
         403 Forbidden. Not authorized.
-        &#39;&#39;&#39;
+        &#34;&#34;&#34;
         response = self.__session.get_or_raise(
-            &#39;v1/series/fetchentities&#39;, params={&#39;n&#39;: entitie_names})
-        return cast(List[&#39;EntityResponse&#39;], response.json())
+            &#34;v1/series/fetchentities&#34;, params={&#34;n&#34;: entitie_names}
+        )
+        return cast(List[&#34;EntityResponse&#34;], response.json())
 
     # Get /v1/series/fetchseries
-    def fetch_series(self, *series_names: str) -&gt; List[&#39;SeriesResponse&#39;]:
-        &#39;&#39;&#39;
+    def fetch_series(self, *series_names: str) -&gt; List[&#34;SeriesResponse&#34;]:
+        &#34;&#34;&#34;
         Fetch one or more entities.
         The result will be in the same order as the request.
 
@@ -389,15 +401,17 @@ class SeriesMethods():
             401 Unauthorized. Missing, invalid or expired access token.
 
             403 Forbidden. Not authorized.
-        &#39;&#39;&#39;
-        response = self.__session.get_or_raise(&#39;v1/series/fetchseries&#39;, params={&#39;n&#39;: series_names})
-        return cast(List[&#39;SeriesResponse&#39;], response.json())
+        &#34;&#34;&#34;
+        response = self.__session.get_or_raise(
+            &#34;v1/series/fetchseries&#34;, params={&#34;n&#34;: series_names}
+        )
+        return cast(List[&#34;SeriesResponse&#34;], response.json())
 
     # Post /fetchseries
     def fetch_series_last_modified_time_stamp(
-        self, *requests: &#39;EntityRequest&#39;
-    ) -&gt; List[&#39;SeriesResponse&#39;]:
-        &#39;&#39;&#39;
+        self, *requests: &#34;EntityRequest&#34;
+    ) -&gt; List[&#34;SeriesResponse&#34;]:
+        &#34;&#34;&#34;
         Fetch one or more series.
         A timestamp can be specified for each series to conditionally retrieve a result.
         This is typically the value of the metadata LastModifiedTimeStamp from a previous request.
@@ -413,13 +427,15 @@ class SeriesMethods():
             401 Unauthorized. Missing, invalid or expired access token.
 
             403 Forbidden. Not authorized.
-        &#39;&#39;&#39;
-        response = self.__session.post_or_raise(&#39;v1/series/fetchseries&#39;, json=requests)
-        return cast(List[&#39;SeriesResponse&#39;], response.json())
+        &#34;&#34;&#34;
+        response = self.__session.post_or_raise(&#34;v1/series/fetchseries&#34;, json=requests)
+        return cast(List[&#34;SeriesResponse&#34;], response.json())
 
     # Get /v1/series/getrevisioninfo
-    def get_revision_info(self, *series_names: str) -&gt; List[&#39;SeriesWithRevisionsInfoResponse&#39;]:
-        &#39;&#39;&#39;
+    def get_revision_info(
+        self, *series_names: str
+    ) -&gt; List[&#34;SeriesWithRevisionsInfoResponse&#34;]:
+        &#34;&#34;&#34;
         Get information about if a record of updates is stored
         for one or more series and the dates of changes.
 
@@ -431,16 +447,20 @@ class SeriesMethods():
             401 Unauthorized. Missing, invalid or expired access token.
 
             403 Forbidden. Not authorized.
-        &#39;&#39;&#39;
+        &#34;&#34;&#34;
         response = self.__session.get_or_raise(
-            &#39;v1/series/getrevisioninfo&#39;, params={&#39;n&#39;: series_names})
-        return cast(List[&#39;SeriesWithRevisionsInfoResponse&#39;], response.json())
+            &#34;v1/series/getrevisioninfo&#34;, params={&#34;n&#34;: series_names}
+        )
+        return cast(List[&#34;SeriesWithRevisionsInfoResponse&#34;], response.json())
 
     # Get /v1/series/fetchvintageseries
     def fetch_vintage_series(
-        self, time_of_vintage: datetime, *series_names: str, get_times_of_change: bool = None
-    ) -&gt; List[&#39;VintageSeriesResponse&#39;]:
-        &#39;&#39;&#39;
+        self,
+        time_of_vintage: datetime,
+        *series_names: str,
+        get_times_of_change: bool = None
+    ) -&gt; List[&#34;VintageSeriesResponse&#34;]:
+        &#34;&#34;&#34;
         Fetch one or more vintage series.
         The result will be in the same order as the request.
 
@@ -452,23 +472,22 @@ class SeriesMethods():
             401 Unauthorized. Missing, invalid or expired access token.
 
             403 Forbidden. Not authorized.
-        &#39;&#39;&#39;
-        params = {
-            &#39;t&#39;: time_of_vintage.isoformat(),
-            &#39;n&#39;: series_names
-        }
+        &#34;&#34;&#34;
+        params = {&#34;t&#34;: time_of_vintage.isoformat(), &#34;n&#34;: series_names}
 
         if get_times_of_change is not None:
-            params[&#39;getTimesOfChange&#39;] = &#39;true&#39; if get_times_of_change else &#39;false&#39;
+            params[&#34;getTimesOfChange&#34;] = &#34;true&#34; if get_times_of_change else &#34;false&#34;
 
-        response = self.__session.get_or_raise(&#39;v1/series/fetchvintageseries&#39;, params=params)
-        return cast(List[&#39;VintageSeriesResponse&#39;], response.json())
+        response = self.__session.get_or_raise(
+            &#34;v1/series/fetchvintageseries&#34;, params=params
+        )
+        return cast(List[&#34;VintageSeriesResponse&#34;], response.json())
 
     # Get /v1/series/fetchallvintageseries
     def fetch_all_vintage_series(
         self, series_names: List[str], if_modified_since: datetime
-    ) -&gt; List[&#39;VintageSeriesResponse&#39;]:
-        &#39;&#39;&#39;
+    ) -&gt; List[&#34;VintageSeriesResponse&#34;]:
+        &#34;&#34;&#34;
         Fetch all vintage series and the complete history of changes.
 
         OAuth scope: macrobond_web_api.read_mb
@@ -483,21 +502,21 @@ class SeriesMethods():
             403 Forbidden. Not authorized.
 
             404 The series could not be found
-        &#39;&#39;&#39;
+        &#34;&#34;&#34;
         response = self.__session.get_or_raise(
-            &#39;v1/series/fetchallvintageseries&#39;,
+            &#34;v1/series/fetchallvintageseries&#34;,
             params={
-                &#39;n&#39;: series_names,
-                &#39;ifModifiedSince&#39;: if_modified_since.isoformat()
-            }
+                &#34;n&#34;: series_names,
+                &#34;ifModifiedSince&#34;: if_modified_since.isoformat(),
+            },
         )
-        return cast(List[&#39;VintageSeriesResponse&#39;], response.json())
+        return cast(List[&#34;VintageSeriesResponse&#34;], response.json())
 
     # Get /v1/series/fetchnthreleaseseries
     def fetch_nth_release_series(
         self, nth: int, *series_names: str, get_times_of_change: bool = None
-    ) -&gt; List[&#39;SeriesWithTimesOfChangeResponse&#39;]:
-        &#39;&#39;&#39;
+    ) -&gt; List[&#34;SeriesWithTimesOfChangeResponse&#34;]:
+        &#34;&#34;&#34;
         Fetch one or more series where each value is the nth change of the value.
         The result will be in the same order as the request.
 
@@ -509,23 +528,25 @@ class SeriesMethods():
             401 Unauthorized. Missing, invalid or expired access token.
 
             403 Forbidden. Not authorized.
-        &#39;&#39;&#39;
+        &#34;&#34;&#34;
         params = {
-            &#39;n&#39;: series_names,
-            &#39;nth&#39;: nth,
+            &#34;n&#34;: series_names,
+            &#34;nth&#34;: nth,
         }
 
         if get_times_of_change is not None:
-            params[&#39;getTimesOfChange&#39;] = &#39;true&#39; if get_times_of_change else &#39;false&#39;
+            params[&#34;getTimesOfChange&#34;] = &#34;true&#34; if get_times_of_change else &#34;false&#34;
 
-        response = self.__session.get_or_raise(&#39;v1/series/fetchallvintageseries&#39;, params=params)
-        return cast(List[&#39;SeriesWithTimesOfChangeResponse&#39;], response.json())
+        response = self.__session.get_or_raise(
+            &#34;v1/series/fetchallvintageseries&#34;, params=params
+        )
+        return cast(List[&#34;SeriesWithTimesOfChangeResponse&#34;], response.json())
 
     # Get /v1/series/fetchobservationhistory
     def fetch_observation_history(
         self, series_names: List[str], date_of_the_observation: List[datetime]
-    ) -&gt; List[&#39;SeriesObservationHistoryResponse&#39;]:
-        &#39;&#39;&#39;
+    ) -&gt; List[&#34;SeriesObservationHistoryResponse&#34;]:
+        &#34;&#34;&#34;
         Fetch the history of one or more observations in a time series.
         The result will be in the same order as the request.
 
@@ -541,21 +562,21 @@ class SeriesMethods():
             403 Forbidden. Not authorized.
 
             404 The series could not be found
-        &#39;&#39;&#39;
+        &#34;&#34;&#34;
         response = self.__session.get_or_raise(
-            &#39;v1/series/fetchobservationhistory&#39;,
+            &#34;v1/series/fetchobservationhistory&#34;,
             params={
-                &#39;n&#39;: series_names,
-                &#39;t&#39;: list(map(lambda x: x.isoformat(), date_of_the_observation))
-            }
+                &#34;n&#34;: series_names,
+                &#34;t&#34;: list(map(lambda x: x.isoformat(), date_of_the_observation)),
+            },
         )
-        return cast(List[&#39;SeriesObservationHistoryResponse&#39;], response.json())
+        return cast(List[&#34;SeriesObservationHistoryResponse&#34;], response.json())
 
     # Get /v1/series/getsubscriptionlist
     def get_subscription_list(
         self, if_modified_since: datetime = None
-    ) -&gt; &#39;FeedEntitiesResponse&#39;:
-        &#39;&#39;&#39;
+    ) -&gt; &#34;FeedEntitiesResponse&#34;:
+        &#34;&#34;&#34;
         Get a list of entities in the subscription list and timestamps when they were last changed.
         You can specify a timestamp to see what has changed since then. For this the
         timeStampForIfModifiedSince in the response from a previous call is typically used.
@@ -570,20 +591,22 @@ class SeriesMethods():
             401 Unauthorized. Missing, invalid or expired access token.
 
             403 The account is not set up to use a subscription list.
-        &#39;&#39;&#39;
+        &#34;&#34;&#34;
         params = {}
 
         if if_modified_since is not None:
-            params[&#39;ifModifiedSince&#39;] = if_modified_since.isoformat()
+            params[&#34;ifModifiedSince&#34;] = if_modified_since.isoformat()
 
-        response = self.__session.get_or_raise(&#39;v1/series/getsubscriptionlist&#39;, params=params)
-        return cast(&#39;FeedEntitiesResponse&#39;, response.json())
+        response = self.__session.get_or_raise(
+            &#34;v1/series/getsubscriptionlist&#34;, params=params
+        )
+        return cast(&#34;FeedEntitiesResponse&#34;, response.json())
 
     # Get /v1/series/entityinfofordisplay
     def entity_info_for_display(
         self, *entitie_names: str
-    ) -&gt; &#39;EntityInfoForDisplayResponse&#39;:
-        &#39;&#39;&#39;
+    ) -&gt; &#34;EntityInfoForDisplayResponse&#34;:
+        &#34;&#34;&#34;
         Get formatted information about a time series intended to be displayed to the user
 
         OAuth scope: macrobond_web_api.read_structure
@@ -596,20 +619,17 @@ class SeriesMethods():
             403 Forbidden. Not authorized.
 
             404 The series could not be found.
-        &#39;&#39;&#39;
+        &#34;&#34;&#34;
         response = self.__session.get_or_raise(
-            &#39;v1/series/entityinfofordisplay&#39;,
-            params={
-                &#39;n&#39;: entitie_names
-            }
+            &#34;v1/series/entityinfofordisplay&#34;, params={&#34;n&#34;: entitie_names}
         )
-        return cast(&#39;EntityInfoForDisplayResponse&#39;, response.json())
+        return cast(&#34;EntityInfoForDisplayResponse&#34;, response.json())
 
     # Post /v1/series/fetchunifiedseries
     def fetch_unified_series(
-        self, request: &#39;UnifiedSeriesRequest&#39;
-    ) -&gt; &#39;UnifiedSeriesResponse&#39;:
-        &#39;&#39;&#39;
+        self, request: &#34;UnifiedSeriesRequest&#34;
+    ) -&gt; &#34;UnifiedSeriesResponse&#34;:
+        &#34;&#34;&#34;
         Fetch one or more series and convert them to a common frequency,
         calendar and optionally a common currency.
         Specify properties for frequency conversion and method to fill in missing values.
@@ -625,9 +645,11 @@ class SeriesMethods():
             401 Unauthorized. Missing, invalid or expired access token.
 
             403 Forbidden. Not authorized.
-        &#39;&#39;&#39;
-        response = self.__session.post_or_raise(&#39;v1/series/fetchunifiedseries&#39;, json=request)
-        return cast(&#39;UnifiedSeriesResponse&#39;, response.json())</code></pre>
+        &#34;&#34;&#34;
+        response = self.__session.post_or_raise(
+            &#34;v1/series/fetchunifiedseries&#34;, json=request
+        )
+        return cast(&#34;UnifiedSeriesResponse&#34;, response.json())</code></pre>
 </details>
 <h3>Methods</h3>
 <dl>
@@ -648,8 +670,8 @@ class SeriesMethods():
 </summary>
 <pre><code class="python">def entity_info_for_display(
     self, *entitie_names: str
-) -&gt; &#39;EntityInfoForDisplayResponse&#39;:
-    &#39;&#39;&#39;
+) -&gt; &#34;EntityInfoForDisplayResponse&#34;:
+    &#34;&#34;&#34;
     Get formatted information about a time series intended to be displayed to the user
 
     OAuth scope: macrobond_web_api.read_structure
@@ -662,14 +684,11 @@ class SeriesMethods():
         403 Forbidden. Not authorized.
 
         404 The series could not be found.
-    &#39;&#39;&#39;
+    &#34;&#34;&#34;
     response = self.__session.get_or_raise(
-        &#39;v1/series/entityinfofordisplay&#39;,
-        params={
-            &#39;n&#39;: entitie_names
-        }
+        &#34;v1/series/entityinfofordisplay&#34;, params={&#34;n&#34;: entitie_names}
     )
-    return cast(&#39;EntityInfoForDisplayResponse&#39;, response.json())</code></pre>
+    return cast(&#34;EntityInfoForDisplayResponse&#34;, response.json())</code></pre>
 </details>
 </dd>
 <dt id="macrobond_financial.web.web_typs.series_methods.SeriesMethods.fetch_all_vintage_series"><code class="name flex">
@@ -690,8 +709,8 @@ class SeriesMethods():
 </summary>
 <pre><code class="python">def fetch_all_vintage_series(
     self, series_names: List[str], if_modified_since: datetime
-) -&gt; List[&#39;VintageSeriesResponse&#39;]:
-    &#39;&#39;&#39;
+) -&gt; List[&#34;VintageSeriesResponse&#34;]:
+    &#34;&#34;&#34;
     Fetch all vintage series and the complete history of changes.
 
     OAuth scope: macrobond_web_api.read_mb
@@ -706,15 +725,15 @@ class SeriesMethods():
         403 Forbidden. Not authorized.
 
         404 The series could not be found
-    &#39;&#39;&#39;
+    &#34;&#34;&#34;
     response = self.__session.get_or_raise(
-        &#39;v1/series/fetchallvintageseries&#39;,
+        &#34;v1/series/fetchallvintageseries&#34;,
         params={
-            &#39;n&#39;: series_names,
-            &#39;ifModifiedSince&#39;: if_modified_since.isoformat()
-        }
+            &#34;n&#34;: series_names,
+            &#34;ifModifiedSince&#34;: if_modified_since.isoformat(),
+        },
     )
-    return cast(List[&#39;VintageSeriesResponse&#39;], response.json())</code></pre>
+    return cast(List[&#34;VintageSeriesResponse&#34;], response.json())</code></pre>
 </details>
 </dd>
 <dt id="macrobond_financial.web.web_typs.series_methods.SeriesMethods.fetch_entities"><code class="name flex">
@@ -733,8 +752,8 @@ The result will be in the same order as the request.</p>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def fetch_entities(self, *entitie_names: str) -&gt; List[&#39;EntityResponse&#39;]:
-    &#39;&#39;&#39;
+<pre><code class="python">def fetch_entities(self, *entitie_names: str) -&gt; List[&#34;EntityResponse&#34;]:
+    &#34;&#34;&#34;
     Fetch one or more entities.
     The result will be in the same order as the request.
 
@@ -745,10 +764,11 @@ The result will be in the same order as the request.</p>
     400 The operation failed.
     401 Unauthorized. Missing, invalid or expired access token.
     403 Forbidden. Not authorized.
-    &#39;&#39;&#39;
+    &#34;&#34;&#34;
     response = self.__session.get_or_raise(
-        &#39;v1/series/fetchentities&#39;, params={&#39;n&#39;: entitie_names})
-    return cast(List[&#39;EntityResponse&#39;], response.json())</code></pre>
+        &#34;v1/series/fetchentities&#34;, params={&#34;n&#34;: entitie_names}
+    )
+    return cast(List[&#34;EntityResponse&#34;], response.json())</code></pre>
 </details>
 </dd>
 <dt id="macrobond_financial.web.web_typs.series_methods.SeriesMethods.fetch_nth_release_series"><code class="name flex">
@@ -768,8 +788,8 @@ The result will be in the same order as the request.</p>
 </summary>
 <pre><code class="python">def fetch_nth_release_series(
     self, nth: int, *series_names: str, get_times_of_change: bool = None
-) -&gt; List[&#39;SeriesWithTimesOfChangeResponse&#39;]:
-    &#39;&#39;&#39;
+) -&gt; List[&#34;SeriesWithTimesOfChangeResponse&#34;]:
+    &#34;&#34;&#34;
     Fetch one or more series where each value is the nth change of the value.
     The result will be in the same order as the request.
 
@@ -781,17 +801,19 @@ The result will be in the same order as the request.</p>
         401 Unauthorized. Missing, invalid or expired access token.
 
         403 Forbidden. Not authorized.
-    &#39;&#39;&#39;
+    &#34;&#34;&#34;
     params = {
-        &#39;n&#39;: series_names,
-        &#39;nth&#39;: nth,
+        &#34;n&#34;: series_names,
+        &#34;nth&#34;: nth,
     }
 
     if get_times_of_change is not None:
-        params[&#39;getTimesOfChange&#39;] = &#39;true&#39; if get_times_of_change else &#39;false&#39;
+        params[&#34;getTimesOfChange&#34;] = &#34;true&#34; if get_times_of_change else &#34;false&#34;
 
-    response = self.__session.get_or_raise(&#39;v1/series/fetchallvintageseries&#39;, params=params)
-    return cast(List[&#39;SeriesWithTimesOfChangeResponse&#39;], response.json())</code></pre>
+    response = self.__session.get_or_raise(
+        &#34;v1/series/fetchallvintageseries&#34;, params=params
+    )
+    return cast(List[&#34;SeriesWithTimesOfChangeResponse&#34;], response.json())</code></pre>
 </details>
 </dd>
 <dt id="macrobond_financial.web.web_typs.series_methods.SeriesMethods.fetch_observation_history"><code class="name flex">
@@ -813,8 +835,8 @@ The result will be in the same order as the request.</p>
 </summary>
 <pre><code class="python">def fetch_observation_history(
     self, series_names: List[str], date_of_the_observation: List[datetime]
-) -&gt; List[&#39;SeriesObservationHistoryResponse&#39;]:
-    &#39;&#39;&#39;
+) -&gt; List[&#34;SeriesObservationHistoryResponse&#34;]:
+    &#34;&#34;&#34;
     Fetch the history of one or more observations in a time series.
     The result will be in the same order as the request.
 
@@ -830,15 +852,15 @@ The result will be in the same order as the request.</p>
         403 Forbidden. Not authorized.
 
         404 The series could not be found
-    &#39;&#39;&#39;
+    &#34;&#34;&#34;
     response = self.__session.get_or_raise(
-        &#39;v1/series/fetchobservationhistory&#39;,
+        &#34;v1/series/fetchobservationhistory&#34;,
         params={
-            &#39;n&#39;: series_names,
-            &#39;t&#39;: list(map(lambda x: x.isoformat(), date_of_the_observation))
-        }
+            &#34;n&#34;: series_names,
+            &#34;t&#34;: list(map(lambda x: x.isoformat(), date_of_the_observation)),
+        },
     )
-    return cast(List[&#39;SeriesObservationHistoryResponse&#39;], response.json())</code></pre>
+    return cast(List[&#34;SeriesObservationHistoryResponse&#34;], response.json())</code></pre>
 </details>
 </dd>
 <dt id="macrobond_financial.web.web_typs.series_methods.SeriesMethods.fetch_series"><code class="name flex">
@@ -857,8 +879,8 @@ The result will be in the same order as the request.</p>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def fetch_series(self, *series_names: str) -&gt; List[&#39;SeriesResponse&#39;]:
-    &#39;&#39;&#39;
+<pre><code class="python">def fetch_series(self, *series_names: str) -&gt; List[&#34;SeriesResponse&#34;]:
+    &#34;&#34;&#34;
     Fetch one or more entities.
     The result will be in the same order as the request.
 
@@ -872,9 +894,11 @@ The result will be in the same order as the request.</p>
         401 Unauthorized. Missing, invalid or expired access token.
 
         403 Forbidden. Not authorized.
-    &#39;&#39;&#39;
-    response = self.__session.get_or_raise(&#39;v1/series/fetchseries&#39;, params={&#39;n&#39;: series_names})
-    return cast(List[&#39;SeriesResponse&#39;], response.json())</code></pre>
+    &#34;&#34;&#34;
+    response = self.__session.get_or_raise(
+        &#34;v1/series/fetchseries&#34;, params={&#34;n&#34;: series_names}
+    )
+    return cast(List[&#34;SeriesResponse&#34;], response.json())</code></pre>
 </details>
 </dd>
 <dt id="macrobond_financial.web.web_typs.series_methods.SeriesMethods.fetch_series_last_modified_time_stamp"><code class="name flex">
@@ -896,9 +920,9 @@ The result will be in the same order as the request.</p>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def fetch_series_last_modified_time_stamp(
-    self, *requests: &#39;EntityRequest&#39;
-) -&gt; List[&#39;SeriesResponse&#39;]:
-    &#39;&#39;&#39;
+    self, *requests: &#34;EntityRequest&#34;
+) -&gt; List[&#34;SeriesResponse&#34;]:
+    &#34;&#34;&#34;
     Fetch one or more series.
     A timestamp can be specified for each series to conditionally retrieve a result.
     This is typically the value of the metadata LastModifiedTimeStamp from a previous request.
@@ -914,9 +938,9 @@ The result will be in the same order as the request.</p>
         401 Unauthorized. Missing, invalid or expired access token.
 
         403 Forbidden. Not authorized.
-    &#39;&#39;&#39;
-    response = self.__session.post_or_raise(&#39;v1/series/fetchseries&#39;, json=requests)
-    return cast(List[&#39;SeriesResponse&#39;], response.json())</code></pre>
+    &#34;&#34;&#34;
+    response = self.__session.post_or_raise(&#34;v1/series/fetchseries&#34;, json=requests)
+    return cast(List[&#34;SeriesResponse&#34;], response.json())</code></pre>
 </details>
 </dd>
 <dt id="macrobond_financial.web.web_typs.series_methods.SeriesMethods.fetch_unified_series"><code class="name flex">
@@ -938,9 +962,9 @@ The resulting list of series will be in the same order as in the request.</p>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def fetch_unified_series(
-    self, request: &#39;UnifiedSeriesRequest&#39;
-) -&gt; &#39;UnifiedSeriesResponse&#39;:
-    &#39;&#39;&#39;
+    self, request: &#34;UnifiedSeriesRequest&#34;
+) -&gt; &#34;UnifiedSeriesResponse&#34;:
+    &#34;&#34;&#34;
     Fetch one or more series and convert them to a common frequency,
     calendar and optionally a common currency.
     Specify properties for frequency conversion and method to fill in missing values.
@@ -956,9 +980,11 @@ The resulting list of series will be in the same order as in the request.</p>
         401 Unauthorized. Missing, invalid or expired access token.
 
         403 Forbidden. Not authorized.
-    &#39;&#39;&#39;
-    response = self.__session.post_or_raise(&#39;v1/series/fetchunifiedseries&#39;, json=request)
-    return cast(&#39;UnifiedSeriesResponse&#39;, response.json())</code></pre>
+    &#34;&#34;&#34;
+    response = self.__session.post_or_raise(
+        &#34;v1/series/fetchunifiedseries&#34;, json=request
+    )
+    return cast(&#34;UnifiedSeriesResponse&#34;, response.json())</code></pre>
 </details>
 </dd>
 <dt id="macrobond_financial.web.web_typs.series_methods.SeriesMethods.fetch_vintage_series"><code class="name flex">
@@ -977,9 +1003,12 @@ The result will be in the same order as the request.</p>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def fetch_vintage_series(
-    self, time_of_vintage: datetime, *series_names: str, get_times_of_change: bool = None
-) -&gt; List[&#39;VintageSeriesResponse&#39;]:
-    &#39;&#39;&#39;
+    self,
+    time_of_vintage: datetime,
+    *series_names: str,
+    get_times_of_change: bool = None
+) -&gt; List[&#34;VintageSeriesResponse&#34;]:
+    &#34;&#34;&#34;
     Fetch one or more vintage series.
     The result will be in the same order as the request.
 
@@ -991,17 +1020,16 @@ The result will be in the same order as the request.</p>
         401 Unauthorized. Missing, invalid or expired access token.
 
         403 Forbidden. Not authorized.
-    &#39;&#39;&#39;
-    params = {
-        &#39;t&#39;: time_of_vintage.isoformat(),
-        &#39;n&#39;: series_names
-    }
+    &#34;&#34;&#34;
+    params = {&#34;t&#34;: time_of_vintage.isoformat(), &#34;n&#34;: series_names}
 
     if get_times_of_change is not None:
-        params[&#39;getTimesOfChange&#39;] = &#39;true&#39; if get_times_of_change else &#39;false&#39;
+        params[&#34;getTimesOfChange&#34;] = &#34;true&#34; if get_times_of_change else &#34;false&#34;
 
-    response = self.__session.get_or_raise(&#39;v1/series/fetchvintageseries&#39;, params=params)
-    return cast(List[&#39;VintageSeriesResponse&#39;], response.json())</code></pre>
+    response = self.__session.get_or_raise(
+        &#34;v1/series/fetchvintageseries&#34;, params=params
+    )
+    return cast(List[&#34;VintageSeriesResponse&#34;], response.json())</code></pre>
 </details>
 </dd>
 <dt id="macrobond_financial.web.web_typs.series_methods.SeriesMethods.get_revision_info"><code class="name flex">
@@ -1019,8 +1047,10 @@ for one or more series and the dates of changes.</p>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def get_revision_info(self, *series_names: str) -&gt; List[&#39;SeriesWithRevisionsInfoResponse&#39;]:
-    &#39;&#39;&#39;
+<pre><code class="python">def get_revision_info(
+    self, *series_names: str
+) -&gt; List[&#34;SeriesWithRevisionsInfoResponse&#34;]:
+    &#34;&#34;&#34;
     Get information about if a record of updates is stored
     for one or more series and the dates of changes.
 
@@ -1032,10 +1062,11 @@ for one or more series and the dates of changes.</p>
         401 Unauthorized. Missing, invalid or expired access token.
 
         403 Forbidden. Not authorized.
-    &#39;&#39;&#39;
+    &#34;&#34;&#34;
     response = self.__session.get_or_raise(
-        &#39;v1/series/getrevisioninfo&#39;, params={&#39;n&#39;: series_names})
-    return cast(List[&#39;SeriesWithRevisionsInfoResponse&#39;], response.json())</code></pre>
+        &#34;v1/series/getrevisioninfo&#34;, params={&#34;n&#34;: series_names}
+    )
+    return cast(List[&#34;SeriesWithRevisionsInfoResponse&#34;], response.json())</code></pre>
 </details>
 </dd>
 <dt id="macrobond_financial.web.web_typs.series_methods.SeriesMethods.get_subscription_list"><code class="name flex">
@@ -1058,8 +1089,8 @@ but you may see the same update more than once.</p>
 </summary>
 <pre><code class="python">def get_subscription_list(
     self, if_modified_since: datetime = None
-) -&gt; &#39;FeedEntitiesResponse&#39;:
-    &#39;&#39;&#39;
+) -&gt; &#34;FeedEntitiesResponse&#34;:
+    &#34;&#34;&#34;
     Get a list of entities in the subscription list and timestamps when they were last changed.
     You can specify a timestamp to see what has changed since then. For this the
     timeStampForIfModifiedSince in the response from a previous call is typically used.
@@ -1074,14 +1105,16 @@ but you may see the same update more than once.</p>
         401 Unauthorized. Missing, invalid or expired access token.
 
         403 The account is not set up to use a subscription list.
-    &#39;&#39;&#39;
+    &#34;&#34;&#34;
     params = {}
 
     if if_modified_since is not None:
-        params[&#39;ifModifiedSince&#39;] = if_modified_since.isoformat()
+        params[&#34;ifModifiedSince&#34;] = if_modified_since.isoformat()
 
-    response = self.__session.get_or_raise(&#39;v1/series/getsubscriptionlist&#39;, params=params)
-    return cast(&#39;FeedEntitiesResponse&#39;, response.json())</code></pre>
+    response = self.__session.get_or_raise(
+        &#34;v1/series/getsubscriptionlist&#34;, params=params
+    )
+    return cast(&#34;FeedEntitiesResponse&#34;, response.json())</code></pre>
 </details>
 </dd>
 </dl>

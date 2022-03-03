@@ -34,41 +34,42 @@ if TYPE_CHECKING:  # pragma: no cover
 
     from typing_extensions import TypedDict, Literal
 
-    MetadataValueInformationColumns = \
-        List[Literal[&#39;attribute_name&#39;, &#39;value&#39;, &#39;description&#39;, &#39;comment&#39;]]
+    MetadataValueInformationColumns = List[
+        Literal[&#34;attribute_name&#34;, &#34;value&#34;, &#34;description&#34;, &#34;comment&#34;]
+    ]
 
     class TypedDictMetadataValueInformation(TypedDict):
 
         attribute_name: str
-        &#39;&#39;&#39;The name of the metadata attribute&#39;&#39;&#39;
+        &#34;&#34;&#34;The name of the metadata attribute&#34;&#34;&#34;
 
         value: Any
-        &#39;&#39;&#39;The value&#39;&#39;&#39;
+        &#34;&#34;&#34;The value&#34;&#34;&#34;
 
         description: str
-        &#39;&#39;&#39;The description of the metadata value&#39;&#39;&#39;
+        &#34;&#34;&#34;The description of the metadata value&#34;&#34;&#34;
 
         comment: Optional[str]
-        &#39;&#39;&#39;The comment of the metadata value&#39;&#39;&#39;
+        &#34;&#34;&#34;The comment of the metadata value&#34;&#34;&#34;
 
 
-class MetadataValueInformation():
-    &#39;&#39;&#39;Information about a metadata value&#39;&#39;&#39;
+class MetadataValueInformation:
+    &#34;&#34;&#34;Information about a metadata value&#34;&#34;&#34;
 
     def __init__(
         self, attribute_name: str, value: Any, description: str, comment: Optional[str]
     ) -&gt; None:
         self.attribute_name = attribute_name
-        &#39;&#39;&#39;The name of the metadata attribute&#39;&#39;&#39;
+        &#34;&#34;&#34;The name of the metadata attribute&#34;&#34;&#34;
 
         self.value = value
-        &#39;&#39;&#39;The value&#39;&#39;&#39;
+        &#34;&#34;&#34;The value&#34;&#34;&#34;
 
         self.description = description
-        &#39;&#39;&#39;The description of the metadata value&#39;&#39;&#39;
+        &#34;&#34;&#34;The description of the metadata value&#34;&#34;&#34;
 
         self.comment = comment
-        &#39;&#39;&#39;The comment of the metadata value&#39;&#39;&#39;
+        &#34;&#34;&#34;The comment of the metadata value&#34;&#34;&#34;
 
     def __str__(self):
         return self.attribute_name
@@ -80,22 +81,15 @@ class MetadataValueInformation():
         if not isinstance(other, MetadataValueInformation):
             return NotImplemented
 
-        return \
-            self is other or \
-            (
-                self.attribute_name == other.attribute_name and
-                self.value == other.value and
-                self.description == other.description and
-                self.comment == other.comment
-            )
+        return self is other or (
+            self.attribute_name == other.attribute_name
+            and self.value == other.value
+            and self.description == other.description
+            and self.comment == other.comment
+        )
 
     def __hash__(self):
-        return hash((
-            self.attribute_name,
-            self.value,
-            self.description,
-            self.comment
-        ))</code></pre>
+        return hash((self.attribute_name, self.value, self.description, self.comment))</code></pre>
 </details>
 </section>
 <section>
@@ -117,23 +111,23 @@ class MetadataValueInformation():
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class MetadataValueInformation():
-    &#39;&#39;&#39;Information about a metadata value&#39;&#39;&#39;
+<pre><code class="python">class MetadataValueInformation:
+    &#34;&#34;&#34;Information about a metadata value&#34;&#34;&#34;
 
     def __init__(
         self, attribute_name: str, value: Any, description: str, comment: Optional[str]
     ) -&gt; None:
         self.attribute_name = attribute_name
-        &#39;&#39;&#39;The name of the metadata attribute&#39;&#39;&#39;
+        &#34;&#34;&#34;The name of the metadata attribute&#34;&#34;&#34;
 
         self.value = value
-        &#39;&#39;&#39;The value&#39;&#39;&#39;
+        &#34;&#34;&#34;The value&#34;&#34;&#34;
 
         self.description = description
-        &#39;&#39;&#39;The description of the metadata value&#39;&#39;&#39;
+        &#34;&#34;&#34;The description of the metadata value&#34;&#34;&#34;
 
         self.comment = comment
-        &#39;&#39;&#39;The comment of the metadata value&#39;&#39;&#39;
+        &#34;&#34;&#34;The comment of the metadata value&#34;&#34;&#34;
 
     def __str__(self):
         return self.attribute_name
@@ -145,22 +139,15 @@ class MetadataValueInformation():
         if not isinstance(other, MetadataValueInformation):
             return NotImplemented
 
-        return \
-            self is other or \
-            (
-                self.attribute_name == other.attribute_name and
-                self.value == other.value and
-                self.description == other.description and
-                self.comment == other.comment
-            )
+        return self is other or (
+            self.attribute_name == other.attribute_name
+            and self.value == other.value
+            and self.description == other.description
+            and self.comment == other.comment
+        )
 
     def __hash__(self):
-        return hash((
-            self.attribute_name,
-            self.value,
-            self.description,
-            self.comment
-        ))</code></pre>
+        return hash((self.attribute_name, self.value, self.description, self.comment))</code></pre>
 </details>
 <h3>Instance variables</h3>
 <dl>

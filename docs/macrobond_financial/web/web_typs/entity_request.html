@@ -35,16 +35,16 @@ from typing_extensions import TypedDict
 
 
 class EntityRequest(TypedDict, total=False):
-    &#39;&#39;&#39;Request of an entity and an optional timestamp of last modification&#39;&#39;&#39;
+    &#34;&#34;&#34;Request of an entity and an optional timestamp of last modification&#34;&#34;&#34;
 
     name: str
-    &#39;&#39;&#39;The name of the entity&#39;&#39;&#39;
+    &#34;&#34;&#34;The name of the entity&#34;&#34;&#34;
 
     ifModifiedSince: Optional[str]
-    &#39;&#39;&#39;
+    &#34;&#34;&#34;
     If specified, the enitity will only be returned if modified since the specified time.
     If not, the ErrorCode field of the response will be NotModified (304).
-    &#39;&#39;&#39;</code></pre>
+    &#34;&#34;&#34;</code></pre>
 </details>
 </section>
 <section>
@@ -67,16 +67,16 @@ class EntityRequest(TypedDict, total=False):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class EntityRequest(TypedDict, total=False):
-    &#39;&#39;&#39;Request of an entity and an optional timestamp of last modification&#39;&#39;&#39;
+    &#34;&#34;&#34;Request of an entity and an optional timestamp of last modification&#34;&#34;&#34;
 
     name: str
-    &#39;&#39;&#39;The name of the entity&#39;&#39;&#39;
+    &#34;&#34;&#34;The name of the entity&#34;&#34;&#34;
 
     ifModifiedSince: Optional[str]
-    &#39;&#39;&#39;
+    &#34;&#34;&#34;
     If specified, the enitity will only be returned if modified since the specified time.
     If not, the ErrorCode field of the response will be NotModified (304).
-    &#39;&#39;&#39;</code></pre>
+    &#34;&#34;&#34;</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">

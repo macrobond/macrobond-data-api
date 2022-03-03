@@ -6,41 +6,42 @@ if TYPE_CHECKING:  # pragma: no cover
 
     from typing_extensions import TypedDict, Literal
 
-    MetadataValueInformationColumns = \
-        List[Literal['attribute_name', 'value', 'description', 'comment']]
+    MetadataValueInformationColumns = List[
+        Literal["attribute_name", "value", "description", "comment"]
+    ]
 
     class TypedDictMetadataValueInformation(TypedDict):
 
         attribute_name: str
-        '''The name of the metadata attribute'''
+        """The name of the metadata attribute"""
 
         value: Any
-        '''The value'''
+        """The value"""
 
         description: str
-        '''The description of the metadata value'''
+        """The description of the metadata value"""
 
         comment: Optional[str]
-        '''The comment of the metadata value'''
+        """The comment of the metadata value"""
 
 
-class MetadataValueInformation():
-    '''Information about a metadata value'''
+class MetadataValueInformation:
+    """Information about a metadata value"""
 
     def __init__(
         self, attribute_name: str, value: Any, description: str, comment: Optional[str]
     ) -> None:
         self.attribute_name = attribute_name
-        '''The name of the metadata attribute'''
+        """The name of the metadata attribute"""
 
         self.value = value
-        '''The value'''
+        """The value"""
 
         self.description = description
-        '''The description of the metadata value'''
+        """The description of the metadata value"""
 
         self.comment = comment
-        '''The comment of the metadata value'''
+        """The comment of the metadata value"""
 
     def __str__(self):
         return self.attribute_name
@@ -52,19 +53,12 @@ class MetadataValueInformation():
         if not isinstance(other, MetadataValueInformation):
             return NotImplemented
 
-        return \
-            self is other or \
-            (
-                self.attribute_name == other.attribute_name and
-                self.value == other.value and
-                self.description == other.description and
-                self.comment == other.comment
-            )
+        return self is other or (
+            self.attribute_name == other.attribute_name
+            and self.value == other.value
+            and self.description == other.description
+            and self.comment == other.comment
+        )
 
     def __hash__(self):
-        return hash((
-            self.attribute_name,
-            self.value,
-            self.description,
-            self.comment
-        ))
+        return hash((self.attribute_name, self.value, self.description, self.comment))

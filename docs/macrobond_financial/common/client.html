@@ -33,17 +33,19 @@ from typing import Generic, TypeVar, Union, TYPE_CHECKING
 from typing_extensions import Literal
 
 from .api import Api
-TypeVarApi = TypeVar(&#39;TypeVarApi&#39;, bound=Api)
+
+TypeVarApi = TypeVar(&#34;TypeVarApi&#34;, bound=Api)
 
 if TYPE_CHECKING:
     from .credentials import Credentials
 
 
 class Client(ABC, Generic[TypeVarApi]):
-
     def __init__(
         self,
-        credentials: Union[&#39;Credentials&#39;, Literal[False]] = None  # pylint: disable=unused-argument
+        credentials: Union[  # pylint: disable=unused-argument
+            &#34;Credentials&#34;, Literal[False]
+        ] = None,
     ) -&gt; None:
         ...  # pragma: no cover
 
@@ -83,10 +85,11 @@ inheritance.</p></div>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class Client(ABC, Generic[TypeVarApi]):
-
     def __init__(
         self,
-        credentials: Union[&#39;Credentials&#39;, Literal[False]] = None  # pylint: disable=unused-argument
+        credentials: Union[  # pylint: disable=unused-argument
+            &#34;Credentials&#34;, Literal[False]
+        ] = None,
     ) -&gt; None:
         ...  # pragma: no cover
 

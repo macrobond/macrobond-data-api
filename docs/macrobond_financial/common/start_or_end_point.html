@@ -35,14 +35,13 @@ from datetime import datetime
 from .enums import CalendarDateMode
 
 
-class StartOrEndPoint():
-
+class StartOrEndPoint:
     def __init__(self, time: str, mode: Optional[CalendarDateMode]) -&gt; None:
         self.time = time
         self.mode = CalendarDateMode.DATA_IN_ANY_SERIES if mode is None else mode
 
     def __str__(self):
-        return self.time + &#39; mode:&#39; + str(self.mode)
+        return self.time + &#34; mode:&#34; + str(self.mode)
 
     def __repr__(self):
         return str(self)
@@ -50,27 +49,35 @@ class StartOrEndPoint():
     @staticmethod
     def relative_to_observations(
         observations: int, mode: CalendarDateMode = None
-    ) -&gt; &#39;StartOrEndPoint&#39;:
+    ) -&gt; &#34;StartOrEndPoint&#34;:
         return StartOrEndPoint(str(observations), mode)
 
     @staticmethod
-    def relative_to_years(years: int, mode: CalendarDateMode = None) -&gt; &#39;StartOrEndPoint&#39;:
+    def relative_to_years(
+        years: int, mode: CalendarDateMode = None
+    ) -&gt; &#34;StartOrEndPoint&#34;:
         return StartOrEndPoint(str(years) + &#34;y&#34;, mode)
 
     @staticmethod
-    def relative_to_quarters(quarters: int, mode: CalendarDateMode = None) -&gt; &#39;StartOrEndPoint&#39;:
+    def relative_to_quarters(
+        quarters: int, mode: CalendarDateMode = None
+    ) -&gt; &#34;StartOrEndPoint&#34;:
         return StartOrEndPoint(str(quarters) + &#34;q&#34;, mode)
 
     @staticmethod
-    def relative_to_months(months: int, mode: CalendarDateMode = None) -&gt; &#39;StartOrEndPoint&#39;:
+    def relative_to_months(
+        months: int, mode: CalendarDateMode = None
+    ) -&gt; &#34;StartOrEndPoint&#34;:
         return StartOrEndPoint(str(months) + &#34;m&#34;, mode)
 
     @staticmethod
-    def relative_to_weeks(weeks: int, mode: CalendarDateMode = None) -&gt; &#39;StartOrEndPoint&#39;:
+    def relative_to_weeks(
+        weeks: int, mode: CalendarDateMode = None
+    ) -&gt; &#34;StartOrEndPoint&#34;:
         return StartOrEndPoint(str(weeks) + &#34;w&#34;, mode)
 
     @staticmethod
-    def relative_to_days(days: int, mode: CalendarDateMode = None) -&gt; &#39;StartOrEndPoint&#39;:
+    def relative_to_days(days: int, mode: CalendarDateMode = None) -&gt; &#34;StartOrEndPoint&#34;:
         return StartOrEndPoint(str(days) + &#34;d&#34;, mode)
 
     @overload
@@ -78,39 +85,37 @@ class StartOrEndPoint():
     def point_in_time(
         yyyy_or_datetime: int,
         mm: int = None,  # pylint: disable = invalid-name
-        dd: int = None  # pylint: disable = invalid-name
-    ) -&gt; &#39;StartOrEndPoint&#39;:
+        dd: int = None,  # pylint: disable = invalid-name
+    ) -&gt; &#34;StartOrEndPoint&#34;:
         ...
 
     @overload
     @staticmethod
-    def point_in_time(
-        yyyy_or_datetime: datetime
-    ) -&gt; &#39;StartOrEndPoint&#39;:
+    def point_in_time(yyyy_or_datetime: datetime) -&gt; &#34;StartOrEndPoint&#34;:
         ...
 
     @staticmethod
     def point_in_time(
         yyyy_or_datetime: Union[int, datetime],
         mm: int = None,  # pylint: disable = invalid-name
-        dd: int = None  # pylint: disable = invalid-name
-    ) -&gt; &#39;StartOrEndPoint&#39;:
+        dd: int = None,  # pylint: disable = invalid-name
+    ) -&gt; &#34;StartOrEndPoint&#34;:
         if isinstance(yyyy_or_datetime, datetime):
-            return StartOrEndPoint(yyyy_or_datetime.strftime(&#39;%Y-%m-%d&#39;), None)
+            return StartOrEndPoint(yyyy_or_datetime.strftime(&#34;%Y-%m-%d&#34;), None)
         time = str(yyyy_or_datetime).zfill(4)
         if mm is not None:
-            time += &#39;-&#39; + str(mm).zfill(2)
+            time += &#34;-&#34; + str(mm).zfill(2)
             if dd is not None:
-                time += &#39;-&#39; + str(dd).zfill(2)
+                time += &#34;-&#34; + str(dd).zfill(2)
         return StartOrEndPoint(time, None)
 
     @staticmethod
-    def data_in_any_series() -&gt; &#39;StartOrEndPoint&#39;:
-        return StartOrEndPoint(&#39;&#39;, CalendarDateMode.DATA_IN_ANY_SERIES)
+    def data_in_any_series() -&gt; &#34;StartOrEndPoint&#34;:
+        return StartOrEndPoint(&#34;&#34;, CalendarDateMode.DATA_IN_ANY_SERIES)
 
     @staticmethod
-    def data_in_all_series() -&gt; &#39;StartOrEndPoint&#39;:
-        return StartOrEndPoint(&#39;&#39;, CalendarDateMode.DATA_IN_ALL_SERIES)</code></pre>
+    def data_in_all_series() -&gt; &#34;StartOrEndPoint&#34;:
+        return StartOrEndPoint(&#34;&#34;, CalendarDateMode.DATA_IN_ALL_SERIES)</code></pre>
 </details>
 </section>
 <section>
@@ -132,14 +137,13 @@ class StartOrEndPoint():
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class StartOrEndPoint():
-
+<pre><code class="python">class StartOrEndPoint:
     def __init__(self, time: str, mode: Optional[CalendarDateMode]) -&gt; None:
         self.time = time
         self.mode = CalendarDateMode.DATA_IN_ANY_SERIES if mode is None else mode
 
     def __str__(self):
-        return self.time + &#39; mode:&#39; + str(self.mode)
+        return self.time + &#34; mode:&#34; + str(self.mode)
 
     def __repr__(self):
         return str(self)
@@ -147,27 +151,35 @@ class StartOrEndPoint():
     @staticmethod
     def relative_to_observations(
         observations: int, mode: CalendarDateMode = None
-    ) -&gt; &#39;StartOrEndPoint&#39;:
+    ) -&gt; &#34;StartOrEndPoint&#34;:
         return StartOrEndPoint(str(observations), mode)
 
     @staticmethod
-    def relative_to_years(years: int, mode: CalendarDateMode = None) -&gt; &#39;StartOrEndPoint&#39;:
+    def relative_to_years(
+        years: int, mode: CalendarDateMode = None
+    ) -&gt; &#34;StartOrEndPoint&#34;:
         return StartOrEndPoint(str(years) + &#34;y&#34;, mode)
 
     @staticmethod
-    def relative_to_quarters(quarters: int, mode: CalendarDateMode = None) -&gt; &#39;StartOrEndPoint&#39;:
+    def relative_to_quarters(
+        quarters: int, mode: CalendarDateMode = None
+    ) -&gt; &#34;StartOrEndPoint&#34;:
         return StartOrEndPoint(str(quarters) + &#34;q&#34;, mode)
 
     @staticmethod
-    def relative_to_months(months: int, mode: CalendarDateMode = None) -&gt; &#39;StartOrEndPoint&#39;:
+    def relative_to_months(
+        months: int, mode: CalendarDateMode = None
+    ) -&gt; &#34;StartOrEndPoint&#34;:
         return StartOrEndPoint(str(months) + &#34;m&#34;, mode)
 
     @staticmethod
-    def relative_to_weeks(weeks: int, mode: CalendarDateMode = None) -&gt; &#39;StartOrEndPoint&#39;:
+    def relative_to_weeks(
+        weeks: int, mode: CalendarDateMode = None
+    ) -&gt; &#34;StartOrEndPoint&#34;:
         return StartOrEndPoint(str(weeks) + &#34;w&#34;, mode)
 
     @staticmethod
-    def relative_to_days(days: int, mode: CalendarDateMode = None) -&gt; &#39;StartOrEndPoint&#39;:
+    def relative_to_days(days: int, mode: CalendarDateMode = None) -&gt; &#34;StartOrEndPoint&#34;:
         return StartOrEndPoint(str(days) + &#34;d&#34;, mode)
 
     @overload
@@ -175,39 +187,37 @@ class StartOrEndPoint():
     def point_in_time(
         yyyy_or_datetime: int,
         mm: int = None,  # pylint: disable = invalid-name
-        dd: int = None  # pylint: disable = invalid-name
-    ) -&gt; &#39;StartOrEndPoint&#39;:
+        dd: int = None,  # pylint: disable = invalid-name
+    ) -&gt; &#34;StartOrEndPoint&#34;:
         ...
 
     @overload
     @staticmethod
-    def point_in_time(
-        yyyy_or_datetime: datetime
-    ) -&gt; &#39;StartOrEndPoint&#39;:
+    def point_in_time(yyyy_or_datetime: datetime) -&gt; &#34;StartOrEndPoint&#34;:
         ...
 
     @staticmethod
     def point_in_time(
         yyyy_or_datetime: Union[int, datetime],
         mm: int = None,  # pylint: disable = invalid-name
-        dd: int = None  # pylint: disable = invalid-name
-    ) -&gt; &#39;StartOrEndPoint&#39;:
+        dd: int = None,  # pylint: disable = invalid-name
+    ) -&gt; &#34;StartOrEndPoint&#34;:
         if isinstance(yyyy_or_datetime, datetime):
-            return StartOrEndPoint(yyyy_or_datetime.strftime(&#39;%Y-%m-%d&#39;), None)
+            return StartOrEndPoint(yyyy_or_datetime.strftime(&#34;%Y-%m-%d&#34;), None)
         time = str(yyyy_or_datetime).zfill(4)
         if mm is not None:
-            time += &#39;-&#39; + str(mm).zfill(2)
+            time += &#34;-&#34; + str(mm).zfill(2)
             if dd is not None:
-                time += &#39;-&#39; + str(dd).zfill(2)
+                time += &#34;-&#34; + str(dd).zfill(2)
         return StartOrEndPoint(time, None)
 
     @staticmethod
-    def data_in_any_series() -&gt; &#39;StartOrEndPoint&#39;:
-        return StartOrEndPoint(&#39;&#39;, CalendarDateMode.DATA_IN_ANY_SERIES)
+    def data_in_any_series() -&gt; &#34;StartOrEndPoint&#34;:
+        return StartOrEndPoint(&#34;&#34;, CalendarDateMode.DATA_IN_ANY_SERIES)
 
     @staticmethod
-    def data_in_all_series() -&gt; &#39;StartOrEndPoint&#39;:
-        return StartOrEndPoint(&#39;&#39;, CalendarDateMode.DATA_IN_ALL_SERIES)</code></pre>
+    def data_in_all_series() -&gt; &#34;StartOrEndPoint&#34;:
+        return StartOrEndPoint(&#34;&#34;, CalendarDateMode.DATA_IN_ALL_SERIES)</code></pre>
 </details>
 <h3>Static methods</h3>
 <dl>
@@ -221,8 +231,8 @@ class StartOrEndPoint():
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@staticmethod
-def data_in_all_series() -&gt; &#39;StartOrEndPoint&#39;:
-    return StartOrEndPoint(&#39;&#39;, CalendarDateMode.DATA_IN_ALL_SERIES)</code></pre>
+def data_in_all_series() -&gt; &#34;StartOrEndPoint&#34;:
+    return StartOrEndPoint(&#34;&#34;, CalendarDateMode.DATA_IN_ALL_SERIES)</code></pre>
 </details>
 </dd>
 <dt id="macrobond_financial.common.start_or_end_point.StartOrEndPoint.data_in_any_series"><code class="name flex">
@@ -235,8 +245,8 @@ def data_in_all_series() -&gt; &#39;StartOrEndPoint&#39;:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@staticmethod
-def data_in_any_series() -&gt; &#39;StartOrEndPoint&#39;:
-    return StartOrEndPoint(&#39;&#39;, CalendarDateMode.DATA_IN_ANY_SERIES)</code></pre>
+def data_in_any_series() -&gt; &#34;StartOrEndPoint&#34;:
+    return StartOrEndPoint(&#34;&#34;, CalendarDateMode.DATA_IN_ANY_SERIES)</code></pre>
 </details>
 </dd>
 <dt id="macrobond_financial.common.start_or_end_point.StartOrEndPoint.point_in_time"><code class="name flex">
@@ -252,15 +262,15 @@ def data_in_any_series() -&gt; &#39;StartOrEndPoint&#39;:
 def point_in_time(
     yyyy_or_datetime: Union[int, datetime],
     mm: int = None,  # pylint: disable = invalid-name
-    dd: int = None  # pylint: disable = invalid-name
-) -&gt; &#39;StartOrEndPoint&#39;:
+    dd: int = None,  # pylint: disable = invalid-name
+) -&gt; &#34;StartOrEndPoint&#34;:
     if isinstance(yyyy_or_datetime, datetime):
-        return StartOrEndPoint(yyyy_or_datetime.strftime(&#39;%Y-%m-%d&#39;), None)
+        return StartOrEndPoint(yyyy_or_datetime.strftime(&#34;%Y-%m-%d&#34;), None)
     time = str(yyyy_or_datetime).zfill(4)
     if mm is not None:
-        time += &#39;-&#39; + str(mm).zfill(2)
+        time += &#34;-&#34; + str(mm).zfill(2)
         if dd is not None:
-            time += &#39;-&#39; + str(dd).zfill(2)
+            time += &#34;-&#34; + str(dd).zfill(2)
     return StartOrEndPoint(time, None)</code></pre>
 </details>
 </dd>
@@ -274,7 +284,7 @@ def point_in_time(
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@staticmethod
-def relative_to_days(days: int, mode: CalendarDateMode = None) -&gt; &#39;StartOrEndPoint&#39;:
+def relative_to_days(days: int, mode: CalendarDateMode = None) -&gt; &#34;StartOrEndPoint&#34;:
     return StartOrEndPoint(str(days) + &#34;d&#34;, mode)</code></pre>
 </details>
 </dd>
@@ -288,7 +298,9 @@ def relative_to_days(days: int, mode: CalendarDateMode = None) -&gt; &#39;StartO
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@staticmethod
-def relative_to_months(months: int, mode: CalendarDateMode = None) -&gt; &#39;StartOrEndPoint&#39;:
+def relative_to_months(
+    months: int, mode: CalendarDateMode = None
+) -&gt; &#34;StartOrEndPoint&#34;:
     return StartOrEndPoint(str(months) + &#34;m&#34;, mode)</code></pre>
 </details>
 </dd>
@@ -304,7 +316,7 @@ def relative_to_months(months: int, mode: CalendarDateMode = None) -&gt; &#39;St
 <pre><code class="python">@staticmethod
 def relative_to_observations(
     observations: int, mode: CalendarDateMode = None
-) -&gt; &#39;StartOrEndPoint&#39;:
+) -&gt; &#34;StartOrEndPoint&#34;:
     return StartOrEndPoint(str(observations), mode)</code></pre>
 </details>
 </dd>
@@ -318,7 +330,9 @@ def relative_to_observations(
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@staticmethod
-def relative_to_quarters(quarters: int, mode: CalendarDateMode = None) -&gt; &#39;StartOrEndPoint&#39;:
+def relative_to_quarters(
+    quarters: int, mode: CalendarDateMode = None
+) -&gt; &#34;StartOrEndPoint&#34;:
     return StartOrEndPoint(str(quarters) + &#34;q&#34;, mode)</code></pre>
 </details>
 </dd>
@@ -332,7 +346,9 @@ def relative_to_quarters(quarters: int, mode: CalendarDateMode = None) -&gt; &#3
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@staticmethod
-def relative_to_weeks(weeks: int, mode: CalendarDateMode = None) -&gt; &#39;StartOrEndPoint&#39;:
+def relative_to_weeks(
+    weeks: int, mode: CalendarDateMode = None
+) -&gt; &#34;StartOrEndPoint&#34;:
     return StartOrEndPoint(str(weeks) + &#34;w&#34;, mode)</code></pre>
 </details>
 </dd>
@@ -346,7 +362,9 @@ def relative_to_weeks(weeks: int, mode: CalendarDateMode = None) -&gt; &#39;Star
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@staticmethod
-def relative_to_years(years: int, mode: CalendarDateMode = None) -&gt; &#39;StartOrEndPoint&#39;:
+def relative_to_years(
+    years: int, mode: CalendarDateMode = None
+) -&gt; &#34;StartOrEndPoint&#34;:
     return StartOrEndPoint(str(years) + &#34;y&#34;, mode)</code></pre>
 </details>
 </dd>

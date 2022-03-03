@@ -38,7 +38,6 @@ if TYPE_CHECKING:  # pragma: no cover
 
 
 class SessionHttpException(Exception):
-
     @property
     def status_code(self):
         return self.__response.status_code
@@ -47,12 +46,12 @@ class SessionHttpException(Exception):
     def response(self):
         return self.__response
 
-    def __init__(self, response: &#39;Response&#39;) -&gt; None:
+    def __init__(self, response: &#34;Response&#34;) -&gt; None:
         request = response.request
         super().__init__(
             (
-                f&#39;http {request.method} request to {request.path_url} &#39;
-                f&#39;returnd status_code: {str(response.status_code)} &#39;
+                f&#34;http {request.method} request to {request.path_url} &#34;
+                f&#34;returnd status_code: {str(response.status_code)} &#34;
                 f&#39;text: &#34;{response.text}&#34;&#39;
             )
         )
@@ -79,7 +78,6 @@ class SessionHttpException(Exception):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class SessionHttpException(Exception):
-
     @property
     def status_code(self):
         return self.__response.status_code
@@ -88,12 +86,12 @@ class SessionHttpException(Exception):
     def response(self):
         return self.__response
 
-    def __init__(self, response: &#39;Response&#39;) -&gt; None:
+    def __init__(self, response: &#34;Response&#34;) -&gt; None:
         request = response.request
         super().__init__(
             (
-                f&#39;http {request.method} request to {request.path_url} &#39;
-                f&#39;returnd status_code: {str(response.status_code)} &#39;
+                f&#34;http {request.method} request to {request.path_url} &#34;
+                f&#34;returnd status_code: {str(response.status_code)} &#34;
                 f&#39;text: &#34;{response.text}&#34;&#39;
             )
         )

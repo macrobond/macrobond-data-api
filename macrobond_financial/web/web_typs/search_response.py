@@ -7,10 +7,10 @@ from typing_extensions import TypedDict
 
 
 class SearchResponse(TypedDict):
-    '''Entity search response'''
+    """Entity search response"""
 
     isTruncated: Optional[bool]
-    '''If True, the search response is truncated'''
+    """If True, the search response is truncated"""
 
     results: List[Dict[str, Any]]
-    '''The matched entites'''
+    """The matched entites"""

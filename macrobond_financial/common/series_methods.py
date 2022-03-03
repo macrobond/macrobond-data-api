@@ -5,8 +5,12 @@
 from typing import Tuple, Union, overload, List, TYPE_CHECKING
 from abc import ABC, abstractmethod
 
-from .enums import SeriesMissingValueMethod, SeriesToLowerFrequencyMethod, \
-    SeriesToHigherFrequencyMethod, SeriesPartialPeriodsMethod
+from .enums import (
+    SeriesMissingValueMethod,
+    SeriesToLowerFrequencyMethod,
+    SeriesToHigherFrequencyMethod,
+    SeriesPartialPeriodsMethod,
+)
 
 if TYPE_CHECKING:  # pragma: no cover
 
@@ -16,189 +20,209 @@ if TYPE_CHECKING:  # pragma: no cover
 
     from .entity import Entity, EntityColumns, EntityTypedDicts
     from .series import Series, SeriesColumns, SeriesTypedDicts
-    from .unified_series import UnifiedSeries, UnifiedSeriesColumns, UnifiedSeriesTypedDict
+    from .unified_series import (
+        UnifiedSeries,
+        UnifiedSeriesColumns,
+        UnifiedSeriesTypedDict,
+    )
     from .start_or_end_point import StartOrEndPoint
 
     from typing_extensions import Literal
 
-    SeriesValuesAndDatesColumns = List[Literal['Values', 'Dates']]
+    SeriesValuesAndDatesColumns = List[Literal["Values", "Dates"]]
 
 
 class GetOneSeriesReturn(ABC):
+    @abstractmethod
+    def object(self) -> "Series":
+        ...
 
     @abstractmethod
-    def object(self) -> 'Series': ...
-
-    @abstractmethod
-    def dict(self) -> 'SeriesTypedDicts': ...
+    def dict(self) -> "SeriesTypedDicts":
+        ...
 
     @overload
-    def data_frame(self) -> 'DataFrame': ...
+    def data_frame(self) -> "DataFrame":
+        ...
 
     @overload
     def data_frame(
         self,
-        index: 'pandas_typing.Axes' = None,
-        columns: Union[
-            'SeriesColumns', 'pandas_typing.Axes'
-        ] = None,
-        dtype: 'pandas_typing.Dtype' = None,
+        index: "pandas_typing.Axes" = None,
+        columns: Union["SeriesColumns", "pandas_typing.Axes"] = None,
+        dtype: "pandas_typing.Dtype" = None,
         copy: bool = False,
-    ) -> 'DataFrame': ...
+    ) -> "DataFrame":
+        ...
 
     @abstractmethod
-    def data_frame(self, *args, **kwargs) -> 'DataFrame': ...
+    def data_frame(self, *args, **kwargs) -> "DataFrame":
+        ...
 
     @overload
-    def values_and_dates_as_data_frame(self) -> 'DataFrame': ...
+    def values_and_dates_as_data_frame(self) -> "DataFrame":
+        ...
 
     @overload
     def values_and_dates_as_data_frame(
         self,
-        index: 'pandas_typing.Axes' = None,
-        columns: Union[
-            'SeriesValuesAndDatesColumns', 'pandas_typing.Axes'
-        ] = None,
-        dtype: 'pandas_typing.Dtype' = None,
+        index: "pandas_typing.Axes" = None,
+        columns: Union["SeriesValuesAndDatesColumns", "pandas_typing.Axes"] = None,
+        dtype: "pandas_typing.Dtype" = None,
         copy: bool = False,
-    ) -> 'DataFrame': ...
+    ) -> "DataFrame":
+        ...
 
     @abstractmethod
-    def values_and_dates_as_data_frame(self, *args, **kwargs) -> 'DataFrame': ...
+    def values_and_dates_as_data_frame(self, *args, **kwargs) -> "DataFrame":
+        ...
 
 
 class GetSeriesReturn(ABC):
+    @abstractmethod
+    def tuple_of_objects(self) -> Tuple["Series", ...]:
+        ...
 
     @abstractmethod
-    def tuple_of_objects(self) -> Tuple['Series', ...]: ...
-
-    @abstractmethod
-    def tuple_of_dicts(self) -> Tuple['SeriesTypedDicts', ...]: ...
+    def tuple_of_dicts(self) -> Tuple["SeriesTypedDicts", ...]:
+        ...
 
     @overload
-    def data_frame(self) -> 'DataFrame': ...
+    def data_frame(self) -> "DataFrame":
+        ...
 
     @overload
     def data_frame(
         self,
-        index: 'pandas_typing.Axes' = None,
-        columns: Union[
-            'SeriesColumns', 'pandas_typing.Axes'
-        ] = None,
-        dtype: 'pandas_typing.Dtype' = None,
+        index: "pandas_typing.Axes" = None,
+        columns: Union["SeriesColumns", "pandas_typing.Axes"] = None,
+        dtype: "pandas_typing.Dtype" = None,
         copy: bool = False,
-    ) -> 'DataFrame': ...
+    ) -> "DataFrame":
+        ...
 
     @abstractmethod
-    def data_frame(self, *args, **kwargs) -> 'DataFrame': ...
+    def data_frame(self, *args, **kwargs) -> "DataFrame":
+        ...
 
 
 class GetOneEntitieReturn(ABC):
+    @abstractmethod
+    def object(self) -> "Entity":
+        ...
 
     @abstractmethod
-    def object(self) -> 'Entity': ...
-
-    @abstractmethod
-    def dict(self) -> 'EntityTypedDicts': ...
+    def dict(self) -> "EntityTypedDicts":
+        ...
 
     @overload
-    def data_frame(self) -> 'DataFrame': ...
+    def data_frame(self) -> "DataFrame":
+        ...
 
     @overload
     def data_frame(
         self,
-        index: 'pandas_typing.Axes' = None,
-        columns: Union[
-            'EntityColumns', 'pandas_typing.Axes'
-        ] = None,
-        dtype: 'pandas_typing.Dtype' = None,
+        index: "pandas_typing.Axes" = None,
+        columns: Union["EntityColumns", "pandas_typing.Axes"] = None,
+        dtype: "pandas_typing.Dtype" = None,
         copy: bool = False,
-    ) -> 'DataFrame': ...
+    ) -> "DataFrame":
+        ...
 
     @abstractmethod
-    def data_frame(self, *args, **kwargs) -> 'DataFrame': ...
+    def data_frame(self, *args, **kwargs) -> "DataFrame":
+        ...
 
     @abstractmethod
-    def metadata_as_data_frame(self) -> 'DataFrame': ...
+    def metadata_as_data_frame(self) -> "DataFrame":
+        ...
 
     # .from_dict(i['metadata'], orient='index')
 
 
 class GetEntitiesReturn(ABC):
+    @abstractmethod
+    def tuple_of_objects(self) -> Tuple["Entity", ...]:
+        ...
 
     @abstractmethod
-    def tuple_of_objects(self) -> Tuple['Entity', ...]: ...
-
-    @abstractmethod
-    def tuple_of_dicts(self) -> Tuple['EntityTypedDicts', ...]: ...
+    def tuple_of_dicts(self) -> Tuple["EntityTypedDicts", ...]:
+        ...
 
     @overload
-    def data_frame(self) -> 'DataFrame': ...
+    def data_frame(self) -> "DataFrame":
+        ...
 
     @overload
     def data_frame(
         self,
-        index: 'pandas_typing.Axes' = None,
-        columns: Union[
-            'EntityColumns', 'pandas_typing.Axes'
-        ] = None,
-        dtype: 'pandas_typing.Dtype' = None,
+        index: "pandas_typing.Axes" = None,
+        columns: Union["EntityColumns", "pandas_typing.Axes"] = None,
+        dtype: "pandas_typing.Dtype" = None,
         copy: bool = False,
-    ) -> 'DataFrame': ...
+    ) -> "DataFrame":
+        ...
 
     @abstractmethod
-    def data_frame(self, *args, **kwargs) -> 'DataFrame': ...
+    def data_frame(self, *args, **kwargs) -> "DataFrame":
+        ...
 
 
 class GetUnifiedSeriesReturn(ABC):
+    @abstractmethod
+    def object(self) -> "UnifiedSeries":
+        ...
 
     @abstractmethod
-    def object(self) -> 'UnifiedSeries': ...
+    def dict(self) -> "UnifiedSeriesTypedDict":
+        ...
 
     @abstractmethod
-    def dict(self) -> 'UnifiedSeriesTypedDict': ...
-
-    @abstractmethod
-    def data_frame(self, columns: List[str] = None) -> 'DataFrame': ...
+    def data_frame(self, columns: List[str] = None) -> "DataFrame":
+        ...
 
 
 class SeriesMethods(ABC):
+    @abstractmethod
+    def get_one_series(
+        self, series_name: str, raise_get_entities_error=True
+    ) -> GetOneSeriesReturn:
+        """Download one series."""
 
     @abstractmethod
-    def get_one_series(self, series_name: str, raise_get_entities_error=True) -> GetOneSeriesReturn:
-        '''Download one series.'''
-
-    @abstractmethod
-    def get_series(self, *series_names: str, raise_get_entities_error=True) -> GetSeriesReturn:
-        '''Download one or more series.'''
+    def get_series(
+        self, *series_names: str, raise_get_entities_error=True
+    ) -> GetSeriesReturn:
+        """Download one or more series."""
 
     @abstractmethod
     def get_one_entitie(
         self, entity_name: str, raise_get_entities_error=True
     ) -> GetOneEntitieReturn:
-        '''Download one entity.'''
+        """Download one entity."""
 
     @abstractmethod
-    def get_entities(self, *entity_names: str, raise_get_entities_error=True) -> GetEntitiesReturn:
-        '''Download one or more entitys.'''
+    def get_entities(
+        self, *entity_names: str, raise_get_entities_error=True
+    ) -> GetEntitiesReturn:
+        """Download one or more entitys."""
 
     @abstractmethod
     def get_unified_series(
         self,
-        *series_entries: Union['SeriesEntrie', str],
-        frequency: 'SeriesFrequency' = None,
-        weekdays: 'SeriesWeekdays' = None,
-        calendar_merge_mode: 'CalendarMergeMode' = None,
+        *series_entries: Union["SeriesEntrie", str],
+        frequency: "SeriesFrequency" = None,
+        weekdays: "SeriesWeekdays" = None,
+        calendar_merge_mode: "CalendarMergeMode" = None,
         currency: str = None,
-        start_point: 'StartOrEndPoint' = None,
-        end_point: 'StartOrEndPoint' = None,
+        start_point: "StartOrEndPoint" = None,
+        end_point: "StartOrEndPoint" = None,
         raise_get_entities_error=True
     ) -> GetUnifiedSeriesReturn:
         ...  # pragma: no cover
 
 
-class SeriesEntrie():
-
+class SeriesEntrie:
     def __init__(
         self,
         name: str,
@@ -209,14 +233,18 @@ class SeriesEntrie():
     ) -> None:
         self.name = name
 
-        self.missing_value_method = \
+        self.missing_value_method = (
             missing_value_method or SeriesMissingValueMethod.NONE
+        )
 
-        self.to_lowerfrequency_method = \
+        self.to_lowerfrequency_method = (
             to_lowerfrequency_method or SeriesToLowerFrequencyMethod.AUTO
+        )
 
-        self.to_higherfrequency_method = \
+        self.to_higherfrequency_method = (
             to_higherfrequency_method or SeriesToHigherFrequencyMethod.AUTO
+        )
 
-        self.partial_periods_method = \
+        self.partial_periods_method = (
             partial_periods_method or SeriesPartialPeriodsMethod.NONE
+        )

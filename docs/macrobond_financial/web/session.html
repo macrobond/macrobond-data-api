@@ -48,30 +48,29 @@ if TYPE_CHECKING:  # pragma: no cover
     from requests import Response  # type: ignore
 
 __pdoc__ = {
-    &#39;Session.__init__&#39;: False,
+    &#34;Session.__init__&#34;: False,
 }
 
 
-class Session():
-
+class Session:
     @property
     def metadata(self) -&gt; MetadataMethods:
-        &#39;&#39;&#39;Metadata operations&#39;&#39;&#39;
+        &#34;&#34;&#34;Metadata operations&#34;&#34;&#34;
         return self.__metadata
 
     @property
     def search(self) -&gt; SearchMethods:
-        &#39;&#39;&#39;Search for time series and other entites&#39;&#39;&#39;
+        &#34;&#34;&#34;Search for time series and other entites&#34;&#34;&#34;
         return self.__search
 
     @property
     def series(self) -&gt; SeriesMethods:
-        &#39;&#39;&#39;Time series and entity operations&#39;&#39;&#39;
+        &#34;&#34;&#34;Time series and entity operations&#34;&#34;&#34;
         return self.__series
 
     @property
     def series_tree(self) -&gt; SeriesTreeMethods:
-        &#39;&#39;&#39;Operations related to the visual series database tree structure&#39;&#39;&#39;
+        &#34;&#34;&#34;Operations related to the visual series database tree structure&#34;&#34;&#34;
         return self.__series_tree
 
     @property
@@ -91,23 +90,29 @@ class Session():
         return self.__auth2_session
 
     def __init__(
-        self, client_id: str, client_secret: str, *scopes: Scope,
-        api_url: str = API_URL_DEFAULT, authorization_url: str = API_URL_DEFAULT,
+        self,
+        client_id: str,
+        client_secret: str,
+        *scopes: Scope,
+        api_url: str = API_URL_DEFAULT,
+        authorization_url: str = API_URL_DEFAULT,
         test_auth2_session: Any = None
     ) -&gt; None:
         self.__token_endpoint: Optional[str] = None
 
-        if not authorization_url.endswith(&#39;/&#39;):
-            authorization_url = authorization_url + &#39;/&#39;
+        if not authorization_url.endswith(&#34;/&#34;):
+            authorization_url = authorization_url + &#34;/&#34;
         self.__authorization_url = authorization_url
 
-        if not api_url.endswith(&#39;/&#39;):
-            api_url = api_url + &#39;/&#39;
+        if not api_url.endswith(&#34;/&#34;):
+            api_url = api_url + &#34;/&#34;
         self.__api_url = api_url
 
         scopes_str_list = list(map(lambda s: s.value, scopes))
         if test_auth2_session is None:
-            self.__auth2_session = OAuth2Session(client_id, client_secret, scope=scopes_str_list)
+            self.__auth2_session = OAuth2Session(
+                client_id, client_secret, scope=scopes_str_list
+            )
         else:
             self.__auth2_session = test_auth2_session
 
@@ -124,52 +129,58 @@ class Session():
             self.__token_endpoint = self.discovery(self.authorization_url)
         self.auth2_session.fetch_token(self.token_endpoint)
 
-    def get(self, url: str, params: dict = None) -&gt; &#39;Response&#39;:
+    def get(self, url: str, params: dict = None) -&gt; &#34;Response&#34;:
         def http():
             return self.auth2_session.get(url=self.api_url + url, params=params)
+
         return self.__if_status_code_401_fetch_token_and_retry(http)
 
-    def get_or_raise(self, url: str, params: dict = None) -&gt; &#39;Response&#39;:
+    def get_or_raise(self, url: str, params: dict = None) -&gt; &#34;Response&#34;:
         response = self.get(url, params)
         if response.status_code != 200:
             raise SessionHttpException(response)
         return response
 
-    def post(self, url: str, params: dict = None, json: object = None) -&gt; &#39;Response&#39;:
+    def post(self, url: str, params: dict = None, json: object = None) -&gt; &#34;Response&#34;:
         def http():
             return self.auth2_session.post(
                 url=self.api_url + url, params=params, json=json
             )
+
         return self.__if_status_code_401_fetch_token_and_retry(http)
 
-    def post_or_raise(self, url: str, params: dict = None, json: object = None) -&gt; &#39;Response&#39;:
+    def post_or_raise(
+        self, url: str, params: dict = None, json: object = None
+    ) -&gt; &#34;Response&#34;:
         response = self.post(url, params, json)
         if response.status_code != 200:
             raise SessionHttpException(response)
         return response
 
     def discovery(self, url: str) -&gt; str:
-        response = self.auth2_session.request(&#39;get&#39;, url + &#39;.well-known/openid-configuration&#39;, True)
+        response = self.auth2_session.request(
+            &#34;get&#34;, url + &#34;.well-known/openid-configuration&#34;, True
+        )
         if response.status_code != 200:
-            raise Exception(&#39;discovery Exception, status code is not 200&#39;)
+            raise Exception(&#34;discovery Exception, status code is not 200&#34;)
 
         try:
             json: Optional[dict] = response.json()
         except BaseException as base_exception:
-            raise Exception(&#39;discovery Exception, not valid json.&#39;) from base_exception
+            raise Exception(&#34;discovery Exception, not valid json.&#34;) from base_exception
 
         if not isinstance(json, dict):
-            raise Exception(&#39;discovery Exception, no root obj in json.&#39;)
+            raise Exception(&#34;discovery Exception, no root obj in json.&#34;)
 
-        token_endpoint: Optional[str] = json.get(&#39;token_endpoint&#39;)
+        token_endpoint: Optional[str] = json.get(&#34;token_endpoint&#34;)
         if token_endpoint is None:
-            raise Exception(&#39;discovery Exception, token_endpoint in root obj.&#39;)
+            raise Exception(&#34;discovery Exception, token_endpoint in root obj.&#34;)
 
         return token_endpoint
 
     def __if_status_code_401_fetch_token_and_retry(
-        self, http: Callable[[], &#39;Response&#39;]
-    ) -&gt; &#39;Response&#39;:
+        self, http: Callable[[], &#34;Response&#34;]
+    ) -&gt; &#34;Response&#34;:
         response = http()
         if response.status_code == 401:
             self.fetch_token()
@@ -195,26 +206,25 @@ class Session():
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class Session():
-
+<pre><code class="python">class Session:
     @property
     def metadata(self) -&gt; MetadataMethods:
-        &#39;&#39;&#39;Metadata operations&#39;&#39;&#39;
+        &#34;&#34;&#34;Metadata operations&#34;&#34;&#34;
         return self.__metadata
 
     @property
     def search(self) -&gt; SearchMethods:
-        &#39;&#39;&#39;Search for time series and other entites&#39;&#39;&#39;
+        &#34;&#34;&#34;Search for time series and other entites&#34;&#34;&#34;
         return self.__search
 
     @property
     def series(self) -&gt; SeriesMethods:
-        &#39;&#39;&#39;Time series and entity operations&#39;&#39;&#39;
+        &#34;&#34;&#34;Time series and entity operations&#34;&#34;&#34;
         return self.__series
 
     @property
     def series_tree(self) -&gt; SeriesTreeMethods:
-        &#39;&#39;&#39;Operations related to the visual series database tree structure&#39;&#39;&#39;
+        &#34;&#34;&#34;Operations related to the visual series database tree structure&#34;&#34;&#34;
         return self.__series_tree
 
     @property
@@ -234,23 +244,29 @@ class Session():
         return self.__auth2_session
 
     def __init__(
-        self, client_id: str, client_secret: str, *scopes: Scope,
-        api_url: str = API_URL_DEFAULT, authorization_url: str = API_URL_DEFAULT,
+        self,
+        client_id: str,
+        client_secret: str,
+        *scopes: Scope,
+        api_url: str = API_URL_DEFAULT,
+        authorization_url: str = API_URL_DEFAULT,
         test_auth2_session: Any = None
     ) -&gt; None:
         self.__token_endpoint: Optional[str] = None
 
-        if not authorization_url.endswith(&#39;/&#39;):
-            authorization_url = authorization_url + &#39;/&#39;
+        if not authorization_url.endswith(&#34;/&#34;):
+            authorization_url = authorization_url + &#34;/&#34;
         self.__authorization_url = authorization_url
 
-        if not api_url.endswith(&#39;/&#39;):
-            api_url = api_url + &#39;/&#39;
+        if not api_url.endswith(&#34;/&#34;):
+            api_url = api_url + &#34;/&#34;
         self.__api_url = api_url
 
         scopes_str_list = list(map(lambda s: s.value, scopes))
         if test_auth2_session is None:
-            self.__auth2_session = OAuth2Session(client_id, client_secret, scope=scopes_str_list)
+            self.__auth2_session = OAuth2Session(
+                client_id, client_secret, scope=scopes_str_list
+            )
         else:
             self.__auth2_session = test_auth2_session
 
@@ -267,52 +283,58 @@ class Session():
             self.__token_endpoint = self.discovery(self.authorization_url)
         self.auth2_session.fetch_token(self.token_endpoint)
 
-    def get(self, url: str, params: dict = None) -&gt; &#39;Response&#39;:
+    def get(self, url: str, params: dict = None) -&gt; &#34;Response&#34;:
         def http():
             return self.auth2_session.get(url=self.api_url + url, params=params)
+
         return self.__if_status_code_401_fetch_token_and_retry(http)
 
-    def get_or_raise(self, url: str, params: dict = None) -&gt; &#39;Response&#39;:
+    def get_or_raise(self, url: str, params: dict = None) -&gt; &#34;Response&#34;:
         response = self.get(url, params)
         if response.status_code != 200:
             raise SessionHttpException(response)
         return response
 
-    def post(self, url: str, params: dict = None, json: object = None) -&gt; &#39;Response&#39;:
+    def post(self, url: str, params: dict = None, json: object = None) -&gt; &#34;Response&#34;:
         def http():
             return self.auth2_session.post(
                 url=self.api_url + url, params=params, json=json
             )
+
         return self.__if_status_code_401_fetch_token_and_retry(http)
 
-    def post_or_raise(self, url: str, params: dict = None, json: object = None) -&gt; &#39;Response&#39;:
+    def post_or_raise(
+        self, url: str, params: dict = None, json: object = None
+    ) -&gt; &#34;Response&#34;:
         response = self.post(url, params, json)
         if response.status_code != 200:
             raise SessionHttpException(response)
         return response
 
     def discovery(self, url: str) -&gt; str:
-        response = self.auth2_session.request(&#39;get&#39;, url + &#39;.well-known/openid-configuration&#39;, True)
+        response = self.auth2_session.request(
+            &#34;get&#34;, url + &#34;.well-known/openid-configuration&#34;, True
+        )
         if response.status_code != 200:
-            raise Exception(&#39;discovery Exception, status code is not 200&#39;)
+            raise Exception(&#34;discovery Exception, status code is not 200&#34;)
 
         try:
             json: Optional[dict] = response.json()
         except BaseException as base_exception:
-            raise Exception(&#39;discovery Exception, not valid json.&#39;) from base_exception
+            raise Exception(&#34;discovery Exception, not valid json.&#34;) from base_exception
 
         if not isinstance(json, dict):
-            raise Exception(&#39;discovery Exception, no root obj in json.&#39;)
+            raise Exception(&#34;discovery Exception, no root obj in json.&#34;)
 
-        token_endpoint: Optional[str] = json.get(&#39;token_endpoint&#39;)
+        token_endpoint: Optional[str] = json.get(&#34;token_endpoint&#34;)
         if token_endpoint is None:
-            raise Exception(&#39;discovery Exception, token_endpoint in root obj.&#39;)
+            raise Exception(&#34;discovery Exception, token_endpoint in root obj.&#34;)
 
         return token_endpoint
 
     def __if_status_code_401_fetch_token_and_retry(
-        self, http: Callable[[], &#39;Response&#39;]
-    ) -&gt; &#39;Response&#39;:
+        self, http: Callable[[], &#34;Response&#34;]
+    ) -&gt; &#34;Response&#34;:
         response = http()
         if response.status_code == 401:
             self.fetch_token()
@@ -366,7 +388,7 @@ def authorization_url(self):
 </summary>
 <pre><code class="python">@property
 def metadata(self) -&gt; MetadataMethods:
-    &#39;&#39;&#39;Metadata operations&#39;&#39;&#39;
+    &#34;&#34;&#34;Metadata operations&#34;&#34;&#34;
     return self.__metadata</code></pre>
 </details>
 </dd>
@@ -379,7 +401,7 @@ def metadata(self) -&gt; MetadataMethods:
 </summary>
 <pre><code class="python">@property
 def search(self) -&gt; SearchMethods:
-    &#39;&#39;&#39;Search for time series and other entites&#39;&#39;&#39;
+    &#34;&#34;&#34;Search for time series and other entites&#34;&#34;&#34;
     return self.__search</code></pre>
 </details>
 </dd>
@@ -392,7 +414,7 @@ def search(self) -&gt; SearchMethods:
 </summary>
 <pre><code class="python">@property
 def series(self) -&gt; SeriesMethods:
-    &#39;&#39;&#39;Time series and entity operations&#39;&#39;&#39;
+    &#34;&#34;&#34;Time series and entity operations&#34;&#34;&#34;
     return self.__series</code></pre>
 </details>
 </dd>
@@ -405,7 +427,7 @@ def series(self) -&gt; SeriesMethods:
 </summary>
 <pre><code class="python">@property
 def series_tree(self) -&gt; SeriesTreeMethods:
-    &#39;&#39;&#39;Operations related to the visual series database tree structure&#39;&#39;&#39;
+    &#34;&#34;&#34;Operations related to the visual series database tree structure&#34;&#34;&#34;
     return self.__series_tree</code></pre>
 </details>
 </dd>
@@ -447,21 +469,23 @@ def token_endpoint(self):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def discovery(self, url: str) -&gt; str:
-    response = self.auth2_session.request(&#39;get&#39;, url + &#39;.well-known/openid-configuration&#39;, True)
+    response = self.auth2_session.request(
+        &#34;get&#34;, url + &#34;.well-known/openid-configuration&#34;, True
+    )
     if response.status_code != 200:
-        raise Exception(&#39;discovery Exception, status code is not 200&#39;)
+        raise Exception(&#34;discovery Exception, status code is not 200&#34;)
 
     try:
         json: Optional[dict] = response.json()
     except BaseException as base_exception:
-        raise Exception(&#39;discovery Exception, not valid json.&#39;) from base_exception
+        raise Exception(&#34;discovery Exception, not valid json.&#34;) from base_exception
 
     if not isinstance(json, dict):
-        raise Exception(&#39;discovery Exception, no root obj in json.&#39;)
+        raise Exception(&#34;discovery Exception, no root obj in json.&#34;)
 
-    token_endpoint: Optional[str] = json.get(&#39;token_endpoint&#39;)
+    token_endpoint: Optional[str] = json.get(&#34;token_endpoint&#34;)
     if token_endpoint is None:
-        raise Exception(&#39;discovery Exception, token_endpoint in root obj.&#39;)
+        raise Exception(&#34;discovery Exception, token_endpoint in root obj.&#34;)
 
     return token_endpoint</code></pre>
 </details>
@@ -490,9 +514,10 @@ def token_endpoint(self):
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def get(self, url: str, params: dict = None) -&gt; &#39;Response&#39;:
+<pre><code class="python">def get(self, url: str, params: dict = None) -&gt; &#34;Response&#34;:
     def http():
         return self.auth2_session.get(url=self.api_url + url, params=params)
+
     return self.__if_status_code_401_fetch_token_and_retry(http)</code></pre>
 </details>
 </dd>
@@ -505,7 +530,7 @@ def token_endpoint(self):
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def get_or_raise(self, url: str, params: dict = None) -&gt; &#39;Response&#39;:
+<pre><code class="python">def get_or_raise(self, url: str, params: dict = None) -&gt; &#34;Response&#34;:
     response = self.get(url, params)
     if response.status_code != 200:
         raise SessionHttpException(response)
@@ -521,11 +546,12 @@ def token_endpoint(self):
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def post(self, url: str, params: dict = None, json: object = None) -&gt; &#39;Response&#39;:
+<pre><code class="python">def post(self, url: str, params: dict = None, json: object = None) -&gt; &#34;Response&#34;:
     def http():
         return self.auth2_session.post(
             url=self.api_url + url, params=params, json=json
         )
+
     return self.__if_status_code_401_fetch_token_and_retry(http)</code></pre>
 </details>
 </dd>
@@ -538,7 +564,9 @@ def token_endpoint(self):
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def post_or_raise(self, url: str, params: dict = None, json: object = None) -&gt; &#39;Response&#39;:
+<pre><code class="python">def post_or_raise(
+    self, url: str, params: dict = None, json: object = None
+) -&gt; &#34;Response&#34;:
     response = self.post(url, params, json)
     if response.status_code != 200:
         raise SessionHttpException(response)

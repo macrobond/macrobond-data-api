@@ -29,7 +29,7 @@
 </summary>
 <pre><code class="python"># -*- coding: utf-8 -*-
 
-&#39;&#39;&#39;module doc string&#39;&#39;&#39;
+&#34;&#34;&#34;module doc string&#34;&#34;&#34;
 
 from typing import List, overload, Union, TYPE_CHECKING
 from abc import ABC, abstractmethod
@@ -37,73 +37,85 @@ from abc import ABC, abstractmethod
 if TYPE_CHECKING:  # pragma: no cover
     from pandas import DataFrame, _typing as pandas_typing  # type: ignore
 
-    from .metadata_attribute_information import MetadataAttributeInformation, \
-        TypedDictMetadataAttributeInformation, MetadataAttributeInformationColumns
+    from .metadata_attribute_information import (
+        MetadataAttributeInformation,
+        TypedDictMetadataAttributeInformation,
+        MetadataAttributeInformationColumns,
+    )
 
-    from .metadata_value_information import MetadataValueInformation, \
-        TypedDictMetadataValueInformation, MetadataValueInformationColumns
+    from .metadata_value_information import (
+        MetadataValueInformation,
+        TypedDictMetadataValueInformation,
+        MetadataValueInformationColumns,
+    )
 
 
 class ListValuesReturn(ABC):
+    @abstractmethod
+    def list_of_objects(self) -&gt; List[&#34;MetadataValueInformation&#34;]:
+        ...
 
     @abstractmethod
-    def list_of_objects(self) -&gt; List[&#39;MetadataValueInformation&#39;]: ...
-
-    @abstractmethod
-    def list_of_dicts(self) -&gt; List[&#39;TypedDictMetadataValueInformation&#39;]: ...
+    def list_of_dicts(self) -&gt; List[&#34;TypedDictMetadataValueInformation&#34;]:
+        ...
 
     @overload
-    def data_frame(self) -&gt; &#39;DataFrame&#39;: ...
+    def data_frame(self) -&gt; &#34;DataFrame&#34;:
+        ...
 
     @overload
     def data_frame(
         self,
-        index: &#39;pandas_typing.Axes&#39; = None,
-        columns: Union[
-            &#39;MetadataValueInformationColumns&#39;, &#39;pandas_typing.Axes&#39;
-        ] = None,
-        dtype: &#39;pandas_typing.Dtype&#39; = None,
+        index: &#34;pandas_typing.Axes&#34; = None,
+        columns: Union[&#34;MetadataValueInformationColumns&#34;, &#34;pandas_typing.Axes&#34;] = None,
+        dtype: &#34;pandas_typing.Dtype&#34; = None,
         copy: bool = False,
-    ) -&gt; &#39;DataFrame&#39;: ...
+    ) -&gt; &#34;DataFrame&#34;:
+        ...
 
     @abstractmethod
-    def data_frame(self, *args, **kwargs) -&gt; &#39;DataFrame&#39;: ...
+    def data_frame(self, *args, **kwargs) -&gt; &#34;DataFrame&#34;:
+        ...
 
 
 class GetAttributeInformationReturn(ABC):
+    @abstractmethod
+    def object(self) -&gt; &#34;MetadataAttributeInformation&#34;:
+        ...
 
     @abstractmethod
-    def object(self) -&gt; &#39;MetadataAttributeInformation&#39;: ...
-
-    @abstractmethod
-    def dict(self) -&gt; &#39;TypedDictMetadataAttributeInformation&#39;: ...
+    def dict(self) -&gt; &#34;TypedDictMetadataAttributeInformation&#34;:
+        ...
 
     @overload
-    def data_frame(self) -&gt; &#39;DataFrame&#39;: ...
+    def data_frame(self) -&gt; &#34;DataFrame&#34;:
+        ...
 
     @overload
     def data_frame(
         self,
-        index: &#39;pandas_typing.Axes&#39; = None,
+        index: &#34;pandas_typing.Axes&#34; = None,
         columns: Union[
-            &#39;MetadataAttributeInformationColumns&#39;, &#39;pandas_typing.Axes&#39;
+            &#34;MetadataAttributeInformationColumns&#34;, &#34;pandas_typing.Axes&#34;
         ] = None,
-        dtype: &#39;pandas_typing.Dtype&#39; = None,
+        dtype: &#34;pandas_typing.Dtype&#34; = None,
         copy: bool = False,
-    ) -&gt; &#39;DataFrame&#39;: ...
+    ) -&gt; &#34;DataFrame&#34;:
+        ...
 
     @abstractmethod
-    def data_frame(self, *args, **kwargs) -&gt; &#39;DataFrame&#39;: ...
+    def data_frame(self, *args, **kwargs) -&gt; &#34;DataFrame&#34;:
+        ...
 
 
 class MetaDirectoryMethods(ABC):
-    &#39;&#39;&#39;
+    &#34;&#34;&#34;
     This class fetches methods to look up metadata
-    &#39;&#39;&#39;
+    &#34;&#34;&#34;
 
     @abstractmethod
     def list_values(self, name: str) -&gt; ListValuesReturn:
-        &#39;&#39;&#39;
+        &#34;&#34;&#34;
         List all metadata attribute values.
 
         Parameters
@@ -122,11 +134,11 @@ class MetaDirectoryMethods(ABC):
             list_of_dict = api.meta_directory.list_values(&#39;RateType&#39;).dict
             print(data_frame)
         ```
-        &#39;&#39;&#39;
+        &#34;&#34;&#34;
 
     @abstractmethod
     def get_attribute_information(self, name: str) -&gt; GetAttributeInformationReturn:
-        &#39;&#39;&#39;Get information about a type of metadata.&#39;&#39;&#39;</code></pre>
+        &#34;&#34;&#34;Get information about a type of metadata.&#34;&#34;&#34;</code></pre>
 </details>
 </section>
 <section>
@@ -149,29 +161,33 @@ inheritance.</p></div>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class GetAttributeInformationReturn(ABC):
+    @abstractmethod
+    def object(self) -&gt; &#34;MetadataAttributeInformation&#34;:
+        ...
 
     @abstractmethod
-    def object(self) -&gt; &#39;MetadataAttributeInformation&#39;: ...
-
-    @abstractmethod
-    def dict(self) -&gt; &#39;TypedDictMetadataAttributeInformation&#39;: ...
+    def dict(self) -&gt; &#34;TypedDictMetadataAttributeInformation&#34;:
+        ...
 
     @overload
-    def data_frame(self) -&gt; &#39;DataFrame&#39;: ...
+    def data_frame(self) -&gt; &#34;DataFrame&#34;:
+        ...
 
     @overload
     def data_frame(
         self,
-        index: &#39;pandas_typing.Axes&#39; = None,
+        index: &#34;pandas_typing.Axes&#34; = None,
         columns: Union[
-            &#39;MetadataAttributeInformationColumns&#39;, &#39;pandas_typing.Axes&#39;
+            &#34;MetadataAttributeInformationColumns&#34;, &#34;pandas_typing.Axes&#34;
         ] = None,
-        dtype: &#39;pandas_typing.Dtype&#39; = None,
+        dtype: &#34;pandas_typing.Dtype&#34; = None,
         copy: bool = False,
-    ) -&gt; &#39;DataFrame&#39;: ...
+    ) -&gt; &#34;DataFrame&#34;:
+        ...
 
     @abstractmethod
-    def data_frame(self, *args, **kwargs) -&gt; &#39;DataFrame&#39;: ...</code></pre>
+    def data_frame(self, *args, **kwargs) -&gt; &#34;DataFrame&#34;:
+        ...</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
@@ -194,7 +210,8 @@ inheritance.</p></div>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@abstractmethod
-def data_frame(self, *args, **kwargs) -&gt; &#39;DataFrame&#39;: ...</code></pre>
+def data_frame(self, *args, **kwargs) -&gt; &#34;DataFrame&#34;:
+    ...</code></pre>
 </details>
 </dd>
 <dt id="macrobond_financial.common.meta_directory_methods.GetAttributeInformationReturn.dict"><code class="name flex">
@@ -207,7 +224,8 @@ def data_frame(self, *args, **kwargs) -&gt; &#39;DataFrame&#39;: ...</code></pre
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@abstractmethod
-def dict(self) -&gt; &#39;TypedDictMetadataAttributeInformation&#39;: ...</code></pre>
+def dict(self) -&gt; &#34;TypedDictMetadataAttributeInformation&#34;:
+    ...</code></pre>
 </details>
 </dd>
 <dt id="macrobond_financial.common.meta_directory_methods.GetAttributeInformationReturn.object"><code class="name flex">
@@ -220,7 +238,8 @@ def dict(self) -&gt; &#39;TypedDictMetadataAttributeInformation&#39;: ...</code>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@abstractmethod
-def object(self) -&gt; &#39;MetadataAttributeInformation&#39;: ...</code></pre>
+def object(self) -&gt; &#34;MetadataAttributeInformation&#34;:
+    ...</code></pre>
 </details>
 </dd>
 </dl>
@@ -236,29 +255,31 @@ inheritance.</p></div>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class ListValuesReturn(ABC):
+    @abstractmethod
+    def list_of_objects(self) -&gt; List[&#34;MetadataValueInformation&#34;]:
+        ...
 
     @abstractmethod
-    def list_of_objects(self) -&gt; List[&#39;MetadataValueInformation&#39;]: ...
-
-    @abstractmethod
-    def list_of_dicts(self) -&gt; List[&#39;TypedDictMetadataValueInformation&#39;]: ...
+    def list_of_dicts(self) -&gt; List[&#34;TypedDictMetadataValueInformation&#34;]:
+        ...
 
     @overload
-    def data_frame(self) -&gt; &#39;DataFrame&#39;: ...
+    def data_frame(self) -&gt; &#34;DataFrame&#34;:
+        ...
 
     @overload
     def data_frame(
         self,
-        index: &#39;pandas_typing.Axes&#39; = None,
-        columns: Union[
-            &#39;MetadataValueInformationColumns&#39;, &#39;pandas_typing.Axes&#39;
-        ] = None,
-        dtype: &#39;pandas_typing.Dtype&#39; = None,
+        index: &#34;pandas_typing.Axes&#34; = None,
+        columns: Union[&#34;MetadataValueInformationColumns&#34;, &#34;pandas_typing.Axes&#34;] = None,
+        dtype: &#34;pandas_typing.Dtype&#34; = None,
         copy: bool = False,
-    ) -&gt; &#39;DataFrame&#39;: ...
+    ) -&gt; &#34;DataFrame&#34;:
+        ...
 
     @abstractmethod
-    def data_frame(self, *args, **kwargs) -&gt; &#39;DataFrame&#39;: ...</code></pre>
+    def data_frame(self, *args, **kwargs) -&gt; &#34;DataFrame&#34;:
+        ...</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
@@ -281,7 +302,8 @@ inheritance.</p></div>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@abstractmethod
-def data_frame(self, *args, **kwargs) -&gt; &#39;DataFrame&#39;: ...</code></pre>
+def data_frame(self, *args, **kwargs) -&gt; &#34;DataFrame&#34;:
+    ...</code></pre>
 </details>
 </dd>
 <dt id="macrobond_financial.common.meta_directory_methods.ListValuesReturn.list_of_dicts"><code class="name flex">
@@ -294,7 +316,8 @@ def data_frame(self, *args, **kwargs) -&gt; &#39;DataFrame&#39;: ...</code></pre
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@abstractmethod
-def list_of_dicts(self) -&gt; List[&#39;TypedDictMetadataValueInformation&#39;]: ...</code></pre>
+def list_of_dicts(self) -&gt; List[&#34;TypedDictMetadataValueInformation&#34;]:
+    ...</code></pre>
 </details>
 </dd>
 <dt id="macrobond_financial.common.meta_directory_methods.ListValuesReturn.list_of_objects"><code class="name flex">
@@ -307,7 +330,8 @@ def list_of_dicts(self) -&gt; List[&#39;TypedDictMetadataValueInformation&#39;]:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@abstractmethod
-def list_of_objects(self) -&gt; List[&#39;MetadataValueInformation&#39;]: ...</code></pre>
+def list_of_objects(self) -&gt; List[&#34;MetadataValueInformation&#34;]:
+    ...</code></pre>
 </details>
 </dd>
 </dl>
@@ -322,13 +346,13 @@ def list_of_objects(self) -&gt; List[&#39;MetadataValueInformation&#39;]: ...</c
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class MetaDirectoryMethods(ABC):
-    &#39;&#39;&#39;
+    &#34;&#34;&#34;
     This class fetches methods to look up metadata
-    &#39;&#39;&#39;
+    &#34;&#34;&#34;
 
     @abstractmethod
     def list_values(self, name: str) -&gt; ListValuesReturn:
-        &#39;&#39;&#39;
+        &#34;&#34;&#34;
         List all metadata attribute values.
 
         Parameters
@@ -347,11 +371,11 @@ def list_of_objects(self) -&gt; List[&#39;MetadataValueInformation&#39;]: ...</c
             list_of_dict = api.meta_directory.list_values(&#39;RateType&#39;).dict
             print(data_frame)
         ```
-        &#39;&#39;&#39;
+        &#34;&#34;&#34;
 
     @abstractmethod
     def get_attribute_information(self, name: str) -&gt; GetAttributeInformationReturn:
-        &#39;&#39;&#39;Get information about a type of metadata.&#39;&#39;&#39;</code></pre>
+        &#34;&#34;&#34;Get information about a type of metadata.&#34;&#34;&#34;</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
@@ -375,7 +399,7 @@ def list_of_objects(self) -&gt; List[&#39;MetadataValueInformation&#39;]: ...</c
 </summary>
 <pre><code class="python">@abstractmethod
 def get_attribute_information(self, name: str) -&gt; GetAttributeInformationReturn:
-    &#39;&#39;&#39;Get information about a type of metadata.&#39;&#39;&#39;</code></pre>
+    &#34;&#34;&#34;Get information about a type of metadata.&#34;&#34;&#34;</code></pre>
 </details>
 </dd>
 <dt id="macrobond_financial.common.meta_directory_methods.MetaDirectoryMethods.list_values"><code class="name flex">
@@ -404,7 +428,7 @@ def get_attribute_information(self, name: str) -&gt; GetAttributeInformationRetu
 </summary>
 <pre><code class="python">@abstractmethod
 def list_values(self, name: str) -&gt; ListValuesReturn:
-    &#39;&#39;&#39;
+    &#34;&#34;&#34;
     List all metadata attribute values.
 
     Parameters
@@ -423,7 +447,7 @@ def list_values(self, name: str) -&gt; ListValuesReturn:
         list_of_dict = api.meta_directory.list_values(&#39;RateType&#39;).dict
         print(data_frame)
     ```
-    &#39;&#39;&#39;</code></pre>
+    &#34;&#34;&#34;</code></pre>
 </details>
 </dd>
 </dl>

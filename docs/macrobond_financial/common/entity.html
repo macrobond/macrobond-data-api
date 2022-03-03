@@ -39,7 +39,7 @@ if TYPE_CHECKING:  # pragma: no cover
     from typing_extensions import TypedDict, Literal
 
     EntityColumnsLiterals = Literal[
-        &#39;ErrorMessage&#39;, &#39;Name&#39;, &#39;PrimName&#39;, &#39;FullDescription&#39;, &#39;EntityType&#39;
+        &#34;ErrorMessage&#34;, &#34;Name&#34;, &#34;PrimName&#34;, &#34;FullDescription&#34;, &#34;EntityType&#34;
     ]
 
     EntityColumns = List[EntityColumnsLiterals]
@@ -57,70 +57,68 @@ if TYPE_CHECKING:  # pragma: no cover
     EntityTypedDicts = Union[EntityTypedDict, ErrorEntityTypedDict]
 
 
-class Entity():
-    &#39;&#39;&#39;Interface for a database Macrobond entity.&#39;&#39;&#39;
+class Entity:
+    &#34;&#34;&#34;Interface for a database Macrobond entity.&#34;&#34;&#34;
 
     @property
     def is_error(self) -&gt; bool:
-        return self.error_message != &#39;&#39;
+        return self.error_message != &#34;&#34;
 
     @property
     def primary_name(self) -&gt; str:
-        &#39;&#39;&#39;The primary name of the entity.&#39;&#39;&#39;
-        prim_name = self.metadata[&#39;PrimName&#39;]
+        &#34;&#34;&#34;The primary name of the entity.&#34;&#34;&#34;
+        prim_name = self.metadata[&#34;PrimName&#34;]
         if isinstance(prim_name, list):
             prim_name = prim_name[0]
         return prim_name
 
     @property
     def name(self) -&gt; str:
-        &#39;&#39;&#39;The name of the entity.&#39;&#39;&#39;
-        name = self.metadata[&#39;Name&#39;]
+        &#34;&#34;&#34;The name of the entity.&#34;&#34;&#34;
+        name = self.metadata[&#34;Name&#34;]
         if isinstance(name, list):
             name = name[0]
         return name
 
     @property
     def title(self) -&gt; str:
-        &#39;&#39;&#39;The title of the entity.&#39;&#39;&#39;
-        full_description = self.metadata[&#39;FullDescription&#39;]
+        &#34;&#34;&#34;The title of the entity.&#34;&#34;&#34;
+        full_description = self.metadata[&#34;FullDescription&#34;]
         if isinstance(full_description, list):
             full_description = full_description[0]
         return full_description
 
     @property
     def entity_type(self) -&gt; str:
-        &#39;&#39;&#39;The type of the entity.&#39;&#39;&#39;
-        entity_type = self.metadata[&#39;EntityType&#39;]
+        &#34;&#34;&#34;The type of the entity.&#34;&#34;&#34;
+        entity_type = self.metadata[&#34;EntityType&#34;]
         if isinstance(entity_type, list):
             entity_type = entity_type[0]
         return entity_type
 
-    def __init__(
-        self, error_message: str, metadata: Dict[str, Any]
-    ) -&gt; None:
+    def __init__(self, error_message: str, metadata: Dict[str, Any]) -&gt; None:
         self.error_message = error_message
         self.metadata = metadata
 
     def __str__(self):
         if self.is_error:
-            return f&#39;Entity with error, error message: {self.error_message}&#39;
+            return f&#34;Entity with error, error message: {self.error_message}&#34;
 
         # no name in meta data in web
         # name = self.metadata.get(&#39;Name&#39;) or &#39;&#39;
         # if isinstance(name, list):
         #     name = name[0]
 
-        return f&#39;{self.__class__.__name__}, PrimName: {self.primary_name}&#39;
+        return f&#34;{self.__class__.__name__}, PrimName: {self.primary_name}&#34;
 
     def __repr__(self):
         return str(self)
 
-    def get_metadata_as_data_frame(self) -&gt; &#39;DataFrame&#39;:
+    def get_metadata_as_data_frame(self) -&gt; &#34;DataFrame&#34;:
         metadata = self.metadata
         pandas = _get_pandas()
         return pandas.DataFrame.from_dict(
-            metadata, orient=&#39;index&#39;, columns=[&#39;Attributes&#39;]
+            metadata, orient=&#34;index&#34;, columns=[&#34;Attributes&#34;]
         )</code></pre>
 </details>
 </section>
@@ -143,70 +141,68 @@ class Entity():
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class Entity():
-    &#39;&#39;&#39;Interface for a database Macrobond entity.&#39;&#39;&#39;
+<pre><code class="python">class Entity:
+    &#34;&#34;&#34;Interface for a database Macrobond entity.&#34;&#34;&#34;
 
     @property
     def is_error(self) -&gt; bool:
-        return self.error_message != &#39;&#39;
+        return self.error_message != &#34;&#34;
 
     @property
     def primary_name(self) -&gt; str:
-        &#39;&#39;&#39;The primary name of the entity.&#39;&#39;&#39;
-        prim_name = self.metadata[&#39;PrimName&#39;]
+        &#34;&#34;&#34;The primary name of the entity.&#34;&#34;&#34;
+        prim_name = self.metadata[&#34;PrimName&#34;]
         if isinstance(prim_name, list):
             prim_name = prim_name[0]
         return prim_name
 
     @property
     def name(self) -&gt; str:
-        &#39;&#39;&#39;The name of the entity.&#39;&#39;&#39;
-        name = self.metadata[&#39;Name&#39;]
+        &#34;&#34;&#34;The name of the entity.&#34;&#34;&#34;
+        name = self.metadata[&#34;Name&#34;]
         if isinstance(name, list):
             name = name[0]
         return name
 
     @property
     def title(self) -&gt; str:
-        &#39;&#39;&#39;The title of the entity.&#39;&#39;&#39;
-        full_description = self.metadata[&#39;FullDescription&#39;]
+        &#34;&#34;&#34;The title of the entity.&#34;&#34;&#34;
+        full_description = self.metadata[&#34;FullDescription&#34;]
         if isinstance(full_description, list):
             full_description = full_description[0]
         return full_description
 
     @property
     def entity_type(self) -&gt; str:
-        &#39;&#39;&#39;The type of the entity.&#39;&#39;&#39;
-        entity_type = self.metadata[&#39;EntityType&#39;]
+        &#34;&#34;&#34;The type of the entity.&#34;&#34;&#34;
+        entity_type = self.metadata[&#34;EntityType&#34;]
         if isinstance(entity_type, list):
             entity_type = entity_type[0]
         return entity_type
 
-    def __init__(
-        self, error_message: str, metadata: Dict[str, Any]
-    ) -&gt; None:
+    def __init__(self, error_message: str, metadata: Dict[str, Any]) -&gt; None:
         self.error_message = error_message
         self.metadata = metadata
 
     def __str__(self):
         if self.is_error:
-            return f&#39;Entity with error, error message: {self.error_message}&#39;
+            return f&#34;Entity with error, error message: {self.error_message}&#34;
 
         # no name in meta data in web
         # name = self.metadata.get(&#39;Name&#39;) or &#39;&#39;
         # if isinstance(name, list):
         #     name = name[0]
 
-        return f&#39;{self.__class__.__name__}, PrimName: {self.primary_name}&#39;
+        return f&#34;{self.__class__.__name__}, PrimName: {self.primary_name}&#34;
 
     def __repr__(self):
         return str(self)
 
-    def get_metadata_as_data_frame(self) -&gt; &#39;DataFrame&#39;:
+    def get_metadata_as_data_frame(self) -&gt; &#34;DataFrame&#34;:
         metadata = self.metadata
         pandas = _get_pandas()
         return pandas.DataFrame.from_dict(
-            metadata, orient=&#39;index&#39;, columns=[&#39;Attributes&#39;]
+            metadata, orient=&#34;index&#34;, columns=[&#34;Attributes&#34;]
         )</code></pre>
 </details>
 <h3>Subclasses</h3>
@@ -224,8 +220,8 @@ class Entity():
 </summary>
 <pre><code class="python">@property
 def entity_type(self) -&gt; str:
-    &#39;&#39;&#39;The type of the entity.&#39;&#39;&#39;
-    entity_type = self.metadata[&#39;EntityType&#39;]
+    &#34;&#34;&#34;The type of the entity.&#34;&#34;&#34;
+    entity_type = self.metadata[&#34;EntityType&#34;]
     if isinstance(entity_type, list):
         entity_type = entity_type[0]
     return entity_type</code></pre>
@@ -240,7 +236,7 @@ def entity_type(self) -&gt; str:
 </summary>
 <pre><code class="python">@property
 def is_error(self) -&gt; bool:
-    return self.error_message != &#39;&#39;</code></pre>
+    return self.error_message != &#34;&#34;</code></pre>
 </details>
 </dd>
 <dt id="macrobond_financial.common.entity.Entity.name"><code class="name">var <span class="ident">name</span> : str</code></dt>
@@ -252,8 +248,8 @@ def is_error(self) -&gt; bool:
 </summary>
 <pre><code class="python">@property
 def name(self) -&gt; str:
-    &#39;&#39;&#39;The name of the entity.&#39;&#39;&#39;
-    name = self.metadata[&#39;Name&#39;]
+    &#34;&#34;&#34;The name of the entity.&#34;&#34;&#34;
+    name = self.metadata[&#34;Name&#34;]
     if isinstance(name, list):
         name = name[0]
     return name</code></pre>
@@ -268,8 +264,8 @@ def name(self) -&gt; str:
 </summary>
 <pre><code class="python">@property
 def primary_name(self) -&gt; str:
-    &#39;&#39;&#39;The primary name of the entity.&#39;&#39;&#39;
-    prim_name = self.metadata[&#39;PrimName&#39;]
+    &#34;&#34;&#34;The primary name of the entity.&#34;&#34;&#34;
+    prim_name = self.metadata[&#34;PrimName&#34;]
     if isinstance(prim_name, list):
         prim_name = prim_name[0]
     return prim_name</code></pre>
@@ -284,8 +280,8 @@ def primary_name(self) -&gt; str:
 </summary>
 <pre><code class="python">@property
 def title(self) -&gt; str:
-    &#39;&#39;&#39;The title of the entity.&#39;&#39;&#39;
-    full_description = self.metadata[&#39;FullDescription&#39;]
+    &#34;&#34;&#34;The title of the entity.&#34;&#34;&#34;
+    full_description = self.metadata[&#34;FullDescription&#34;]
     if isinstance(full_description, list):
         full_description = full_description[0]
     return full_description</code></pre>
@@ -303,11 +299,11 @@ def title(self) -&gt; str:
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def get_metadata_as_data_frame(self) -&gt; &#39;DataFrame&#39;:
+<pre><code class="python">def get_metadata_as_data_frame(self) -&gt; &#34;DataFrame&#34;:
     metadata = self.metadata
     pandas = _get_pandas()
     return pandas.DataFrame.from_dict(
-        metadata, orient=&#39;index&#39;, columns=[&#39;Attributes&#39;]
+        metadata, orient=&#34;index&#34;, columns=[&#34;Attributes&#34;]
     )</code></pre>
 </details>
 </dd>

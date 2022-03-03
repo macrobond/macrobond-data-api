@@ -34,47 +34,49 @@ from typing import List, Optional
 from typing_extensions import TypedDict
 
 
-from .metadata_attribute_information_response import \
-    MetadataAttributeType, MetadataAttributeTypeRestriction
+from .metadata_attribute_information_response import (
+    MetadataAttributeType,
+    MetadataAttributeTypeRestriction,
+)
 
 
 class EntityInfoForDisplayItem(TypedDict):
     # pylint: disable = missing-class-docstring
 
     description: str
-    &#39;&#39;&#39;Description of the item&#39;&#39;&#39;
+    &#34;&#34;&#34;Description of the item&#34;&#34;&#34;
 
     comment: Optional[str]
-    &#39;&#39;&#39;The comment of the metadata value&#39;&#39;&#39;
+    &#34;&#34;&#34;The comment of the metadata value&#34;&#34;&#34;
 
     valueType: MetadataAttributeType
-    &#39;&#39;&#39;The value type of the metadata attribute&#39;&#39;&#39;
+    &#34;&#34;&#34;The value type of the metadata attribute&#34;&#34;&#34;
 
     valueRestriction: Optional[MetadataAttributeTypeRestriction]
-    &#39;&#39;&#39;Restriction on the value type&#39;&#39;&#39;
+    &#34;&#34;&#34;Restriction on the value type&#34;&#34;&#34;
 
     value: object
-    &#39;&#39;&#39;The item value&#39;&#39;&#39;
+    &#34;&#34;&#34;The item value&#34;&#34;&#34;
 
 
 class EntityNameWithTimeStamp(TypedDict):
     # pylint: disable = missing-class-docstring
 
     description: str
-    &#39;&#39;&#39;Heading of the group&#39;&#39;&#39;
+    &#34;&#34;&#34;Heading of the group&#34;&#34;&#34;
 
     title: Optional[str]
-    &#39;&#39;&#39;Title of the group&#39;&#39;&#39;
+    &#34;&#34;&#34;Title of the group&#34;&#34;&#34;
 
     items: List[EntityInfoForDisplayItem]
-    &#39;&#39;&#39;List of information items&#39;&#39;&#39;
+    &#34;&#34;&#34;List of information items&#34;&#34;&#34;
 
 
 class EntityInfoForDisplayResponse(TypedDict):
-    &#39;&#39;&#39;Entity search response with metadata displayed for presentation purposes&#39;&#39;&#39;
+    &#34;&#34;&#34;Entity search response with metadata displayed for presentation purposes&#34;&#34;&#34;
 
-    groups: List[&#39;EntityNameWithTimeStamp&#39;]
-    &#39;&#39;&#39;A list of information groups&#39;&#39;&#39;</code></pre>
+    groups: List[&#34;EntityNameWithTimeStamp&#34;]
+    &#34;&#34;&#34;A list of information groups&#34;&#34;&#34;</code></pre>
 </details>
 </section>
 <section>
@@ -110,19 +112,19 @@ dict(one=1, two=2)</p></div>
     # pylint: disable = missing-class-docstring
 
     description: str
-    &#39;&#39;&#39;Description of the item&#39;&#39;&#39;
+    &#34;&#34;&#34;Description of the item&#34;&#34;&#34;
 
     comment: Optional[str]
-    &#39;&#39;&#39;The comment of the metadata value&#39;&#39;&#39;
+    &#34;&#34;&#34;The comment of the metadata value&#34;&#34;&#34;
 
     valueType: MetadataAttributeType
-    &#39;&#39;&#39;The value type of the metadata attribute&#39;&#39;&#39;
+    &#34;&#34;&#34;The value type of the metadata attribute&#34;&#34;&#34;
 
     valueRestriction: Optional[MetadataAttributeTypeRestriction]
-    &#39;&#39;&#39;Restriction on the value type&#39;&#39;&#39;
+    &#34;&#34;&#34;Restriction on the value type&#34;&#34;&#34;
 
     value: object
-    &#39;&#39;&#39;The item value&#39;&#39;&#39;</code></pre>
+    &#34;&#34;&#34;The item value&#34;&#34;&#34;</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
@@ -163,10 +165,10 @@ dict(one=1, two=2)</p></div>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class EntityInfoForDisplayResponse(TypedDict):
-    &#39;&#39;&#39;Entity search response with metadata displayed for presentation purposes&#39;&#39;&#39;
+    &#34;&#34;&#34;Entity search response with metadata displayed for presentation purposes&#34;&#34;&#34;
 
-    groups: List[&#39;EntityNameWithTimeStamp&#39;]
-    &#39;&#39;&#39;A list of information groups&#39;&#39;&#39;</code></pre>
+    groups: List[&#34;EntityNameWithTimeStamp&#34;]
+    &#34;&#34;&#34;A list of information groups&#34;&#34;&#34;</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
@@ -204,13 +206,13 @@ dict(one=1, two=2)</p></div>
     # pylint: disable = missing-class-docstring
 
     description: str
-    &#39;&#39;&#39;Heading of the group&#39;&#39;&#39;
+    &#34;&#34;&#34;Heading of the group&#34;&#34;&#34;
 
     title: Optional[str]
-    &#39;&#39;&#39;Title of the group&#39;&#39;&#39;
+    &#34;&#34;&#34;Title of the group&#34;&#34;&#34;
 
     items: List[EntityInfoForDisplayItem]
-    &#39;&#39;&#39;List of information items&#39;&#39;&#39;</code></pre>
+    &#34;&#34;&#34;List of information items&#34;&#34;&#34;</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">

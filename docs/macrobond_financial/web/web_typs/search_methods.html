@@ -41,10 +41,10 @@ if TYPE_CHECKING:  # pragma: no cover
     from .item_listing_response import ItemListingResponse
 
 
-class SearchMethods():
-    &#39;&#39;&#39;Search for time series and other entites&#39;&#39;&#39;
+class SearchMethods:
+    &#34;&#34;&#34;Search for time series and other entites&#34;&#34;&#34;
 
-    def __init__(self, session: &#39;Session&#39;) -&gt; None:
+    def __init__(self, session: &#34;Session&#34;) -&gt; None:
         self.__session = session
 
     # get /entities
@@ -55,8 +55,8 @@ class SearchMethods():
         include_discontinued: bool = None,
         _filter: Dict[str, str] = None,
         no_meta_data: bool = None,
-    ) -&gt; &#39;SearchResponse&#39;:
-        &#39;&#39;&#39;
+    ) -&gt; &#34;SearchResponse&#34;:
+        &#34;&#34;&#34;
         Search for time series and other entites matching attribute values.
         If the same attribute name is specified more than once,
         then entities matching any of them will be included. If the value is *,
@@ -75,27 +75,27 @@ class SearchMethods():
             403 Forbidden. Not authorized.
 
             404 At least one attribute was not found.
-        &#39;&#39;&#39;
+        &#34;&#34;&#34;
 
         params = {
-            &#39;entityType&#39;: entity_type,
-            &#39;text&#39;: text,
-            &#39;filter&#39;: _filter,
+            &#34;entityType&#34;: entity_type,
+            &#34;text&#34;: text,
+            &#34;filter&#34;: _filter,
         }
 
         if no_meta_data is not None:
-            params[&#39;noMetaData&#39;] = &#39;true&#39; if no_meta_data else &#39;false&#39;
+            params[&#34;noMetaData&#34;] = &#34;true&#34; if no_meta_data else &#34;false&#34;
 
         if include_discontinued is not None:
-            params[&#39;includeDiscontinued&#39;] = &#39;true&#39; if include_discontinued else &#39;false&#39;
+            params[&#34;includeDiscontinued&#34;] = &#34;true&#34; if include_discontinued else &#34;false&#34;
 
-        response = self.__session.get_or_raise(&#39;v1/search/entities&#39;, params=params)
+        response = self.__session.get_or_raise(&#34;v1/search/entities&#34;, params=params)
 
-        return cast(&#39;SearchResponse&#39;, response.json())
+        return cast(&#34;SearchResponse&#34;, response.json())
 
     # post /entities
-    def post_entities(self, request: &#39;SearchRequest&#39;) -&gt; &#39;SearchResponse&#39;:
-        &#39;&#39;&#39;
+    def post_entities(self, request: &#34;SearchRequest&#34;) -&gt; &#34;SearchResponse&#34;:
+        &#34;&#34;&#34;
         Search for time series and other entites matching attribute values.
 
         OAuth scope: macrobond_web_api.search_mb
@@ -110,12 +110,12 @@ class SearchMethods():
             403 Forbidden. Not authorized.
 
             404 At least one attribute was not found.
-        &#39;&#39;&#39;
-        response = self.__session.post_or_raise(&#39;v1/search/entities&#39;, json=request)
-        return cast(&#39;SearchResponse&#39;, response.json())
+        &#34;&#34;&#34;
+        response = self.__session.post_or_raise(&#34;v1/search/entities&#34;, json=request)
+        return cast(&#34;SearchResponse&#34;, response.json())
 
-    def filter_lists(self, entity_type: str) -&gt; List[&#39;ItemListingResponse&#39;]:
-        &#39;&#39;&#39;
+    def filter_lists(self, entity_type: str) -&gt; List[&#34;ItemListingResponse&#34;]:
+        &#34;&#34;&#34;
         Get a structured list of all saved filter lists of the specified type.
 
         OAuth scope: macrobond_web_api.read_structure or macrobond_web_api.search_mb
@@ -128,19 +128,16 @@ class SearchMethods():
             401 Unauthorized. Missing, invalid or expired access token.
 
             403 Forbidden. Not authorized.
-        &#39;&#39;&#39;
+        &#34;&#34;&#34;
         response = self.__session.get_or_raise(
-            &#39;v1/search/filterlists&#39;,
-            params={
-                &#39;entityType&#39;: entity_type
-            }
+            &#34;v1/search/filterlists&#34;, params={&#34;entityType&#34;: entity_type}
         )
-        return cast(List[&#39;ItemListingResponse&#39;], response.json())
+        return cast(List[&#34;ItemListingResponse&#34;], response.json())
 
     def entities_for_display(
-        self, request: &#39;SearchForDisplayRequest&#39;
-    ) -&gt; &#39;SearchForDisplayResponse&#39;:
-        &#39;&#39;&#39;
+        self, request: &#34;SearchForDisplayRequest&#34;
+    ) -&gt; &#34;SearchForDisplayResponse&#34;:
+        &#34;&#34;&#34;
         Search for time series and other entites matching attribute values and return the
         selected metadata formatted for presentation purposes.
 
@@ -156,9 +153,11 @@ class SearchMethods():
             403 Forbidden. Not authorized.
 
             404 At least one attribute was not found.
-        &#39;&#39;&#39;
-        response = self.__session.post_or_raise(&#39;v1/search/entitiesfordisplay&#39;, json=request)
-        return cast(&#39;SearchForDisplayResponse&#39;, response.json())</code></pre>
+        &#34;&#34;&#34;
+        response = self.__session.post_or_raise(
+            &#34;v1/search/entitiesfordisplay&#34;, json=request
+        )
+        return cast(&#34;SearchForDisplayResponse&#34;, response.json())</code></pre>
 </details>
 </section>
 <section>
@@ -180,10 +179,10 @@ class SearchMethods():
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class SearchMethods():
-    &#39;&#39;&#39;Search for time series and other entites&#39;&#39;&#39;
+<pre><code class="python">class SearchMethods:
+    &#34;&#34;&#34;Search for time series and other entites&#34;&#34;&#34;
 
-    def __init__(self, session: &#39;Session&#39;) -&gt; None:
+    def __init__(self, session: &#34;Session&#34;) -&gt; None:
         self.__session = session
 
     # get /entities
@@ -194,8 +193,8 @@ class SearchMethods():
         include_discontinued: bool = None,
         _filter: Dict[str, str] = None,
         no_meta_data: bool = None,
-    ) -&gt; &#39;SearchResponse&#39;:
-        &#39;&#39;&#39;
+    ) -&gt; &#34;SearchResponse&#34;:
+        &#34;&#34;&#34;
         Search for time series and other entites matching attribute values.
         If the same attribute name is specified more than once,
         then entities matching any of them will be included. If the value is *,
@@ -214,27 +213,27 @@ class SearchMethods():
             403 Forbidden. Not authorized.
 
             404 At least one attribute was not found.
-        &#39;&#39;&#39;
+        &#34;&#34;&#34;
 
         params = {
-            &#39;entityType&#39;: entity_type,
-            &#39;text&#39;: text,
-            &#39;filter&#39;: _filter,
+            &#34;entityType&#34;: entity_type,
+            &#34;text&#34;: text,
+            &#34;filter&#34;: _filter,
         }
 
         if no_meta_data is not None:
-            params[&#39;noMetaData&#39;] = &#39;true&#39; if no_meta_data else &#39;false&#39;
+            params[&#34;noMetaData&#34;] = &#34;true&#34; if no_meta_data else &#34;false&#34;
 
         if include_discontinued is not None:
-            params[&#39;includeDiscontinued&#39;] = &#39;true&#39; if include_discontinued else &#39;false&#39;
+            params[&#34;includeDiscontinued&#34;] = &#34;true&#34; if include_discontinued else &#34;false&#34;
 
-        response = self.__session.get_or_raise(&#39;v1/search/entities&#39;, params=params)
+        response = self.__session.get_or_raise(&#34;v1/search/entities&#34;, params=params)
 
-        return cast(&#39;SearchResponse&#39;, response.json())
+        return cast(&#34;SearchResponse&#34;, response.json())
 
     # post /entities
-    def post_entities(self, request: &#39;SearchRequest&#39;) -&gt; &#39;SearchResponse&#39;:
-        &#39;&#39;&#39;
+    def post_entities(self, request: &#34;SearchRequest&#34;) -&gt; &#34;SearchResponse&#34;:
+        &#34;&#34;&#34;
         Search for time series and other entites matching attribute values.
 
         OAuth scope: macrobond_web_api.search_mb
@@ -249,12 +248,12 @@ class SearchMethods():
             403 Forbidden. Not authorized.
 
             404 At least one attribute was not found.
-        &#39;&#39;&#39;
-        response = self.__session.post_or_raise(&#39;v1/search/entities&#39;, json=request)
-        return cast(&#39;SearchResponse&#39;, response.json())
+        &#34;&#34;&#34;
+        response = self.__session.post_or_raise(&#34;v1/search/entities&#34;, json=request)
+        return cast(&#34;SearchResponse&#34;, response.json())
 
-    def filter_lists(self, entity_type: str) -&gt; List[&#39;ItemListingResponse&#39;]:
-        &#39;&#39;&#39;
+    def filter_lists(self, entity_type: str) -&gt; List[&#34;ItemListingResponse&#34;]:
+        &#34;&#34;&#34;
         Get a structured list of all saved filter lists of the specified type.
 
         OAuth scope: macrobond_web_api.read_structure or macrobond_web_api.search_mb
@@ -267,19 +266,16 @@ class SearchMethods():
             401 Unauthorized. Missing, invalid or expired access token.
 
             403 Forbidden. Not authorized.
-        &#39;&#39;&#39;
+        &#34;&#34;&#34;
         response = self.__session.get_or_raise(
-            &#39;v1/search/filterlists&#39;,
-            params={
-                &#39;entityType&#39;: entity_type
-            }
+            &#34;v1/search/filterlists&#34;, params={&#34;entityType&#34;: entity_type}
         )
-        return cast(List[&#39;ItemListingResponse&#39;], response.json())
+        return cast(List[&#34;ItemListingResponse&#34;], response.json())
 
     def entities_for_display(
-        self, request: &#39;SearchForDisplayRequest&#39;
-    ) -&gt; &#39;SearchForDisplayResponse&#39;:
-        &#39;&#39;&#39;
+        self, request: &#34;SearchForDisplayRequest&#34;
+    ) -&gt; &#34;SearchForDisplayResponse&#34;:
+        &#34;&#34;&#34;
         Search for time series and other entites matching attribute values and return the
         selected metadata formatted for presentation purposes.
 
@@ -295,9 +291,11 @@ class SearchMethods():
             403 Forbidden. Not authorized.
 
             404 At least one attribute was not found.
-        &#39;&#39;&#39;
-        response = self.__session.post_or_raise(&#39;v1/search/entitiesfordisplay&#39;, json=request)
-        return cast(&#39;SearchForDisplayResponse&#39;, response.json())</code></pre>
+        &#34;&#34;&#34;
+        response = self.__session.post_or_raise(
+            &#34;v1/search/entitiesfordisplay&#34;, json=request
+        )
+        return cast(&#34;SearchForDisplayResponse&#34;, response.json())</code></pre>
 </details>
 <h3>Methods</h3>
 <dl>
@@ -319,9 +317,9 @@ selected metadata formatted for presentation purposes.</p>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def entities_for_display(
-    self, request: &#39;SearchForDisplayRequest&#39;
-) -&gt; &#39;SearchForDisplayResponse&#39;:
-    &#39;&#39;&#39;
+    self, request: &#34;SearchForDisplayRequest&#34;
+) -&gt; &#34;SearchForDisplayResponse&#34;:
+    &#34;&#34;&#34;
     Search for time series and other entites matching attribute values and return the
     selected metadata formatted for presentation purposes.
 
@@ -337,9 +335,11 @@ selected metadata formatted for presentation purposes.</p>
         403 Forbidden. Not authorized.
 
         404 At least one attribute was not found.
-    &#39;&#39;&#39;
-    response = self.__session.post_or_raise(&#39;v1/search/entitiesfordisplay&#39;, json=request)
-    return cast(&#39;SearchForDisplayResponse&#39;, response.json())</code></pre>
+    &#34;&#34;&#34;
+    response = self.__session.post_or_raise(
+        &#34;v1/search/entitiesfordisplay&#34;, json=request
+    )
+    return cast(&#34;SearchForDisplayResponse&#34;, response.json())</code></pre>
 </details>
 </dd>
 <dt id="macrobond_financial.web.web_typs.search_methods.SearchMethods.filter_lists"><code class="name flex">
@@ -357,8 +357,8 @@ selected metadata formatted for presentation purposes.</p>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def filter_lists(self, entity_type: str) -&gt; List[&#39;ItemListingResponse&#39;]:
-    &#39;&#39;&#39;
+<pre><code class="python">def filter_lists(self, entity_type: str) -&gt; List[&#34;ItemListingResponse&#34;]:
+    &#34;&#34;&#34;
     Get a structured list of all saved filter lists of the specified type.
 
     OAuth scope: macrobond_web_api.read_structure or macrobond_web_api.search_mb
@@ -371,14 +371,11 @@ selected metadata formatted for presentation purposes.</p>
         401 Unauthorized. Missing, invalid or expired access token.
 
         403 Forbidden. Not authorized.
-    &#39;&#39;&#39;
+    &#34;&#34;&#34;
     response = self.__session.get_or_raise(
-        &#39;v1/search/filterlists&#39;,
-        params={
-            &#39;entityType&#39;: entity_type
-        }
+        &#34;v1/search/filterlists&#34;, params={&#34;entityType&#34;: entity_type}
     )
-    return cast(List[&#39;ItemListingResponse&#39;], response.json())</code></pre>
+    return cast(List[&#34;ItemListingResponse&#34;], response.json())</code></pre>
 </details>
 </dd>
 <dt id="macrobond_financial.web.web_typs.search_methods.SearchMethods.get_entities"><code class="name flex">
@@ -408,8 +405,8 @@ entities matching the value will be excluded instead of included.</p>
     include_discontinued: bool = None,
     _filter: Dict[str, str] = None,
     no_meta_data: bool = None,
-) -&gt; &#39;SearchResponse&#39;:
-    &#39;&#39;&#39;
+) -&gt; &#34;SearchResponse&#34;:
+    &#34;&#34;&#34;
     Search for time series and other entites matching attribute values.
     If the same attribute name is specified more than once,
     then entities matching any of them will be included. If the value is *,
@@ -428,23 +425,23 @@ entities matching the value will be excluded instead of included.</p>
         403 Forbidden. Not authorized.
 
         404 At least one attribute was not found.
-    &#39;&#39;&#39;
+    &#34;&#34;&#34;
 
     params = {
-        &#39;entityType&#39;: entity_type,
-        &#39;text&#39;: text,
-        &#39;filter&#39;: _filter,
+        &#34;entityType&#34;: entity_type,
+        &#34;text&#34;: text,
+        &#34;filter&#34;: _filter,
     }
 
     if no_meta_data is not None:
-        params[&#39;noMetaData&#39;] = &#39;true&#39; if no_meta_data else &#39;false&#39;
+        params[&#34;noMetaData&#34;] = &#34;true&#34; if no_meta_data else &#34;false&#34;
 
     if include_discontinued is not None:
-        params[&#39;includeDiscontinued&#39;] = &#39;true&#39; if include_discontinued else &#39;false&#39;
+        params[&#34;includeDiscontinued&#34;] = &#34;true&#34; if include_discontinued else &#34;false&#34;
 
-    response = self.__session.get_or_raise(&#39;v1/search/entities&#39;, params=params)
+    response = self.__session.get_or_raise(&#34;v1/search/entities&#34;, params=params)
 
-    return cast(&#39;SearchResponse&#39;, response.json())</code></pre>
+    return cast(&#34;SearchResponse&#34;, response.json())</code></pre>
 </details>
 </dd>
 <dt id="macrobond_financial.web.web_typs.search_methods.SearchMethods.post_entities"><code class="name flex">
@@ -463,8 +460,8 @@ entities matching the value will be excluded instead of included.</p>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def post_entities(self, request: &#39;SearchRequest&#39;) -&gt; &#39;SearchResponse&#39;:
-    &#39;&#39;&#39;
+<pre><code class="python">def post_entities(self, request: &#34;SearchRequest&#34;) -&gt; &#34;SearchResponse&#34;:
+    &#34;&#34;&#34;
     Search for time series and other entites matching attribute values.
 
     OAuth scope: macrobond_web_api.search_mb
@@ -479,9 +476,9 @@ entities matching the value will be excluded instead of included.</p>
         403 Forbidden. Not authorized.
 
         404 At least one attribute was not found.
-    &#39;&#39;&#39;
-    response = self.__session.post_or_raise(&#39;v1/search/entities&#39;, json=request)
-    return cast(&#39;SearchResponse&#39;, response.json())</code></pre>
+    &#34;&#34;&#34;
+    response = self.__session.post_or_raise(&#34;v1/search/entities&#34;, json=request)
+    return cast(&#34;SearchResponse&#34;, response.json())</code></pre>
 </details>
 </dd>
 </dl>

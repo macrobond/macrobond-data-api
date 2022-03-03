@@ -35,25 +35,25 @@ from typing import Tuple
 from .database import Database
 
 
-class Connection():
-    &#39;&#39;&#39;Interface for a Macrobond connection.&#39;&#39;&#39;
+class Connection:
+    &#34;&#34;&#34;Interface for a Macrobond connection.&#34;&#34;&#34;
 
     @property
     def Database(self) -&gt; Database:
-        &#39;&#39;&#39;This property returns a reference to the database interface.&#39;&#39;&#39;
+        &#34;&#34;&#34;This property returns a reference to the database interface.&#34;&#34;&#34;
 
     @property
     def Version(self) -&gt; Tuple[int]:
-        &#39;&#39;&#39;
+        &#34;&#34;&#34;
         Version Returns an array of three values for the version of the installed API.
         For example, for the version 1.23.3 it will return [1, 23, 3].
-        &#39;&#39;&#39;
+        &#34;&#34;&#34;
 
     def Close(self) -&gt; None:
-        &#39;&#39;&#39;
+        &#34;&#34;&#34;
         free all resources used by the Macrobond API. Opening and closing sessions can be slow,
         so it is usually not a good idea to open and close them for each request
-        &#39;&#39;&#39;</code></pre>
+        &#34;&#34;&#34;</code></pre>
 </details>
 </section>
 <section>
@@ -74,25 +74,25 @@ class Connection():
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class Connection():
-    &#39;&#39;&#39;Interface for a Macrobond connection.&#39;&#39;&#39;
+<pre><code class="python">class Connection:
+    &#34;&#34;&#34;Interface for a Macrobond connection.&#34;&#34;&#34;
 
     @property
     def Database(self) -&gt; Database:
-        &#39;&#39;&#39;This property returns a reference to the database interface.&#39;&#39;&#39;
+        &#34;&#34;&#34;This property returns a reference to the database interface.&#34;&#34;&#34;
 
     @property
     def Version(self) -&gt; Tuple[int]:
-        &#39;&#39;&#39;
+        &#34;&#34;&#34;
         Version Returns an array of three values for the version of the installed API.
         For example, for the version 1.23.3 it will return [1, 23, 3].
-        &#39;&#39;&#39;
+        &#34;&#34;&#34;
 
     def Close(self) -&gt; None:
-        &#39;&#39;&#39;
+        &#34;&#34;&#34;
         free all resources used by the Macrobond API. Opening and closing sessions can be slow,
         so it is usually not a good idea to open and close them for each request
-        &#39;&#39;&#39;</code></pre>
+        &#34;&#34;&#34;</code></pre>
 </details>
 <h3>Instance variables</h3>
 <dl>
@@ -105,7 +105,7 @@ class Connection():
 </summary>
 <pre><code class="python">@property
 def Database(self) -&gt; Database:
-    &#39;&#39;&#39;This property returns a reference to the database interface.&#39;&#39;&#39;</code></pre>
+    &#34;&#34;&#34;This property returns a reference to the database interface.&#34;&#34;&#34;</code></pre>
 </details>
 </dd>
 <dt id="macrobond_financial.com.com_typs.connection.Connection.Version"><code class="name">var <span class="ident">Version</span> : Tuple[int]</code></dt>
@@ -118,10 +118,10 @@ For example, for the version 1.23.3 it will return [1, 23, 3].</p></div>
 </summary>
 <pre><code class="python">@property
 def Version(self) -&gt; Tuple[int]:
-    &#39;&#39;&#39;
+    &#34;&#34;&#34;
     Version Returns an array of three values for the version of the installed API.
     For example, for the version 1.23.3 it will return [1, 23, 3].
-    &#39;&#39;&#39;</code></pre>
+    &#34;&#34;&#34;</code></pre>
 </details>
 </dd>
 </dl>
@@ -138,10 +138,10 @@ so it is usually not a good idea to open and close them for each request</p></di
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def Close(self) -&gt; None:
-    &#39;&#39;&#39;
+    &#34;&#34;&#34;
     free all resources used by the Macrobond API. Opening and closing sessions can be slow,
     so it is usually not a good idea to open and close them for each request
-    &#39;&#39;&#39;</code></pre>
+    &#34;&#34;&#34;</code></pre>
 </details>
 </dd>
 </dl>

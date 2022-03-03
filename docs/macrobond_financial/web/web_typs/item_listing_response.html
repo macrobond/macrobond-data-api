@@ -38,23 +38,23 @@ class ItemInformation(TypedDict):
     # pylint: disable = missing-class-docstring
 
     title: str
-    &#39;&#39;&#39;The title of the item&#39;&#39;&#39;
+    &#34;&#34;&#34;The title of the item&#34;&#34;&#34;
 
     path: str
-    &#39;&#39;&#39;The path of the item&#39;&#39;&#39;
+    &#34;&#34;&#34;The path of the item&#34;&#34;&#34;
 
 
 class ItemListingResponse(TypedDict):
-    &#39;&#39;&#39;The response of listing items that can be organized into directories&#39;&#39;&#39;
+    &#34;&#34;&#34;The response of listing items that can be organized into directories&#34;&#34;&#34;
 
     title: str
-    &#39;&#39;&#39;The title of the directory&#39;&#39;&#39;
+    &#34;&#34;&#34;The title of the directory&#34;&#34;&#34;
 
-    directories: Optional[List[&#39;ItemListingResponse&#39;]]   # type: ignore[misc]
-    &#39;&#39;&#39;The list of sub directories if any.&#39;&#39;&#39;
+    directories: Optional[List[&#34;ItemListingResponse&#34;]]  # type: ignore[misc]
+    &#34;&#34;&#34;The list of sub directories if any.&#34;&#34;&#34;
 
     items: Optional[List[ItemInformation]]
-    &#39;&#39;&#39;The list of if any.&#39;&#39;&#39;</code></pre>
+    &#34;&#34;&#34;The list of if any.&#34;&#34;&#34;</code></pre>
 </details>
 </section>
 <section>
@@ -90,10 +90,10 @@ dict(one=1, two=2)</p></div>
     # pylint: disable = missing-class-docstring
 
     title: str
-    &#39;&#39;&#39;The title of the item&#39;&#39;&#39;
+    &#34;&#34;&#34;The title of the item&#34;&#34;&#34;
 
     path: str
-    &#39;&#39;&#39;The path of the item&#39;&#39;&#39;</code></pre>
+    &#34;&#34;&#34;The path of the item&#34;&#34;&#34;</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
@@ -122,16 +122,16 @@ dict(one=1, two=2)</p></div>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class ItemListingResponse(TypedDict):
-    &#39;&#39;&#39;The response of listing items that can be organized into directories&#39;&#39;&#39;
+    &#34;&#34;&#34;The response of listing items that can be organized into directories&#34;&#34;&#34;
 
     title: str
-    &#39;&#39;&#39;The title of the directory&#39;&#39;&#39;
+    &#34;&#34;&#34;The title of the directory&#34;&#34;&#34;
 
-    directories: Optional[List[&#39;ItemListingResponse&#39;]]   # type: ignore[misc]
-    &#39;&#39;&#39;The list of sub directories if any.&#39;&#39;&#39;
+    directories: Optional[List[&#34;ItemListingResponse&#34;]]  # type: ignore[misc]
+    &#34;&#34;&#34;The list of sub directories if any.&#34;&#34;&#34;
 
     items: Optional[List[ItemInformation]]
-    &#39;&#39;&#39;The list of if any.&#39;&#39;&#39;</code></pre>
+    &#34;&#34;&#34;The list of if any.&#34;&#34;&#34;</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">

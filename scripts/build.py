@@ -7,10 +7,10 @@ from pycodestyle import pycodestyle
 
 
 def build(context: Context) -> None:
-    if not context.pip_install('build'):
+    if not context.pip_install("build"):
         return
 
-    context.shell_command('python -m build')
+    context.shell_command("python -m build")
 
 
 if __name__ == "__main__":

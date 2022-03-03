@@ -35,22 +35,22 @@ from typing_extensions import TypedDict
 
 
 class SeriesObservationHistoryResponse(TypedDict):
-    &#39;&#39;&#39;The history of changes of an observation&#39;&#39;&#39;
+    &#34;&#34;&#34;The history of changes of an observation&#34;&#34;&#34;
 
     observationDate: str
-    &#39;&#39;&#39;The date of the observation&#39;&#39;&#39;
+    &#34;&#34;&#34;The date of the observation&#34;&#34;&#34;
 
     value: List[Optional[float]]
-    &#39;&#39;&#39;
+    &#34;&#34;&#34;
     The historical values of the observation or an empty list if
     there are no recorded values for the specified date.
-    &#39;&#39;&#39;
+    &#34;&#34;&#34;
 
     timeStamps: List[Optional[str]]
-    &#39;&#39;&#39;
+    &#34;&#34;&#34;
     A list of timestamps of when the historical values were recorded.
     The first timestamp may be null if the time of the original is unknown.
-    &#39;&#39;&#39;</code></pre>
+    &#34;&#34;&#34;</code></pre>
 </details>
 </section>
 <section>
@@ -73,22 +73,22 @@ class SeriesObservationHistoryResponse(TypedDict):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class SeriesObservationHistoryResponse(TypedDict):
-    &#39;&#39;&#39;The history of changes of an observation&#39;&#39;&#39;
+    &#34;&#34;&#34;The history of changes of an observation&#34;&#34;&#34;
 
     observationDate: str
-    &#39;&#39;&#39;The date of the observation&#39;&#39;&#39;
+    &#34;&#34;&#34;The date of the observation&#34;&#34;&#34;
 
     value: List[Optional[float]]
-    &#39;&#39;&#39;
+    &#34;&#34;&#34;
     The historical values of the observation or an empty list if
     there are no recorded values for the specified date.
-    &#39;&#39;&#39;
+    &#34;&#34;&#34;
 
     timeStamps: List[Optional[str]]
-    &#39;&#39;&#39;
+    &#34;&#34;&#34;
     A list of timestamps of when the historical values were recorded.
     The first timestamp may be null if the time of the original is unknown.
-    &#39;&#39;&#39;</code></pre>
+    &#34;&#34;&#34;</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">

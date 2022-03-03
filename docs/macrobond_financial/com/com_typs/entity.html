@@ -33,38 +33,38 @@
 from .metadata import Metadata
 
 
-class Entity():
-    &#39;&#39;&#39;Interface for a database Macrobond entity.&#39;&#39;&#39;
+class Entity:
+    &#34;&#34;&#34;Interface for a database Macrobond entity.&#34;&#34;&#34;
 
     @property
     def Name(self) -&gt; str:
-        &#39;&#39;&#39;The name of the entity.&#39;&#39;&#39;
+        &#34;&#34;&#34;The name of the entity.&#34;&#34;&#34;
 
     @property
     def PrimaryName(self) -&gt; str:
-        &#39;&#39;&#39;The primary name of the entity.&#39;&#39;&#39;
+        &#34;&#34;&#34;The primary name of the entity.&#34;&#34;&#34;
 
     @property
     def IsError(self) -&gt; bool:
-        &#39;&#39;&#39;
+        &#34;&#34;&#34;
         Is true if the request resulted in an error.
         The ErrorMessage property contains the error message.
-        &#39;&#39;&#39;
+        &#34;&#34;&#34;
 
     @property
     def ErrorMessage(self) -&gt; str:
-        &#39;&#39;&#39;
+        &#34;&#34;&#34;
         The error message if IsError is true.
         Otherwise it is empty.
-        &#39;&#39;&#39;
+        &#34;&#34;&#34;
 
     @property
     def Title(self) -&gt; str:
-        &#39;&#39;&#39;The title of the entity.&#39;&#39;&#39;
+        &#34;&#34;&#34;The title of the entity.&#34;&#34;&#34;
 
     @property
     def Metadata(self) -&gt; Metadata:
-        &#39;&#39;&#39;The metadata for the entity.&#39;&#39;&#39;</code></pre>
+        &#34;&#34;&#34;The metadata for the entity.&#34;&#34;&#34;</code></pre>
 </details>
 </section>
 <section>
@@ -85,38 +85,38 @@ class Entity():
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class Entity():
-    &#39;&#39;&#39;Interface for a database Macrobond entity.&#39;&#39;&#39;
+<pre><code class="python">class Entity:
+    &#34;&#34;&#34;Interface for a database Macrobond entity.&#34;&#34;&#34;
 
     @property
     def Name(self) -&gt; str:
-        &#39;&#39;&#39;The name of the entity.&#39;&#39;&#39;
+        &#34;&#34;&#34;The name of the entity.&#34;&#34;&#34;
 
     @property
     def PrimaryName(self) -&gt; str:
-        &#39;&#39;&#39;The primary name of the entity.&#39;&#39;&#39;
+        &#34;&#34;&#34;The primary name of the entity.&#34;&#34;&#34;
 
     @property
     def IsError(self) -&gt; bool:
-        &#39;&#39;&#39;
+        &#34;&#34;&#34;
         Is true if the request resulted in an error.
         The ErrorMessage property contains the error message.
-        &#39;&#39;&#39;
+        &#34;&#34;&#34;
 
     @property
     def ErrorMessage(self) -&gt; str:
-        &#39;&#39;&#39;
+        &#34;&#34;&#34;
         The error message if IsError is true.
         Otherwise it is empty.
-        &#39;&#39;&#39;
+        &#34;&#34;&#34;
 
     @property
     def Title(self) -&gt; str:
-        &#39;&#39;&#39;The title of the entity.&#39;&#39;&#39;
+        &#34;&#34;&#34;The title of the entity.&#34;&#34;&#34;
 
     @property
     def Metadata(self) -&gt; Metadata:
-        &#39;&#39;&#39;The metadata for the entity.&#39;&#39;&#39;</code></pre>
+        &#34;&#34;&#34;The metadata for the entity.&#34;&#34;&#34;</code></pre>
 </details>
 <h3>Subclasses</h3>
 <ul class="hlist">
@@ -134,10 +134,10 @@ Otherwise it is empty.</p></div>
 </summary>
 <pre><code class="python">@property
 def ErrorMessage(self) -&gt; str:
-    &#39;&#39;&#39;
+    &#34;&#34;&#34;
     The error message if IsError is true.
     Otherwise it is empty.
-    &#39;&#39;&#39;</code></pre>
+    &#34;&#34;&#34;</code></pre>
 </details>
 </dd>
 <dt id="macrobond_financial.com.com_typs.entity.Entity.IsError"><code class="name">var <span class="ident">IsError</span> : bool</code></dt>
@@ -150,10 +150,10 @@ The ErrorMessage property contains the error message.</p></div>
 </summary>
 <pre><code class="python">@property
 def IsError(self) -&gt; bool:
-    &#39;&#39;&#39;
+    &#34;&#34;&#34;
     Is true if the request resulted in an error.
     The ErrorMessage property contains the error message.
-    &#39;&#39;&#39;</code></pre>
+    &#34;&#34;&#34;</code></pre>
 </details>
 </dd>
 <dt id="macrobond_financial.com.com_typs.entity.Entity.Metadata"><code class="name">var <span class="ident">Metadata</span> : <a title="macrobond_financial.com.com_typs.metadata.Metadata" href="metadata.html#macrobond_financial.com.com_typs.metadata.Metadata">Metadata</a></code></dt>
@@ -165,7 +165,7 @@ def IsError(self) -&gt; bool:
 </summary>
 <pre><code class="python">@property
 def Metadata(self) -&gt; Metadata:
-    &#39;&#39;&#39;The metadata for the entity.&#39;&#39;&#39;</code></pre>
+    &#34;&#34;&#34;The metadata for the entity.&#34;&#34;&#34;</code></pre>
 </details>
 </dd>
 <dt id="macrobond_financial.com.com_typs.entity.Entity.Name"><code class="name">var <span class="ident">Name</span> : str</code></dt>
@@ -177,7 +177,7 @@ def Metadata(self) -&gt; Metadata:
 </summary>
 <pre><code class="python">@property
 def Name(self) -&gt; str:
-    &#39;&#39;&#39;The name of the entity.&#39;&#39;&#39;</code></pre>
+    &#34;&#34;&#34;The name of the entity.&#34;&#34;&#34;</code></pre>
 </details>
 </dd>
 <dt id="macrobond_financial.com.com_typs.entity.Entity.PrimaryName"><code class="name">var <span class="ident">PrimaryName</span> : str</code></dt>
@@ -189,7 +189,7 @@ def Name(self) -&gt; str:
 </summary>
 <pre><code class="python">@property
 def PrimaryName(self) -&gt; str:
-    &#39;&#39;&#39;The primary name of the entity.&#39;&#39;&#39;</code></pre>
+    &#34;&#34;&#34;The primary name of the entity.&#34;&#34;&#34;</code></pre>
 </details>
 </dd>
 <dt id="macrobond_financial.com.com_typs.entity.Entity.Title"><code class="name">var <span class="ident">Title</span> : str</code></dt>
@@ -201,7 +201,7 @@ def PrimaryName(self) -&gt; str:
 </summary>
 <pre><code class="python">@property
 def Title(self) -&gt; str:
-    &#39;&#39;&#39;The title of the entity.&#39;&#39;&#39;</code></pre>
+    &#34;&#34;&#34;The title of the entity.&#34;&#34;&#34;</code></pre>
 </details>
 </dd>
 </dl>

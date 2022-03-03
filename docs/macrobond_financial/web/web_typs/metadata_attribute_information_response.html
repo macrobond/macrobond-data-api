@@ -40,56 +40,56 @@ from ...common.enums import MetadataAttributeType
 class MetadataAttributeTypeRestriction(IntFlag):
 
     URL = 1
-    &#39;&#39;&#39;The string is an URL&#39;&#39;&#39;
+    &#34;&#34;&#34;The string is an URL&#34;&#34;&#34;
 
     EMAIL = 2
-    &#39;&#39;&#39;The string is an e-mail address&#39;&#39;&#39;
+    &#34;&#34;&#34;The string is an e-mail address&#34;&#34;&#34;
 
     DATE = 3
-    &#39;&#39;&#39;Only the date of the TimeStamp is valid&#39;&#39;&#39;
+    &#34;&#34;&#34;Only the date of the TimeStamp is valid&#34;&#34;&#34;
 
     POSITIVE = 4
-    &#39;&#39;&#39;The integer or double is &gt;= 0&#39;&#39;&#39;
+    &#34;&#34;&#34;The integer or double is &gt;= 0&#34;&#34;&#34;
 
     JSON = 5
-    &#39;&#39;&#39;The string is encoded as JSON&#39;&#39;&#39;
+    &#34;&#34;&#34;The string is encoded as JSON&#34;&#34;&#34;
 
 
 class MetadataAttributeInformationResponse(TypedDict):
-    &#39;&#39;&#39;Information about a metadata attribute&#39;&#39;&#39;
+    &#34;&#34;&#34;Information about a metadata attribute&#34;&#34;&#34;
 
     name: str
-    &#39;&#39;&#39;The name of the metadata attribute&#39;&#39;&#39;
+    &#34;&#34;&#34;The name of the metadata attribute&#34;&#34;&#34;
 
     description: str
-    &#39;&#39;&#39;The description of the metadata attribute&#39;&#39;&#39;
+    &#34;&#34;&#34;The description of the metadata attribute&#34;&#34;&#34;
 
     comment: Optional[str]
-    &#39;&#39;&#39;The comment of the metadata attribute&#39;&#39;&#39;
+    &#34;&#34;&#34;The comment of the metadata attribute&#34;&#34;&#34;
 
     valueType: MetadataAttributeType
-    &#39;&#39;&#39;The value type of the metadata attribute&#39;&#39;&#39;
+    &#34;&#34;&#34;The value type of the metadata attribute&#34;&#34;&#34;
 
     valueRestriction: Optional[MetadataAttributeTypeRestriction]
-    &#39;&#39;&#39;Restriction on the value type&#39;&#39;&#39;
+    &#34;&#34;&#34;Restriction on the value type&#34;&#34;&#34;
 
     usesValueList: bool
-    &#39;&#39;&#39;If True, the metadata attribute uses a list of values&#39;&#39;&#39;
+    &#34;&#34;&#34;If True, the metadata attribute uses a list of values&#34;&#34;&#34;
 
     canListValues: bool
-    &#39;&#39;&#39;
+    &#34;&#34;&#34;
     If True then the values of this type of
     metadata can be listen using the ListAllValues function
-    &#39;&#39;&#39;
+    &#34;&#34;&#34;
 
     canHaveMultipleValues: bool
-    &#39;&#39;&#39;If True then this type of metadata can have multiple values in a metadata collection&#39;&#39;&#39;
+    &#34;&#34;&#34;If True then this type of metadata can have multiple values in a metadata collection&#34;&#34;&#34;
 
     isDatabaseEntity: bool
-    &#39;&#39;&#39;If True then this type of metadata is an entity that can be retrieved from the database&#39;&#39;&#39;
+    &#34;&#34;&#34;If True then this type of metadata is an entity that can be retrieved from the database&#34;&#34;&#34;
 
     appliesTo: Optional[List[str]]
-    &#39;&#39;&#39;If provided, specifies what types of entities that this attribute applies to&#39;&#39;&#39;</code></pre>
+    &#34;&#34;&#34;If provided, specifies what types of entities that this attribute applies to&#34;&#34;&#34;</code></pre>
 </details>
 </section>
 <section>
@@ -112,40 +112,40 @@ class MetadataAttributeInformationResponse(TypedDict):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class MetadataAttributeInformationResponse(TypedDict):
-    &#39;&#39;&#39;Information about a metadata attribute&#39;&#39;&#39;
+    &#34;&#34;&#34;Information about a metadata attribute&#34;&#34;&#34;
 
     name: str
-    &#39;&#39;&#39;The name of the metadata attribute&#39;&#39;&#39;
+    &#34;&#34;&#34;The name of the metadata attribute&#34;&#34;&#34;
 
     description: str
-    &#39;&#39;&#39;The description of the metadata attribute&#39;&#39;&#39;
+    &#34;&#34;&#34;The description of the metadata attribute&#34;&#34;&#34;
 
     comment: Optional[str]
-    &#39;&#39;&#39;The comment of the metadata attribute&#39;&#39;&#39;
+    &#34;&#34;&#34;The comment of the metadata attribute&#34;&#34;&#34;
 
     valueType: MetadataAttributeType
-    &#39;&#39;&#39;The value type of the metadata attribute&#39;&#39;&#39;
+    &#34;&#34;&#34;The value type of the metadata attribute&#34;&#34;&#34;
 
     valueRestriction: Optional[MetadataAttributeTypeRestriction]
-    &#39;&#39;&#39;Restriction on the value type&#39;&#39;&#39;
+    &#34;&#34;&#34;Restriction on the value type&#34;&#34;&#34;
 
     usesValueList: bool
-    &#39;&#39;&#39;If True, the metadata attribute uses a list of values&#39;&#39;&#39;
+    &#34;&#34;&#34;If True, the metadata attribute uses a list of values&#34;&#34;&#34;
 
     canListValues: bool
-    &#39;&#39;&#39;
+    &#34;&#34;&#34;
     If True then the values of this type of
     metadata can be listen using the ListAllValues function
-    &#39;&#39;&#39;
+    &#34;&#34;&#34;
 
     canHaveMultipleValues: bool
-    &#39;&#39;&#39;If True then this type of metadata can have multiple values in a metadata collection&#39;&#39;&#39;
+    &#34;&#34;&#34;If True then this type of metadata can have multiple values in a metadata collection&#34;&#34;&#34;
 
     isDatabaseEntity: bool
-    &#39;&#39;&#39;If True then this type of metadata is an entity that can be retrieved from the database&#39;&#39;&#39;
+    &#34;&#34;&#34;If True then this type of metadata is an entity that can be retrieved from the database&#34;&#34;&#34;
 
     appliesTo: Optional[List[str]]
-    &#39;&#39;&#39;If provided, specifies what types of entities that this attribute applies to&#39;&#39;&#39;</code></pre>
+    &#34;&#34;&#34;If provided, specifies what types of entities that this attribute applies to&#34;&#34;&#34;</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
@@ -209,19 +209,19 @@ metadata can be listen using the ListAllValues function</p></div>
 <pre><code class="python">class MetadataAttributeTypeRestriction(IntFlag):
 
     URL = 1
-    &#39;&#39;&#39;The string is an URL&#39;&#39;&#39;
+    &#34;&#34;&#34;The string is an URL&#34;&#34;&#34;
 
     EMAIL = 2
-    &#39;&#39;&#39;The string is an e-mail address&#39;&#39;&#39;
+    &#34;&#34;&#34;The string is an e-mail address&#34;&#34;&#34;
 
     DATE = 3
-    &#39;&#39;&#39;Only the date of the TimeStamp is valid&#39;&#39;&#39;
+    &#34;&#34;&#34;Only the date of the TimeStamp is valid&#34;&#34;&#34;
 
     POSITIVE = 4
-    &#39;&#39;&#39;The integer or double is &gt;= 0&#39;&#39;&#39;
+    &#34;&#34;&#34;The integer or double is &gt;= 0&#34;&#34;&#34;
 
     JSON = 5
-    &#39;&#39;&#39;The string is encoded as JSON&#39;&#39;&#39;</code></pre>
+    &#34;&#34;&#34;The string is encoded as JSON&#34;&#34;&#34;</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">

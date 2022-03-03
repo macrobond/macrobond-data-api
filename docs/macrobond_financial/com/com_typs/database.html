@@ -43,44 +43,54 @@ from .series_with_revisions import SeriesWithRevisions
 
 
 class Database:
-    &#39;&#39;&#39;This interface allows you to interact with the Macrobond database.&#39;&#39;&#39;
+    &#34;&#34;&#34;This interface allows you to interact with the Macrobond database.&#34;&#34;&#34;
 
     def FetchOneSeries(self, series_name: str) -&gt; Series:
-        &#39;&#39;&#39;Download one series from the database.&#39;&#39;&#39;
+        &#34;&#34;&#34;Download one series from the database.&#34;&#34;&#34;
 
     def FetchSeries(
         self, series_names: Union[str, Tuple[str, ...], SeriesRequest]
     ) -&gt; Tuple[Series, ...]:
-        &#39;&#39;&#39;
+        &#34;&#34;&#34;
         Download one or more series from the database.
         The parameter can be a string, a vector of series names or an
         object created by &#39;CreateUnifiedSeriesRequest()&#39;.
         The result is a vector of series in the same order as requested.
-        &#39;&#39;&#39;
+        &#34;&#34;&#34;
 
     def FetchOneEntity(self, entity_name: str) -&gt; Entity:
-        &#39;&#39;&#39;Download an entity, such as a Release.&#39;&#39;&#39;
+        &#34;&#34;&#34;Download an entity, such as a Release.&#34;&#34;&#34;
 
-    def FetchEntities(self, entity_names: Union[str, Tuple[str, ...]]) -&gt; Tuple[Entity, ...]:
-        &#39;&#39;&#39;
+    def FetchEntities(
+        self, entity_names: Union[str, Tuple[str, ...]]
+    ) -&gt; Tuple[Entity, ...]:
+        &#34;&#34;&#34;
         Download one or more entities from the database.
         The parameter can be a string or a list of entity names. The result is a vector
         of entities in the same order as requested.
-        &#39;&#39;&#39;
+        &#34;&#34;&#34;
 
     def CreateUnifiedSeriesRequest(self) -&gt; SeriesRequest:
-        &#39;&#39;&#39;
+        &#34;&#34;&#34;
         Create a request of one or more series where the resulting time series will be
         converted to a common length and calendar.
         You can specify frequency, currency, date range, missing value and
         frequency conversion methods
-        &#39;&#39;&#39;
+        &#34;&#34;&#34;
 
     def CreateSeriesObject(
-        self, name: str, description: str, region: str, category: str,
-        frequency: int, dayMask: int, startDateOrDates: object, values: object, metadata: Metadata
+        self,
+        name: str,
+        description: str,
+        region: str,
+        category: str,
+        frequency: int,
+        dayMask: int,
+        startDateOrDates: object,
+        values: object,
+        metadata: Metadata,
     ) -&gt; Series:
-        &#39;&#39;&#39;
+        &#34;&#34;&#34;
         Create a series object that can be uploaded to the server using
         the &#39;UploadOneOrMoreSeries()&#39; method.
         The startDateOrDates can either be just one start date or one date for each value.
@@ -92,14 +102,22 @@ class Database:
         The name should be of the form &#34;ih:storage:id&#34;, where storage
         is &#34;priv&#34;, &#34;dept&#34; or &#34;com&#34; coresponding to the private, department and company storages.
         Id should must be a unique identifier per storage.
-        &#39;&#39;&#39;
+        &#34;&#34;&#34;
 
     def CreateSeriesObjectWithForecastFlags(
-        self, name: str, description: str, region: str, category: str, frequency: int,
-        dayMask: int, startDateOrDates: object, values: object, forecastFlags: object,
-        metadata: Metadata
+        self,
+        name: str,
+        description: str,
+        region: str,
+        category: str,
+        frequency: int,
+        dayMask: int,
+        startDateOrDates: object,
+        values: object,
+        forecastFlags: object,
+        metadata: Metadata,
     ) -&gt; Series:
-        &#39;&#39;&#39;
+        &#34;&#34;&#34;
         Create a series object that can be uploaded to the server using the
         UploadOneOrMoreSeries method.
         The startDateOrDates can either be just one start date or one date for each value.
@@ -114,65 +132,66 @@ class Database:
         where storage is &#34;priv&#34;, &#34;dept&#34; or &#34;com&#34; coresponding to the private,
         department and company storages.
         Id should must be a unique identifier per storage.
-        &#39;&#39;&#39;
+        &#34;&#34;&#34;
 
     def UploadOneOrMoreSeries(self, series: Union[Series, List[Series]]) -&gt; None:
-        &#39;&#39;&#39;
+        &#34;&#34;&#34;
         Upload one or more series created by the CreateSeriesObject method.
         The parameter can be a single series or a list of series.
         It is more efficient to upload more series at once than one by one.
-        &#39;&#39;&#39;
+        &#34;&#34;&#34;
 
     def DeleteOneOrMoreSeries(self, name_or_names: Union[str, List[str]]) -&gt; None:
-        &#39;&#39;&#39;
+        &#34;&#34;&#34;
         Delete one or more series.
         The parameter can be a single series name or a list of names.
         It is more efficient to delete more than one series at once than one by one.
-        &#39;&#39;&#39;
+        &#34;&#34;&#34;
 
     def CreateEmptyMetadata(self) -&gt; Metadata:
-        &#39;&#39;&#39;
+        &#34;&#34;&#34;
         Create an empty set of metadata. The content can be changed until it is used in a series.
-        &#39;&#39;&#39;
+        &#34;&#34;&#34;
 
     def CreateDerivedMetadata(self, metadata: Metadata) -&gt; Metadata:
-        &#39;&#39;&#39;
+        &#34;&#34;&#34;
         Create a set of metadata derived from another set. The content can be changed until it
         is used in a series.
-        &#39;&#39;&#39;
+        &#34;&#34;&#34;
 
     def GetMetadataInformation(self, name: str) -&gt; MetadataInformation:
-        &#39;&#39;&#39;Get information about a type of metadata.&#39;&#39;&#39;
+        &#34;&#34;&#34;Get information about a type of metadata.&#34;&#34;&#34;
 
     def CreateSearchQuery(self) -&gt; SearchQuery:
-        &#39;&#39;&#39;
+        &#34;&#34;&#34;
         Create a search query object.
         Set properties on this object and pass it to the Search function in order to
         search for series and other entities.
         (MB 1.23 or later. Requires Data+ license.)
-        &#39;&#39;&#39;
+        &#34;&#34;&#34;
+
     def Search(self, queries: List[SearchQuery]) -&gt; SearchResult:
-        &#39;&#39;&#39;
+        &#34;&#34;&#34;
         Execute a search for series and other entities. See specification
         of ISearchQuery for details.
         (MB 1.23 or later. Requires Data+ license.)
-        &#39;&#39;&#39;
+        &#34;&#34;&#34;
 
     def FetchOneSeriesWithRevisions(self, name: str) -&gt; SeriesWithRevisions:
-        &#39;&#39;&#39;
+        &#34;&#34;&#34;
         Download one revision history for one series.
         (MB 1.23 or later. Requires Data+ license.)
-        &#39;&#39;&#39;
+        &#34;&#34;&#34;
 
     def FetchSeriesWithRevisions(
         self, seriesNames: Union[str, Tuple[str, ...]]
     ) -&gt; Tuple[SeriesWithRevisions, ...]:
-        &#39;&#39;&#39;
+        &#34;&#34;&#34;
         Download one or more series from the database.
         The parameter can be a string or a vector of series names.
         The result is a vector of revision history objects in the same order as requested.
         (MB 1.23 or later. Requires Data+ license.)
-        &#39;&#39;&#39;</code></pre>
+        &#34;&#34;&#34;</code></pre>
 </details>
 </section>
 <section>
@@ -194,44 +213,54 @@ class Database:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class Database:
-    &#39;&#39;&#39;This interface allows you to interact with the Macrobond database.&#39;&#39;&#39;
+    &#34;&#34;&#34;This interface allows you to interact with the Macrobond database.&#34;&#34;&#34;
 
     def FetchOneSeries(self, series_name: str) -&gt; Series:
-        &#39;&#39;&#39;Download one series from the database.&#39;&#39;&#39;
+        &#34;&#34;&#34;Download one series from the database.&#34;&#34;&#34;
 
     def FetchSeries(
         self, series_names: Union[str, Tuple[str, ...], SeriesRequest]
     ) -&gt; Tuple[Series, ...]:
-        &#39;&#39;&#39;
+        &#34;&#34;&#34;
         Download one or more series from the database.
         The parameter can be a string, a vector of series names or an
         object created by &#39;CreateUnifiedSeriesRequest()&#39;.
         The result is a vector of series in the same order as requested.
-        &#39;&#39;&#39;
+        &#34;&#34;&#34;
 
     def FetchOneEntity(self, entity_name: str) -&gt; Entity:
-        &#39;&#39;&#39;Download an entity, such as a Release.&#39;&#39;&#39;
+        &#34;&#34;&#34;Download an entity, such as a Release.&#34;&#34;&#34;
 
-    def FetchEntities(self, entity_names: Union[str, Tuple[str, ...]]) -&gt; Tuple[Entity, ...]:
-        &#39;&#39;&#39;
+    def FetchEntities(
+        self, entity_names: Union[str, Tuple[str, ...]]
+    ) -&gt; Tuple[Entity, ...]:
+        &#34;&#34;&#34;
         Download one or more entities from the database.
         The parameter can be a string or a list of entity names. The result is a vector
         of entities in the same order as requested.
-        &#39;&#39;&#39;
+        &#34;&#34;&#34;
 
     def CreateUnifiedSeriesRequest(self) -&gt; SeriesRequest:
-        &#39;&#39;&#39;
+        &#34;&#34;&#34;
         Create a request of one or more series where the resulting time series will be
         converted to a common length and calendar.
         You can specify frequency, currency, date range, missing value and
         frequency conversion methods
-        &#39;&#39;&#39;
+        &#34;&#34;&#34;
 
     def CreateSeriesObject(
-        self, name: str, description: str, region: str, category: str,
-        frequency: int, dayMask: int, startDateOrDates: object, values: object, metadata: Metadata
+        self,
+        name: str,
+        description: str,
+        region: str,
+        category: str,
+        frequency: int,
+        dayMask: int,
+        startDateOrDates: object,
+        values: object,
+        metadata: Metadata,
     ) -&gt; Series:
-        &#39;&#39;&#39;
+        &#34;&#34;&#34;
         Create a series object that can be uploaded to the server using
         the &#39;UploadOneOrMoreSeries()&#39; method.
         The startDateOrDates can either be just one start date or one date for each value.
@@ -243,14 +272,22 @@ class Database:
         The name should be of the form &#34;ih:storage:id&#34;, where storage
         is &#34;priv&#34;, &#34;dept&#34; or &#34;com&#34; coresponding to the private, department and company storages.
         Id should must be a unique identifier per storage.
-        &#39;&#39;&#39;
+        &#34;&#34;&#34;
 
     def CreateSeriesObjectWithForecastFlags(
-        self, name: str, description: str, region: str, category: str, frequency: int,
-        dayMask: int, startDateOrDates: object, values: object, forecastFlags: object,
-        metadata: Metadata
+        self,
+        name: str,
+        description: str,
+        region: str,
+        category: str,
+        frequency: int,
+        dayMask: int,
+        startDateOrDates: object,
+        values: object,
+        forecastFlags: object,
+        metadata: Metadata,
     ) -&gt; Series:
-        &#39;&#39;&#39;
+        &#34;&#34;&#34;
         Create a series object that can be uploaded to the server using the
         UploadOneOrMoreSeries method.
         The startDateOrDates can either be just one start date or one date for each value.
@@ -265,65 +302,66 @@ class Database:
         where storage is &#34;priv&#34;, &#34;dept&#34; or &#34;com&#34; coresponding to the private,
         department and company storages.
         Id should must be a unique identifier per storage.
-        &#39;&#39;&#39;
+        &#34;&#34;&#34;
 
     def UploadOneOrMoreSeries(self, series: Union[Series, List[Series]]) -&gt; None:
-        &#39;&#39;&#39;
+        &#34;&#34;&#34;
         Upload one or more series created by the CreateSeriesObject method.
         The parameter can be a single series or a list of series.
         It is more efficient to upload more series at once than one by one.
-        &#39;&#39;&#39;
+        &#34;&#34;&#34;
 
     def DeleteOneOrMoreSeries(self, name_or_names: Union[str, List[str]]) -&gt; None:
-        &#39;&#39;&#39;
+        &#34;&#34;&#34;
         Delete one or more series.
         The parameter can be a single series name or a list of names.
         It is more efficient to delete more than one series at once than one by one.
-        &#39;&#39;&#39;
+        &#34;&#34;&#34;
 
     def CreateEmptyMetadata(self) -&gt; Metadata:
-        &#39;&#39;&#39;
+        &#34;&#34;&#34;
         Create an empty set of metadata. The content can be changed until it is used in a series.
-        &#39;&#39;&#39;
+        &#34;&#34;&#34;
 
     def CreateDerivedMetadata(self, metadata: Metadata) -&gt; Metadata:
-        &#39;&#39;&#39;
+        &#34;&#34;&#34;
         Create a set of metadata derived from another set. The content can be changed until it
         is used in a series.
-        &#39;&#39;&#39;
+        &#34;&#34;&#34;
 
     def GetMetadataInformation(self, name: str) -&gt; MetadataInformation:
-        &#39;&#39;&#39;Get information about a type of metadata.&#39;&#39;&#39;
+        &#34;&#34;&#34;Get information about a type of metadata.&#34;&#34;&#34;
 
     def CreateSearchQuery(self) -&gt; SearchQuery:
-        &#39;&#39;&#39;
+        &#34;&#34;&#34;
         Create a search query object.
         Set properties on this object and pass it to the Search function in order to
         search for series and other entities.
         (MB 1.23 or later. Requires Data+ license.)
-        &#39;&#39;&#39;
+        &#34;&#34;&#34;
+
     def Search(self, queries: List[SearchQuery]) -&gt; SearchResult:
-        &#39;&#39;&#39;
+        &#34;&#34;&#34;
         Execute a search for series and other entities. See specification
         of ISearchQuery for details.
         (MB 1.23 or later. Requires Data+ license.)
-        &#39;&#39;&#39;
+        &#34;&#34;&#34;
 
     def FetchOneSeriesWithRevisions(self, name: str) -&gt; SeriesWithRevisions:
-        &#39;&#39;&#39;
+        &#34;&#34;&#34;
         Download one revision history for one series.
         (MB 1.23 or later. Requires Data+ license.)
-        &#39;&#39;&#39;
+        &#34;&#34;&#34;
 
     def FetchSeriesWithRevisions(
         self, seriesNames: Union[str, Tuple[str, ...]]
     ) -&gt; Tuple[SeriesWithRevisions, ...]:
-        &#39;&#39;&#39;
+        &#34;&#34;&#34;
         Download one or more series from the database.
         The parameter can be a string or a vector of series names.
         The result is a vector of revision history objects in the same order as requested.
         (MB 1.23 or later. Requires Data+ license.)
-        &#39;&#39;&#39;</code></pre>
+        &#34;&#34;&#34;</code></pre>
 </details>
 <h3>Methods</h3>
 <dl>
@@ -338,10 +376,10 @@ is used in a series.</p></div>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def CreateDerivedMetadata(self, metadata: Metadata) -&gt; Metadata:
-    &#39;&#39;&#39;
+    &#34;&#34;&#34;
     Create a set of metadata derived from another set. The content can be changed until it
     is used in a series.
-    &#39;&#39;&#39;</code></pre>
+    &#34;&#34;&#34;</code></pre>
 </details>
 </dd>
 <dt id="macrobond_financial.com.com_typs.database.Database.CreateEmptyMetadata"><code class="name flex">
@@ -354,9 +392,9 @@ is used in a series.</p></div>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def CreateEmptyMetadata(self) -&gt; Metadata:
-    &#39;&#39;&#39;
+    &#34;&#34;&#34;
     Create an empty set of metadata. The content can be changed until it is used in a series.
-    &#39;&#39;&#39;</code></pre>
+    &#34;&#34;&#34;</code></pre>
 </details>
 </dd>
 <dt id="macrobond_financial.com.com_typs.database.Database.CreateSearchQuery"><code class="name flex">
@@ -372,12 +410,12 @@ search for series and other entities.
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def CreateSearchQuery(self) -&gt; SearchQuery:
-    &#39;&#39;&#39;
+    &#34;&#34;&#34;
     Create a search query object.
     Set properties on this object and pass it to the Search function in order to
     search for series and other entities.
     (MB 1.23 or later. Requires Data+ license.)
-    &#39;&#39;&#39;</code></pre>
+    &#34;&#34;&#34;</code></pre>
 </details>
 </dd>
 <dt id="macrobond_financial.com.com_typs.database.Database.CreateSeriesObject"><code class="name flex">
@@ -400,10 +438,18 @@ Id should must be a unique identifier per storage.</p></div>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def CreateSeriesObject(
-    self, name: str, description: str, region: str, category: str,
-    frequency: int, dayMask: int, startDateOrDates: object, values: object, metadata: Metadata
+    self,
+    name: str,
+    description: str,
+    region: str,
+    category: str,
+    frequency: int,
+    dayMask: int,
+    startDateOrDates: object,
+    values: object,
+    metadata: Metadata,
 ) -&gt; Series:
-    &#39;&#39;&#39;
+    &#34;&#34;&#34;
     Create a series object that can be uploaded to the server using
     the &#39;UploadOneOrMoreSeries()&#39; method.
     The startDateOrDates can either be just one start date or one date for each value.
@@ -415,7 +461,7 @@ Id should must be a unique identifier per storage.</p></div>
     The name should be of the form &#34;ih:storage:id&#34;, where storage
     is &#34;priv&#34;, &#34;dept&#34; or &#34;com&#34; coresponding to the private, department and company storages.
     Id should must be a unique identifier per storage.
-    &#39;&#39;&#39;</code></pre>
+    &#34;&#34;&#34;</code></pre>
 </details>
 </dd>
 <dt id="macrobond_financial.com.com_typs.database.Database.CreateSeriesObjectWithForecastFlags"><code class="name flex">
@@ -441,11 +487,19 @@ Id should must be a unique identifier per storage.</p></div>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def CreateSeriesObjectWithForecastFlags(
-    self, name: str, description: str, region: str, category: str, frequency: int,
-    dayMask: int, startDateOrDates: object, values: object, forecastFlags: object,
-    metadata: Metadata
+    self,
+    name: str,
+    description: str,
+    region: str,
+    category: str,
+    frequency: int,
+    dayMask: int,
+    startDateOrDates: object,
+    values: object,
+    forecastFlags: object,
+    metadata: Metadata,
 ) -&gt; Series:
-    &#39;&#39;&#39;
+    &#34;&#34;&#34;
     Create a series object that can be uploaded to the server using the
     UploadOneOrMoreSeries method.
     The startDateOrDates can either be just one start date or one date for each value.
@@ -460,7 +514,7 @@ Id should must be a unique identifier per storage.</p></div>
     where storage is &#34;priv&#34;, &#34;dept&#34; or &#34;com&#34; coresponding to the private,
     department and company storages.
     Id should must be a unique identifier per storage.
-    &#39;&#39;&#39;</code></pre>
+    &#34;&#34;&#34;</code></pre>
 </details>
 </dd>
 <dt id="macrobond_financial.com.com_typs.database.Database.CreateUnifiedSeriesRequest"><code class="name flex">
@@ -476,12 +530,12 @@ frequency conversion methods</p></div>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def CreateUnifiedSeriesRequest(self) -&gt; SeriesRequest:
-    &#39;&#39;&#39;
+    &#34;&#34;&#34;
     Create a request of one or more series where the resulting time series will be
     converted to a common length and calendar.
     You can specify frequency, currency, date range, missing value and
     frequency conversion methods
-    &#39;&#39;&#39;</code></pre>
+    &#34;&#34;&#34;</code></pre>
 </details>
 </dd>
 <dt id="macrobond_financial.com.com_typs.database.Database.DeleteOneOrMoreSeries"><code class="name flex">
@@ -496,11 +550,11 @@ It is more efficient to delete more than one series at once than one by one.</p>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def DeleteOneOrMoreSeries(self, name_or_names: Union[str, List[str]]) -&gt; None:
-    &#39;&#39;&#39;
+    &#34;&#34;&#34;
     Delete one or more series.
     The parameter can be a single series name or a list of names.
     It is more efficient to delete more than one series at once than one by one.
-    &#39;&#39;&#39;</code></pre>
+    &#34;&#34;&#34;</code></pre>
 </details>
 </dd>
 <dt id="macrobond_financial.com.com_typs.database.Database.FetchEntities"><code class="name flex">
@@ -514,12 +568,14 @@ of entities in the same order as requested.</p></div>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def FetchEntities(self, entity_names: Union[str, Tuple[str, ...]]) -&gt; Tuple[Entity, ...]:
-    &#39;&#39;&#39;
+<pre><code class="python">def FetchEntities(
+    self, entity_names: Union[str, Tuple[str, ...]]
+) -&gt; Tuple[Entity, ...]:
+    &#34;&#34;&#34;
     Download one or more entities from the database.
     The parameter can be a string or a list of entity names. The result is a vector
     of entities in the same order as requested.
-    &#39;&#39;&#39;</code></pre>
+    &#34;&#34;&#34;</code></pre>
 </details>
 </dd>
 <dt id="macrobond_financial.com.com_typs.database.Database.FetchOneEntity"><code class="name flex">
@@ -532,7 +588,7 @@ of entities in the same order as requested.</p></div>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def FetchOneEntity(self, entity_name: str) -&gt; Entity:
-    &#39;&#39;&#39;Download an entity, such as a Release.&#39;&#39;&#39;</code></pre>
+    &#34;&#34;&#34;Download an entity, such as a Release.&#34;&#34;&#34;</code></pre>
 </details>
 </dd>
 <dt id="macrobond_financial.com.com_typs.database.Database.FetchOneSeries"><code class="name flex">
@@ -545,7 +601,7 @@ of entities in the same order as requested.</p></div>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def FetchOneSeries(self, series_name: str) -&gt; Series:
-    &#39;&#39;&#39;Download one series from the database.&#39;&#39;&#39;</code></pre>
+    &#34;&#34;&#34;Download one series from the database.&#34;&#34;&#34;</code></pre>
 </details>
 </dd>
 <dt id="macrobond_financial.com.com_typs.database.Database.FetchOneSeriesWithRevisions"><code class="name flex">
@@ -559,10 +615,10 @@ of entities in the same order as requested.</p></div>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def FetchOneSeriesWithRevisions(self, name: str) -&gt; SeriesWithRevisions:
-    &#39;&#39;&#39;
+    &#34;&#34;&#34;
     Download one revision history for one series.
     (MB 1.23 or later. Requires Data+ license.)
-    &#39;&#39;&#39;</code></pre>
+    &#34;&#34;&#34;</code></pre>
 </details>
 </dd>
 <dt id="macrobond_financial.com.com_typs.database.Database.FetchSeries"><code class="name flex">
@@ -580,12 +636,12 @@ The result is a vector of series in the same order as requested.</p></div>
 <pre><code class="python">def FetchSeries(
     self, series_names: Union[str, Tuple[str, ...], SeriesRequest]
 ) -&gt; Tuple[Series, ...]:
-    &#39;&#39;&#39;
+    &#34;&#34;&#34;
     Download one or more series from the database.
     The parameter can be a string, a vector of series names or an
     object created by &#39;CreateUnifiedSeriesRequest()&#39;.
     The result is a vector of series in the same order as requested.
-    &#39;&#39;&#39;</code></pre>
+    &#34;&#34;&#34;</code></pre>
 </details>
 </dd>
 <dt id="macrobond_financial.com.com_typs.database.Database.FetchSeriesWithRevisions"><code class="name flex">
@@ -603,12 +659,12 @@ The result is a vector of revision history objects in the same order as requeste
 <pre><code class="python">def FetchSeriesWithRevisions(
     self, seriesNames: Union[str, Tuple[str, ...]]
 ) -&gt; Tuple[SeriesWithRevisions, ...]:
-    &#39;&#39;&#39;
+    &#34;&#34;&#34;
     Download one or more series from the database.
     The parameter can be a string or a vector of series names.
     The result is a vector of revision history objects in the same order as requested.
     (MB 1.23 or later. Requires Data+ license.)
-    &#39;&#39;&#39;</code></pre>
+    &#34;&#34;&#34;</code></pre>
 </details>
 </dd>
 <dt id="macrobond_financial.com.com_typs.database.Database.GetMetadataInformation"><code class="name flex">
@@ -621,7 +677,7 @@ The result is a vector of revision history objects in the same order as requeste
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def GetMetadataInformation(self, name: str) -&gt; MetadataInformation:
-    &#39;&#39;&#39;Get information about a type of metadata.&#39;&#39;&#39;</code></pre>
+    &#34;&#34;&#34;Get information about a type of metadata.&#34;&#34;&#34;</code></pre>
 </details>
 </dd>
 <dt id="macrobond_financial.com.com_typs.database.Database.Search"><code class="name flex">
@@ -636,11 +692,11 @@ of ISearchQuery for details.
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def Search(self, queries: List[SearchQuery]) -&gt; SearchResult:
-    &#39;&#39;&#39;
+    &#34;&#34;&#34;
     Execute a search for series and other entities. See specification
     of ISearchQuery for details.
     (MB 1.23 or later. Requires Data+ license.)
-    &#39;&#39;&#39;</code></pre>
+    &#34;&#34;&#34;</code></pre>
 </details>
 </dd>
 <dt id="macrobond_financial.com.com_typs.database.Database.UploadOneOrMoreSeries"><code class="name flex">
@@ -655,11 +711,11 @@ It is more efficient to upload more series at once than one by one.</p></div>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def UploadOneOrMoreSeries(self, series: Union[Series, List[Series]]) -&gt; None:
-    &#39;&#39;&#39;
+    &#34;&#34;&#34;
     Upload one or more series created by the CreateSeriesObject method.
     The parameter can be a single series or a list of series.
     It is more efficient to upload more series at once than one by one.
-    &#39;&#39;&#39;</code></pre>
+    &#34;&#34;&#34;</code></pre>
 </details>
 </dd>
 </dl>

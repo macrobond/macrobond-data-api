@@ -33,83 +33,90 @@
 from typing import List, Optional
 from typing_extensions import TypedDict
 
-from macrobond_financial.common.enums import SeriesWeekdays, SeriesFrequency, CalendarDateMode, \
-    CalendarMergeMode, SeriesMissingValueMethod, SeriesToLowerFrequencyMethod, \
-    SeriesToHigherFrequencyMethod, SeriesPartialPeriodsMethod
+from macrobond_financial.common.enums import (
+    SeriesWeekdays,
+    SeriesFrequency,
+    CalendarDateMode,
+    CalendarMergeMode,
+    SeriesMissingValueMethod,
+    SeriesToLowerFrequencyMethod,
+    SeriesToHigherFrequencyMethod,
+    SeriesPartialPeriodsMethod,
+)
 
 
 class UnifiedSeriesEntry(TypedDict):
-    &#39;&#39;&#39;Request of a list of series converted to the same calendar&#39;&#39;&#39;
+    &#34;&#34;&#34;Request of a list of series converted to the same calendar&#34;&#34;&#34;
 
     name: str
-    &#39;&#39;&#39;The name of the series.&#39;&#39;&#39;
+    &#34;&#34;&#34;The name of the series.&#34;&#34;&#34;
 
     missingValueMethod: Optional[SeriesMissingValueMethod]
-    &#39;&#39;&#39;The method for filling in missing values. The default is the automatic method.&#39;&#39;&#39;
+    &#34;&#34;&#34;The method for filling in missing values. The default is the automatic method.&#34;&#34;&#34;
 
     toLowerFrequencyMethod: Optional[SeriesToLowerFrequencyMethod]
-    &#39;&#39;&#39;The method to converting to lower frequency.  The default is the automatic method.&#39;&#39;&#39;
+    &#34;&#34;&#34;The method to converting to lower frequency.  The default is the automatic method.&#34;&#34;&#34;
 
     toHigherFrequencyMethod: Optional[SeriesToHigherFrequencyMethod]
-    &#39;&#39;&#39;The method to converting to higher frequency. The default is the automatic method.&#39;&#39;&#39;
+    &#34;&#34;&#34;The method to converting to higher frequency. The default is the automatic method.&#34;&#34;&#34;
 
     partialPeriodsMethod: Optional[SeriesPartialPeriodsMethod]
-    &#39;&#39;&#39;
+    &#34;&#34;&#34;
     The method to use for converting partial periods to lower frequency.
     The default is not to extend the series.
-    &#39;&#39;&#39;
+    &#34;&#34;&#34;
 
 
 class UnifiedSeriesRequest(TypedDict, total=False):
-    &#39;&#39;&#39;Request of a list of series converted to the same calendar&#39;&#39;&#39;
+    &#34;&#34;&#34;Request of a list of series converted to the same calendar&#34;&#34;&#34;
 
     frequency: Optional[SeriesFrequency]
-    &#39;&#39;&#39;
+    &#34;&#34;&#34;
     The frequency to convert all series to.
     The default is to convert to the highest frequency of the series in the request.
-    &#39;&#39;&#39;
+    &#34;&#34;&#34;
 
     weekdays: Optional[SeriesWeekdays]
-    &#39;&#39;&#39;The days of the week used for daily series. The default is Monday to Friday.&#39;&#39;&#39;
+    &#34;&#34;&#34;The days of the week used for daily series. The default is Monday to Friday.&#34;&#34;&#34;
 
     calendarMergeMode: Optional[CalendarMergeMode]
-    &#39;&#39;&#39;
+    &#34;&#34;&#34;
     The merge mode determines how the series calendars are used when forming the new
     shared calendar.
     The default is to use all observations that are in any calendar.
-    &#39;&#39;&#39;
+    &#34;&#34;&#34;
 
     currency: Optional[str]
-    &#39;&#39;&#39;The currency to use for currency conversion or omitted for no conversion.&#39;&#39;&#39;
+    &#34;&#34;&#34;The currency to use for currency conversion or omitted for no conversion.&#34;&#34;&#34;
 
     startDateMode: Optional[CalendarDateMode]
-    &#39;&#39;&#39;
+    &#34;&#34;&#34;
     The start date mode determines how the start date is calculated.
     By default the mode is to start when there is data in any series.
-    &#39;&#39;&#39;
+    &#34;&#34;&#34;
 
     startPoint: Optional[str]
-    &#39;&#39;&#39;
+    &#34;&#34;&#34;
     The start point. By default, this is determined by the startDateMode.
     It can be a date on the format yyyy-mm-dd or a number of observations relative the end of
     the series.
-    &#39;&#39;&#39;
+    &#34;&#34;&#34;
 
     endDateMode: Optional[CalendarDateMode]
-    &#39;&#39;&#39;
+    &#34;&#34;&#34;
     The end date mode determines how the end date is calculated.
     By default the mode is to end when there is no data in any series.
-    &#39;&#39;&#39;
+    &#34;&#34;&#34;
 
     endPoint: Optional[str]
-    &#39;&#39;&#39;
+    &#34;&#34;&#34;
     The end point. By default, this is determined by the endDateMode.
     It can be a date on the format yyyy-mm-dd or a number of observations relative the
     end of the series.
-    &#39;&#39;&#39;
+    &#34;&#34;&#34;
 
     seriesEntries: List[UnifiedSeriesEntry]
-    &#39;&#39;&#39;The list of series entries that defines the series to request.&#39;&#39;&#39;</code></pre>
+    &#34;&#34;&#34;The list of series entries that defines the series to request.&#34;&#34;&#34;</code></pre>
 </details>
 </section>
 <section>
@@ -132,25 +139,25 @@ class UnifiedSeriesRequest(TypedDict, total=False):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class UnifiedSeriesEntry(TypedDict):
-    &#39;&#39;&#39;Request of a list of series converted to the same calendar&#39;&#39;&#39;
+    &#34;&#34;&#34;Request of a list of series converted to the same calendar&#34;&#34;&#34;
 
     name: str
-    &#39;&#39;&#39;The name of the series.&#39;&#39;&#39;
+    &#34;&#34;&#34;The name of the series.&#34;&#34;&#34;
 
     missingValueMethod: Optional[SeriesMissingValueMethod]
-    &#39;&#39;&#39;The method for filling in missing values. The default is the automatic method.&#39;&#39;&#39;
+    &#34;&#34;&#34;The method for filling in missing values. The default is the automatic method.&#34;&#34;&#34;
 
     toLowerFrequencyMethod: Optional[SeriesToLowerFrequencyMethod]
-    &#39;&#39;&#39;The method to converting to lower frequency.  The default is the automatic method.&#39;&#39;&#39;
+    &#34;&#34;&#34;The method to converting to lower frequency.  The default is the automatic method.&#34;&#34;&#34;
 
     toHigherFrequencyMethod: Optional[SeriesToHigherFrequencyMethod]
-    &#39;&#39;&#39;The method to converting to higher frequency. The default is the automatic method.&#39;&#39;&#39;
+    &#34;&#34;&#34;The method to converting to higher frequency. The default is the automatic method.&#34;&#34;&#34;
 
     partialPeriodsMethod: Optional[SeriesPartialPeriodsMethod]
-    &#39;&#39;&#39;
+    &#34;&#34;&#34;
     The method to use for converting partial periods to lower frequency.
     The default is not to extend the series.
-    &#39;&#39;&#39;</code></pre>
+    &#34;&#34;&#34;</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
@@ -193,55 +200,55 @@ The default is the automatic method.</p></div>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class UnifiedSeriesRequest(TypedDict, total=False):
-    &#39;&#39;&#39;Request of a list of series converted to the same calendar&#39;&#39;&#39;
+    &#34;&#34;&#34;Request of a list of series converted to the same calendar&#34;&#34;&#34;
 
     frequency: Optional[SeriesFrequency]
-    &#39;&#39;&#39;
+    &#34;&#34;&#34;
     The frequency to convert all series to.
     The default is to convert to the highest frequency of the series in the request.
-    &#39;&#39;&#39;
+    &#34;&#34;&#34;
 
     weekdays: Optional[SeriesWeekdays]
-    &#39;&#39;&#39;The days of the week used for daily series. The default is Monday to Friday.&#39;&#39;&#39;
+    &#34;&#34;&#34;The days of the week used for daily series. The default is Monday to Friday.&#34;&#34;&#34;
 
     calendarMergeMode: Optional[CalendarMergeMode]
-    &#39;&#39;&#39;
+    &#34;&#34;&#34;
     The merge mode determines how the series calendars are used when forming the new
     shared calendar.
     The default is to use all observations that are in any calendar.
-    &#39;&#39;&#39;
+    &#34;&#34;&#34;
 
     currency: Optional[str]
-    &#39;&#39;&#39;The currency to use for currency conversion or omitted for no conversion.&#39;&#39;&#39;
+    &#34;&#34;&#34;The currency to use for currency conversion or omitted for no conversion.&#34;&#34;&#34;
 
     startDateMode: Optional[CalendarDateMode]
-    &#39;&#39;&#39;
+    &#34;&#34;&#34;
     The start date mode determines how the start date is calculated.
     By default the mode is to start when there is data in any series.
-    &#39;&#39;&#39;
+    &#34;&#34;&#34;
 
     startPoint: Optional[str]
-    &#39;&#39;&#39;
+    &#34;&#34;&#34;
     The start point. By default, this is determined by the startDateMode.
     It can be a date on the format yyyy-mm-dd or a number of observations relative the end of
     the series.
-    &#39;&#39;&#39;
+    &#34;&#34;&#34;
 
     endDateMode: Optional[CalendarDateMode]
-    &#39;&#39;&#39;
+    &#34;&#34;&#34;
     The end date mode determines how the end date is calculated.
     By default the mode is to end when there is no data in any series.
-    &#39;&#39;&#39;
+    &#34;&#34;&#34;
 
     endPoint: Optional[str]
-    &#39;&#39;&#39;
+    &#34;&#34;&#34;
     The end point. By default, this is determined by the endDateMode.
     It can be a date on the format yyyy-mm-dd or a number of observations relative the
     end of the series.
-    &#39;&#39;&#39;
+    &#34;&#34;&#34;
 
     seriesEntries: List[UnifiedSeriesEntry]
-    &#39;&#39;&#39;The list of series entries that defines the series to request.&#39;&#39;&#39;</code></pre>
+    &#34;&#34;&#34;The list of series entries that defines the series to request.&#34;&#34;&#34;</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">

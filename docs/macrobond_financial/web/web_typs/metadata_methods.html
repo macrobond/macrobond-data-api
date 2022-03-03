@@ -32,21 +32,23 @@ from typing import List, cast, Tuple, TYPE_CHECKING
 
 if TYPE_CHECKING:  # pragma: no cover
     from ..session import Session
-    from .metadata_attribute_information_response import MetadataAttributeInformationResponse
+    from .metadata_attribute_information_response import (
+        MetadataAttributeInformationResponse,
+    )
     from .metadata_value_information_response import MetadataValueInformationResponse
 
 
-class MetadataMethods():
-    &#39;&#39;&#39;Metadata operations&#39;&#39;&#39;
+class MetadataMethods:
+    &#34;&#34;&#34;Metadata operations&#34;&#34;&#34;
 
-    def __init__(self, session: &#39;Session&#39;) -&gt; None:
+    def __init__(self, session: &#34;Session&#34;) -&gt; None:
         self.__session = session
 
     # Get /v1/metadata/getattributeinformation
     def get_attribute_information(
         self, *attribute_names: str
-    ) -&gt; List[&#39;MetadataAttributeInformationResponse&#39;]:
-        &#39;&#39;&#39;
+    ) -&gt; List[&#34;MetadataAttributeInformationResponse&#34;]:
+        &#34;&#34;&#34;
         Get information about metadata attributes.
         The result will be in the same order as the request.
 
@@ -61,17 +63,17 @@ class MetadataMethods():
 
             404 At least one attribute was not found.
 
-        &#39;&#39;&#39;
+        &#34;&#34;&#34;
         response = self.__session.get_or_raise(
-            &#39;v1/metadata/getattributeinformation&#39;, params={&#39;n&#39;: attribute_names}
+            &#34;v1/metadata/getattributeinformation&#34;, params={&#34;n&#34;: attribute_names}
         )
-        return cast(List[&#39;MetadataAttributeInformationResponse&#39;], response.json())
+        return cast(List[&#34;MetadataAttributeInformationResponse&#34;], response.json())
 
     # Get /v1/metadata/getvalueinformation
     def get_value_information(
         self, *metadata_value: Tuple[str, str]
-    ) -&gt; &#39;MetadataValueInformationResponse&#39;:
-        &#39;&#39;&#39;
+    ) -&gt; &#34;MetadataValueInformationResponse&#34;:
+        &#34;&#34;&#34;
         Get information about metadata values.
         The result will be in the same order as the request.
 
@@ -87,19 +89,18 @@ class MetadataMethods():
             403 Forbidden. Not authorized.
 
             404 At least one attribute or value was not found.
-        &#39;&#39;&#39;
+        &#34;&#34;&#34;
         response = self.__session.get_or_raise(
-            &#39;v1/metadata/getvalueinformation&#39;, params={
-                &#39;v&#39;: list(map(lambda x: x[0] + &#39;,&#39; + x[1], metadata_value))
-            }
+            &#34;v1/metadata/getvalueinformation&#34;,
+            params={&#34;v&#34;: list(map(lambda x: x[0] + &#34;,&#34; + x[1], metadata_value))},
         )
-        return cast(&#39;MetadataValueInformationResponse&#39;, response.json())
+        return cast(&#34;MetadataValueInformationResponse&#34;, response.json())
 
     # Get /v1/metadata/listattributevalues
     def list_attribute_values(
         self, attribute_name: str
-    ) -&gt; &#39;MetadataValueInformationResponse&#39;:
-        &#39;&#39;&#39;
+    ) -&gt; &#34;MetadataValueInformationResponse&#34;:
+        &#34;&#34;&#34;
         List all metadata attribute values.
         The attribute must have the property canListValues.
 
@@ -115,11 +116,11 @@ class MetadataMethods():
             403 Forbidden. Not authorized.
 
             404 The attribute was not found.
-        &#39;&#39;&#39;
+        &#34;&#34;&#34;
         response = self.__session.get_or_raise(
-            &#39;v1/metadata/listattributevalues&#39;, params={&#39;n&#39;: attribute_name}
+            &#34;v1/metadata/listattributevalues&#34;, params={&#34;n&#34;: attribute_name}
         )
-        return cast(&#39;MetadataValueInformationResponse&#39;, response.json())</code></pre>
+        return cast(&#34;MetadataValueInformationResponse&#34;, response.json())</code></pre>
 </details>
 </section>
 <section>
@@ -141,17 +142,17 @@ class MetadataMethods():
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class MetadataMethods():
-    &#39;&#39;&#39;Metadata operations&#39;&#39;&#39;
+<pre><code class="python">class MetadataMethods:
+    &#34;&#34;&#34;Metadata operations&#34;&#34;&#34;
 
-    def __init__(self, session: &#39;Session&#39;) -&gt; None:
+    def __init__(self, session: &#34;Session&#34;) -&gt; None:
         self.__session = session
 
     # Get /v1/metadata/getattributeinformation
     def get_attribute_information(
         self, *attribute_names: str
-    ) -&gt; List[&#39;MetadataAttributeInformationResponse&#39;]:
-        &#39;&#39;&#39;
+    ) -&gt; List[&#34;MetadataAttributeInformationResponse&#34;]:
+        &#34;&#34;&#34;
         Get information about metadata attributes.
         The result will be in the same order as the request.
 
@@ -166,17 +167,17 @@ class MetadataMethods():
 
             404 At least one attribute was not found.
 
-        &#39;&#39;&#39;
+        &#34;&#34;&#34;
         response = self.__session.get_or_raise(
-            &#39;v1/metadata/getattributeinformation&#39;, params={&#39;n&#39;: attribute_names}
+            &#34;v1/metadata/getattributeinformation&#34;, params={&#34;n&#34;: attribute_names}
         )
-        return cast(List[&#39;MetadataAttributeInformationResponse&#39;], response.json())
+        return cast(List[&#34;MetadataAttributeInformationResponse&#34;], response.json())
 
     # Get /v1/metadata/getvalueinformation
     def get_value_information(
         self, *metadata_value: Tuple[str, str]
-    ) -&gt; &#39;MetadataValueInformationResponse&#39;:
-        &#39;&#39;&#39;
+    ) -&gt; &#34;MetadataValueInformationResponse&#34;:
+        &#34;&#34;&#34;
         Get information about metadata values.
         The result will be in the same order as the request.
 
@@ -192,19 +193,18 @@ class MetadataMethods():
             403 Forbidden. Not authorized.
 
             404 At least one attribute or value was not found.
-        &#39;&#39;&#39;
+        &#34;&#34;&#34;
         response = self.__session.get_or_raise(
-            &#39;v1/metadata/getvalueinformation&#39;, params={
-                &#39;v&#39;: list(map(lambda x: x[0] + &#39;,&#39; + x[1], metadata_value))
-            }
+            &#34;v1/metadata/getvalueinformation&#34;,
+            params={&#34;v&#34;: list(map(lambda x: x[0] + &#34;,&#34; + x[1], metadata_value))},
         )
-        return cast(&#39;MetadataValueInformationResponse&#39;, response.json())
+        return cast(&#34;MetadataValueInformationResponse&#34;, response.json())
 
     # Get /v1/metadata/listattributevalues
     def list_attribute_values(
         self, attribute_name: str
-    ) -&gt; &#39;MetadataValueInformationResponse&#39;:
-        &#39;&#39;&#39;
+    ) -&gt; &#34;MetadataValueInformationResponse&#34;:
+        &#34;&#34;&#34;
         List all metadata attribute values.
         The attribute must have the property canListValues.
 
@@ -220,11 +220,11 @@ class MetadataMethods():
             403 Forbidden. Not authorized.
 
             404 The attribute was not found.
-        &#39;&#39;&#39;
+        &#34;&#34;&#34;
         response = self.__session.get_or_raise(
-            &#39;v1/metadata/listattributevalues&#39;, params={&#39;n&#39;: attribute_name}
+            &#34;v1/metadata/listattributevalues&#34;, params={&#34;n&#34;: attribute_name}
         )
-        return cast(&#39;MetadataValueInformationResponse&#39;, response.json())</code></pre>
+        return cast(&#34;MetadataValueInformationResponse&#34;, response.json())</code></pre>
 </details>
 <h3>Methods</h3>
 <dl>
@@ -246,8 +246,8 @@ The result will be in the same order as the request.</p>
 </summary>
 <pre><code class="python">def get_attribute_information(
     self, *attribute_names: str
-) -&gt; List[&#39;MetadataAttributeInformationResponse&#39;]:
-    &#39;&#39;&#39;
+) -&gt; List[&#34;MetadataAttributeInformationResponse&#34;]:
+    &#34;&#34;&#34;
     Get information about metadata attributes.
     The result will be in the same order as the request.
 
@@ -262,11 +262,11 @@ The result will be in the same order as the request.</p>
 
         404 At least one attribute was not found.
 
-    &#39;&#39;&#39;
+    &#34;&#34;&#34;
     response = self.__session.get_or_raise(
-        &#39;v1/metadata/getattributeinformation&#39;, params={&#39;n&#39;: attribute_names}
+        &#34;v1/metadata/getattributeinformation&#34;, params={&#34;n&#34;: attribute_names}
     )
-    return cast(List[&#39;MetadataAttributeInformationResponse&#39;], response.json())</code></pre>
+    return cast(List[&#34;MetadataAttributeInformationResponse&#34;], response.json())</code></pre>
 </details>
 </dd>
 <dt id="macrobond_financial.web.web_typs.metadata_methods.MetadataMethods.get_value_information"><code class="name flex">
@@ -288,8 +288,8 @@ The result will be in the same order as the request.</p>
 </summary>
 <pre><code class="python">def get_value_information(
     self, *metadata_value: Tuple[str, str]
-) -&gt; &#39;MetadataValueInformationResponse&#39;:
-    &#39;&#39;&#39;
+) -&gt; &#34;MetadataValueInformationResponse&#34;:
+    &#34;&#34;&#34;
     Get information about metadata values.
     The result will be in the same order as the request.
 
@@ -305,13 +305,12 @@ The result will be in the same order as the request.</p>
         403 Forbidden. Not authorized.
 
         404 At least one attribute or value was not found.
-    &#39;&#39;&#39;
+    &#34;&#34;&#34;
     response = self.__session.get_or_raise(
-        &#39;v1/metadata/getvalueinformation&#39;, params={
-            &#39;v&#39;: list(map(lambda x: x[0] + &#39;,&#39; + x[1], metadata_value))
-        }
+        &#34;v1/metadata/getvalueinformation&#34;,
+        params={&#34;v&#34;: list(map(lambda x: x[0] + &#34;,&#34; + x[1], metadata_value))},
     )
-    return cast(&#39;MetadataValueInformationResponse&#39;, response.json())</code></pre>
+    return cast(&#34;MetadataValueInformationResponse&#34;, response.json())</code></pre>
 </details>
 </dd>
 <dt id="macrobond_financial.web.web_typs.metadata_methods.MetadataMethods.list_attribute_values"><code class="name flex">
@@ -333,8 +332,8 @@ The attribute must have the property canListValues.</p>
 </summary>
 <pre><code class="python">def list_attribute_values(
     self, attribute_name: str
-) -&gt; &#39;MetadataValueInformationResponse&#39;:
-    &#39;&#39;&#39;
+) -&gt; &#34;MetadataValueInformationResponse&#34;:
+    &#34;&#34;&#34;
     List all metadata attribute values.
     The attribute must have the property canListValues.
 
@@ -350,11 +349,11 @@ The attribute must have the property canListValues.</p>
         403 Forbidden. Not authorized.
 
         404 The attribute was not found.
-    &#39;&#39;&#39;
+    &#34;&#34;&#34;
     response = self.__session.get_or_raise(
-        &#39;v1/metadata/listattributevalues&#39;, params={&#39;n&#39;: attribute_name}
+        &#34;v1/metadata/listattributevalues&#34;, params={&#34;n&#34;: attribute_name}
     )
-    return cast(&#39;MetadataValueInformationResponse&#39;, response.json())</code></pre>
+    return cast(&#34;MetadataValueInformationResponse&#34;, response.json())</code></pre>
 </details>
 </dd>
 </dl>

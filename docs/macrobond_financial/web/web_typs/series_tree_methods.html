@@ -34,22 +34,27 @@ from typing import List, Union, cast, TYPE_CHECKING
 
 if TYPE_CHECKING:  # pragma: no cover
     from ..session import Session
-    from .series_tree_node_response import \
-        SeriesTreeNodeLeaf, SeriesTreeNodeBranchRef, SeriesTreeNodeBranch
+    from .series_tree_node_response import (
+        SeriesTreeNodeLeaf,
+        SeriesTreeNodeBranchRef,
+        SeriesTreeNodeBranch,
+    )
     from .series_tree_listing_response import SeriesTreeListingResponse
     from .series_tree_location_part import SeriesTreeLocationPart
 
 
-class SeriesTreeMethods():
-    &#39;&#39;&#39;Operations related to the visual series database tree structure&#39;&#39;&#39;
+class SeriesTreeMethods:
+    &#34;&#34;&#34;Operations related to the visual series database tree structure&#34;&#34;&#34;
 
-    def __init__(self, session: &#39;Session&#39;) -&gt; None:
+    def __init__(self, session: &#34;Session&#34;) -&gt; None:
         self.__session = session
 
     def get_nodes(
         self, path: str = None, filter_path: str = None
-    ) -&gt; List[Union[&#39;SeriesTreeNodeLeaf&#39;, &#39;SeriesTreeNodeBranchRef&#39;, &#39;SeriesTreeNodeBranch&#39;]]:
-        &#39;&#39;&#39;
+    ) -&gt; List[
+        Union[&#34;SeriesTreeNodeLeaf&#34;, &#34;SeriesTreeNodeBranchRef&#34;, &#34;SeriesTreeNodeBranch&#34;]
+    ]:
+        &#34;&#34;&#34;
         Get the nodes of a branch of the series database tree.
 
         OAuth scope: macrobond_web_api.read_structure
@@ -60,21 +65,23 @@ class SeriesTreeMethods():
             401 Unauthorized. Missing, invalid or expired access token.
 
             403 Forbidden. Not authorized.
-        &#39;&#39;&#39;
+        &#34;&#34;&#34;
         response = self.__session.get_or_raise(
-            &#39;v1/seriestree/getnodes&#39;,
-            params={
-                &#39;path&#39;: path,
-                &#39;filterPath&#39;: filter_path
-            }
+            &#34;v1/seriestree/getnodes&#34;, params={&#34;path&#34;: path, &#34;filterPath&#34;: filter_path}
         )
         return cast(
-            List[Union[&#39;SeriesTreeNodeLeaf&#39;, &#39;SeriesTreeNodeBranchRef&#39;, &#39;SeriesTreeNodeBranch&#39;]],
-            response.json()
+            List[
+                Union[
+                    &#34;SeriesTreeNodeLeaf&#34;,
+                    &#34;SeriesTreeNodeBranchRef&#34;,
+                    &#34;SeriesTreeNodeBranch&#34;,
+                ]
+            ],
+            response.json(),
         )
 
-    def get_leaf_series(self, path: str, *dp: str) -&gt; &#39;SeriesTreeListingResponse&#39;:
-        &#39;&#39;&#39;
+    def get_leaf_series(self, path: str, *dp: str) -&gt; &#34;SeriesTreeListingResponse&#34;:
+        &#34;&#34;&#34;
         Get a structured list of series for a leaf in the
         database tree identified by the path of the tree branches.
 
@@ -88,18 +95,14 @@ class SeriesTreeMethods():
             403 Forbidden. Not authorized.
 
             404 The path was not found.
-        &#39;&#39;&#39;
+        &#34;&#34;&#34;
         response = self.__session.get_or_raise(
-            &#39;v1/seriestree/getleafseries&#39;,
-            params={
-                &#39;path&#39;: path,
-                &#39;dp&#39;: dp
-            }
+            &#34;v1/seriestree/getleafseries&#34;, params={&#34;path&#34;: path, &#34;dp&#34;: dp}
         )
-        return cast(&#39;SeriesTreeListingResponse&#39;, response.json())
+        return cast(&#34;SeriesTreeListingResponse&#34;, response.json())
 
-    def find_locations(self, series_name: str) -&gt; List[&#39;SeriesTreeLocationPart&#39;]:
-        &#39;&#39;&#39;
+    def find_locations(self, series_name: str) -&gt; List[&#34;SeriesTreeLocationPart&#34;]:
+        &#34;&#34;&#34;
         Find the locations where this series can be found in the database tree.
 
         OAuth scope: macrobond_web_api.read_structure
@@ -110,14 +113,11 @@ class SeriesTreeMethods():
             401 Unauthorized. Missing, invalid or expired access token.
 
             403 Forbidden. Not authorized.
-        &#39;&#39;&#39;
+        &#34;&#34;&#34;
         response = self.__session.get_or_raise(
-            &#39;v1/seriestree/findlocations&#39;,
-            params={
-                &#39;seriesName &#39;: series_name
-            }
+            &#34;v1/seriestree/findlocations&#34;, params={&#34;seriesName &#34;: series_name}
         )
-        return cast(List[&#39;SeriesTreeLocationPart&#39;], response.json())</code></pre>
+        return cast(List[&#34;SeriesTreeLocationPart&#34;], response.json())</code></pre>
 </details>
 </section>
 <section>
@@ -139,16 +139,18 @@ class SeriesTreeMethods():
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class SeriesTreeMethods():
-    &#39;&#39;&#39;Operations related to the visual series database tree structure&#39;&#39;&#39;
+<pre><code class="python">class SeriesTreeMethods:
+    &#34;&#34;&#34;Operations related to the visual series database tree structure&#34;&#34;&#34;
 
-    def __init__(self, session: &#39;Session&#39;) -&gt; None:
+    def __init__(self, session: &#34;Session&#34;) -&gt; None:
         self.__session = session
 
     def get_nodes(
         self, path: str = None, filter_path: str = None
-    ) -&gt; List[Union[&#39;SeriesTreeNodeLeaf&#39;, &#39;SeriesTreeNodeBranchRef&#39;, &#39;SeriesTreeNodeBranch&#39;]]:
-        &#39;&#39;&#39;
+    ) -&gt; List[
+        Union[&#34;SeriesTreeNodeLeaf&#34;, &#34;SeriesTreeNodeBranchRef&#34;, &#34;SeriesTreeNodeBranch&#34;]
+    ]:
+        &#34;&#34;&#34;
         Get the nodes of a branch of the series database tree.
 
         OAuth scope: macrobond_web_api.read_structure
@@ -159,21 +161,23 @@ class SeriesTreeMethods():
             401 Unauthorized. Missing, invalid or expired access token.
 
             403 Forbidden. Not authorized.
-        &#39;&#39;&#39;
+        &#34;&#34;&#34;
         response = self.__session.get_or_raise(
-            &#39;v1/seriestree/getnodes&#39;,
-            params={
-                &#39;path&#39;: path,
-                &#39;filterPath&#39;: filter_path
-            }
+            &#34;v1/seriestree/getnodes&#34;, params={&#34;path&#34;: path, &#34;filterPath&#34;: filter_path}
         )
         return cast(
-            List[Union[&#39;SeriesTreeNodeLeaf&#39;, &#39;SeriesTreeNodeBranchRef&#39;, &#39;SeriesTreeNodeBranch&#39;]],
-            response.json()
+            List[
+                Union[
+                    &#34;SeriesTreeNodeLeaf&#34;,
+                    &#34;SeriesTreeNodeBranchRef&#34;,
+                    &#34;SeriesTreeNodeBranch&#34;,
+                ]
+            ],
+            response.json(),
         )
 
-    def get_leaf_series(self, path: str, *dp: str) -&gt; &#39;SeriesTreeListingResponse&#39;:
-        &#39;&#39;&#39;
+    def get_leaf_series(self, path: str, *dp: str) -&gt; &#34;SeriesTreeListingResponse&#34;:
+        &#34;&#34;&#34;
         Get a structured list of series for a leaf in the
         database tree identified by the path of the tree branches.
 
@@ -187,18 +191,14 @@ class SeriesTreeMethods():
             403 Forbidden. Not authorized.
 
             404 The path was not found.
-        &#39;&#39;&#39;
+        &#34;&#34;&#34;
         response = self.__session.get_or_raise(
-            &#39;v1/seriestree/getleafseries&#39;,
-            params={
-                &#39;path&#39;: path,
-                &#39;dp&#39;: dp
-            }
+            &#34;v1/seriestree/getleafseries&#34;, params={&#34;path&#34;: path, &#34;dp&#34;: dp}
         )
-        return cast(&#39;SeriesTreeListingResponse&#39;, response.json())
+        return cast(&#34;SeriesTreeListingResponse&#34;, response.json())
 
-    def find_locations(self, series_name: str) -&gt; List[&#39;SeriesTreeLocationPart&#39;]:
-        &#39;&#39;&#39;
+    def find_locations(self, series_name: str) -&gt; List[&#34;SeriesTreeLocationPart&#34;]:
+        &#34;&#34;&#34;
         Find the locations where this series can be found in the database tree.
 
         OAuth scope: macrobond_web_api.read_structure
@@ -209,14 +209,11 @@ class SeriesTreeMethods():
             401 Unauthorized. Missing, invalid or expired access token.
 
             403 Forbidden. Not authorized.
-        &#39;&#39;&#39;
+        &#34;&#34;&#34;
         response = self.__session.get_or_raise(
-            &#39;v1/seriestree/findlocations&#39;,
-            params={
-                &#39;seriesName &#39;: series_name
-            }
+            &#34;v1/seriestree/findlocations&#34;, params={&#34;seriesName &#34;: series_name}
         )
-        return cast(List[&#39;SeriesTreeLocationPart&#39;], response.json())</code></pre>
+        return cast(List[&#34;SeriesTreeLocationPart&#34;], response.json())</code></pre>
 </details>
 <h3>Methods</h3>
 <dl>
@@ -234,8 +231,8 @@ class SeriesTreeMethods():
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def find_locations(self, series_name: str) -&gt; List[&#39;SeriesTreeLocationPart&#39;]:
-    &#39;&#39;&#39;
+<pre><code class="python">def find_locations(self, series_name: str) -&gt; List[&#34;SeriesTreeLocationPart&#34;]:
+    &#34;&#34;&#34;
     Find the locations where this series can be found in the database tree.
 
     OAuth scope: macrobond_web_api.read_structure
@@ -246,14 +243,11 @@ class SeriesTreeMethods():
         401 Unauthorized. Missing, invalid or expired access token.
 
         403 Forbidden. Not authorized.
-    &#39;&#39;&#39;
+    &#34;&#34;&#34;
     response = self.__session.get_or_raise(
-        &#39;v1/seriestree/findlocations&#39;,
-        params={
-            &#39;seriesName &#39;: series_name
-        }
+        &#34;v1/seriestree/findlocations&#34;, params={&#34;seriesName &#34;: series_name}
     )
-    return cast(List[&#39;SeriesTreeLocationPart&#39;], response.json())</code></pre>
+    return cast(List[&#34;SeriesTreeLocationPart&#34;], response.json())</code></pre>
 </details>
 </dd>
 <dt id="macrobond_financial.web.web_typs.series_tree_methods.SeriesTreeMethods.get_leaf_series"><code class="name flex">
@@ -272,8 +266,8 @@ database tree identified by the path of the tree branches.</p>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def get_leaf_series(self, path: str, *dp: str) -&gt; &#39;SeriesTreeListingResponse&#39;:
-    &#39;&#39;&#39;
+<pre><code class="python">def get_leaf_series(self, path: str, *dp: str) -&gt; &#34;SeriesTreeListingResponse&#34;:
+    &#34;&#34;&#34;
     Get a structured list of series for a leaf in the
     database tree identified by the path of the tree branches.
 
@@ -287,15 +281,11 @@ database tree identified by the path of the tree branches.</p>
         403 Forbidden. Not authorized.
 
         404 The path was not found.
-    &#39;&#39;&#39;
+    &#34;&#34;&#34;
     response = self.__session.get_or_raise(
-        &#39;v1/seriestree/getleafseries&#39;,
-        params={
-            &#39;path&#39;: path,
-            &#39;dp&#39;: dp
-        }
+        &#34;v1/seriestree/getleafseries&#34;, params={&#34;path&#34;: path, &#34;dp&#34;: dp}
     )
-    return cast(&#39;SeriesTreeListingResponse&#39;, response.json())</code></pre>
+    return cast(&#34;SeriesTreeListingResponse&#34;, response.json())</code></pre>
 </details>
 </dd>
 <dt id="macrobond_financial.web.web_typs.series_tree_methods.SeriesTreeMethods.get_nodes"><code class="name flex">
@@ -314,8 +304,10 @@ database tree identified by the path of the tree branches.</p>
 </summary>
 <pre><code class="python">def get_nodes(
     self, path: str = None, filter_path: str = None
-) -&gt; List[Union[&#39;SeriesTreeNodeLeaf&#39;, &#39;SeriesTreeNodeBranchRef&#39;, &#39;SeriesTreeNodeBranch&#39;]]:
-    &#39;&#39;&#39;
+) -&gt; List[
+    Union[&#34;SeriesTreeNodeLeaf&#34;, &#34;SeriesTreeNodeBranchRef&#34;, &#34;SeriesTreeNodeBranch&#34;]
+]:
+    &#34;&#34;&#34;
     Get the nodes of a branch of the series database tree.
 
     OAuth scope: macrobond_web_api.read_structure
@@ -326,17 +318,19 @@ database tree identified by the path of the tree branches.</p>
         401 Unauthorized. Missing, invalid or expired access token.
 
         403 Forbidden. Not authorized.
-    &#39;&#39;&#39;
+    &#34;&#34;&#34;
     response = self.__session.get_or_raise(
-        &#39;v1/seriestree/getnodes&#39;,
-        params={
-            &#39;path&#39;: path,
-            &#39;filterPath&#39;: filter_path
-        }
+        &#34;v1/seriestree/getnodes&#34;, params={&#34;path&#34;: path, &#34;filterPath&#34;: filter_path}
     )
     return cast(
-        List[Union[&#39;SeriesTreeNodeLeaf&#39;, &#39;SeriesTreeNodeBranchRef&#39;, &#39;SeriesTreeNodeBranch&#39;]],
-        response.json()
+        List[
+            Union[
+                &#34;SeriesTreeNodeLeaf&#34;,
+                &#34;SeriesTreeNodeBranchRef&#34;,
+                &#34;SeriesTreeNodeBranch&#34;,
+            ]
+        ],
+        response.json(),
     )</code></pre>
 </details>
 </dd>

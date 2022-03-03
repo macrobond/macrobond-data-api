@@ -40,22 +40,21 @@ if TYPE_CHECKING:  # pragma: no cover
     from macrobond_financial.com.com_typs.connection import Connection
 
 __pdoc__ = {
-    &#39;ComApi.__init__&#39;: False,
+    &#34;ComApi.__init__&#34;: False,
 }
 
 
 class ComApi(Api):
-
-    def __init__(self, connection: &#39;Connection&#39;) -&gt; None:
+    def __init__(self, connection: &#34;Connection&#34;) -&gt; None:
         super().__init__(
             _ComMetaDirectoryMethods(connection),
             _ComSearchMethods(connection),
-            _ComSeriesMethods(connection)
+            _ComSeriesMethods(connection),
         )
         self.__connection = connection
 
     @property
-    def connection(self) -&gt; &#39;Connection&#39;:
+    def connection(self) -&gt; &#34;Connection&#34;:
         return self.__connection</code></pre>
 </details>
 </section>
@@ -79,17 +78,16 @@ inheritance.</p></div>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class ComApi(Api):
-
-    def __init__(self, connection: &#39;Connection&#39;) -&gt; None:
+    def __init__(self, connection: &#34;Connection&#34;) -&gt; None:
         super().__init__(
             _ComMetaDirectoryMethods(connection),
             _ComSearchMethods(connection),
-            _ComSeriesMethods(connection)
+            _ComSeriesMethods(connection),
         )
         self.__connection = connection
 
     @property
-    def connection(self) -&gt; &#39;Connection&#39;:
+    def connection(self) -&gt; &#34;Connection&#34;:
         return self.__connection</code></pre>
 </details>
 <h3>Ancestors</h3>
@@ -107,7 +105,7 @@ inheritance.</p></div>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@property
-def connection(self) -&gt; &#39;Connection&#39;:
+def connection(self) -&gt; &#34;Connection&#34;:
     return self.__connection</code></pre>
 </details>
 </dd>

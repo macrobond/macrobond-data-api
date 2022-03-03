@@ -7,7 +7,6 @@ from .series_methods import SeriesMethods
 
 
 class Api(ABC):
-
     @property
     def meta_directory(self) -> MetaDirectoryMethods:
         return self.__meta_directory
@@ -21,7 +20,10 @@ class Api(ABC):
         return self.__series
 
     def __init__(
-        self, meta_directory: MetaDirectoryMethods, search: SearchMethods, series: SeriesMethods
+        self,
+        meta_directory: MetaDirectoryMethods,
+        search: SearchMethods,
+        series: SeriesMethods,
     ) -> None:
         self.__meta_directory = meta_directory
         self.__search = search

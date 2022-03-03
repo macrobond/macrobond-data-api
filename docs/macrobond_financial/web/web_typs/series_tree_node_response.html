@@ -38,28 +38,28 @@ from typing_extensions import TypedDict
 class SeriesTreeNodeResponse(TypedDict):
 
     nodeType: str
-    &#39;&#39;&#39;The node type. Can be one of &#39;leaf&#39;, &#39;branch&#39;, &#39;branchref&#39;.&#39;&#39;&#39;
+    &#34;&#34;&#34;The node type. Can be one of &#39;leaf&#39;, &#39;branch&#39;, &#39;branchref&#39;.&#34;&#34;&#34;
 
     title: str
-    &#39;&#39;&#39;The title of the tree node&#39;&#39;&#39;
+    &#34;&#34;&#34;The title of the tree node&#34;&#34;&#34;
 
 
 class SeriesTreeNodeLeaf(SeriesTreeNodeResponse):
-    &#39;&#39;&#39;Information about a node in the series database tree&#39;&#39;&#39;
+    &#34;&#34;&#34;Information about a node in the series database tree&#34;&#34;&#34;
 
 
 class SeriesTreeNodeBranchRef(SeriesTreeNodeResponse):
-    &#39;&#39;&#39;Information about a node in the series database tree&#39;&#39;&#39;
+    &#34;&#34;&#34;Information about a node in the series database tree&#34;&#34;&#34;
 
     path: str
-    &#39;&#39;&#39;The path of the sub tree&#39;&#39;&#39;
+    &#34;&#34;&#34;The path of the sub tree&#34;&#34;&#34;
 
 
 class SeriesTreeNodeBranch(SeriesTreeNodeResponse):
-    &#39;&#39;&#39;Information about a node in the series database tree&#39;&#39;&#39;
+    &#34;&#34;&#34;Information about a node in the series database tree&#34;&#34;&#34;
 
     children: List[Union[SeriesTreeNodeLeaf, SeriesTreeNodeBranchRef]]
-    &#39;&#39;&#39;Gets the children of the tree node.&#39;&#39;&#39;</code></pre>
+    &#34;&#34;&#34;Gets the children of the tree node.&#34;&#34;&#34;</code></pre>
 </details>
 </section>
 <section>
@@ -82,10 +82,10 @@ class SeriesTreeNodeBranch(SeriesTreeNodeResponse):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class SeriesTreeNodeBranch(SeriesTreeNodeResponse):
-    &#39;&#39;&#39;Information about a node in the series database tree&#39;&#39;&#39;
+    &#34;&#34;&#34;Information about a node in the series database tree&#34;&#34;&#34;
 
     children: List[Union[SeriesTreeNodeLeaf, SeriesTreeNodeBranchRef]]
-    &#39;&#39;&#39;Gets the children of the tree node.&#39;&#39;&#39;</code></pre>
+    &#34;&#34;&#34;Gets the children of the tree node.&#34;&#34;&#34;</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
@@ -118,10 +118,10 @@ class SeriesTreeNodeBranch(SeriesTreeNodeResponse):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class SeriesTreeNodeBranchRef(SeriesTreeNodeResponse):
-    &#39;&#39;&#39;Information about a node in the series database tree&#39;&#39;&#39;
+    &#34;&#34;&#34;Information about a node in the series database tree&#34;&#34;&#34;
 
     path: str
-    &#39;&#39;&#39;The path of the sub tree&#39;&#39;&#39;</code></pre>
+    &#34;&#34;&#34;The path of the sub tree&#34;&#34;&#34;</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
@@ -154,7 +154,7 @@ class SeriesTreeNodeBranch(SeriesTreeNodeResponse):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class SeriesTreeNodeLeaf(SeriesTreeNodeResponse):
-    &#39;&#39;&#39;Information about a node in the series database tree&#39;&#39;&#39;</code></pre>
+    &#34;&#34;&#34;Information about a node in the series database tree&#34;&#34;&#34;</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
@@ -195,10 +195,10 @@ dict(one=1, two=2)</p></div>
 <pre><code class="python">class SeriesTreeNodeResponse(TypedDict):
 
     nodeType: str
-    &#39;&#39;&#39;The node type. Can be one of &#39;leaf&#39;, &#39;branch&#39;, &#39;branchref&#39;.&#39;&#39;&#39;
+    &#34;&#34;&#34;The node type. Can be one of &#39;leaf&#39;, &#39;branch&#39;, &#39;branchref&#39;.&#34;&#34;&#34;
 
     title: str
-    &#39;&#39;&#39;The title of the tree node&#39;&#39;&#39;</code></pre>
+    &#34;&#34;&#34;The title of the tree node&#34;&#34;&#34;</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">

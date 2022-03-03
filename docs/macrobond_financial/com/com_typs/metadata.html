@@ -33,30 +33,30 @@
 from typing import Optional, Union, Tuple, Any
 
 
-class Metadata():
-    &#39;&#39;&#39;Interface for a Macrobond metadata collection.&#39;&#39;&#39;
+class Metadata:
+    &#34;&#34;&#34;Interface for a Macrobond metadata collection.&#34;&#34;&#34;
 
     @property
     def IsReadonly(self) -&gt; bool:
-        &#39;&#39;&#39;Gets a value indicating whether this instance is readonly.&#39;&#39;&#39;
+        &#34;&#34;&#34;Gets a value indicating whether this instance is readonly.&#34;&#34;&#34;
 
     def GetFirstValue(self, name: str) -&gt; Optional[object]:
-        &#39;&#39;&#39;Get the first metadata value with the specified name.&#39;&#39;&#39;
+        &#34;&#34;&#34;Get the first metadata value with the specified name.&#34;&#34;&#34;
 
     def GetValues(self, name: str) -&gt; Union[Tuple[Any], Tuple]:
-        &#39;&#39;&#39;Get a list of metadata values with the specified name.&#39;&#39;&#39;
+        &#34;&#34;&#34;Get a list of metadata values with the specified name.&#34;&#34;&#34;
 
     def ListNames(self) -&gt; Tuple[Tuple[str, str]]:
-        &#39;&#39;&#39;Get a list of metadata names and their descriptions.&#39;&#39;&#39;
+        &#34;&#34;&#34;Get a list of metadata names and their descriptions.&#34;&#34;&#34;
 
     def AddValue(self, name: str, value: object) -&gt; None:
-        &#39;&#39;&#39;
+        &#34;&#34;&#34;
         Add a value to the metadata collection.
         The value can be a single value or a list of values.
-        &#39;&#39;&#39;
+        &#34;&#34;&#34;
 
     def HideValue(self, name: str) -&gt; None:
-        &#39;&#39;&#39;Hide a value inherited from a parent metadata collection.&#39;&#39;&#39;</code></pre>
+        &#34;&#34;&#34;Hide a value inherited from a parent metadata collection.&#34;&#34;&#34;</code></pre>
 </details>
 </section>
 <section>
@@ -77,30 +77,30 @@ class Metadata():
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class Metadata():
-    &#39;&#39;&#39;Interface for a Macrobond metadata collection.&#39;&#39;&#39;
+<pre><code class="python">class Metadata:
+    &#34;&#34;&#34;Interface for a Macrobond metadata collection.&#34;&#34;&#34;
 
     @property
     def IsReadonly(self) -&gt; bool:
-        &#39;&#39;&#39;Gets a value indicating whether this instance is readonly.&#39;&#39;&#39;
+        &#34;&#34;&#34;Gets a value indicating whether this instance is readonly.&#34;&#34;&#34;
 
     def GetFirstValue(self, name: str) -&gt; Optional[object]:
-        &#39;&#39;&#39;Get the first metadata value with the specified name.&#39;&#39;&#39;
+        &#34;&#34;&#34;Get the first metadata value with the specified name.&#34;&#34;&#34;
 
     def GetValues(self, name: str) -&gt; Union[Tuple[Any], Tuple]:
-        &#39;&#39;&#39;Get a list of metadata values with the specified name.&#39;&#39;&#39;
+        &#34;&#34;&#34;Get a list of metadata values with the specified name.&#34;&#34;&#34;
 
     def ListNames(self) -&gt; Tuple[Tuple[str, str]]:
-        &#39;&#39;&#39;Get a list of metadata names and their descriptions.&#39;&#39;&#39;
+        &#34;&#34;&#34;Get a list of metadata names and their descriptions.&#34;&#34;&#34;
 
     def AddValue(self, name: str, value: object) -&gt; None:
-        &#39;&#39;&#39;
+        &#34;&#34;&#34;
         Add a value to the metadata collection.
         The value can be a single value or a list of values.
-        &#39;&#39;&#39;
+        &#34;&#34;&#34;
 
     def HideValue(self, name: str) -&gt; None:
-        &#39;&#39;&#39;Hide a value inherited from a parent metadata collection.&#39;&#39;&#39;</code></pre>
+        &#34;&#34;&#34;Hide a value inherited from a parent metadata collection.&#34;&#34;&#34;</code></pre>
 </details>
 <h3>Instance variables</h3>
 <dl>
@@ -113,7 +113,7 @@ class Metadata():
 </summary>
 <pre><code class="python">@property
 def IsReadonly(self) -&gt; bool:
-    &#39;&#39;&#39;Gets a value indicating whether this instance is readonly.&#39;&#39;&#39;</code></pre>
+    &#34;&#34;&#34;Gets a value indicating whether this instance is readonly.&#34;&#34;&#34;</code></pre>
 </details>
 </dd>
 </dl>
@@ -130,10 +130,10 @@ The value can be a single value or a list of values.</p></div>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def AddValue(self, name: str, value: object) -&gt; None:
-    &#39;&#39;&#39;
+    &#34;&#34;&#34;
     Add a value to the metadata collection.
     The value can be a single value or a list of values.
-    &#39;&#39;&#39;</code></pre>
+    &#34;&#34;&#34;</code></pre>
 </details>
 </dd>
 <dt id="macrobond_financial.com.com_typs.metadata.Metadata.GetFirstValue"><code class="name flex">
@@ -146,7 +146,7 @@ The value can be a single value or a list of values.</p></div>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def GetFirstValue(self, name: str) -&gt; Optional[object]:
-    &#39;&#39;&#39;Get the first metadata value with the specified name.&#39;&#39;&#39;</code></pre>
+    &#34;&#34;&#34;Get the first metadata value with the specified name.&#34;&#34;&#34;</code></pre>
 </details>
 </dd>
 <dt id="macrobond_financial.com.com_typs.metadata.Metadata.GetValues"><code class="name flex">
@@ -159,7 +159,7 @@ The value can be a single value or a list of values.</p></div>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def GetValues(self, name: str) -&gt; Union[Tuple[Any], Tuple]:
-    &#39;&#39;&#39;Get a list of metadata values with the specified name.&#39;&#39;&#39;</code></pre>
+    &#34;&#34;&#34;Get a list of metadata values with the specified name.&#34;&#34;&#34;</code></pre>
 </details>
 </dd>
 <dt id="macrobond_financial.com.com_typs.metadata.Metadata.HideValue"><code class="name flex">
@@ -172,7 +172,7 @@ The value can be a single value or a list of values.</p></div>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def HideValue(self, name: str) -&gt; None:
-    &#39;&#39;&#39;Hide a value inherited from a parent metadata collection.&#39;&#39;&#39;</code></pre>
+    &#34;&#34;&#34;Hide a value inherited from a parent metadata collection.&#34;&#34;&#34;</code></pre>
 </details>
 </dd>
 <dt id="macrobond_financial.com.com_typs.metadata.Metadata.ListNames"><code class="name flex">
@@ -185,7 +185,7 @@ The value can be a single value or a list of values.</p></div>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def ListNames(self) -&gt; Tuple[Tuple[str, str]]:
-    &#39;&#39;&#39;Get a list of metadata names and their descriptions.&#39;&#39;&#39;</code></pre>
+    &#34;&#34;&#34;Get a list of metadata names and their descriptions.&#34;&#34;&#34;</code></pre>
 </details>
 </dd>
 </dl>

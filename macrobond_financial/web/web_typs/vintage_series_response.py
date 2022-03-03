@@ -8,7 +8,7 @@ from .series_with_times_of_change_response import SeriesWithTimesOfChangeRespons
 
 
 class VintageSeriesResponse(SeriesWithTimesOfChangeResponse):
-    '''A time series with times of change'''
+    """A time series with times of change"""
 
     vintageTimeStamp: Optional[str]
-    '''The time when this version of the series was recorded'''
+    """The time when this version of the series was recorded"""

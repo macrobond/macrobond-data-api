@@ -35,34 +35,34 @@ from typing_extensions import TypedDict
 
 
 class SearchFilter(TypedDict, total=False):
-    &#39;&#39;&#39;A filter in a search request&#39;&#39;&#39;
+    &#34;&#34;&#34;A filter in a search request&#34;&#34;&#34;
 
     entityTypes: Optional[List[str]]
-    &#39;&#39;&#39;
+    &#34;&#34;&#34;
     One or more entity types to include in the search. An empty list will include all types.
     If not specified, the search will be made for TimeSeries.
-    &#39;&#39;&#39;
+    &#34;&#34;&#34;
 
     mustHaveValues: Optional[Dict[str, object]]
-    &#39;&#39;&#39;Pairs of attributes and values to be matched against entities when searching&#39;&#39;&#39;
+    &#34;&#34;&#34;Pairs of attributes and values to be matched against entities when searching&#34;&#34;&#34;
 
     mustNotHaveValues: Optional[Dict[str, object]]
-    &#39;&#39;&#39;Pairs of attributes and values to exclude entities when searching&#39;&#39;&#39;
+    &#34;&#34;&#34;Pairs of attributes and values to exclude entities when searching&#34;&#34;&#34;
 
     mustHaveAttributes: Optional[List[str]]
-    &#39;&#39;&#39;Attributes to be matched against entities when searching. Any value will match.&#39;&#39;&#39;
+    &#34;&#34;&#34;Attributes to be matched against entities when searching. Any value will match.&#34;&#34;&#34;
 
     mustNotHaveAttributes: Optional[List[str]]
-    &#39;&#39;&#39;Attributes to exclude entities when searching. Any value will match.&#39;&#39;&#39;
+    &#34;&#34;&#34;Attributes to exclude entities when searching. Any value will match.&#34;&#34;&#34;
 
     text: Optional[str]
-    &#39;&#39;&#39;Words to search for separated by space.&#39;&#39;&#39;
+    &#34;&#34;&#34;Words to search for separated by space.&#34;&#34;&#34;
 
     mustHaveFilterListPath: Optional[str]
-    &#39;&#39;&#39;
+    &#34;&#34;&#34;
     Optional path to filter list that is added to the set of MustHaveValues.
     The paths are typically obtained from a call ListFilterLists.
-    &#39;&#39;&#39;</code></pre>
+    &#34;&#34;&#34;</code></pre>
 </details>
 </section>
 <section>
@@ -85,34 +85,34 @@ class SearchFilter(TypedDict, total=False):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class SearchFilter(TypedDict, total=False):
-    &#39;&#39;&#39;A filter in a search request&#39;&#39;&#39;
+    &#34;&#34;&#34;A filter in a search request&#34;&#34;&#34;
 
     entityTypes: Optional[List[str]]
-    &#39;&#39;&#39;
+    &#34;&#34;&#34;
     One or more entity types to include in the search. An empty list will include all types.
     If not specified, the search will be made for TimeSeries.
-    &#39;&#39;&#39;
+    &#34;&#34;&#34;
 
     mustHaveValues: Optional[Dict[str, object]]
-    &#39;&#39;&#39;Pairs of attributes and values to be matched against entities when searching&#39;&#39;&#39;
+    &#34;&#34;&#34;Pairs of attributes and values to be matched against entities when searching&#34;&#34;&#34;
 
     mustNotHaveValues: Optional[Dict[str, object]]
-    &#39;&#39;&#39;Pairs of attributes and values to exclude entities when searching&#39;&#39;&#39;
+    &#34;&#34;&#34;Pairs of attributes and values to exclude entities when searching&#34;&#34;&#34;
 
     mustHaveAttributes: Optional[List[str]]
-    &#39;&#39;&#39;Attributes to be matched against entities when searching. Any value will match.&#39;&#39;&#39;
+    &#34;&#34;&#34;Attributes to be matched against entities when searching. Any value will match.&#34;&#34;&#34;
 
     mustNotHaveAttributes: Optional[List[str]]
-    &#39;&#39;&#39;Attributes to exclude entities when searching. Any value will match.&#39;&#39;&#39;
+    &#34;&#34;&#34;Attributes to exclude entities when searching. Any value will match.&#34;&#34;&#34;
 
     text: Optional[str]
-    &#39;&#39;&#39;Words to search for separated by space.&#39;&#39;&#39;
+    &#34;&#34;&#34;Words to search for separated by space.&#34;&#34;&#34;
 
     mustHaveFilterListPath: Optional[str]
-    &#39;&#39;&#39;
+    &#34;&#34;&#34;
     Optional path to filter list that is added to the set of MustHaveValues.
     The paths are typically obtained from a call ListFilterLists.
-    &#39;&#39;&#39;</code></pre>
+    &#34;&#34;&#34;</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">

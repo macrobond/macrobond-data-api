@@ -7,10 +7,10 @@ from typing_extensions import TypedDict
 
 
 class SeriesTreeLocationPart(TypedDict):
-    '''A location in the database tree'''
+    """A location in the database tree"""
 
     title: str
-    '''The title of the location element'''
+    """The title of the location element"""
 
-    child: Optional['SeriesTreeLocationPart']  # type: ignore[misc]
-    '''The child of the location part'''
+    child: Optional["SeriesTreeLocationPart"]  # type: ignore[misc]
+    """The child of the location part"""

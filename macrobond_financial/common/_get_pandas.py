@@ -10,7 +10,7 @@ except ImportError as ex:
     __pandas_Import_error = ex
 
 
-def _get_pandas() -> '__pandas':
+def _get_pandas() -> "__pandas":
     if __pandas_Import_error:
         raise __pandas_Import_error
     return __pandas

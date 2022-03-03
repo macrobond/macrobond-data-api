@@ -40,21 +40,20 @@ if TYPE_CHECKING:  # pragma: no cover
     from .session import Session
 
 __pdoc__ = {
-    &#39;WebApi.__init__&#39;: False,
+    &#34;WebApi.__init__&#34;: False,
 }
 
 
 class WebApi(Api):
-
     @property
-    def session(self) -&gt; &#39;Session&#39;:
+    def session(self) -&gt; &#34;Session&#34;:
         return self.__session
 
-    def __init__(self, session: &#39;Session&#39;) -&gt; None:
+    def __init__(self, session: &#34;Session&#34;) -&gt; None:
         super().__init__(
             _WebMetaDirectoryMethods(session),
             _WebSearchMethods(session),
-            _WebSeriesMethods(session)
+            _WebSeriesMethods(session),
         )
         self.__session = session</code></pre>
 </details>
@@ -79,16 +78,15 @@ inheritance.</p></div>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class WebApi(Api):
-
     @property
-    def session(self) -&gt; &#39;Session&#39;:
+    def session(self) -&gt; &#34;Session&#34;:
         return self.__session
 
-    def __init__(self, session: &#39;Session&#39;) -&gt; None:
+    def __init__(self, session: &#34;Session&#34;) -&gt; None:
         super().__init__(
             _WebMetaDirectoryMethods(session),
             _WebSearchMethods(session),
-            _WebSeriesMethods(session)
+            _WebSeriesMethods(session),
         )
         self.__session = session</code></pre>
 </details>
@@ -107,7 +105,7 @@ inheritance.</p></div>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@property
-def session(self) -&gt; &#39;Session&#39;:
+def session(self) -&gt; &#34;Session&#34;:
     return self.__session</code></pre>
 </details>
 </dd>

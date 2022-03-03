@@ -37,7 +37,7 @@ from .scope import Scope
 from .web_api import WebApi
 
 
-class WebClient(Client[&#39;WebApi&#39;]):
+class WebClient(Client[&#34;WebApi&#34;]):
     &#34;&#34;&#34;
     WebClient to get data from the web
 
@@ -73,31 +73,44 @@ class WebClient(Client[&#39;WebApi&#39;]):
 
     @overload
     def __init__(
-        self, client_id_or_credentials: str, client_secret: str,
+        self,
+        client_id_or_credentials: str,
+        client_secret: str,
         scopes: List[Scope] = None,
-        api_url: str = API_URL_DEFAULT, authorization_url: str = AUTHORIZATION_URL_DEFAULT
-    ) -&gt; None: ...
+        api_url: str = API_URL_DEFAULT,
+        authorization_url: str = AUTHORIZATION_URL_DEFAULT,
+    ) -&gt; None:
+        ...
 
     @overload
     def __init__(
-        self, client_id_or_credentials: Credentials, client_secret: str = ...,
+        self,
+        client_id_or_credentials: Credentials,
+        client_secret: str = ...,
         scopes: List[Scope] = None,
-        api_url: str = API_URL_DEFAULT, authorization_url: str = AUTHORIZATION_URL_DEFAULT
-    ) -&gt; None: ...
+        api_url: str = API_URL_DEFAULT,
+        authorization_url: str = AUTHORIZATION_URL_DEFAULT,
+    ) -&gt; None:
+        ...
 
     @overload
     def __init__(
-        self, client_id_or_credentials: str = None, client_secret: str = ...,
+        self,
+        client_id_or_credentials: str = None,
+        client_secret: str = ...,
         scopes: List[Scope] = None,
-        api_url: str = API_URL_DEFAULT, authorization_url: str = AUTHORIZATION_URL_DEFAULT
-    ) -&gt; None: ...
+        api_url: str = API_URL_DEFAULT,
+        authorization_url: str = AUTHORIZATION_URL_DEFAULT,
+    ) -&gt; None:
+        ...
 
     def __init__(
-            self, client_id_or_credentials: Union[str, Credentials] = None,
-            client_secret: str = None,
-            scopes: List[Scope] = None,
-            api_url: str = API_URL_DEFAULT,
-            authorization_url: str = AUTHORIZATION_URL_DEFAULT
+        self,
+        client_id_or_credentials: Union[str, Credentials] = None,
+        client_secret: str = None,
+        scopes: List[Scope] = None,
+        api_url: str = API_URL_DEFAULT,
+        authorization_url: str = AUTHORIZATION_URL_DEFAULT,
     ) -&gt; None:
         if client_id_or_credentials is None:
             client_id_or_credentials = Credentials()
@@ -112,21 +125,24 @@ class WebClient(Client[&#39;WebApi&#39;]):
             client_id = client_id_or_credentials
 
         if client_id is None:
-            raise ValueError(&#39;client_id is None&#39;)
+            raise ValueError(&#34;client_id is None&#34;)
 
         if client_secret is None:
-            raise ValueError(&#39;client_secret is None&#39;)
+            raise ValueError(&#34;client_secret is None&#34;)
 
         if scopes is None:
             scopes = []
 
-        self.__api: Optional[&#39;WebApi&#39;] = None
+        self.__api: Optional[&#34;WebApi&#34;] = None
         self.__session = Session(
-            client_id, client_secret, *scopes,
-            api_url=api_url, authorization_url=authorization_url
+            client_id,
+            client_secret,
+            *scopes,
+            api_url=api_url,
+            authorization_url=authorization_url
         )
 
-    def open(self) -&gt; &#39;WebApi&#39;:
+    def open(self) -&gt; &#34;WebApi&#34;:
         if self.__api is None:
             self.__session.fetch_token()
             self.__api = WebApi(self.__session)
@@ -177,7 +193,7 @@ class WebClient(Client[&#39;WebApi&#39;]):
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class WebClient(Client[&#39;WebApi&#39;]):
+<pre><code class="python">class WebClient(Client[&#34;WebApi&#34;]):
     &#34;&#34;&#34;
     WebClient to get data from the web
 
@@ -213,31 +229,44 @@ class WebClient(Client[&#39;WebApi&#39;]):
 
     @overload
     def __init__(
-        self, client_id_or_credentials: str, client_secret: str,
+        self,
+        client_id_or_credentials: str,
+        client_secret: str,
         scopes: List[Scope] = None,
-        api_url: str = API_URL_DEFAULT, authorization_url: str = AUTHORIZATION_URL_DEFAULT
-    ) -&gt; None: ...
+        api_url: str = API_URL_DEFAULT,
+        authorization_url: str = AUTHORIZATION_URL_DEFAULT,
+    ) -&gt; None:
+        ...
 
     @overload
     def __init__(
-        self, client_id_or_credentials: Credentials, client_secret: str = ...,
+        self,
+        client_id_or_credentials: Credentials,
+        client_secret: str = ...,
         scopes: List[Scope] = None,
-        api_url: str = API_URL_DEFAULT, authorization_url: str = AUTHORIZATION_URL_DEFAULT
-    ) -&gt; None: ...
+        api_url: str = API_URL_DEFAULT,
+        authorization_url: str = AUTHORIZATION_URL_DEFAULT,
+    ) -&gt; None:
+        ...
 
     @overload
     def __init__(
-        self, client_id_or_credentials: str = None, client_secret: str = ...,
+        self,
+        client_id_or_credentials: str = None,
+        client_secret: str = ...,
         scopes: List[Scope] = None,
-        api_url: str = API_URL_DEFAULT, authorization_url: str = AUTHORIZATION_URL_DEFAULT
-    ) -&gt; None: ...
+        api_url: str = API_URL_DEFAULT,
+        authorization_url: str = AUTHORIZATION_URL_DEFAULT,
+    ) -&gt; None:
+        ...
 
     def __init__(
-            self, client_id_or_credentials: Union[str, Credentials] = None,
-            client_secret: str = None,
-            scopes: List[Scope] = None,
-            api_url: str = API_URL_DEFAULT,
-            authorization_url: str = AUTHORIZATION_URL_DEFAULT
+        self,
+        client_id_or_credentials: Union[str, Credentials] = None,
+        client_secret: str = None,
+        scopes: List[Scope] = None,
+        api_url: str = API_URL_DEFAULT,
+        authorization_url: str = AUTHORIZATION_URL_DEFAULT,
     ) -&gt; None:
         if client_id_or_credentials is None:
             client_id_or_credentials = Credentials()
@@ -252,21 +281,24 @@ class WebClient(Client[&#39;WebApi&#39;]):
             client_id = client_id_or_credentials
 
         if client_id is None:
-            raise ValueError(&#39;client_id is None&#39;)
+            raise ValueError(&#34;client_id is None&#34;)
 
         if client_secret is None:
-            raise ValueError(&#39;client_secret is None&#39;)
+            raise ValueError(&#34;client_secret is None&#34;)
 
         if scopes is None:
             scopes = []
 
-        self.__api: Optional[&#39;WebApi&#39;] = None
+        self.__api: Optional[&#34;WebApi&#34;] = None
         self.__session = Session(
-            client_id, client_secret, *scopes,
-            api_url=api_url, authorization_url=authorization_url
+            client_id,
+            client_secret,
+            *scopes,
+            api_url=api_url,
+            authorization_url=authorization_url
         )
 
-    def open(self) -&gt; &#39;WebApi&#39;:
+    def open(self) -&gt; &#34;WebApi&#34;:
         if self.__api is None:
             self.__session.fetch_token()
             self.__api = WebApi(self.__session)
@@ -305,7 +337,7 @@ class WebClient(Client[&#39;WebApi&#39;]):
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def open(self) -&gt; &#39;WebApi&#39;:
+<pre><code class="python">def open(self) -&gt; &#34;WebApi&#34;:
     if self.__api is None:
         self.__session.fetch_token()
         self.__api = WebApi(self.__session)
