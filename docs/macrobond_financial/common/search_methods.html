@@ -46,7 +46,7 @@ class SearchMethods(ABC):
         must_not_have_values: Dict[str, object] = None,
         must_have_attributes: Union[Sequence[str], str] = None,
         must_not_have_attributes: Union[Sequence[str], str] = None,
-        include_discontinued: bool = None,
+        include_discontinued: bool = False,
     ) -&gt; &#34;SearchResult&#34;:
         return self.series_multi_filter(
             SearchFilter(
@@ -62,7 +62,7 @@ class SearchMethods(ABC):
 
     @abstractmethod
     def series_multi_filter(
-        self, *filters: &#34;SearchFilter&#34;, include_discontinued: bool = None
+        self, *filters: &#34;SearchFilter&#34;, include_discontinued: bool = False
     ) -&gt; &#34;SearchResult&#34;:
         ...  # pragma: no cover
 
@@ -82,28 +82,28 @@ class SearchFilter:
         if isinstance(entity_types, str):
             self.entity_types: Sequence[str] = [entity_types]
         else:
-            self.entity_types = entity_types if entity_types is not None else []
+            self.entity_types = entity_types if entity_types else []
 
         self.must_have_values: Dict[str, object] = (
-            must_have_values if must_have_values is not None else {}
+            must_have_values if must_have_values else {}
         )
 
         self.must_not_have_values: Dict[str, object] = (
-            must_not_have_values if must_not_have_values is not None else {}
+            must_not_have_values if must_not_have_values else {}
         )
 
         if isinstance(must_have_attributes, str):
             self.must_have_attributes: Sequence[str] = [must_have_attributes]
         else:
             self.must_have_attributes = (
-                must_have_attributes if must_have_attributes is not None else []
+                must_have_attributes if must_have_attributes else []
             )
 
         if isinstance(must_not_have_attributes, str):
             self.must_not_have_attributes: Sequence[str] = [must_not_have_attributes]
         else:
             self.must_not_have_attributes = (
-                must_not_have_attributes if must_not_have_attributes is not None else []
+                must_not_have_attributes if must_not_have_attributes else []
             )
 
 
@@ -168,7 +168,7 @@ class SearchResult(Sequence[Dict[str, Any]]):
 <dl>
 <dt id="macrobond_financial.common.search_methods.SearchFilter"><code class="flex name class">
 <span>class <span class="ident">SearchFilter</span></span>
-<span>(</span><span>text: str = None, entity_types: Union[Sequence[str], str] = None, must_have_values: Dict[str, object] = None, must_not_have_values: Dict[str, object] = None, must_have_attributes: Union[Sequence[str], str] = None, must_not_have_attributes: Union[Sequence[str], str] = None)</span>
+<span>(</span><span>text: str = None, entity_types: Union[str, Sequence[str]] = None, must_have_values: Dict[str, object] = None, must_not_have_values: Dict[str, object] = None, must_have_attributes: Union[str, Sequence[str]] = None, must_not_have_attributes: Union[str, Sequence[str]] = None)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -191,28 +191,28 @@ class SearchResult(Sequence[Dict[str, Any]]):
         if isinstance(entity_types, str):
             self.entity_types: Sequence[str] = [entity_types]
         else:
-            self.entity_types = entity_types if entity_types is not None else []
+            self.entity_types = entity_types if entity_types else []
 
         self.must_have_values: Dict[str, object] = (
-            must_have_values if must_have_values is not None else {}
+            must_have_values if must_have_values else {}
         )
 
         self.must_not_have_values: Dict[str, object] = (
-            must_not_have_values if must_not_have_values is not None else {}
+            must_not_have_values if must_not_have_values else {}
         )
 
         if isinstance(must_have_attributes, str):
             self.must_have_attributes: Sequence[str] = [must_have_attributes]
         else:
             self.must_have_attributes = (
-                must_have_attributes if must_have_attributes is not None else []
+                must_have_attributes if must_have_attributes else []
             )
 
         if isinstance(must_not_have_attributes, str):
             self.must_not_have_attributes: Sequence[str] = [must_not_have_attributes]
         else:
             self.must_not_have_attributes = (
-                must_not_have_attributes if must_not_have_attributes is not None else []
+                must_not_have_attributes if must_not_have_attributes else []
             )</code></pre>
 </details>
 </dd>
@@ -235,7 +235,7 @@ inheritance.</p></div>
         must_not_have_values: Dict[str, object] = None,
         must_have_attributes: Union[Sequence[str], str] = None,
         must_not_have_attributes: Union[Sequence[str], str] = None,
-        include_discontinued: bool = None,
+        include_discontinued: bool = False,
     ) -&gt; &#34;SearchResult&#34;:
         return self.series_multi_filter(
             SearchFilter(
@@ -251,7 +251,7 @@ inheritance.</p></div>
 
     @abstractmethod
     def series_multi_filter(
-        self, *filters: &#34;SearchFilter&#34;, include_discontinued: bool = None
+        self, *filters: &#34;SearchFilter&#34;, include_discontinued: bool = False
     ) -&gt; &#34;SearchResult&#34;:
         ...  # pragma: no cover</code></pre>
 </details>
@@ -267,7 +267,7 @@ inheritance.</p></div>
 <h3>Methods</h3>
 <dl>
 <dt id="macrobond_financial.common.search_methods.SearchMethods.search"><code class="name flex">
-<span>def <span class="ident">search</span></span>(<span>self, text: str = None, entity_types: Union[Sequence[str], str] = None, must_have_values: Dict[str, object] = None, must_not_have_values: Dict[str, object] = None, must_have_attributes: Union[Sequence[str], str] = None, must_not_have_attributes: Union[Sequence[str], str] = None, include_discontinued: bool = None) ‑> <a title="macrobond_financial.common.search_methods.SearchResult" href="#macrobond_financial.common.search_methods.SearchResult">SearchResult</a></span>
+<span>def <span class="ident">search</span></span>(<span>self, text: str = None, entity_types: Union[str, Sequence[str]] = None, must_have_values: Dict[str, object] = None, must_not_have_values: Dict[str, object] = None, must_have_attributes: Union[str, Sequence[str]] = None, must_not_have_attributes: Union[str, Sequence[str]] = None, include_discontinued: bool = False) ‑> <a title="macrobond_financial.common.search_methods.SearchResult" href="#macrobond_financial.common.search_methods.SearchResult">SearchResult</a></span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -283,7 +283,7 @@ inheritance.</p></div>
     must_not_have_values: Dict[str, object] = None,
     must_have_attributes: Union[Sequence[str], str] = None,
     must_not_have_attributes: Union[Sequence[str], str] = None,
-    include_discontinued: bool = None,
+    include_discontinued: bool = False,
 ) -&gt; &#34;SearchResult&#34;:
     return self.series_multi_filter(
         SearchFilter(
@@ -299,7 +299,7 @@ inheritance.</p></div>
 </details>
 </dd>
 <dt id="macrobond_financial.common.search_methods.SearchMethods.series_multi_filter"><code class="name flex">
-<span>def <span class="ident">series_multi_filter</span></span>(<span>self, *filters: <a title="macrobond_financial.common.search_methods.SearchFilter" href="#macrobond_financial.common.search_methods.SearchFilter">SearchFilter</a>, include_discontinued: bool = None) ‑> <a title="macrobond_financial.common.search_methods.SearchResult" href="#macrobond_financial.common.search_methods.SearchResult">SearchResult</a></span>
+<span>def <span class="ident">series_multi_filter</span></span>(<span>self, *filters: <a title="macrobond_financial.common.search_methods.SearchFilter" href="#macrobond_financial.common.search_methods.SearchFilter">SearchFilter</a>, include_discontinued: bool = False) ‑> <a title="macrobond_financial.common.search_methods.SearchResult" href="#macrobond_financial.common.search_methods.SearchResult">SearchResult</a></span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -309,7 +309,7 @@ inheritance.</p></div>
 </summary>
 <pre><code class="python">@abstractmethod
 def series_multi_filter(
-    self, *filters: &#34;SearchFilter&#34;, include_discontinued: bool = None
+    self, *filters: &#34;SearchFilter&#34;, include_discontinued: bool = False
 ) -&gt; &#34;SearchResult&#34;:
     ...  # pragma: no cover</code></pre>
 </details>
@@ -412,9 +412,6 @@ def series_multi_filter(
 </article>
 <nav id="sidebar">
 <h1>Index</h1>
-<div class="toc">
-<ul></ul>
-</div>
 <ul id="index">
 <li><h3>Super-module</h3>
 <ul>

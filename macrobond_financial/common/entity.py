@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from typing import Any, Dict, List, Union, TYPE_CHECKING
+from typing import Any, Dict, List, Optional, TYPE_CHECKING
 
 from ._get_pandas import _get_pandas
 
@@ -16,17 +16,10 @@ if TYPE_CHECKING:  # pragma: no cover
 
     EntityColumns = List[EntityColumnsLiterals]
 
-    class ErrorEntityTypedDict(TypedDict):
-        Name: str
+    class EntityTypedDict(TypedDict, total=False):
         ErrorMessage: str
-
-    class EntityTypedDict(TypedDict):
         Name: str
-        PrimName: str
-        FullDescription: str
-        EntityType: str
-
-    EntityTypedDicts = Union[EntityTypedDict, ErrorEntityTypedDict]
+        MetaData: Dict[str, Any]
 
 
 class Entity:
@@ -45,14 +38,6 @@ class Entity:
         return prim_name
 
     @property
-    def name(self) -> str:
-        """The name of the entity."""
-        name = self.metadata["Name"]
-        if isinstance(name, list):
-            name = name[0]
-        return name
-
-    @property
     def title(self) -> str:
         """The title of the entity."""
         full_description = self.metadata["FullDescription"]
@@ -68,9 +53,15 @@ class Entity:
             entity_type = entity_type[0]
         return entity_type
 
-    def __init__(self, error_message: str, metadata: Dict[str, Any]) -> None:
-        self.error_message = error_message
-        self.metadata = metadata
+    def __init__(
+        self,
+        name: str,
+        error_message: Optional[str],
+        metadata: Optional[Dict[str, Any]],
+    ) -> None:
+        self.name = name
+        self.error_message = error_message if error_message else ""
+        self.metadata = metadata = metadata if metadata else {}
 
     def __str__(self):
         if self.is_error:
@@ -85,6 +76,26 @@ class Entity:
 
     def __repr__(self):
         return str(self)
+
+    def __bool__(self):
+        return not self.is_error
+
+    def __eq__(self, other):
+        if not isinstance(other, Entity):
+            return NotImplemented
+
+        return self is other or (
+            self.error_message == other.error_message
+            and self.metadata == other.metadata
+        )
+
+    def __hash__(self):
+        return hash(
+            (
+                self.error_message,
+                self.metadata,
+            )
+        )
 
     def get_metadata_as_data_frame(self) -> "DataFrame":
         metadata = self.metadata

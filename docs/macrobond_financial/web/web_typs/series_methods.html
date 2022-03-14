@@ -164,7 +164,7 @@ class SeriesMethods:
         &#34;&#34;&#34;
         params = {&#34;t&#34;: time_of_vintage.isoformat(), &#34;n&#34;: series_names}
 
-        if get_times_of_change is not None:
+        if get_times_of_change:
             params[&#34;getTimesOfChange&#34;] = &#34;true&#34; if get_times_of_change else &#34;false&#34;
 
         response = self.__session.get_or_raise(
@@ -223,7 +223,7 @@ class SeriesMethods:
             &#34;nth&#34;: nth,
         }
 
-        if get_times_of_change is not None:
+        if get_times_of_change:
             params[&#34;getTimesOfChange&#34;] = &#34;true&#34; if get_times_of_change else &#34;false&#34;
 
         response = self.__session.get_or_raise(
@@ -283,7 +283,7 @@ class SeriesMethods:
         &#34;&#34;&#34;
         params = {}
 
-        if if_modified_since is not None:
+        if if_modified_since:
             params[&#34;ifModifiedSince&#34;] = if_modified_since.isoformat()
 
         response = self.__session.get_or_raise(
@@ -475,7 +475,7 @@ class SeriesMethods:
         &#34;&#34;&#34;
         params = {&#34;t&#34;: time_of_vintage.isoformat(), &#34;n&#34;: series_names}
 
-        if get_times_of_change is not None:
+        if get_times_of_change:
             params[&#34;getTimesOfChange&#34;] = &#34;true&#34; if get_times_of_change else &#34;false&#34;
 
         response = self.__session.get_or_raise(
@@ -534,7 +534,7 @@ class SeriesMethods:
             &#34;nth&#34;: nth,
         }
 
-        if get_times_of_change is not None:
+        if get_times_of_change:
             params[&#34;getTimesOfChange&#34;] = &#34;true&#34; if get_times_of_change else &#34;false&#34;
 
         response = self.__session.get_or_raise(
@@ -594,7 +594,7 @@ class SeriesMethods:
         &#34;&#34;&#34;
         params = {}
 
-        if if_modified_since is not None:
+        if if_modified_since:
             params[&#34;ifModifiedSince&#34;] = if_modified_since.isoformat()
 
         response = self.__session.get_or_raise(
@@ -807,7 +807,7 @@ The result will be in the same order as the request.</p>
         &#34;nth&#34;: nth,
     }
 
-    if get_times_of_change is not None:
+    if get_times_of_change:
         params[&#34;getTimesOfChange&#34;] = &#34;true&#34; if get_times_of_change else &#34;false&#34;
 
     response = self.__session.get_or_raise(
@@ -1023,7 +1023,7 @@ The result will be in the same order as the request.</p>
     &#34;&#34;&#34;
     params = {&#34;t&#34;: time_of_vintage.isoformat(), &#34;n&#34;: series_names}
 
-    if get_times_of_change is not None:
+    if get_times_of_change:
         params[&#34;getTimesOfChange&#34;] = &#34;true&#34; if get_times_of_change else &#34;false&#34;
 
     response = self.__session.get_or_raise(
@@ -1108,7 +1108,7 @@ but you may see the same update more than once.</p>
     &#34;&#34;&#34;
     params = {}
 
-    if if_modified_since is not None:
+    if if_modified_since:
         params[&#34;ifModifiedSince&#34;] = if_modified_since.isoformat()
 
     response = self.__session.get_or_raise(
@@ -1124,9 +1124,6 @@ but you may see the same update more than once.</p>
 </article>
 <nav id="sidebar">
 <h1>Index</h1>
-<div class="toc">
-<ul></ul>
-</div>
 <ul id="index">
 <li><h3>Super-module</h3>
 <ul>

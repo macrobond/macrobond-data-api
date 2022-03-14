@@ -28,7 +28,7 @@ class Context:
     def __init__(self, *mefs: Callable[["Context"], None]) -> None:
         self.hade_error = False
         self.shell_commands: List[_ShellCommand] = []
-        if mefs is not None:
+        if mefs:
             for mef in mefs:
                 mef(self)
             print("--- shell commands ---")

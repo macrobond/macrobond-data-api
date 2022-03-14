@@ -26,7 +26,12 @@
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">from typing import List
+<pre><code class="python">from typing import List, Optional, Tuple, Iterable, cast, Union, overload
+
+__pdoc__ = {
+    &#34;EntitieErrorInfo.__init__&#34;: False,
+    &#34;GetEntitiesError.__init__&#34;: False,
+}
 
 
 class EntitieErrorInfo:
@@ -42,10 +47,52 @@ class EntitieErrorInfo:
 
 
 class GetEntitiesError(Exception):
-    def __init__(self, entities: List[EntitieErrorInfo]):
-        self.entities = entities
-        message = &#34;&#34;
-        super().__init__(message)</code></pre>
+    def __init__(
+        self,
+        entities_or_name: Union[List[EntitieErrorInfo], str],
+        error_message: str = None,
+    ):
+        if isinstance(entities_or_name, list):
+            self.entities = entities_or_name
+        else:
+            self.entities = [
+                EntitieErrorInfo(entities_or_name, cast(str, error_message))
+            ]
+
+        self.message = &#34;failed to retrieve:\n&#34; + (
+            &#34;\n&#34;.join(
+                map(
+                    lambda x: &#34;\t&#34; + x.name + &#34; error_message: &#34; + x.error_message,
+                    self.entities,
+                )
+            )
+        )
+        super().__init__(self.message)
+
+    @classmethod
+    def raise_if(
+        cls,
+        raise_error: bool,
+        entities_or_name: Union[Iterable[Tuple[str, Optional[str]]], str],
+        error_message: str = None,
+    ) -&gt; None:
+        if not raise_error:
+            return
+
+        if isinstance(entities_or_name, str):
+            if error_message:
+                name = entities_or_name
+                raise GetEntitiesError(name, error_message)
+        else:
+            entities = entities_or_name
+            entities_list = cast(
+                List[Tuple[str, str]],
+                list(filter(lambda x: x[1] is not None, entities)),
+            )
+            if entities_list:
+                raise GetEntitiesError(
+                    list(map(lambda x: EntitieErrorInfo(x[0], x[1]), entities_list))
+                )</code></pre>
 </details>
 </section>
 <section>
@@ -59,7 +106,6 @@ class GetEntitiesError(Exception):
 <dl>
 <dt id="macrobond_financial.common.get_entitie_error.EntitieErrorInfo"><code class="flex name class">
 <span>class <span class="ident">EntitieErrorInfo</span></span>
-<span>(</span><span>name: str, error_message: str)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -81,7 +127,6 @@ class GetEntitiesError(Exception):
 </dd>
 <dt id="macrobond_financial.common.get_entitie_error.GetEntitiesError"><code class="flex name class">
 <span>class <span class="ident">GetEntitiesError</span></span>
-<span>(</span><span>entities: List[<a title="macrobond_financial.common.get_entitie_error.EntitieErrorInfo" href="#macrobond_financial.common.get_entitie_error.EntitieErrorInfo">EntitieErrorInfo</a>])</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Common base class for all non-exit exceptions.</p></div>
@@ -90,25 +135,102 @@ class GetEntitiesError(Exception):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class GetEntitiesError(Exception):
-    def __init__(self, entities: List[EntitieErrorInfo]):
-        self.entities = entities
-        message = &#34;&#34;
-        super().__init__(message)</code></pre>
+    def __init__(
+        self,
+        entities_or_name: Union[List[EntitieErrorInfo], str],
+        error_message: str = None,
+    ):
+        if isinstance(entities_or_name, list):
+            self.entities = entities_or_name
+        else:
+            self.entities = [
+                EntitieErrorInfo(entities_or_name, cast(str, error_message))
+            ]
+
+        self.message = &#34;failed to retrieve:\n&#34; + (
+            &#34;\n&#34;.join(
+                map(
+                    lambda x: &#34;\t&#34; + x.name + &#34; error_message: &#34; + x.error_message,
+                    self.entities,
+                )
+            )
+        )
+        super().__init__(self.message)
+
+    @classmethod
+    def raise_if(
+        cls,
+        raise_error: bool,
+        entities_or_name: Union[Iterable[Tuple[str, Optional[str]]], str],
+        error_message: str = None,
+    ) -&gt; None:
+        if not raise_error:
+            return
+
+        if isinstance(entities_or_name, str):
+            if error_message:
+                name = entities_or_name
+                raise GetEntitiesError(name, error_message)
+        else:
+            entities = entities_or_name
+            entities_list = cast(
+                List[Tuple[str, str]],
+                list(filter(lambda x: x[1] is not None, entities)),
+            )
+            if entities_list:
+                raise GetEntitiesError(
+                    list(map(lambda x: EntitieErrorInfo(x[0], x[1]), entities_list))
+                )</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
 <li>builtins.Exception</li>
 <li>builtins.BaseException</li>
 </ul>
+<h3>Static methods</h3>
+<dl>
+<dt id="macrobond_financial.common.get_entitie_error.GetEntitiesError.raise_if"><code class="name flex">
+<span>def <span class="ident">raise_if</span></span>(<span>raise_error: bool, entities_or_name: Union[Iterable[Tuple[str, Optional[str]]], str], error_message: str = None) ‑> None</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@classmethod
+def raise_if(
+    cls,
+    raise_error: bool,
+    entities_or_name: Union[Iterable[Tuple[str, Optional[str]]], str],
+    error_message: str = None,
+) -&gt; None:
+    if not raise_error:
+        return
+
+    if isinstance(entities_or_name, str):
+        if error_message:
+            name = entities_or_name
+            raise GetEntitiesError(name, error_message)
+    else:
+        entities = entities_or_name
+        entities_list = cast(
+            List[Tuple[str, str]],
+            list(filter(lambda x: x[1] is not None, entities)),
+        )
+        if entities_list:
+            raise GetEntitiesError(
+                list(map(lambda x: EntitieErrorInfo(x[0], x[1]), entities_list))
+            )</code></pre>
+</details>
+</dd>
+</dl>
 </dd>
 </dl>
 </section>
 </article>
 <nav id="sidebar">
 <h1>Index</h1>
-<div class="toc">
-<ul></ul>
-</div>
 <ul id="index">
 <li><h3>Super-module</h3>
 <ul>
@@ -122,6 +244,9 @@ class GetEntitiesError(Exception):
 </li>
 <li>
 <h4><code><a title="macrobond_financial.common.get_entitie_error.GetEntitiesError" href="#macrobond_financial.common.get_entitie_error.GetEntitiesError">GetEntitiesError</a></code></h4>
+<ul class="">
+<li><code><a title="macrobond_financial.common.get_entitie_error.GetEntitiesError.raise_if" href="#macrobond_financial.common.get_entitie_error.GetEntitiesError.raise_if">raise_if</a></code></li>
+</ul>
 </li>
 </ul>
 </li>

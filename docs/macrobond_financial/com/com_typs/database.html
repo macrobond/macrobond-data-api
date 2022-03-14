@@ -30,7 +30,7 @@
 
 # pylint: disable = invalid-name , missing-module-docstring , too-many-arguments
 
-from typing import List, Union, Tuple
+from typing import List, Union, Tuple, Sequence
 
 from .series import Series
 from .entity import Entity
@@ -184,7 +184,7 @@ class Database:
         &#34;&#34;&#34;
 
     def FetchSeriesWithRevisions(
-        self, seriesNames: Union[str, Tuple[str, ...]]
+        self, seriesNames: Union[str, Sequence[str]]
     ) -&gt; Tuple[SeriesWithRevisions, ...]:
         &#34;&#34;&#34;
         Download one or more series from the database.
@@ -354,7 +354,7 @@ class Database:
         &#34;&#34;&#34;
 
     def FetchSeriesWithRevisions(
-        self, seriesNames: Union[str, Tuple[str, ...]]
+        self, seriesNames: Union[str, Sequence[str]]
     ) -&gt; Tuple[SeriesWithRevisions, ...]:
         &#34;&#34;&#34;
         Download one or more series from the database.
@@ -645,7 +645,7 @@ The result is a vector of series in the same order as requested.</p></div>
 </details>
 </dd>
 <dt id="macrobond_financial.com.com_typs.database.Database.FetchSeriesWithRevisions"><code class="name flex">
-<span>def <span class="ident">FetchSeriesWithRevisions</span></span>(<span>self, seriesNames: Union[str, Tuple[str, ...]]) ‑> Tuple[<a title="macrobond_financial.com.com_typs.series_with_revisions.SeriesWithRevisions" href="series_with_revisions.html#macrobond_financial.com.com_typs.series_with_revisions.SeriesWithRevisions">SeriesWithRevisions</a>, ...]</span>
+<span>def <span class="ident">FetchSeriesWithRevisions</span></span>(<span>self, seriesNames: Union[str, Sequence[str]]) ‑> Tuple[<a title="macrobond_financial.com.com_typs.series_with_revisions.SeriesWithRevisions" href="series_with_revisions.html#macrobond_financial.com.com_typs.series_with_revisions.SeriesWithRevisions">SeriesWithRevisions</a>, ...]</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Download one or more series from the database.
@@ -657,7 +657,7 @@ The result is a vector of revision history objects in the same order as requeste
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def FetchSeriesWithRevisions(
-    self, seriesNames: Union[str, Tuple[str, ...]]
+    self, seriesNames: Union[str, Sequence[str]]
 ) -&gt; Tuple[SeriesWithRevisions, ...]:
     &#34;&#34;&#34;
     Download one or more series from the database.
@@ -725,9 +725,6 @@ It is more efficient to upload more series at once than one by one.</p></div>
 </article>
 <nav id="sidebar">
 <h1>Index</h1>
-<div class="toc">
-<ul></ul>
-</div>
 <ul id="index">
 <li><h3>Super-module</h3>
 <ul>

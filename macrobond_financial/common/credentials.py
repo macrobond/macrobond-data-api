@@ -36,17 +36,11 @@ class Credentials:
     def _get_paths(cls, paths: Union[List[str], None]) -> List[str]:
         if not paths:
             default_file_name = cls.default_file_name
-            if cls._platform_system() == "Windows":
-                paths = [
-                    cls._path_join(cls._get_home_path(), default_file_name),
-                    cls._path_join("c:\\", default_file_name),
-                    cls._path_join(cls._getcwd(), default_file_name),
-                ]
-            else:
-                paths = [
-                    cls._path_join(cls._get_home_path(), default_file_name),
-                    cls._path_join(cls._getcwd(), default_file_name),
-                ]
+            paths = [
+                cls._path_join(cls._get_home_path(), default_file_name),
+                cls._path_join(cls._getcwd(), default_file_name),
+                cls._path_join(cls._get_root_path(), default_file_name),
+            ]
         return paths
 
     @classmethod
@@ -93,3 +87,7 @@ class Credentials:
     @classmethod
     def _is_file(cls, path: str) -> bool:
         return os.path.isfile(path)
+
+    @classmethod
+    def _get_root_path(cls) -> str:
+        return os.path.abspath(os.sep)

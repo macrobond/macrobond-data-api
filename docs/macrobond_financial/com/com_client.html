@@ -75,7 +75,7 @@ class ComClient(Client[&#34;ComApi&#34;]):
         Opening and closing sessions can be slow,
         so it is usually not a good idea to open and close them for each request
         &#34;&#34;&#34;
-        if self.__api is not None:
+        if self.__api:
             self.__api.connection.Close()
             self.__api = None</code></pre>
 </details>
@@ -143,7 +143,7 @@ class ComClient(Client[&#34;ComApi&#34;]):
         Opening and closing sessions can be slow,
         so it is usually not a good idea to open and close them for each request
         &#34;&#34;&#34;
-        if self.__api is not None:
+        if self.__api:
             self.__api.connection.Close()
             self.__api = None</code></pre>
 </details>
@@ -172,7 +172,7 @@ so it is usually not a good idea to open and close them for each request</p></di
     Opening and closing sessions can be slow,
     so it is usually not a good idea to open and close them for each request
     &#34;&#34;&#34;
-    if self.__api is not None:
+    if self.__api:
         self.__api.connection.Close()
         self.__api = None</code></pre>
 </details>
@@ -200,9 +200,6 @@ so it is usually not a good idea to open and close them for each request</p></di
 </article>
 <nav id="sidebar">
 <h1>Index</h1>
-<div class="toc">
-<ul></ul>
-</div>
 <ul id="index">
 <li><h3>Super-module</h3>
 <ul>

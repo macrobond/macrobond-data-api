@@ -47,6 +47,6 @@ class ComClient(Client["ComApi"]):
         Opening and closing sessions can be slow,
         so it is usually not a good idea to open and close them for each request
         """
-        if self.__api is not None:
+        if self.__api:
             self.__api.connection.Close()
             self.__api = None

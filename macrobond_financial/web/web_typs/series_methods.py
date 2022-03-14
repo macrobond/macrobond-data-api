@@ -136,7 +136,7 @@ class SeriesMethods:
         """
         params = {"t": time_of_vintage.isoformat(), "n": series_names}
 
-        if get_times_of_change is not None:
+        if get_times_of_change:
             params["getTimesOfChange"] = "true" if get_times_of_change else "false"
 
         response = self.__session.get_or_raise(
@@ -195,7 +195,7 @@ class SeriesMethods:
             "nth": nth,
         }
 
-        if get_times_of_change is not None:
+        if get_times_of_change:
             params["getTimesOfChange"] = "true" if get_times_of_change else "false"
 
         response = self.__session.get_or_raise(
@@ -255,7 +255,7 @@ class SeriesMethods:
         """
         params = {}
 
-        if if_modified_since is not None:
+        if if_modified_since:
             params["ifModifiedSince"] = if_modified_since.isoformat()
 
         response = self.__session.get_or_raise(

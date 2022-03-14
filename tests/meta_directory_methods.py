@@ -66,7 +66,8 @@ def get_attribute_information(test: TestCase, api: Api) -> None:
         expected: "TypedDictMetadataAttributeInformation" = {
             "name": "Description",
             "description": "Short description",
-            "comment": "Contains part of an entity's title, along with other title generating attributes.",
+            "comment": "Contains part of an entity's title,"
+            + " along with other title generating attributes.",
             "value_type": MetadataAttributeType.STRING,
             "uses_value_list": False,
             "can_list_values": False,

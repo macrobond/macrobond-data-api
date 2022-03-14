@@ -28,9 +28,7 @@
 </summary>
 <pre><code class="python"># -*- coding: utf-8 -*-
 
-# pylint: disable = multiple-statements
-
-from typing import Tuple, Union, overload, List, TYPE_CHECKING
+from typing import Union, overload, List, TYPE_CHECKING
 from abc import ABC, abstractmethod
 
 from .enums import (
@@ -38,21 +36,18 @@ from .enums import (
     SeriesToLowerFrequencyMethod,
     SeriesToHigherFrequencyMethod,
     SeriesPartialPeriodsMethod,
+    SeriesFrequency,
+    SeriesWeekdays,
+    CalendarMergeMode,
 )
 
 if TYPE_CHECKING:  # pragma: no cover
 
-    from .enums import SeriesFrequency, SeriesWeekdays, CalendarMergeMode
-
     from pandas import DataFrame, _typing as pandas_typing  # type: ignore
 
-    from .entity import Entity, EntityColumns, EntityTypedDicts
-    from .series import Series, SeriesColumns, SeriesTypedDicts
-    from .unified_series import (
-        UnifiedSeries,
-        UnifiedSeriesColumns,
-        UnifiedSeriesTypedDict,
-    )
+    from .entity import Entity, EntityColumns, EntityTypedDict
+    from .series import Series, SeriesColumns, SeriesTypedDict
+    from .unified_series import UnifiedSeries, UnifiedSeriesDict
     from .start_or_end_point import StartOrEndPoint
 
     from typing_extensions import Literal
@@ -66,7 +61,7 @@ class GetOneSeriesReturn(ABC):
         ...
 
     @abstractmethod
-    def dict(self) -&gt; &#34;SeriesTypedDicts&#34;:
+    def dict(self) -&gt; &#34;SeriesTypedDict&#34;:
         ...
 
     @overload
@@ -108,11 +103,11 @@ class GetOneSeriesReturn(ABC):
 
 class GetSeriesReturn(ABC):
     @abstractmethod
-    def tuple_of_objects(self) -&gt; Tuple[&#34;Series&#34;, ...]:
+    def list_of_objects(self) -&gt; List[&#34;Series&#34;]:
         ...
 
     @abstractmethod
-    def tuple_of_dicts(self) -&gt; Tuple[&#34;SeriesTypedDicts&#34;, ...]:
+    def list_of_dicts(self) -&gt; List[&#34;SeriesTypedDict&#34;]:
         ...
 
     @overload
@@ -140,7 +135,7 @@ class GetOneEntitieReturn(ABC):
         ...
 
     @abstractmethod
-    def dict(self) -&gt; &#34;EntityTypedDicts&#34;:
+    def dict(self) -&gt; &#34;EntityTypedDict&#34;:
         ...
 
     @overload
@@ -170,11 +165,11 @@ class GetOneEntitieReturn(ABC):
 
 class GetEntitiesReturn(ABC):
     @abstractmethod
-    def tuple_of_objects(self) -&gt; Tuple[&#34;Entity&#34;, ...]:
+    def list_of_objects(self) -&gt; List[&#34;Entity&#34;]:
         ...
 
     @abstractmethod
-    def tuple_of_dicts(self) -&gt; Tuple[&#34;EntityTypedDicts&#34;, ...]:
+    def list_of_dicts(self) -&gt; List[&#34;EntityTypedDict&#34;]:
         ...
 
     @overload
@@ -202,7 +197,7 @@ class GetUnifiedSeriesReturn(ABC):
         ...
 
     @abstractmethod
-    def dict(self) -&gt; &#34;UnifiedSeriesTypedDict&#34;:
+    def dict(self) -&gt; &#34;UnifiedSeriesDict&#34;:
         ...
 
     @abstractmethod
@@ -213,25 +208,25 @@ class GetUnifiedSeriesReturn(ABC):
 class SeriesMethods(ABC):
     @abstractmethod
     def get_one_series(
-        self, series_name: str, raise_get_entities_error=True
+        self, series_name: str, raise_error: bool = None
     ) -&gt; GetOneSeriesReturn:
         &#34;&#34;&#34;Download one series.&#34;&#34;&#34;
 
     @abstractmethod
     def get_series(
-        self, *series_names: str, raise_get_entities_error=True
+        self, *series_names: str, raise_error: bool = None
     ) -&gt; GetSeriesReturn:
         &#34;&#34;&#34;Download one or more series.&#34;&#34;&#34;
 
     @abstractmethod
     def get_one_entitie(
-        self, entity_name: str, raise_get_entities_error=True
+        self, entity_name: str, raise_error: bool = None
     ) -&gt; GetOneEntitieReturn:
         &#34;&#34;&#34;Download one entity.&#34;&#34;&#34;
 
     @abstractmethod
     def get_entities(
-        self, *entity_names: str, raise_get_entities_error=True
+        self, *entity_names: str, raise_error: bool = None
     ) -&gt; GetEntitiesReturn:
         &#34;&#34;&#34;Download one or more entitys.&#34;&#34;&#34;
 
@@ -239,13 +234,13 @@ class SeriesMethods(ABC):
     def get_unified_series(
         self,
         *series_entries: Union[&#34;SeriesEntrie&#34;, str],
-        frequency: &#34;SeriesFrequency&#34; = None,
-        weekdays: &#34;SeriesWeekdays&#34; = None,
-        calendar_merge_mode: &#34;CalendarMergeMode&#34; = None,
-        currency: str = None,
+        frequency=SeriesFrequency.HIGHEST,
+        weekdays=SeriesWeekdays.FULL_WEEK,
+        calendar_merge_mode=CalendarMergeMode.AVAILABLE_IN_ANY,
+        currency=&#34;&#34;,
         start_point: &#34;StartOrEndPoint&#34; = None,
         end_point: &#34;StartOrEndPoint&#34; = None,
-        raise_get_entities_error=True
+        raise_error: bool = None
     ) -&gt; GetUnifiedSeriesReturn:
         ...  # pragma: no cover
 
@@ -254,28 +249,16 @@ class SeriesEntrie:
     def __init__(
         self,
         name: str,
-        missing_value_method: SeriesMissingValueMethod = None,
-        to_lowerfrequency_method: SeriesToLowerFrequencyMethod = None,
-        to_higherfrequency_method: SeriesToHigherFrequencyMethod = None,
-        partial_periods_method: SeriesPartialPeriodsMethod = None,
+        missing_value_method=SeriesMissingValueMethod.NONE,
+        to_lowerfrequency_method=SeriesToLowerFrequencyMethod.AUTO,
+        to_higherfrequency_method=SeriesToHigherFrequencyMethod.AUTO,
+        partial_periods_method=SeriesPartialPeriodsMethod.NONE,
     ) -&gt; None:
         self.name = name
-
-        self.missing_value_method = (
-            missing_value_method or SeriesMissingValueMethod.NONE
-        )
-
-        self.to_lowerfrequency_method = (
-            to_lowerfrequency_method or SeriesToLowerFrequencyMethod.AUTO
-        )
-
-        self.to_higherfrequency_method = (
-            to_higherfrequency_method or SeriesToHigherFrequencyMethod.AUTO
-        )
-
-        self.partial_periods_method = (
-            partial_periods_method or SeriesPartialPeriodsMethod.NONE
-        )</code></pre>
+        self.missing_value_method = missing_value_method
+        self.to_lowerfrequency_method = to_lowerfrequency_method
+        self.to_higherfrequency_method = to_higherfrequency_method
+        self.partial_periods_method = partial_periods_method</code></pre>
 </details>
 </section>
 <section>
@@ -299,11 +282,11 @@ inheritance.</p></div>
 </summary>
 <pre><code class="python">class GetEntitiesReturn(ABC):
     @abstractmethod
-    def tuple_of_objects(self) -&gt; Tuple[&#34;Entity&#34;, ...]:
+    def list_of_objects(self) -&gt; List[&#34;Entity&#34;]:
         ...
 
     @abstractmethod
-    def tuple_of_dicts(self) -&gt; Tuple[&#34;EntityTypedDicts&#34;, ...]:
+    def list_of_dicts(self) -&gt; List[&#34;EntityTypedDict&#34;]:
         ...
 
     @overload
@@ -349,8 +332,8 @@ def data_frame(self, *args, **kwargs) -&gt; &#34;DataFrame&#34;:
     ...</code></pre>
 </details>
 </dd>
-<dt id="macrobond_financial.common.series_methods.GetEntitiesReturn.tuple_of_dicts"><code class="name flex">
-<span>def <span class="ident">tuple_of_dicts</span></span>(<span>self) ‑> Tuple[EntityTypedDicts, ...]</span>
+<dt id="macrobond_financial.common.series_methods.GetEntitiesReturn.list_of_dicts"><code class="name flex">
+<span>def <span class="ident">list_of_dicts</span></span>(<span>self) ‑> List[EntityTypedDict]</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -359,12 +342,12 @@ def data_frame(self, *args, **kwargs) -&gt; &#34;DataFrame&#34;:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@abstractmethod
-def tuple_of_dicts(self) -&gt; Tuple[&#34;EntityTypedDicts&#34;, ...]:
+def list_of_dicts(self) -&gt; List[&#34;EntityTypedDict&#34;]:
     ...</code></pre>
 </details>
 </dd>
-<dt id="macrobond_financial.common.series_methods.GetEntitiesReturn.tuple_of_objects"><code class="name flex">
-<span>def <span class="ident">tuple_of_objects</span></span>(<span>self) ‑> Tuple[Entity, ...]</span>
+<dt id="macrobond_financial.common.series_methods.GetEntitiesReturn.list_of_objects"><code class="name flex">
+<span>def <span class="ident">list_of_objects</span></span>(<span>self) ‑> List[Entity]</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -373,7 +356,7 @@ def tuple_of_dicts(self) -&gt; Tuple[&#34;EntityTypedDicts&#34;, ...]:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@abstractmethod
-def tuple_of_objects(self) -&gt; Tuple[&#34;Entity&#34;, ...]:
+def list_of_objects(self) -&gt; List[&#34;Entity&#34;]:
     ...</code></pre>
 </details>
 </dd>
@@ -395,7 +378,7 @@ inheritance.</p></div>
         ...
 
     @abstractmethod
-    def dict(self) -&gt; &#34;EntityTypedDicts&#34;:
+    def dict(self) -&gt; &#34;EntityTypedDict&#34;:
         ...
 
     @overload
@@ -448,7 +431,7 @@ def data_frame(self, *args, **kwargs) -&gt; &#34;DataFrame&#34;:
 </details>
 </dd>
 <dt id="macrobond_financial.common.series_methods.GetOneEntitieReturn.dict"><code class="name flex">
-<span>def <span class="ident">dict</span></span>(<span>self) ‑> EntityTypedDicts</span>
+<span>def <span class="ident">dict</span></span>(<span>self) ‑> EntityTypedDict</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -457,7 +440,7 @@ def data_frame(self, *args, **kwargs) -&gt; &#34;DataFrame&#34;:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@abstractmethod
-def dict(self) -&gt; &#34;EntityTypedDicts&#34;:
+def dict(self) -&gt; &#34;EntityTypedDict&#34;:
     ...</code></pre>
 </details>
 </dd>
@@ -507,7 +490,7 @@ inheritance.</p></div>
         ...
 
     @abstractmethod
-    def dict(self) -&gt; &#34;SeriesTypedDicts&#34;:
+    def dict(self) -&gt; &#34;SeriesTypedDict&#34;:
         ...
 
     @overload
@@ -572,7 +555,7 @@ def data_frame(self, *args, **kwargs) -&gt; &#34;DataFrame&#34;:
 </details>
 </dd>
 <dt id="macrobond_financial.common.series_methods.GetOneSeriesReturn.dict"><code class="name flex">
-<span>def <span class="ident">dict</span></span>(<span>self) ‑> SeriesTypedDicts</span>
+<span>def <span class="ident">dict</span></span>(<span>self) ‑> SeriesTypedDict</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -581,7 +564,7 @@ def data_frame(self, *args, **kwargs) -&gt; &#34;DataFrame&#34;:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@abstractmethod
-def dict(self) -&gt; &#34;SeriesTypedDicts&#34;:
+def dict(self) -&gt; &#34;SeriesTypedDict&#34;:
     ...</code></pre>
 </details>
 </dd>
@@ -627,11 +610,11 @@ inheritance.</p></div>
 </summary>
 <pre><code class="python">class GetSeriesReturn(ABC):
     @abstractmethod
-    def tuple_of_objects(self) -&gt; Tuple[&#34;Series&#34;, ...]:
+    def list_of_objects(self) -&gt; List[&#34;Series&#34;]:
         ...
 
     @abstractmethod
-    def tuple_of_dicts(self) -&gt; Tuple[&#34;SeriesTypedDicts&#34;, ...]:
+    def list_of_dicts(self) -&gt; List[&#34;SeriesTypedDict&#34;]:
         ...
 
     @overload
@@ -677,8 +660,8 @@ def data_frame(self, *args, **kwargs) -&gt; &#34;DataFrame&#34;:
     ...</code></pre>
 </details>
 </dd>
-<dt id="macrobond_financial.common.series_methods.GetSeriesReturn.tuple_of_dicts"><code class="name flex">
-<span>def <span class="ident">tuple_of_dicts</span></span>(<span>self) ‑> Tuple[SeriesTypedDicts, ...]</span>
+<dt id="macrobond_financial.common.series_methods.GetSeriesReturn.list_of_dicts"><code class="name flex">
+<span>def <span class="ident">list_of_dicts</span></span>(<span>self) ‑> List[SeriesTypedDict]</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -687,12 +670,12 @@ def data_frame(self, *args, **kwargs) -&gt; &#34;DataFrame&#34;:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@abstractmethod
-def tuple_of_dicts(self) -&gt; Tuple[&#34;SeriesTypedDicts&#34;, ...]:
+def list_of_dicts(self) -&gt; List[&#34;SeriesTypedDict&#34;]:
     ...</code></pre>
 </details>
 </dd>
-<dt id="macrobond_financial.common.series_methods.GetSeriesReturn.tuple_of_objects"><code class="name flex">
-<span>def <span class="ident">tuple_of_objects</span></span>(<span>self) ‑> Tuple[Series, ...]</span>
+<dt id="macrobond_financial.common.series_methods.GetSeriesReturn.list_of_objects"><code class="name flex">
+<span>def <span class="ident">list_of_objects</span></span>(<span>self) ‑> List[Series]</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -701,7 +684,7 @@ def tuple_of_dicts(self) -&gt; Tuple[&#34;SeriesTypedDicts&#34;, ...]:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@abstractmethod
-def tuple_of_objects(self) -&gt; Tuple[&#34;Series&#34;, ...]:
+def list_of_objects(self) -&gt; List[&#34;Series&#34;]:
     ...</code></pre>
 </details>
 </dd>
@@ -723,7 +706,7 @@ inheritance.</p></div>
         ...
 
     @abstractmethod
-    def dict(self) -&gt; &#34;UnifiedSeriesTypedDict&#34;:
+    def dict(self) -&gt; &#34;UnifiedSeriesDict&#34;:
         ...
 
     @abstractmethod
@@ -756,7 +739,7 @@ def data_frame(self, columns: List[str] = None) -&gt; &#34;DataFrame&#34;:
 </details>
 </dd>
 <dt id="macrobond_financial.common.series_methods.GetUnifiedSeriesReturn.dict"><code class="name flex">
-<span>def <span class="ident">dict</span></span>(<span>self) ‑> UnifiedSeriesTypedDict</span>
+<span>def <span class="ident">dict</span></span>(<span>self) ‑> UnifiedSeriesDict</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -765,7 +748,7 @@ def data_frame(self, columns: List[str] = None) -&gt; &#34;DataFrame&#34;:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@abstractmethod
-def dict(self) -&gt; &#34;UnifiedSeriesTypedDict&#34;:
+def dict(self) -&gt; &#34;UnifiedSeriesDict&#34;:
     ...</code></pre>
 </details>
 </dd>
@@ -787,7 +770,7 @@ def object(self) -&gt; &#34;UnifiedSeries&#34;:
 </dd>
 <dt id="macrobond_financial.common.series_methods.SeriesEntrie"><code class="flex name class">
 <span>class <span class="ident">SeriesEntrie</span></span>
-<span>(</span><span>name: str, missing_value_method: <a title="macrobond_financial.common.enums.series_missing_value_method.SeriesMissingValueMethod" href="enums/series_missing_value_method.html#macrobond_financial.common.enums.series_missing_value_method.SeriesMissingValueMethod">SeriesMissingValueMethod</a> = None, to_lowerfrequency_method: <a title="macrobond_financial.common.enums.series_to_lower_frequency_method.SeriesToLowerFrequencyMethod" href="enums/series_to_lower_frequency_method.html#macrobond_financial.common.enums.series_to_lower_frequency_method.SeriesToLowerFrequencyMethod">SeriesToLowerFrequencyMethod</a> = None, to_higherfrequency_method: <a title="macrobond_financial.common.enums.series_to_higher_frequency_method.SeriesToHigherFrequencyMethod" href="enums/series_to_higher_frequency_method.html#macrobond_financial.common.enums.series_to_higher_frequency_method.SeriesToHigherFrequencyMethod">SeriesToHigherFrequencyMethod</a> = None, partial_periods_method: <a title="macrobond_financial.common.enums.series_partial_periods_method.SeriesPartialPeriodsMethod" href="enums/series_partial_periods_method.html#macrobond_financial.common.enums.series_partial_periods_method.SeriesPartialPeriodsMethod">SeriesPartialPeriodsMethod</a> = None)</span>
+<span>(</span><span>name: str, missing_value_method=SeriesMissingValueMethod.NONE, to_lowerfrequency_method=SeriesToLowerFrequencyMethod.AUTO, to_higherfrequency_method=SeriesToHigherFrequencyMethod.AUTO, partial_periods_method=SeriesPartialPeriodsMethod.NONE)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -799,28 +782,16 @@ def object(self) -&gt; &#34;UnifiedSeries&#34;:
     def __init__(
         self,
         name: str,
-        missing_value_method: SeriesMissingValueMethod = None,
-        to_lowerfrequency_method: SeriesToLowerFrequencyMethod = None,
-        to_higherfrequency_method: SeriesToHigherFrequencyMethod = None,
-        partial_periods_method: SeriesPartialPeriodsMethod = None,
+        missing_value_method=SeriesMissingValueMethod.NONE,
+        to_lowerfrequency_method=SeriesToLowerFrequencyMethod.AUTO,
+        to_higherfrequency_method=SeriesToHigherFrequencyMethod.AUTO,
+        partial_periods_method=SeriesPartialPeriodsMethod.NONE,
     ) -&gt; None:
         self.name = name
-
-        self.missing_value_method = (
-            missing_value_method or SeriesMissingValueMethod.NONE
-        )
-
-        self.to_lowerfrequency_method = (
-            to_lowerfrequency_method or SeriesToLowerFrequencyMethod.AUTO
-        )
-
-        self.to_higherfrequency_method = (
-            to_higherfrequency_method or SeriesToHigherFrequencyMethod.AUTO
-        )
-
-        self.partial_periods_method = (
-            partial_periods_method or SeriesPartialPeriodsMethod.NONE
-        )</code></pre>
+        self.missing_value_method = missing_value_method
+        self.to_lowerfrequency_method = to_lowerfrequency_method
+        self.to_higherfrequency_method = to_higherfrequency_method
+        self.partial_periods_method = partial_periods_method</code></pre>
 </details>
 </dd>
 <dt id="macrobond_financial.common.series_methods.SeriesMethods"><code class="flex name class">
@@ -836,25 +807,25 @@ inheritance.</p></div>
 <pre><code class="python">class SeriesMethods(ABC):
     @abstractmethod
     def get_one_series(
-        self, series_name: str, raise_get_entities_error=True
+        self, series_name: str, raise_error: bool = None
     ) -&gt; GetOneSeriesReturn:
         &#34;&#34;&#34;Download one series.&#34;&#34;&#34;
 
     @abstractmethod
     def get_series(
-        self, *series_names: str, raise_get_entities_error=True
+        self, *series_names: str, raise_error: bool = None
     ) -&gt; GetSeriesReturn:
         &#34;&#34;&#34;Download one or more series.&#34;&#34;&#34;
 
     @abstractmethod
     def get_one_entitie(
-        self, entity_name: str, raise_get_entities_error=True
+        self, entity_name: str, raise_error: bool = None
     ) -&gt; GetOneEntitieReturn:
         &#34;&#34;&#34;Download one entity.&#34;&#34;&#34;
 
     @abstractmethod
     def get_entities(
-        self, *entity_names: str, raise_get_entities_error=True
+        self, *entity_names: str, raise_error: bool = None
     ) -&gt; GetEntitiesReturn:
         &#34;&#34;&#34;Download one or more entitys.&#34;&#34;&#34;
 
@@ -862,13 +833,13 @@ inheritance.</p></div>
     def get_unified_series(
         self,
         *series_entries: Union[&#34;SeriesEntrie&#34;, str],
-        frequency: &#34;SeriesFrequency&#34; = None,
-        weekdays: &#34;SeriesWeekdays&#34; = None,
-        calendar_merge_mode: &#34;CalendarMergeMode&#34; = None,
-        currency: str = None,
+        frequency=SeriesFrequency.HIGHEST,
+        weekdays=SeriesWeekdays.FULL_WEEK,
+        calendar_merge_mode=CalendarMergeMode.AVAILABLE_IN_ANY,
+        currency=&#34;&#34;,
         start_point: &#34;StartOrEndPoint&#34; = None,
         end_point: &#34;StartOrEndPoint&#34; = None,
-        raise_get_entities_error=True
+        raise_error: bool = None
     ) -&gt; GetUnifiedSeriesReturn:
         ...  # pragma: no cover</code></pre>
 </details>
@@ -884,7 +855,7 @@ inheritance.</p></div>
 <h3>Methods</h3>
 <dl>
 <dt id="macrobond_financial.common.series_methods.SeriesMethods.get_entities"><code class="name flex">
-<span>def <span class="ident">get_entities</span></span>(<span>self, *entity_names: str, raise_get_entities_error=True) ‑> <a title="macrobond_financial.common.series_methods.GetEntitiesReturn" href="#macrobond_financial.common.series_methods.GetEntitiesReturn">GetEntitiesReturn</a></span>
+<span>def <span class="ident">get_entities</span></span>(<span>self, *entity_names: str, raise_error: bool = None) ‑> <a title="macrobond_financial.common.series_methods.GetEntitiesReturn" href="#macrobond_financial.common.series_methods.GetEntitiesReturn">GetEntitiesReturn</a></span>
 </code></dt>
 <dd>
 <div class="desc"><p>Download one or more entitys.</p></div>
@@ -894,13 +865,13 @@ inheritance.</p></div>
 </summary>
 <pre><code class="python">@abstractmethod
 def get_entities(
-    self, *entity_names: str, raise_get_entities_error=True
+    self, *entity_names: str, raise_error: bool = None
 ) -&gt; GetEntitiesReturn:
     &#34;&#34;&#34;Download one or more entitys.&#34;&#34;&#34;</code></pre>
 </details>
 </dd>
 <dt id="macrobond_financial.common.series_methods.SeriesMethods.get_one_entitie"><code class="name flex">
-<span>def <span class="ident">get_one_entitie</span></span>(<span>self, entity_name: str, raise_get_entities_error=True) ‑> <a title="macrobond_financial.common.series_methods.GetOneEntitieReturn" href="#macrobond_financial.common.series_methods.GetOneEntitieReturn">GetOneEntitieReturn</a></span>
+<span>def <span class="ident">get_one_entitie</span></span>(<span>self, entity_name: str, raise_error: bool = None) ‑> <a title="macrobond_financial.common.series_methods.GetOneEntitieReturn" href="#macrobond_financial.common.series_methods.GetOneEntitieReturn">GetOneEntitieReturn</a></span>
 </code></dt>
 <dd>
 <div class="desc"><p>Download one entity.</p></div>
@@ -910,13 +881,13 @@ def get_entities(
 </summary>
 <pre><code class="python">@abstractmethod
 def get_one_entitie(
-    self, entity_name: str, raise_get_entities_error=True
+    self, entity_name: str, raise_error: bool = None
 ) -&gt; GetOneEntitieReturn:
     &#34;&#34;&#34;Download one entity.&#34;&#34;&#34;</code></pre>
 </details>
 </dd>
 <dt id="macrobond_financial.common.series_methods.SeriesMethods.get_one_series"><code class="name flex">
-<span>def <span class="ident">get_one_series</span></span>(<span>self, series_name: str, raise_get_entities_error=True) ‑> <a title="macrobond_financial.common.series_methods.GetOneSeriesReturn" href="#macrobond_financial.common.series_methods.GetOneSeriesReturn">GetOneSeriesReturn</a></span>
+<span>def <span class="ident">get_one_series</span></span>(<span>self, series_name: str, raise_error: bool = None) ‑> <a title="macrobond_financial.common.series_methods.GetOneSeriesReturn" href="#macrobond_financial.common.series_methods.GetOneSeriesReturn">GetOneSeriesReturn</a></span>
 </code></dt>
 <dd>
 <div class="desc"><p>Download one series.</p></div>
@@ -926,13 +897,13 @@ def get_one_entitie(
 </summary>
 <pre><code class="python">@abstractmethod
 def get_one_series(
-    self, series_name: str, raise_get_entities_error=True
+    self, series_name: str, raise_error: bool = None
 ) -&gt; GetOneSeriesReturn:
     &#34;&#34;&#34;Download one series.&#34;&#34;&#34;</code></pre>
 </details>
 </dd>
 <dt id="macrobond_financial.common.series_methods.SeriesMethods.get_series"><code class="name flex">
-<span>def <span class="ident">get_series</span></span>(<span>self, *series_names: str, raise_get_entities_error=True) ‑> <a title="macrobond_financial.common.series_methods.GetSeriesReturn" href="#macrobond_financial.common.series_methods.GetSeriesReturn">GetSeriesReturn</a></span>
+<span>def <span class="ident">get_series</span></span>(<span>self, *series_names: str, raise_error: bool = None) ‑> <a title="macrobond_financial.common.series_methods.GetSeriesReturn" href="#macrobond_financial.common.series_methods.GetSeriesReturn">GetSeriesReturn</a></span>
 </code></dt>
 <dd>
 <div class="desc"><p>Download one or more series.</p></div>
@@ -942,13 +913,13 @@ def get_one_series(
 </summary>
 <pre><code class="python">@abstractmethod
 def get_series(
-    self, *series_names: str, raise_get_entities_error=True
+    self, *series_names: str, raise_error: bool = None
 ) -&gt; GetSeriesReturn:
     &#34;&#34;&#34;Download one or more series.&#34;&#34;&#34;</code></pre>
 </details>
 </dd>
 <dt id="macrobond_financial.common.series_methods.SeriesMethods.get_unified_series"><code class="name flex">
-<span>def <span class="ident">get_unified_series</span></span>(<span>self, *series_entries: Union[ForwardRef('<a title="macrobond_financial.common.series_methods.SeriesEntrie" href="#macrobond_financial.common.series_methods.SeriesEntrie">SeriesEntrie</a>'), str], frequency: SeriesFrequency = None, weekdays: SeriesWeekdays = None, calendar_merge_mode: CalendarMergeMode = None, currency: str = None, start_point: StartOrEndPoint = None, end_point: StartOrEndPoint = None, raise_get_entities_error=True) ‑> <a title="macrobond_financial.common.series_methods.GetUnifiedSeriesReturn" href="#macrobond_financial.common.series_methods.GetUnifiedSeriesReturn">GetUnifiedSeriesReturn</a></span>
+<span>def <span class="ident">get_unified_series</span></span>(<span>self, *series_entries: Union[ForwardRef('<a title="macrobond_financial.common.series_methods.SeriesEntrie" href="#macrobond_financial.common.series_methods.SeriesEntrie">SeriesEntrie</a>'), str], frequency=SeriesFrequency.HIGHEST, weekdays=SeriesWeekdays.FULL_WEEK, calendar_merge_mode=CalendarMergeMode.AVAILABLE_IN_ANY, currency='', start_point: StartOrEndPoint = None, end_point: StartOrEndPoint = None, raise_error: bool = None) ‑> <a title="macrobond_financial.common.series_methods.GetUnifiedSeriesReturn" href="#macrobond_financial.common.series_methods.GetUnifiedSeriesReturn">GetUnifiedSeriesReturn</a></span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -960,13 +931,13 @@ def get_series(
 def get_unified_series(
     self,
     *series_entries: Union[&#34;SeriesEntrie&#34;, str],
-    frequency: &#34;SeriesFrequency&#34; = None,
-    weekdays: &#34;SeriesWeekdays&#34; = None,
-    calendar_merge_mode: &#34;CalendarMergeMode&#34; = None,
-    currency: str = None,
+    frequency=SeriesFrequency.HIGHEST,
+    weekdays=SeriesWeekdays.FULL_WEEK,
+    calendar_merge_mode=CalendarMergeMode.AVAILABLE_IN_ANY,
+    currency=&#34;&#34;,
     start_point: &#34;StartOrEndPoint&#34; = None,
     end_point: &#34;StartOrEndPoint&#34; = None,
-    raise_get_entities_error=True
+    raise_error: bool = None
 ) -&gt; GetUnifiedSeriesReturn:
     ...  # pragma: no cover</code></pre>
 </details>
@@ -978,9 +949,6 @@ def get_unified_series(
 </article>
 <nav id="sidebar">
 <h1>Index</h1>
-<div class="toc">
-<ul></ul>
-</div>
 <ul id="index">
 <li><h3>Super-module</h3>
 <ul>
@@ -993,8 +961,8 @@ def get_unified_series(
 <h4><code><a title="macrobond_financial.common.series_methods.GetEntitiesReturn" href="#macrobond_financial.common.series_methods.GetEntitiesReturn">GetEntitiesReturn</a></code></h4>
 <ul class="">
 <li><code><a title="macrobond_financial.common.series_methods.GetEntitiesReturn.data_frame" href="#macrobond_financial.common.series_methods.GetEntitiesReturn.data_frame">data_frame</a></code></li>
-<li><code><a title="macrobond_financial.common.series_methods.GetEntitiesReturn.tuple_of_dicts" href="#macrobond_financial.common.series_methods.GetEntitiesReturn.tuple_of_dicts">tuple_of_dicts</a></code></li>
-<li><code><a title="macrobond_financial.common.series_methods.GetEntitiesReturn.tuple_of_objects" href="#macrobond_financial.common.series_methods.GetEntitiesReturn.tuple_of_objects">tuple_of_objects</a></code></li>
+<li><code><a title="macrobond_financial.common.series_methods.GetEntitiesReturn.list_of_dicts" href="#macrobond_financial.common.series_methods.GetEntitiesReturn.list_of_dicts">list_of_dicts</a></code></li>
+<li><code><a title="macrobond_financial.common.series_methods.GetEntitiesReturn.list_of_objects" href="#macrobond_financial.common.series_methods.GetEntitiesReturn.list_of_objects">list_of_objects</a></code></li>
 </ul>
 </li>
 <li>
@@ -1019,8 +987,8 @@ def get_unified_series(
 <h4><code><a title="macrobond_financial.common.series_methods.GetSeriesReturn" href="#macrobond_financial.common.series_methods.GetSeriesReturn">GetSeriesReturn</a></code></h4>
 <ul class="">
 <li><code><a title="macrobond_financial.common.series_methods.GetSeriesReturn.data_frame" href="#macrobond_financial.common.series_methods.GetSeriesReturn.data_frame">data_frame</a></code></li>
-<li><code><a title="macrobond_financial.common.series_methods.GetSeriesReturn.tuple_of_dicts" href="#macrobond_financial.common.series_methods.GetSeriesReturn.tuple_of_dicts">tuple_of_dicts</a></code></li>
-<li><code><a title="macrobond_financial.common.series_methods.GetSeriesReturn.tuple_of_objects" href="#macrobond_financial.common.series_methods.GetSeriesReturn.tuple_of_objects">tuple_of_objects</a></code></li>
+<li><code><a title="macrobond_financial.common.series_methods.GetSeriesReturn.list_of_dicts" href="#macrobond_financial.common.series_methods.GetSeriesReturn.list_of_dicts">list_of_dicts</a></code></li>
+<li><code><a title="macrobond_financial.common.series_methods.GetSeriesReturn.list_of_objects" href="#macrobond_financial.common.series_methods.GetSeriesReturn.list_of_objects">list_of_objects</a></code></li>
 </ul>
 </li>
 <li>

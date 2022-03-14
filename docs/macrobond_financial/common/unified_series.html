@@ -34,11 +34,9 @@ from typing import (
     Sequence,
     Tuple,
     Optional,
-    List,
     Union,
-    cast,
-    TYPE_CHECKING,
     overload,
+    TYPE_CHECKING,
 )
 
 from datetime import datetime
@@ -46,14 +44,17 @@ from datetime import datetime
 if TYPE_CHECKING:  # pragma: no cover
     from pandas import DataFrame  # type: ignore
 
-    from .entity import EntityColumnsLiterals, EntityTypedDict
+    from typing_extensions import TypedDict
 
-    from typing_extensions import Literal
-
-    UnifiedSeriesColumns = List[Literal[EntityColumnsLiterals, &#34;values&#34;]]
-
-    class UnifiedSeriesTypedDict(EntityTypedDict):
+    class UnifiedSerieDict(TypedDict):
+        name: str
+        error_message: str
+        metadata: Dict[str, Any]
         values: Tuple[Optional[float], ...]
+
+    class UnifiedSeriesDict(TypedDict):
+        dates: Tuple[datetime, ...]
+        series: Tuple[UnifiedSerieDict, ...]
 
 
 class UnifiedSerie:
@@ -65,26 +66,27 @@ class UnifiedSerie:
 
     def __init__(
         self,
+        name: str,
         error_message: str,
-        metadata: Optional[Dict[str, Any]],
-        values: Optional[Tuple[Optional[float], ...]],
+        metadata: Dict[str, Any],
+        values: Tuple[Optional[float], ...],
     ) -&gt; None:
+        self.name = name
         self.error_message = error_message
-        if error_message != &#34;&#34;:
-            self.metadata: Dict[str, Any] = {}
-            self.values: Tuple[Optional[float], ...] = tuple()
-        else:
-            self.metadata = cast(Dict[str, Any], metadata)
-            self.values = cast(Tuple[Optional[float], ...], values)
+        self.metadata = metadata
+        self.values = values
+
+    def __bool__(self):
+        return self.error_message == &#34;&#34;
 
 
 class UnifiedSeries(Sequence[UnifiedSerie]):
     def __init__(
         self,
-        dates: Optional[Tuple[datetime, ...]],
+        dates: Tuple[datetime, ...],
         series: Tuple[UnifiedSerie, ...],
     ) -&gt; None:
-        self.dates = dates if dates is not None else tuple()
+        self.dates = dates
         self.series = series
 
     def __str__(self):
@@ -119,7 +121,7 @@ class UnifiedSeries(Sequence[UnifiedSerie]):
 <dl>
 <dt id="macrobond_financial.common.unified_series.UnifiedSerie"><code class="flex name class">
 <span>class <span class="ident">UnifiedSerie</span></span>
-<span>(</span><span>error_message: str, metadata: Optional[Dict[str, Any]], values: Optional[Tuple[Optional[float], ...]])</span>
+<span>(</span><span>name: str, error_message: str, metadata: Dict[str, Any], values: Tuple[Optional[float], ...])</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Interface for a Macrobond time series.</p></div>
@@ -136,17 +138,18 @@ class UnifiedSeries(Sequence[UnifiedSerie]):
 
     def __init__(
         self,
+        name: str,
         error_message: str,
-        metadata: Optional[Dict[str, Any]],
-        values: Optional[Tuple[Optional[float], ...]],
+        metadata: Dict[str, Any],
+        values: Tuple[Optional[float], ...],
     ) -&gt; None:
+        self.name = name
         self.error_message = error_message
-        if error_message != &#34;&#34;:
-            self.metadata: Dict[str, Any] = {}
-            self.values: Tuple[Optional[float], ...] = tuple()
-        else:
-            self.metadata = cast(Dict[str, Any], metadata)
-            self.values = cast(Tuple[Optional[float], ...], values)</code></pre>
+        self.metadata = metadata
+        self.values = values
+
+    def __bool__(self):
+        return self.error_message == &#34;&#34;</code></pre>
 </details>
 <h3>Instance variables</h3>
 <dl>
@@ -166,7 +169,7 @@ def is_error(self) -&gt; bool:
 </dd>
 <dt id="macrobond_financial.common.unified_series.UnifiedSeries"><code class="flex name class">
 <span>class <span class="ident">UnifiedSeries</span></span>
-<span>(</span><span>dates: Optional[Tuple[datetime.datetime, ...]], series: Tuple[<a title="macrobond_financial.common.unified_series.UnifiedSerie" href="#macrobond_financial.common.unified_series.UnifiedSerie">UnifiedSerie</a>, ...])</span>
+<span>(</span><span>dates: Tuple[datetime.datetime, ...], series: Tuple[<a title="macrobond_financial.common.unified_series.UnifiedSerie" href="#macrobond_financial.common.unified_series.UnifiedSerie">UnifiedSerie</a>, ...])</span>
 </code></dt>
 <dd>
 <div class="desc"><p>All the operations on a read-only sequence.</p>
@@ -179,10 +182,10 @@ def is_error(self) -&gt; bool:
 <pre><code class="python">class UnifiedSeries(Sequence[UnifiedSerie]):
     def __init__(
         self,
-        dates: Optional[Tuple[datetime, ...]],
+        dates: Tuple[datetime, ...],
         series: Tuple[UnifiedSerie, ...],
     ) -&gt; None:
-        self.dates = dates if dates is not None else tuple()
+        self.dates = dates
         self.series = series
 
     def __str__(self):
@@ -221,9 +224,6 @@ def is_error(self) -&gt; bool:
 </article>
 <nav id="sidebar">
 <h1>Index</h1>
-<div class="toc">
-<ul></ul>
-</div>
 <ul id="index">
 <li><h3>Super-module</h3>
 <ul>

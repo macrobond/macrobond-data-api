@@ -1,11 +1,13 @@
 # -*- coding: utf-8 -*-
 
-from typing import Any, Dict, List, TYPE_CHECKING
+from typing import List, TYPE_CHECKING
 
 from macrobond_financial.common import (
     SearchMethods as CommonSearchMethods,
     SearchResult,
 )
+
+from ._fill_metadata_from_entity import _fill_metadata_from_entity
 
 if TYPE_CHECKING:  # pragma: no cover
     from .com_typs import Connection, SearchQuery, Entity as ComEntity
@@ -18,7 +20,7 @@ class _ComSearchMethods(CommonSearchMethods):
         self.__database = connection.Database
 
     def series_multi_filter(
-        self, *filters: "SearchFilter", include_discontinued: bool = None
+        self, *filters: "SearchFilter", include_discontinued: bool = False
     ) -> SearchResult:
         querys: List["SearchQuery"] = []
         for _filter in filters:
@@ -27,7 +29,7 @@ class _ComSearchMethods(CommonSearchMethods):
             for entity_type in _filter.entity_types:
                 query.SetEntityTypeFilter(entity_type)
 
-            if _filter.text is not None:
+            if _filter.text:
                 query.Text = _filter.text
 
             for key in _filter.must_have_values:
@@ -44,24 +46,11 @@ class _ComSearchMethods(CommonSearchMethods):
             for attribute in _filter.must_not_have_attributes:
                 query.AddAttributeFilter(attribute, False)
 
-            if include_discontinued is not None:
-                query.IncludeDiscontinued = include_discontinued
+            query.IncludeDiscontinued = include_discontinued
 
             querys.append(query)
 
         result = self.__database.Search(querys)
 
-        def get_metadata(com_entitie: "ComEntity") -> Dict[str, Any]:
-            metadata: Dict[str, Any] = {}
-            com_metadata = com_entitie.Metadata
-            for names_and_description in com_metadata.ListNames():
-                name = names_and_description[0]
-                values = com_metadata.GetValues(name)
-                if len(values) == 1:
-                    metadata[name] = values[0]
-                else:
-                    metadata[name] = list(values)
-            return metadata
-
-        entities = tuple(list(map(get_metadata, result.Entities)))
+        entities = tuple(list(map(_fill_metadata_from_entity, result.Entities)))
         return SearchResult(entities, result.IsTruncated)

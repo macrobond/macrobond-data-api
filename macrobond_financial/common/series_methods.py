@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# pylint: disable = multiple-statements
-
-from typing import Tuple, Union, overload, List, TYPE_CHECKING
+from typing import Union, overload, List, TYPE_CHECKING
 from abc import ABC, abstractmethod
 
 from .enums import (
@@ -10,21 +8,18 @@ from .enums import (
     SeriesToLowerFrequencyMethod,
     SeriesToHigherFrequencyMethod,
     SeriesPartialPeriodsMethod,
+    SeriesFrequency,
+    SeriesWeekdays,
+    CalendarMergeMode,
 )
 
 if TYPE_CHECKING:  # pragma: no cover
 
-    from .enums import SeriesFrequency, SeriesWeekdays, CalendarMergeMode
-
     from pandas import DataFrame, _typing as pandas_typing  # type: ignore
 
-    from .entity import Entity, EntityColumns, EntityTypedDicts
-    from .series import Series, SeriesColumns, SeriesTypedDicts
-    from .unified_series import (
-        UnifiedSeries,
-        UnifiedSeriesColumns,
-        UnifiedSeriesTypedDict,
-    )
+    from .entity import Entity, EntityColumns, EntityTypedDict
+    from .series import Series, SeriesColumns, SeriesTypedDict
+    from .unified_series import UnifiedSeries, UnifiedSeriesDict
     from .start_or_end_point import StartOrEndPoint
 
     from typing_extensions import Literal
@@ -38,7 +33,7 @@ class GetOneSeriesReturn(ABC):
         ...
 
     @abstractmethod
-    def dict(self) -> "SeriesTypedDicts":
+    def dict(self) -> "SeriesTypedDict":
         ...
 
     @overload
@@ -80,11 +75,11 @@ class GetOneSeriesReturn(ABC):
 
 class GetSeriesReturn(ABC):
     @abstractmethod
-    def tuple_of_objects(self) -> Tuple["Series", ...]:
+    def list_of_objects(self) -> List["Series"]:
         ...
 
     @abstractmethod
-    def tuple_of_dicts(self) -> Tuple["SeriesTypedDicts", ...]:
+    def list_of_dicts(self) -> List["SeriesTypedDict"]:
         ...
 
     @overload
@@ -112,7 +107,7 @@ class GetOneEntitieReturn(ABC):
         ...
 
     @abstractmethod
-    def dict(self) -> "EntityTypedDicts":
+    def dict(self) -> "EntityTypedDict":
         ...
 
     @overload
@@ -142,11 +137,11 @@ class GetOneEntitieReturn(ABC):
 
 class GetEntitiesReturn(ABC):
     @abstractmethod
-    def tuple_of_objects(self) -> Tuple["Entity", ...]:
+    def list_of_objects(self) -> List["Entity"]:
         ...
 
     @abstractmethod
-    def tuple_of_dicts(self) -> Tuple["EntityTypedDicts", ...]:
+    def list_of_dicts(self) -> List["EntityTypedDict"]:
         ...
 
     @overload
@@ -174,7 +169,7 @@ class GetUnifiedSeriesReturn(ABC):
         ...
 
     @abstractmethod
-    def dict(self) -> "UnifiedSeriesTypedDict":
+    def dict(self) -> "UnifiedSeriesDict":
         ...
 
     @abstractmethod
@@ -185,25 +180,25 @@ class GetUnifiedSeriesReturn(ABC):
 class SeriesMethods(ABC):
     @abstractmethod
     def get_one_series(
-        self, series_name: str, raise_get_entities_error=True
+        self, series_name: str, raise_error: bool = None
     ) -> GetOneSeriesReturn:
         """Download one series."""
 
     @abstractmethod
     def get_series(
-        self, *series_names: str, raise_get_entities_error=True
+        self, *series_names: str, raise_error: bool = None
     ) -> GetSeriesReturn:
         """Download one or more series."""
 
     @abstractmethod
     def get_one_entitie(
-        self, entity_name: str, raise_get_entities_error=True
+        self, entity_name: str, raise_error: bool = None
     ) -> GetOneEntitieReturn:
         """Download one entity."""
 
     @abstractmethod
     def get_entities(
-        self, *entity_names: str, raise_get_entities_error=True
+        self, *entity_names: str, raise_error: bool = None
     ) -> GetEntitiesReturn:
         """Download one or more entitys."""
 
@@ -211,13 +206,13 @@ class SeriesMethods(ABC):
     def get_unified_series(
         self,
         *series_entries: Union["SeriesEntrie", str],
-        frequency: "SeriesFrequency" = None,
-        weekdays: "SeriesWeekdays" = None,
-        calendar_merge_mode: "CalendarMergeMode" = None,
-        currency: str = None,
+        frequency=SeriesFrequency.HIGHEST,
+        weekdays=SeriesWeekdays.FULL_WEEK,
+        calendar_merge_mode=CalendarMergeMode.AVAILABLE_IN_ANY,
+        currency="",
         start_point: "StartOrEndPoint" = None,
         end_point: "StartOrEndPoint" = None,
-        raise_get_entities_error=True
+        raise_error: bool = None
     ) -> GetUnifiedSeriesReturn:
         ...  # pragma: no cover
 
@@ -226,25 +221,13 @@ class SeriesEntrie:
     def __init__(
         self,
         name: str,
-        missing_value_method: SeriesMissingValueMethod = None,
-        to_lowerfrequency_method: SeriesToLowerFrequencyMethod = None,
-        to_higherfrequency_method: SeriesToHigherFrequencyMethod = None,
-        partial_periods_method: SeriesPartialPeriodsMethod = None,
+        missing_value_method=SeriesMissingValueMethod.NONE,
+        to_lowerfrequency_method=SeriesToLowerFrequencyMethod.AUTO,
+        to_higherfrequency_method=SeriesToHigherFrequencyMethod.AUTO,
+        partial_periods_method=SeriesPartialPeriodsMethod.NONE,
     ) -> None:
         self.name = name
-
-        self.missing_value_method = (
-            missing_value_method or SeriesMissingValueMethod.NONE
-        )
-
-        self.to_lowerfrequency_method = (
-            to_lowerfrequency_method or SeriesToLowerFrequencyMethod.AUTO
-        )
-
-        self.to_higherfrequency_method = (
-            to_higherfrequency_method or SeriesToHigherFrequencyMethod.AUTO
-        )
-
-        self.partial_periods_method = (
-            partial_periods_method or SeriesPartialPeriodsMethod.NONE
-        )
+        self.missing_value_method = missing_value_method
+        self.to_lowerfrequency_method = to_lowerfrequency_method
+        self.to_higherfrequency_method = to_higherfrequency_method
+        self.partial_periods_method = partial_periods_method

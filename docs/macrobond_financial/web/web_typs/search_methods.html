@@ -83,10 +83,10 @@ class SearchMethods:
             &#34;filter&#34;: _filter,
         }
 
-        if no_meta_data is not None:
+        if no_meta_data:
             params[&#34;noMetaData&#34;] = &#34;true&#34; if no_meta_data else &#34;false&#34;
 
-        if include_discontinued is not None:
+        if include_discontinued:
             params[&#34;includeDiscontinued&#34;] = &#34;true&#34; if include_discontinued else &#34;false&#34;
 
         response = self.__session.get_or_raise(&#34;v1/search/entities&#34;, params=params)
@@ -221,10 +221,10 @@ class SearchMethods:
             &#34;filter&#34;: _filter,
         }
 
-        if no_meta_data is not None:
+        if no_meta_data:
             params[&#34;noMetaData&#34;] = &#34;true&#34; if no_meta_data else &#34;false&#34;
 
-        if include_discontinued is not None:
+        if include_discontinued:
             params[&#34;includeDiscontinued&#34;] = &#34;true&#34; if include_discontinued else &#34;false&#34;
 
         response = self.__session.get_or_raise(&#34;v1/search/entities&#34;, params=params)
@@ -433,10 +433,10 @@ entities matching the value will be excluded instead of included.</p>
         &#34;filter&#34;: _filter,
     }
 
-    if no_meta_data is not None:
+    if no_meta_data:
         params[&#34;noMetaData&#34;] = &#34;true&#34; if no_meta_data else &#34;false&#34;
 
-    if include_discontinued is not None:
+    if include_discontinued:
         params[&#34;includeDiscontinued&#34;] = &#34;true&#34; if include_discontinued else &#34;false&#34;
 
     response = self.__session.get_or_raise(&#34;v1/search/entities&#34;, params=params)
@@ -488,9 +488,6 @@ entities matching the value will be excluded instead of included.</p>
 </article>
 <nav id="sidebar">
 <h1>Index</h1>
-<div class="toc">
-<ul></ul>
-</div>
 <ul id="index">
 <li><h3>Super-module</h3>
 <ul>

@@ -7,6 +7,7 @@ from macrobond_financial.common import Api
 from ._com_meta_directory_methods import _ComMetaDirectoryMethods
 from ._com_search_methods import _ComSearchMethods
 from ._com_series_methods import _ComSeriesMethods
+from ._com_revision_methods import _ComRevisionMethods
 
 if TYPE_CHECKING:  # pragma: no cover
     from macrobond_financial.com.com_typs.connection import Connection
@@ -21,7 +22,8 @@ class ComApi(Api):
         super().__init__(
             _ComMetaDirectoryMethods(connection),
             _ComSearchMethods(connection),
-            _ComSeriesMethods(connection),
+            _ComSeriesMethods(self),
+            _ComRevisionMethods(self),
         )
         self.__connection = connection
 

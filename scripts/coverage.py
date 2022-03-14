@@ -21,8 +21,8 @@ def coverage_com(context: Context) -> None:
     context.install_and_run(
         "coverage",
         "erase",
-        "run --omit=macrobond_financial/common/**,macrobond_financial/com/**,"
-        + "macrobond_financial/web/web_typs/**,tests/** -m "
+        "run --omit=macrobond_financial/common/**,macrobond_financial/web/**,"
+        + "macrobond_financial/com/com_typs/**,tests/** -m "
         + UNITTEST_COMMAND,
         "html -d htmlcov_com",
         "report -m",
@@ -36,8 +36,8 @@ def coverage_web(context: Context) -> None:
     context.install_and_run(
         "coverage",
         "erase",
-        "run --omit=macrobond_financial/common/**,macrobond_financial/web/**,"
-        + "macrobond_financial/com/com_typs/**,tests/** -m "
+        "run --omit=macrobond_financial/common/**,macrobond_financial/com/**,"
+        + "macrobond_financial/web/web_typs/**,tests/** -m "
         + UNITTEST_COMMAND,
         "html -d htmlcov_web",
         "report -m",

@@ -55,10 +55,10 @@ class SearchMethods:
             "filter": _filter,
         }
 
-        if no_meta_data is not None:
+        if no_meta_data:
             params["noMetaData"] = "true" if no_meta_data else "false"
 
-        if include_discontinued is not None:
+        if include_discontinued:
             params["includeDiscontinued"] = "true" if include_discontinued else "false"
 
         response = self.__session.get_or_raise("v1/search/entities", params=params)

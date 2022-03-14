@@ -7,6 +7,7 @@ from macrobond_financial.common import Api
 from ._web_meta_directory_methods import _WebMetaDirectoryMethods
 from ._web_search_methods import _WebSearchMethods
 from ._web_series_methods import _WebSeriesMethods
+from ._web_revision_methods import _WebRevisionMethods
 
 if TYPE_CHECKING:  # pragma: no cover
     from .session import Session
@@ -25,6 +26,7 @@ class WebApi(Api):
         super().__init__(
             _WebMetaDirectoryMethods(session),
             _WebSearchMethods(session),
-            _WebSeriesMethods(session),
+            _WebSeriesMethods(self),
+            _WebRevisionMethods(self),
         )
         self.__session = session

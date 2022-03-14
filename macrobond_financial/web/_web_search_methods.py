@@ -22,7 +22,7 @@ class _WebSearchMethods(CommonSearchMethods):
         self.__search = session.search
 
     def series_multi_filter(
-        self, *filters: "SearchFilter", include_discontinued: bool = None
+        self, *filters: "SearchFilter", include_discontinued: bool = False
     ) -> SearchResult:
         def convert_filter_to_web_filter(_filter: "SearchFilter") -> "WebSearchFilter":
             return {
@@ -36,9 +36,10 @@ class _WebSearchMethods(CommonSearchMethods):
 
         web_filters = list(map(convert_filter_to_web_filter, filters))
 
-        request: "SearchRequest" = {"filters": web_filters}
-        if include_discontinued is not None:
-            request["includeDiscontinued"] = include_discontinued
+        request: "SearchRequest" = {
+            "filters": web_filters,
+            "includeDiscontinued": include_discontinued,
+        }
 
         response = self.__search.post_entities(request)
 

@@ -1,4 +1,9 @@
-from typing import List
+from typing import List, Optional, Tuple, Iterable, cast, Union, overload
+
+__pdoc__ = {
+    "EntitieErrorInfo.__init__": False,
+    "GetEntitiesError.__init__": False,
+}
 
 
 class EntitieErrorInfo:
@@ -14,7 +19,49 @@ class EntitieErrorInfo:
 
 
 class GetEntitiesError(Exception):
-    def __init__(self, entities: List[EntitieErrorInfo]):
-        self.entities = entities
-        message = ""
-        super().__init__(message)
+    def __init__(
+        self,
+        entities_or_name: Union[List[EntitieErrorInfo], str],
+        error_message: str = None,
+    ):
+        if isinstance(entities_or_name, list):
+            self.entities = entities_or_name
+        else:
+            self.entities = [
+                EntitieErrorInfo(entities_or_name, cast(str, error_message))
+            ]
+
+        self.message = "failed to retrieve:\n" + (
+            "\n".join(
+                map(
+                    lambda x: "\t" + x.name + " error_message: " + x.error_message,
+                    self.entities,
+                )
+            )
+        )
+        super().__init__(self.message)
+
+    @classmethod
+    def raise_if(
+        cls,
+        raise_error: bool,
+        entities_or_name: Union[Iterable[Tuple[str, Optional[str]]], str],
+        error_message: str = None,
+    ) -> None:
+        if not raise_error:
+            return
+
+        if isinstance(entities_or_name, str):
+            if error_message:
+                name = entities_or_name
+                raise GetEntitiesError(name, error_message)
+        else:
+            entities = entities_or_name
+            entities_list = cast(
+                List[Tuple[str, str]],
+                list(filter(lambda x: x[1] is not None, entities)),
+            )
+            if entities_list:
+                raise GetEntitiesError(
+                    list(map(lambda x: EntitieErrorInfo(x[0], x[1]), entities_list))
+                )

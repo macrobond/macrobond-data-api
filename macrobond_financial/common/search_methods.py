@@ -18,7 +18,7 @@ class SearchMethods(ABC):
         must_not_have_values: Dict[str, object] = None,
         must_have_attributes: Union[Sequence[str], str] = None,
         must_not_have_attributes: Union[Sequence[str], str] = None,
-        include_discontinued: bool = None,
+        include_discontinued: bool = False,
     ) -> "SearchResult":
         return self.series_multi_filter(
             SearchFilter(
@@ -34,7 +34,7 @@ class SearchMethods(ABC):
 
     @abstractmethod
     def series_multi_filter(
-        self, *filters: "SearchFilter", include_discontinued: bool = None
+        self, *filters: "SearchFilter", include_discontinued: bool = False
     ) -> "SearchResult":
         ...  # pragma: no cover
 
@@ -54,28 +54,28 @@ class SearchFilter:
         if isinstance(entity_types, str):
             self.entity_types: Sequence[str] = [entity_types]
         else:
-            self.entity_types = entity_types if entity_types is not None else []
+            self.entity_types = entity_types if entity_types else []
 
         self.must_have_values: Dict[str, object] = (
-            must_have_values if must_have_values is not None else {}
+            must_have_values if must_have_values else {}
         )
 
         self.must_not_have_values: Dict[str, object] = (
-            must_not_have_values if must_not_have_values is not None else {}
+            must_not_have_values if must_not_have_values else {}
         )
 
         if isinstance(must_have_attributes, str):
             self.must_have_attributes: Sequence[str] = [must_have_attributes]
         else:
             self.must_have_attributes = (
-                must_have_attributes if must_have_attributes is not None else []
+                must_have_attributes if must_have_attributes else []
             )
 
         if isinstance(must_not_have_attributes, str):
             self.must_not_have_attributes: Sequence[str] = [must_not_have_attributes]
         else:
             self.must_not_have_attributes = (
-                must_not_have_attributes if must_not_have_attributes is not None else []
+                must_not_have_attributes if must_not_have_attributes else []
             )
 
 

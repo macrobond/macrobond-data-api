@@ -2,7 +2,7 @@
 
 # pylint: disable = invalid-name , missing-module-docstring , too-many-arguments
 
-from typing import List, Union, Tuple
+from typing import List, Union, Tuple, Sequence
 
 from .series import Series
 from .entity import Entity
@@ -156,7 +156,7 @@ class Database:
         """
 
     def FetchSeriesWithRevisions(
-        self, seriesNames: Union[str, Tuple[str, ...]]
+        self, seriesNames: Union[str, Sequence[str]]
     ) -> Tuple[SeriesWithRevisions, ...]:
         """
         Download one or more series from the database.

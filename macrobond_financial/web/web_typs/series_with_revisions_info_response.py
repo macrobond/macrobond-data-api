@@ -2,7 +2,7 @@
 
 # pylint: disable = missing-module-docstring
 
-from typing import Optional, List
+from typing import List, Optional
 
 from .status_response import StatusResponse
 
@@ -10,10 +10,10 @@ from .status_response import StatusResponse
 class SeriesWithRevisionsInfoResponse(StatusResponse):
     """Information about a series related to storage of updates"""
 
-    storesRevisions: Optional[bool]
+    storesRevisions: bool
     """If True, a record of of updates of the series are stored"""
 
-    hasRevisions: Optional[bool]
+    hasRevisions: bool
     """If True, at least one update has been stored"""
 
     timeStampOfFirstRevision: Optional[str]
@@ -22,5 +22,5 @@ class SeriesWithRevisionsInfoResponse(StatusResponse):
     timeStampOfLastRevision: Optional[str]
     """The timestamp of the last recorded update"""
 
-    vintageTimeStamps: Optional[List[str]]
+    vintageTimeStamps: List[str]
     """A list of timestamp of recorded updates"""

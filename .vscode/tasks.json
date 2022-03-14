@@ -17,25 +17,37 @@
             "label": "pylint",
             "type": "shell",
             "command": "python scripts\\pylint.py",
-            "problemMatcher": []
+            "problemMatcher": [],
+            "presentation": {
+                "clear": true
+            }
         },
         {
             "label": "mypy",
             "type": "shell",
             "command": "python scripts\\mypy.py",
-            "problemMatcher": []
+            "problemMatcher": [],
+            "presentation": {
+                "clear": true
+            }
         },
         {
             "label": "pycodestyle",
             "type": "shell",
             "command": "python scripts\\pycodestyle.py",
-            "problemMatcher": []
+            "problemMatcher": [],
+            "presentation": {
+                "clear": true
+            }
         },
         {
             "label": "pdoc3",
             "type": "shell",
             "command": "python scripts\\pdoc3.py",
-            "problemMatcher": []
+            "problemMatcher": [],
+            "presentation": {
+                "clear": true
+            }
         },
         {
             "label": "coverage",

@@ -9,8 +9,15 @@ from pathlib import Path
 from typing import Optional
 import json
 
+import pandas  # type: ignore
+
 from macrobond_financial.com import ComClient, ComApi
 from macrobond_financial.web import WebClient, WebApi
+
+
+pandas.set_option("display.max_rows", 500)
+pandas.set_option("display.max_columns", 500)
+pandas.set_option("display.width", 1000)
 
 
 class UserSecrets:
@@ -119,10 +126,10 @@ class TestCase(UnittestTestCase):
         return self.__com_api
 
     def tearDown(self) -> None:
-        if self.__web_client is not None:
+        if self.__web_client:
             self.__web_client.close()
         self.__web_client = None
 
-        if self.__com_client is not None:
+        if self.__com_client:
             self.__com_client.close()
         self.__com_client = None

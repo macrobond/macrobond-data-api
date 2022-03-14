@@ -196,6 +196,15 @@ def EndDate(self) -&gt; datetime:
     &#34;&#34;&#34;The end date.&#34;&#34;&#34;</code></pre>
 </details>
 </dd>
+<dt id="macrobond_financial.com.com_typs.series.Series.ErrorMessage"><code class="name">var <span class="ident">ErrorMessage</span> : str</code></dt>
+<dd>
+<p class="inheritance">
+<em>Inherited from:</em>
+<code><a title="macrobond_financial.com.com_typs.entity.Entity" href="entity.html#macrobond_financial.com.com_typs.entity.Entity">Entity</a></code>.<code><a title="macrobond_financial.com.com_typs.entity.Entity.ErrorMessage" href="entity.html#macrobond_financial.com.com_typs.entity.Entity.ErrorMessage">ErrorMessage</a></code>
+</p>
+<div class="desc inherited"><p>The error message if IsError is true.
+Otherwise it is empty.</p></div>
+</dd>
 <dt id="macrobond_financial.com.com_typs.series.Series.ForecastFlags"><code class="name">var <span class="ident">ForecastFlags</span> : List[bool]</code></dt>
 <dd>
 <div class="desc"><p>A vector with a flag for each value indicating if this is a forecast or not.</p></div>
@@ -220,6 +229,39 @@ def Frequency(self) -&gt; int:
     &#34;&#34;&#34;The calendar frequency.&#34;&#34;&#34;</code></pre>
 </details>
 </dd>
+<dt id="macrobond_financial.com.com_typs.series.Series.IsError"><code class="name">var <span class="ident">IsError</span> : bool</code></dt>
+<dd>
+<p class="inheritance">
+<em>Inherited from:</em>
+<code><a title="macrobond_financial.com.com_typs.entity.Entity" href="entity.html#macrobond_financial.com.com_typs.entity.Entity">Entity</a></code>.<code><a title="macrobond_financial.com.com_typs.entity.Entity.IsError" href="entity.html#macrobond_financial.com.com_typs.entity.Entity.IsError">IsError</a></code>
+</p>
+<div class="desc inherited"><p>Is true if the request resulted in an error.
+The ErrorMessage property contains the error message.</p></div>
+</dd>
+<dt id="macrobond_financial.com.com_typs.series.Series.Metadata"><code class="name">var <span class="ident">Metadata</span> : <a title="macrobond_financial.com.com_typs.metadata.Metadata" href="metadata.html#macrobond_financial.com.com_typs.metadata.Metadata">Metadata</a></code></dt>
+<dd>
+<p class="inheritance">
+<em>Inherited from:</em>
+<code><a title="macrobond_financial.com.com_typs.entity.Entity" href="entity.html#macrobond_financial.com.com_typs.entity.Entity">Entity</a></code>.<code><a title="macrobond_financial.com.com_typs.entity.Entity.Metadata" href="entity.html#macrobond_financial.com.com_typs.entity.Entity.Metadata">Metadata</a></code>
+</p>
+<div class="desc inherited"><p>The metadata for the entity.</p></div>
+</dd>
+<dt id="macrobond_financial.com.com_typs.series.Series.Name"><code class="name">var <span class="ident">Name</span> : str</code></dt>
+<dd>
+<p class="inheritance">
+<em>Inherited from:</em>
+<code><a title="macrobond_financial.com.com_typs.entity.Entity" href="entity.html#macrobond_financial.com.com_typs.entity.Entity">Entity</a></code>.<code><a title="macrobond_financial.com.com_typs.entity.Entity.Name" href="entity.html#macrobond_financial.com.com_typs.entity.Entity.Name">Name</a></code>
+</p>
+<div class="desc inherited"><p>The name of the entity.</p></div>
+</dd>
+<dt id="macrobond_financial.com.com_typs.series.Series.PrimaryName"><code class="name">var <span class="ident">PrimaryName</span> : str</code></dt>
+<dd>
+<p class="inheritance">
+<em>Inherited from:</em>
+<code><a title="macrobond_financial.com.com_typs.entity.Entity" href="entity.html#macrobond_financial.com.com_typs.entity.Entity">Entity</a></code>.<code><a title="macrobond_financial.com.com_typs.entity.Entity.PrimaryName" href="entity.html#macrobond_financial.com.com_typs.entity.Entity.PrimaryName">PrimaryName</a></code>
+</p>
+<div class="desc inherited"><p>The primary name of the entity.</p></div>
+</dd>
 <dt id="macrobond_financial.com.com_typs.series.Series.StartDate"><code class="name">var <span class="ident">StartDate</span> : datetime.datetime</code></dt>
 <dd>
 <div class="desc"><p>The start date.</p></div>
@@ -231,6 +273,14 @@ def Frequency(self) -&gt; int:
 def StartDate(self) -&gt; datetime:
     &#34;&#34;&#34;The start date.&#34;&#34;&#34;</code></pre>
 </details>
+</dd>
+<dt id="macrobond_financial.com.com_typs.series.Series.Title"><code class="name">var <span class="ident">Title</span> : str</code></dt>
+<dd>
+<p class="inheritance">
+<em>Inherited from:</em>
+<code><a title="macrobond_financial.com.com_typs.entity.Entity" href="entity.html#macrobond_financial.com.com_typs.entity.Entity">Entity</a></code>.<code><a title="macrobond_financial.com.com_typs.entity.Entity.Title" href="entity.html#macrobond_financial.com.com_typs.entity.Entity.Title">Title</a></code>
+</p>
+<div class="desc inherited"><p>The title of the entity.</p></div>
 </dd>
 <dt id="macrobond_financial.com.com_typs.series.Series.TypicalObservationCountPerYear"><code class="name">var <span class="ident">TypicalObservationCountPerYear</span> : float</code></dt>
 <dd>
@@ -310,28 +360,12 @@ def Weekdays(self) -&gt; int:
 </details>
 </dd>
 </dl>
-<h3>Inherited members</h3>
-<ul class="hlist">
-<li><code><b><a title="macrobond_financial.com.com_typs.entity.Entity" href="entity.html#macrobond_financial.com.com_typs.entity.Entity">Entity</a></b></code>:
-<ul class="hlist">
-<li><code><a title="macrobond_financial.com.com_typs.entity.Entity.ErrorMessage" href="entity.html#macrobond_financial.com.com_typs.entity.Entity.ErrorMessage">ErrorMessage</a></code></li>
-<li><code><a title="macrobond_financial.com.com_typs.entity.Entity.IsError" href="entity.html#macrobond_financial.com.com_typs.entity.Entity.IsError">IsError</a></code></li>
-<li><code><a title="macrobond_financial.com.com_typs.entity.Entity.Metadata" href="entity.html#macrobond_financial.com.com_typs.entity.Entity.Metadata">Metadata</a></code></li>
-<li><code><a title="macrobond_financial.com.com_typs.entity.Entity.Name" href="entity.html#macrobond_financial.com.com_typs.entity.Entity.Name">Name</a></code></li>
-<li><code><a title="macrobond_financial.com.com_typs.entity.Entity.PrimaryName" href="entity.html#macrobond_financial.com.com_typs.entity.Entity.PrimaryName">PrimaryName</a></code></li>
-<li><code><a title="macrobond_financial.com.com_typs.entity.Entity.Title" href="entity.html#macrobond_financial.com.com_typs.entity.Entity.Title">Title</a></code></li>
-</ul>
-</li>
-</ul>
 </dd>
 </dl>
 </section>
 </article>
 <nav id="sidebar">
 <h1>Index</h1>
-<div class="toc">
-<ul></ul>
-</div>
 <ul id="index">
 <li><h3>Super-module</h3>
 <ul>
@@ -346,11 +380,17 @@ def Weekdays(self) -&gt; int:
 <li><code><a title="macrobond_financial.com.com_typs.series.Series.DatesAtEndOfPeriod" href="#macrobond_financial.com.com_typs.series.Series.DatesAtEndOfPeriod">DatesAtEndOfPeriod</a></code></li>
 <li><code><a title="macrobond_financial.com.com_typs.series.Series.DatesAtStartOfPeriod" href="#macrobond_financial.com.com_typs.series.Series.DatesAtStartOfPeriod">DatesAtStartOfPeriod</a></code></li>
 <li><code><a title="macrobond_financial.com.com_typs.series.Series.EndDate" href="#macrobond_financial.com.com_typs.series.Series.EndDate">EndDate</a></code></li>
+<li><code><a title="macrobond_financial.com.com_typs.series.Series.ErrorMessage" href="entity.html#macrobond_financial.com.com_typs.series.Series.ErrorMessage">ErrorMessage</a></code></li>
 <li><code><a title="macrobond_financial.com.com_typs.series.Series.ForecastFlags" href="#macrobond_financial.com.com_typs.series.Series.ForecastFlags">ForecastFlags</a></code></li>
 <li><code><a title="macrobond_financial.com.com_typs.series.Series.Frequency" href="#macrobond_financial.com.com_typs.series.Series.Frequency">Frequency</a></code></li>
 <li><code><a title="macrobond_financial.com.com_typs.series.Series.GetIndexAtDate" href="#macrobond_financial.com.com_typs.series.Series.GetIndexAtDate">GetIndexAtDate</a></code></li>
 <li><code><a title="macrobond_financial.com.com_typs.series.Series.GetValueAtDate" href="#macrobond_financial.com.com_typs.series.Series.GetValueAtDate">GetValueAtDate</a></code></li>
+<li><code><a title="macrobond_financial.com.com_typs.series.Series.IsError" href="entity.html#macrobond_financial.com.com_typs.series.Series.IsError">IsError</a></code></li>
+<li><code><a title="macrobond_financial.com.com_typs.series.Series.Metadata" href="entity.html#macrobond_financial.com.com_typs.series.Series.Metadata">Metadata</a></code></li>
+<li><code><a title="macrobond_financial.com.com_typs.series.Series.Name" href="entity.html#macrobond_financial.com.com_typs.series.Series.Name">Name</a></code></li>
+<li><code><a title="macrobond_financial.com.com_typs.series.Series.PrimaryName" href="entity.html#macrobond_financial.com.com_typs.series.Series.PrimaryName">PrimaryName</a></code></li>
 <li><code><a title="macrobond_financial.com.com_typs.series.Series.StartDate" href="#macrobond_financial.com.com_typs.series.Series.StartDate">StartDate</a></code></li>
+<li><code><a title="macrobond_financial.com.com_typs.series.Series.Title" href="entity.html#macrobond_financial.com.com_typs.series.Series.Title">Title</a></code></li>
 <li><code><a title="macrobond_financial.com.com_typs.series.Series.TypicalObservationCountPerYear" href="#macrobond_financial.com.com_typs.series.Series.TypicalObservationCountPerYear">TypicalObservationCountPerYear</a></code></li>
 <li><code><a title="macrobond_financial.com.com_typs.series.Series.Values" href="#macrobond_financial.com.com_typs.series.Series.Values">Values</a></code></li>
 <li><code><a title="macrobond_financial.com.com_typs.series.Series.ValuesMetadata" href="#macrobond_financial.com.com_typs.series.Series.ValuesMetadata">ValuesMetadata</a></code></li>

@@ -6,11 +6,9 @@ from typing import (
     Sequence,
     Tuple,
     Optional,
-    List,
     Union,
-    cast,
-    TYPE_CHECKING,
     overload,
+    TYPE_CHECKING,
 )
 
 from datetime import datetime
@@ -18,14 +16,17 @@ from datetime import datetime
 if TYPE_CHECKING:  # pragma: no cover
     from pandas import DataFrame  # type: ignore
 
-    from .entity import EntityColumnsLiterals, EntityTypedDict
+    from typing_extensions import TypedDict
 
-    from typing_extensions import Literal
-
-    UnifiedSeriesColumns = List[Literal[EntityColumnsLiterals, "values"]]
-
-    class UnifiedSeriesTypedDict(EntityTypedDict):
+    class UnifiedSerieDict(TypedDict):
+        name: str
+        error_message: str
+        metadata: Dict[str, Any]
         values: Tuple[Optional[float], ...]
+
+    class UnifiedSeriesDict(TypedDict):
+        dates: Tuple[datetime, ...]
+        series: Tuple[UnifiedSerieDict, ...]
 
 
 class UnifiedSerie:
@@ -37,26 +38,27 @@ class UnifiedSerie:
 
     def __init__(
         self,
+        name: str,
         error_message: str,
-        metadata: Optional[Dict[str, Any]],
-        values: Optional[Tuple[Optional[float], ...]],
+        metadata: Dict[str, Any],
+        values: Tuple[Optional[float], ...],
     ) -> None:
+        self.name = name
         self.error_message = error_message
-        if error_message != "":
-            self.metadata: Dict[str, Any] = {}
-            self.values: Tuple[Optional[float], ...] = tuple()
-        else:
-            self.metadata = cast(Dict[str, Any], metadata)
-            self.values = cast(Tuple[Optional[float], ...], values)
+        self.metadata = metadata
+        self.values = values
+
+    def __bool__(self):
+        return self.error_message == ""
 
 
 class UnifiedSeries(Sequence[UnifiedSerie]):
     def __init__(
         self,
-        dates: Optional[Tuple[datetime, ...]],
+        dates: Tuple[datetime, ...],
         series: Tuple[UnifiedSerie, ...],
     ) -> None:
-        self.dates = dates if dates is not None else tuple()
+        self.dates = dates
         self.series = series
 
     def __str__(self):
