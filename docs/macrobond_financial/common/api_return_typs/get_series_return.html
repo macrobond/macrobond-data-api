@@ -31,24 +31,19 @@
 from typing import Union, overload, List, TYPE_CHECKING
 from abc import ABC, abstractmethod
 
+from ..typs import Series, SeriesColumns, SeriesTypedDict
+
 if TYPE_CHECKING:  # pragma: no cover
-
     from pandas import DataFrame, _typing as pandas_typing  # type: ignore
-
-    from ..typs import (
-        Series,
-        SeriesColumns,
-        SeriesTypedDict,
-    )
 
 
 class GetSeriesReturn(ABC):
     @abstractmethod
-    def list_of_objects(self) -&gt; List[&#34;Series&#34;]:
+    def list_of_objects(self) -&gt; List[Series]:
         ...
 
     @abstractmethod
-    def list_of_dicts(self) -&gt; List[&#34;SeriesTypedDict&#34;]:
+    def list_of_dicts(self) -&gt; List[SeriesTypedDict]:
         ...
 
     @overload
@@ -59,7 +54,7 @@ class GetSeriesReturn(ABC):
     def data_frame(
         self,
         index: &#34;pandas_typing.Axes&#34; = None,
-        columns: Union[&#34;SeriesColumns&#34;, &#34;pandas_typing.Axes&#34;] = None,
+        columns: Union[SeriesColumns, &#34;pandas_typing.Axes&#34;] = None,
         dtype: &#34;pandas_typing.Dtype&#34; = None,
         copy: bool = False,
     ) -&gt; &#34;DataFrame&#34;:
@@ -91,11 +86,11 @@ inheritance.</p></div>
 </summary>
 <pre><code class="python">class GetSeriesReturn(ABC):
     @abstractmethod
-    def list_of_objects(self) -&gt; List[&#34;Series&#34;]:
+    def list_of_objects(self) -&gt; List[Series]:
         ...
 
     @abstractmethod
-    def list_of_dicts(self) -&gt; List[&#34;SeriesTypedDict&#34;]:
+    def list_of_dicts(self) -&gt; List[SeriesTypedDict]:
         ...
 
     @overload
@@ -106,7 +101,7 @@ inheritance.</p></div>
     def data_frame(
         self,
         index: &#34;pandas_typing.Axes&#34; = None,
-        columns: Union[&#34;SeriesColumns&#34;, &#34;pandas_typing.Axes&#34;] = None,
+        columns: Union[SeriesColumns, &#34;pandas_typing.Axes&#34;] = None,
         dtype: &#34;pandas_typing.Dtype&#34; = None,
         copy: bool = False,
     ) -&gt; &#34;DataFrame&#34;:
@@ -142,7 +137,7 @@ def data_frame(self, *args, **kwargs) -&gt; &#34;DataFrame&#34;:
 </details>
 </dd>
 <dt id="macrobond_financial.common.api_return_typs.get_series_return.GetSeriesReturn.list_of_dicts"><code class="name flex">
-<span>def <span class="ident">list_of_dicts</span></span>(<span>self) ‑> List[SeriesTypedDict]</span>
+<span>def <span class="ident">list_of_dicts</span></span>(<span>self) ‑> List[<a title="macrobond_financial.common.typs.series.SeriesTypedDict" href="../typs/series.html#macrobond_financial.common.typs.series.SeriesTypedDict">SeriesTypedDict</a>]</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -151,12 +146,12 @@ def data_frame(self, *args, **kwargs) -&gt; &#34;DataFrame&#34;:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@abstractmethod
-def list_of_dicts(self) -&gt; List[&#34;SeriesTypedDict&#34;]:
+def list_of_dicts(self) -&gt; List[SeriesTypedDict]:
     ...</code></pre>
 </details>
 </dd>
 <dt id="macrobond_financial.common.api_return_typs.get_series_return.GetSeriesReturn.list_of_objects"><code class="name flex">
-<span>def <span class="ident">list_of_objects</span></span>(<span>self) ‑> List[Series]</span>
+<span>def <span class="ident">list_of_objects</span></span>(<span>self) ‑> List[<a title="macrobond_financial.common.typs.series.Series" href="../typs/series.html#macrobond_financial.common.typs.series.Series">Series</a>]</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -165,7 +160,7 @@ def list_of_dicts(self) -&gt; List[&#34;SeriesTypedDict&#34;]:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@abstractmethod
-def list_of_objects(self) -&gt; List[&#34;Series&#34;]:
+def list_of_objects(self) -&gt; List[Series]:
     ...</code></pre>
 </details>
 </dd>

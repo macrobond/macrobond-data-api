@@ -1,31 +1,27 @@
 # -*- coding: utf-8 -*-
 
-from typing import TYPE_CHECKING, Dict, Sequence, Union
+from typing import Dict, Sequence, Union
 from abc import ABC, abstractmethod
 
 from datetime import datetime
 
-from .typs import SearchFilter
+from .typs import SearchFilter, SearchResult, StartOrEndPoint, SeriesEntrie
 
 from .enums import SeriesFrequency, SeriesWeekdays, CalendarMergeMode
 
-if TYPE_CHECKING:  # pragma: no cover
-
-    from .api_return_typs import (
-        GetAttributeInformationReturn,
-        ListValuesReturn,
-        GetRevisionInfoReturn,
-        GetVintageSeriesReturn,
-        #  GetObservationHistoryReturn,
-        #  GetNthReleaseReturn,
-        GetOneEntitieReturn,
-        GetOneSeriesReturn,
-        GetEntitiesReturn,
-        GetSeriesReturn,
-        GetUnifiedSeriesReturn,
-    )
-
-    from .typs import SearchResult, StartOrEndPoint, SeriesEntrie
+from .api_return_typs import (
+    GetAttributeInformationReturn,
+    ListValuesReturn,
+    GetRevisionInfoReturn,
+    GetVintageSeriesReturn,
+    #  GetObservationHistoryReturn,
+    #  GetNthReleaseReturn,
+    GetOneEntitieReturn,
+    GetOneSeriesReturn,
+    GetEntitiesReturn,
+    GetSeriesReturn,
+    GetUnifiedSeriesReturn,
+)
 
 
 class Api(ABC):
@@ -38,7 +34,7 @@ class Api(ABC):
 
     # ToDo: @mb-jp Need a new name
     @abstractmethod
-    def list_values(self, name: str) -> "ListValuesReturn":
+    def list_values(self, name: str) -> ListValuesReturn:
         """
         List all metadata attribute values.
 
@@ -49,7 +45,7 @@ class Api(ABC):
 
         Returns
         -------
-        ListValuesReturn
+        `macrobond_financial.common.api_return_typs.list_values_return.ListValuesReturn`
 
         Examples
         -------
@@ -68,7 +64,7 @@ class Api(ABC):
         """
 
     @abstractmethod
-    def get_attribute_information(self, name: str) -> "GetAttributeInformationReturn":
+    def get_attribute_information(self, name: str) -> GetAttributeInformationReturn:
         """Get information about a type of metadata."""
 
     # revision
@@ -76,13 +72,13 @@ class Api(ABC):
     @abstractmethod
     def get_revision_info(
         self, *series_names: str, raise_error: bool = None
-    ) -> "GetRevisionInfoReturn":
+    ) -> GetRevisionInfoReturn:
         """"""
 
     @abstractmethod
     def get_vintage_series(
         self, serie_name: str, time: datetime, raise_error: bool = None
-    ) -> "GetVintageSeriesReturn":
+    ) -> GetVintageSeriesReturn:
         """"""
 
     # not done
@@ -110,7 +106,7 @@ class Api(ABC):
         must_have_attributes: Union[Sequence[str], str] = None,
         must_not_have_attributes: Union[Sequence[str], str] = None,
         include_discontinued: bool = False,
-    ) -> "SearchResult":
+    ) -> SearchResult:
         """"""
         return self.series_multi_filter(
             SearchFilter(
@@ -127,7 +123,7 @@ class Api(ABC):
     @abstractmethod
     def series_multi_filter(
         self, *filters: SearchFilter, include_discontinued: bool = False
-    ) -> "SearchResult":
+    ) -> SearchResult:
         """"""
 
     # Series
@@ -135,37 +131,37 @@ class Api(ABC):
     @abstractmethod
     def get_one_series(
         self, series_name: str, raise_error: bool = None
-    ) -> "GetOneSeriesReturn":
+    ) -> GetOneSeriesReturn:
         """Download one series."""
 
     @abstractmethod
     def get_series(
         self, *series_names: str, raise_error: bool = None
-    ) -> "GetSeriesReturn":
+    ) -> GetSeriesReturn:
         """Download one or more series."""
 
     @abstractmethod
     def get_one_entitie(
         self, entity_name: str, raise_error: bool = None
-    ) -> "GetOneEntitieReturn":
+    ) -> GetOneEntitieReturn:
         """Download one entity."""
 
     @abstractmethod
     def get_entities(
         self, *entity_names: str, raise_error: bool = None
-    ) -> "GetEntitiesReturn":
+    ) -> GetEntitiesReturn:
         """Download one or more entitys."""
 
     @abstractmethod
     def get_unified_series(
         self,
-        *series_entries: Union["SeriesEntrie", str],
+        *series_entries: Union[SeriesEntrie, str],
         frequency=SeriesFrequency.HIGHEST,
         weekdays=SeriesWeekdays.FULL_WEEK,
         calendar_merge_mode=CalendarMergeMode.AVAILABLE_IN_ANY,
         currency="",
-        start_point: "StartOrEndPoint" = None,
-        end_point: "StartOrEndPoint" = None,
+        start_point: StartOrEndPoint = None,
+        end_point: StartOrEndPoint = None,
         raise_error: bool = None
-    ) -> "GetUnifiedSeriesReturn":
+    ) -> GetUnifiedSeriesReturn:
         """"""

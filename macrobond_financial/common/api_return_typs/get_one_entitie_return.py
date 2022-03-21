@@ -3,21 +3,19 @@
 from typing import Union, overload, TYPE_CHECKING
 from abc import ABC, abstractmethod
 
+from ..typs import Entity, EntityColumns, EntityTypedDict
 
 if TYPE_CHECKING:  # pragma: no cover
-
     from pandas import DataFrame, _typing as pandas_typing  # type: ignore
-
-    from ..typs import Entity, EntityColumns, EntityTypedDict
 
 
 class GetOneEntitieReturn(ABC):
     @abstractmethod
-    def object(self) -> "Entity":
+    def object(self) -> Entity:
         ...
 
     @abstractmethod
-    def dict(self) -> "EntityTypedDict":
+    def dict(self) -> EntityTypedDict:
         ...
 
     @overload

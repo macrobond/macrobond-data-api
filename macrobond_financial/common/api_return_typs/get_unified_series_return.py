@@ -3,24 +3,19 @@
 from typing import List, TYPE_CHECKING
 from abc import ABC, abstractmethod
 
+from ..typs import UnifiedSeries, UnifiedSeriesDict
 
 if TYPE_CHECKING:  # pragma: no cover
-
     from pandas import DataFrame  # type: ignore
-
-    from ..typs import (
-        UnifiedSeries,
-        UnifiedSeriesDict,
-    )
 
 
 class GetUnifiedSeriesReturn(ABC):
     @abstractmethod
-    def object(self) -> "UnifiedSeries":
+    def object(self) -> UnifiedSeries:
         ...
 
     @abstractmethod
-    def dict(self) -> "UnifiedSeriesDict":
+    def dict(self) -> UnifiedSeriesDict:
         ...
 
     @abstractmethod

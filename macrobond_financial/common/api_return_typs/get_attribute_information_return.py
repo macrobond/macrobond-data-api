@@ -5,23 +5,23 @@
 from typing import overload, Union, TYPE_CHECKING
 from abc import ABC, abstractmethod
 
+from ..typs import (
+    MetadataAttributeInformation,
+    TypedDictMetadataAttributeInformation,
+    MetadataAttributeInformationColumns,
+)
+
 if TYPE_CHECKING:  # pragma: no cover
     from pandas import DataFrame, _typing as pandas_typing  # type: ignore
-
-    from ..typs import (
-        MetadataAttributeInformation,
-        TypedDictMetadataAttributeInformation,
-        MetadataAttributeInformationColumns,
-    )
 
 
 class GetAttributeInformationReturn(ABC):
     @abstractmethod
-    def object(self) -> "MetadataAttributeInformation":
+    def object(self) -> MetadataAttributeInformation:
         ...
 
     @abstractmethod
-    def dict(self) -> "TypedDictMetadataAttributeInformation":
+    def dict(self) -> TypedDictMetadataAttributeInformation:
         ...
 
     @overload
@@ -33,7 +33,7 @@ class GetAttributeInformationReturn(ABC):
         self,
         index: "pandas_typing.Axes" = None,
         columns: Union[
-            "MetadataAttributeInformationColumns", "pandas_typing.Axes"
+            MetadataAttributeInformationColumns, "pandas_typing.Axes"
         ] = None,
         dtype: "pandas_typing.Dtype" = None,
         copy: bool = False,

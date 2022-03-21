@@ -31,20 +31,19 @@
 from typing import Union, overload, List, TYPE_CHECKING
 from abc import ABC, abstractmethod
 
+from ..typs.entity import Entity, EntityColumns, EntityTypedDict
+
 if TYPE_CHECKING:  # pragma: no cover
-
     from pandas import DataFrame, _typing as pandas_typing  # type: ignore
-
-    from ..typs.entity import Entity, EntityColumns, EntityTypedDict
 
 
 class GetEntitiesReturn(ABC):
     @abstractmethod
-    def list_of_objects(self) -&gt; List[&#34;Entity&#34;]:
+    def list_of_objects(self) -&gt; List[Entity]:
         ...
 
     @abstractmethod
-    def list_of_dicts(self) -&gt; List[&#34;EntityTypedDict&#34;]:
+    def list_of_dicts(self) -&gt; List[EntityTypedDict]:
         ...
 
     @overload
@@ -55,7 +54,7 @@ class GetEntitiesReturn(ABC):
     def data_frame(
         self,
         index: &#34;pandas_typing.Axes&#34; = None,
-        columns: Union[&#34;EntityColumns&#34;, &#34;pandas_typing.Axes&#34;] = None,
+        columns: Union[EntityColumns, &#34;pandas_typing.Axes&#34;] = None,
         dtype: &#34;pandas_typing.Dtype&#34; = None,
         copy: bool = False,
     ) -&gt; &#34;DataFrame&#34;:
@@ -87,11 +86,11 @@ inheritance.</p></div>
 </summary>
 <pre><code class="python">class GetEntitiesReturn(ABC):
     @abstractmethod
-    def list_of_objects(self) -&gt; List[&#34;Entity&#34;]:
+    def list_of_objects(self) -&gt; List[Entity]:
         ...
 
     @abstractmethod
-    def list_of_dicts(self) -&gt; List[&#34;EntityTypedDict&#34;]:
+    def list_of_dicts(self) -&gt; List[EntityTypedDict]:
         ...
 
     @overload
@@ -102,7 +101,7 @@ inheritance.</p></div>
     def data_frame(
         self,
         index: &#34;pandas_typing.Axes&#34; = None,
-        columns: Union[&#34;EntityColumns&#34;, &#34;pandas_typing.Axes&#34;] = None,
+        columns: Union[EntityColumns, &#34;pandas_typing.Axes&#34;] = None,
         dtype: &#34;pandas_typing.Dtype&#34; = None,
         copy: bool = False,
     ) -&gt; &#34;DataFrame&#34;:
@@ -138,7 +137,7 @@ def data_frame(self, *args, **kwargs) -&gt; &#34;DataFrame&#34;:
 </details>
 </dd>
 <dt id="macrobond_financial.common.api_return_typs.get_entities_return.GetEntitiesReturn.list_of_dicts"><code class="name flex">
-<span>def <span class="ident">list_of_dicts</span></span>(<span>self) ‑> List[EntityTypedDict]</span>
+<span>def <span class="ident">list_of_dicts</span></span>(<span>self) ‑> List[<a title="macrobond_financial.common.typs.entity.EntityTypedDict" href="../typs/entity.html#macrobond_financial.common.typs.entity.EntityTypedDict">EntityTypedDict</a>]</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -147,12 +146,12 @@ def data_frame(self, *args, **kwargs) -&gt; &#34;DataFrame&#34;:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@abstractmethod
-def list_of_dicts(self) -&gt; List[&#34;EntityTypedDict&#34;]:
+def list_of_dicts(self) -&gt; List[EntityTypedDict]:
     ...</code></pre>
 </details>
 </dd>
 <dt id="macrobond_financial.common.api_return_typs.get_entities_return.GetEntitiesReturn.list_of_objects"><code class="name flex">
-<span>def <span class="ident">list_of_objects</span></span>(<span>self) ‑> List[Entity]</span>
+<span>def <span class="ident">list_of_objects</span></span>(<span>self) ‑> List[<a title="macrobond_financial.common.typs.entity.Entity" href="../typs/entity.html#macrobond_financial.common.typs.entity.Entity">Entity</a>]</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -161,7 +160,7 @@ def list_of_dicts(self) -&gt; List[&#34;EntityTypedDict&#34;]:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@abstractmethod
-def list_of_objects(self) -&gt; List[&#34;Entity&#34;]:
+def list_of_objects(self) -&gt; List[Entity]:
     ...</code></pre>
 </details>
 </dd>

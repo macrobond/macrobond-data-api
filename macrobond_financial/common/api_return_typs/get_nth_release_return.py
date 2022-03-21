@@ -4,23 +4,19 @@ from typing import TYPE_CHECKING, overload
 from abc import ABC, abstractmethod
 
 
+from ..typs.series import Series, SeriesTypedDict
+
 if TYPE_CHECKING:  # pragma: no cover
-
-    from ..typs.series import (
-        Series,
-        SeriesTypedDict,
-    )
-
     from pandas import DataFrame, _typing as pandas_typing  # type: ignore
 
 
 class GetNthReleaseReturn(ABC):
     @abstractmethod
-    def object(self) -> "Series":
+    def object(self) -> Series:
         ...  # pragma: no cover
 
     @abstractmethod
-    def dict(self) -> "SeriesTypedDict":
+    def dict(self) -> SeriesTypedDict:
         ...  # pragma: no cover
 
     @overload

@@ -7,7 +7,6 @@ from abc import ABC, abstractmethod
 from typing_extensions import TypedDict
 
 if TYPE_CHECKING:  # pragma: no cover
-
     from pandas import DataFrame, _typing as pandas_typing  # type: ignore
 
 
@@ -47,7 +46,7 @@ class GetRevisionInfoReturn(ABC):
         ...  # pragma: no cover
 
     @abstractmethod
-    def dict(self) -> List["RevisionInfoDict"]:
+    def dict(self) -> List[RevisionInfoDict]:
         ...  # pragma: no cover
 
     @overload

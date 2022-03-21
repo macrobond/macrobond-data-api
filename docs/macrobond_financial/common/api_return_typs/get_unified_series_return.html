@@ -31,24 +31,19 @@
 from typing import List, TYPE_CHECKING
 from abc import ABC, abstractmethod
 
+from ..typs import UnifiedSeries, UnifiedSeriesDict
 
 if TYPE_CHECKING:  # pragma: no cover
-
     from pandas import DataFrame  # type: ignore
-
-    from ..typs import (
-        UnifiedSeries,
-        UnifiedSeriesDict,
-    )
 
 
 class GetUnifiedSeriesReturn(ABC):
     @abstractmethod
-    def object(self) -&gt; &#34;UnifiedSeries&#34;:
+    def object(self) -&gt; UnifiedSeries:
         ...
 
     @abstractmethod
-    def dict(self) -&gt; &#34;UnifiedSeriesDict&#34;:
+    def dict(self) -&gt; UnifiedSeriesDict:
         ...
 
     @abstractmethod
@@ -77,11 +72,11 @@ inheritance.</p></div>
 </summary>
 <pre><code class="python">class GetUnifiedSeriesReturn(ABC):
     @abstractmethod
-    def object(self) -&gt; &#34;UnifiedSeries&#34;:
+    def object(self) -&gt; UnifiedSeries:
         ...
 
     @abstractmethod
-    def dict(self) -&gt; &#34;UnifiedSeriesDict&#34;:
+    def dict(self) -&gt; UnifiedSeriesDict:
         ...
 
     @abstractmethod
@@ -114,7 +109,7 @@ def data_frame(self, columns: List[str] = None) -&gt; &#34;DataFrame&#34;:
 </details>
 </dd>
 <dt id="macrobond_financial.common.api_return_typs.get_unified_series_return.GetUnifiedSeriesReturn.dict"><code class="name flex">
-<span>def <span class="ident">dict</span></span>(<span>self) ‑> UnifiedSeriesDict</span>
+<span>def <span class="ident">dict</span></span>(<span>self) ‑> <a title="macrobond_financial.common.typs.unified_series.UnifiedSeriesDict" href="../typs/unified_series.html#macrobond_financial.common.typs.unified_series.UnifiedSeriesDict">UnifiedSeriesDict</a></span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -123,12 +118,12 @@ def data_frame(self, columns: List[str] = None) -&gt; &#34;DataFrame&#34;:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@abstractmethod
-def dict(self) -&gt; &#34;UnifiedSeriesDict&#34;:
+def dict(self) -&gt; UnifiedSeriesDict:
     ...</code></pre>
 </details>
 </dd>
 <dt id="macrobond_financial.common.api_return_typs.get_unified_series_return.GetUnifiedSeriesReturn.object"><code class="name flex">
-<span>def <span class="ident">object</span></span>(<span>self) ‑> UnifiedSeries</span>
+<span>def <span class="ident">object</span></span>(<span>self) ‑> <a title="macrobond_financial.common.typs.unified_series.UnifiedSeries" href="../typs/unified_series.html#macrobond_financial.common.typs.unified_series.UnifiedSeries">UnifiedSeries</a></span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -137,7 +132,7 @@ def dict(self) -&gt; &#34;UnifiedSeriesDict&#34;:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@abstractmethod
-def object(self) -&gt; &#34;UnifiedSeries&#34;:
+def object(self) -&gt; UnifiedSeries:
     ...</code></pre>
 </details>
 </dd>

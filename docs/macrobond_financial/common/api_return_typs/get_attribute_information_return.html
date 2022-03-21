@@ -34,23 +34,23 @@
 from typing import overload, Union, TYPE_CHECKING
 from abc import ABC, abstractmethod
 
+from ..typs import (
+    MetadataAttributeInformation,
+    TypedDictMetadataAttributeInformation,
+    MetadataAttributeInformationColumns,
+)
+
 if TYPE_CHECKING:  # pragma: no cover
     from pandas import DataFrame, _typing as pandas_typing  # type: ignore
-
-    from ..typs import (
-        MetadataAttributeInformation,
-        TypedDictMetadataAttributeInformation,
-        MetadataAttributeInformationColumns,
-    )
 
 
 class GetAttributeInformationReturn(ABC):
     @abstractmethod
-    def object(self) -&gt; &#34;MetadataAttributeInformation&#34;:
+    def object(self) -&gt; MetadataAttributeInformation:
         ...
 
     @abstractmethod
-    def dict(self) -&gt; &#34;TypedDictMetadataAttributeInformation&#34;:
+    def dict(self) -&gt; TypedDictMetadataAttributeInformation:
         ...
 
     @overload
@@ -62,7 +62,7 @@ class GetAttributeInformationReturn(ABC):
         self,
         index: &#34;pandas_typing.Axes&#34; = None,
         columns: Union[
-            &#34;MetadataAttributeInformationColumns&#34;, &#34;pandas_typing.Axes&#34;
+            MetadataAttributeInformationColumns, &#34;pandas_typing.Axes&#34;
         ] = None,
         dtype: &#34;pandas_typing.Dtype&#34; = None,
         copy: bool = False,
@@ -95,11 +95,11 @@ inheritance.</p></div>
 </summary>
 <pre><code class="python">class GetAttributeInformationReturn(ABC):
     @abstractmethod
-    def object(self) -&gt; &#34;MetadataAttributeInformation&#34;:
+    def object(self) -&gt; MetadataAttributeInformation:
         ...
 
     @abstractmethod
-    def dict(self) -&gt; &#34;TypedDictMetadataAttributeInformation&#34;:
+    def dict(self) -&gt; TypedDictMetadataAttributeInformation:
         ...
 
     @overload
@@ -111,7 +111,7 @@ inheritance.</p></div>
         self,
         index: &#34;pandas_typing.Axes&#34; = None,
         columns: Union[
-            &#34;MetadataAttributeInformationColumns&#34;, &#34;pandas_typing.Axes&#34;
+            MetadataAttributeInformationColumns, &#34;pandas_typing.Axes&#34;
         ] = None,
         dtype: &#34;pandas_typing.Dtype&#34; = None,
         copy: bool = False,
@@ -148,7 +148,7 @@ def data_frame(self, *args, **kwargs) -&gt; &#34;DataFrame&#34;:
 </details>
 </dd>
 <dt id="macrobond_financial.common.api_return_typs.get_attribute_information_return.GetAttributeInformationReturn.dict"><code class="name flex">
-<span>def <span class="ident">dict</span></span>(<span>self) ‑> TypedDictMetadataAttributeInformation</span>
+<span>def <span class="ident">dict</span></span>(<span>self) ‑> <a title="macrobond_financial.common.typs.metadata_attribute_information.TypedDictMetadataAttributeInformation" href="../typs/metadata_attribute_information.html#macrobond_financial.common.typs.metadata_attribute_information.TypedDictMetadataAttributeInformation">TypedDictMetadataAttributeInformation</a></span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -157,12 +157,12 @@ def data_frame(self, *args, **kwargs) -&gt; &#34;DataFrame&#34;:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@abstractmethod
-def dict(self) -&gt; &#34;TypedDictMetadataAttributeInformation&#34;:
+def dict(self) -&gt; TypedDictMetadataAttributeInformation:
     ...</code></pre>
 </details>
 </dd>
 <dt id="macrobond_financial.common.api_return_typs.get_attribute_information_return.GetAttributeInformationReturn.object"><code class="name flex">
-<span>def <span class="ident">object</span></span>(<span>self) ‑> MetadataAttributeInformation</span>
+<span>def <span class="ident">object</span></span>(<span>self) ‑> <a title="macrobond_financial.common.typs.metadata_attribute_information.MetadataAttributeInformation" href="../typs/metadata_attribute_information.html#macrobond_financial.common.typs.metadata_attribute_information.MetadataAttributeInformation">MetadataAttributeInformation</a></span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -171,7 +171,7 @@ def dict(self) -&gt; &#34;TypedDictMetadataAttributeInformation&#34;:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@abstractmethod
-def object(self) -&gt; &#34;MetadataAttributeInformation&#34;:
+def object(self) -&gt; MetadataAttributeInformation:
     ...</code></pre>
 </details>
 </dd>

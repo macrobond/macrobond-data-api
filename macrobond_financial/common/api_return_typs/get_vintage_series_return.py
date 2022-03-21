@@ -3,24 +3,19 @@
 from typing import TYPE_CHECKING, overload
 from abc import ABC, abstractmethod
 
+from ..typs import VintageSeries, VintageSeriesTypedDict
 
 if TYPE_CHECKING:  # pragma: no cover
-
-    from ..typs import (
-        VintageSeries,
-        VintageSeriesTypedDict,
-    )
-
     from pandas import DataFrame, _typing as pandas_typing  # type: ignore
 
 
 class GetVintageSeriesReturn(ABC):
     @abstractmethod
-    def object(self) -> "VintageSeries":
+    def object(self) -> VintageSeries:
         ...  # pragma: no cover
 
     @abstractmethod
-    def dict(self) -> "VintageSeriesTypedDict":
+    def dict(self) -> VintageSeriesTypedDict:
         ...  # pragma: no cover
 
     @overload

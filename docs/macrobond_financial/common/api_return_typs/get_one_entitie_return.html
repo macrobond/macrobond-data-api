@@ -31,21 +31,19 @@
 from typing import Union, overload, TYPE_CHECKING
 from abc import ABC, abstractmethod
 
+from ..typs import Entity, EntityColumns, EntityTypedDict
 
 if TYPE_CHECKING:  # pragma: no cover
-
     from pandas import DataFrame, _typing as pandas_typing  # type: ignore
-
-    from ..typs import Entity, EntityColumns, EntityTypedDict
 
 
 class GetOneEntitieReturn(ABC):
     @abstractmethod
-    def object(self) -&gt; &#34;Entity&#34;:
+    def object(self) -&gt; Entity:
         ...
 
     @abstractmethod
-    def dict(self) -&gt; &#34;EntityTypedDict&#34;:
+    def dict(self) -&gt; EntityTypedDict:
         ...
 
     @overload
@@ -94,11 +92,11 @@ inheritance.</p></div>
 </summary>
 <pre><code class="python">class GetOneEntitieReturn(ABC):
     @abstractmethod
-    def object(self) -&gt; &#34;Entity&#34;:
+    def object(self) -&gt; Entity:
         ...
 
     @abstractmethod
-    def dict(self) -&gt; &#34;EntityTypedDict&#34;:
+    def dict(self) -&gt; EntityTypedDict:
         ...
 
     @overload
@@ -151,7 +149,7 @@ def data_frame(self, *args, **kwargs) -&gt; &#34;DataFrame&#34;:
 </details>
 </dd>
 <dt id="macrobond_financial.common.api_return_typs.get_one_entitie_return.GetOneEntitieReturn.dict"><code class="name flex">
-<span>def <span class="ident">dict</span></span>(<span>self) ‑> EntityTypedDict</span>
+<span>def <span class="ident">dict</span></span>(<span>self) ‑> <a title="macrobond_financial.common.typs.entity.EntityTypedDict" href="../typs/entity.html#macrobond_financial.common.typs.entity.EntityTypedDict">EntityTypedDict</a></span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -160,7 +158,7 @@ def data_frame(self, *args, **kwargs) -&gt; &#34;DataFrame&#34;:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@abstractmethod
-def dict(self) -&gt; &#34;EntityTypedDict&#34;:
+def dict(self) -&gt; EntityTypedDict:
     ...</code></pre>
 </details>
 </dd>
@@ -179,7 +177,7 @@ def metadata_as_data_frame(self) -&gt; &#34;DataFrame&#34;:
 </details>
 </dd>
 <dt id="macrobond_financial.common.api_return_typs.get_one_entitie_return.GetOneEntitieReturn.object"><code class="name flex">
-<span>def <span class="ident">object</span></span>(<span>self) ‑> Entity</span>
+<span>def <span class="ident">object</span></span>(<span>self) ‑> <a title="macrobond_financial.common.typs.entity.Entity" href="../typs/entity.html#macrobond_financial.common.typs.entity.Entity">Entity</a></span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -188,7 +186,7 @@ def metadata_as_data_frame(self) -&gt; &#34;DataFrame&#34;:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@abstractmethod
-def object(self) -&gt; &#34;Entity&#34;:
+def object(self) -&gt; Entity:
     ...</code></pre>
 </details>
 </dd>

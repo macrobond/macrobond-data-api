@@ -35,7 +35,6 @@ from abc import ABC, abstractmethod
 from typing_extensions import TypedDict
 
 if TYPE_CHECKING:  # pragma: no cover
-
     from pandas import DataFrame, _typing as pandas_typing  # type: ignore
 
 
@@ -75,7 +74,7 @@ class GetRevisionInfoReturn(ABC):
         ...  # pragma: no cover
 
     @abstractmethod
-    def dict(self) -&gt; List[&#34;RevisionInfoDict&#34;]:
+    def dict(self) -&gt; List[RevisionInfoDict]:
         ...  # pragma: no cover
 
     @overload
@@ -122,7 +121,7 @@ inheritance.</p></div>
         ...  # pragma: no cover
 
     @abstractmethod
-    def dict(self) -&gt; List[&#34;RevisionInfoDict&#34;]:
+    def dict(self) -&gt; List[RevisionInfoDict]:
         ...  # pragma: no cover
 
     @overload
@@ -178,7 +177,7 @@ def data_frame(self, *args, **kwargs) -&gt; &#34;DataFrame&#34;:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@abstractmethod
-def dict(self) -&gt; List[&#34;RevisionInfoDict&#34;]:
+def dict(self) -&gt; List[RevisionInfoDict]:
     ...  # pragma: no cover</code></pre>
 </details>
 </dd>
