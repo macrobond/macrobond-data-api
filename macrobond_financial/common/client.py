@@ -11,6 +11,10 @@ TypeVarApi = TypeVar("TypeVarApi", bound=Api)
 if TYPE_CHECKING:
     from .credentials import Credentials
 
+__pdoc__ = {
+    "Client.__init__": False,
+}
+
 
 class Client(ABC, Generic[TypeVarApi]):
     def __init__(

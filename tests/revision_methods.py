@@ -1,13 +1,12 @@
 # -*- coding: utf-8 -*-
 
-from ctypes import resize
 from typing import cast, TYPE_CHECKING
 
 from datetime import datetime
 
 from tests.test_common import TestCase
 
-from macrobond_financial.common import GetEntitiesError
+from macrobond_financial.common.typs import GetEntitiesError
 
 if TYPE_CHECKING:
     from macrobond_financial.common import Api
@@ -18,8 +17,8 @@ class Common(TestCase):
     # get_revision_info
 
     def test_get_revision_info_object(self) -> None:
-        web = self.web_api.revision.get_revision_info("usgdp").object()[0]
-        com = self.com_api.revision.get_revision_info("usgdp").object()[0]
+        web = self.web_api.get_revision_info("usgdp").object()[0]
+        com = self.com_api.get_revision_info("usgdp").object()[0]
 
         self.assertEqual(web.name, com.name)
         self.assertEqual(web.error_message, com.error_message)
@@ -36,12 +35,8 @@ class Common(TestCase):
         self.assertSequenceEqual(web.vintage_time_stamps, com.vintage_time_stamps)
 
     def test_get_revision_info_object_error(self) -> None:
-        web = self.web_api.revision.get_revision_info(
-            "noseries!", raise_error=False
-        ).object()[0]
-        com = self.com_api.revision.get_revision_info(
-            "noseries!", raise_error=False
-        ).object()[0]
+        web = self.web_api.get_revision_info("noseries!", raise_error=False).object()[0]
+        com = self.com_api.get_revision_info("noseries!", raise_error=False).object()[0]
 
         self.assertEqual(web.name, com.name)
         self.assertEqual(web.error_message, com.error_message)
@@ -58,32 +53,28 @@ class Common(TestCase):
         self.assertSequenceEqual(web.vintage_time_stamps, com.vintage_time_stamps)
 
     def test_get_revision_info_dict(self) -> None:
-        web = self.web_api.revision.get_revision_info("usgdp").dict()[0]
-        com = self.com_api.revision.get_revision_info("usgdp").dict()[0]
+        web = self.web_api.get_revision_info("usgdp").dict()[0]
+        com = self.com_api.get_revision_info("usgdp").dict()[0]
 
         self.assertDictEqual(web, com)
 
     def test_get_revision_info_dict_error(self) -> None:
-        web = self.web_api.revision.get_revision_info(
-            "noseries!", raise_error=False
-        ).dict()[0]
-        com = self.com_api.revision.get_revision_info(
-            "noseries!", raise_error=False
-        ).dict()[0]
+        web = self.web_api.get_revision_info("noseries!", raise_error=False).dict()[0]
+        com = self.com_api.get_revision_info("noseries!", raise_error=False).dict()[0]
 
         self.assertDictEqual(web, com)
 
     # get_vintage_series
 
     def test_get_vintage_series(self) -> None:
-        info = self.web_api.revision.get_revision_info("gbgdp").object()[0]
+        info = self.web_api.get_revision_info("gbgdp").object()[0]
 
         time_stamp_of_last_revision = cast(datetime, info.time_stamp_of_last_revision)
 
-        web = self.web_api.revision.get_vintage_series(
+        web = self.web_api.get_vintage_series(
             "gbgdp", time_stamp_of_last_revision
         ).object()
-        com = self.com_api.revision.get_vintage_series(
+        com = self.com_api.get_vintage_series(
             "gbgdp", time_stamp_of_last_revision
         ).object()
 
@@ -101,10 +92,10 @@ class Common(TestCase):
             web.revision_time_stamp, com.revision_time_stamp, "revision_time_stamp"
         )
 
-        web = self.web_api.revision.get_vintage_series(
+        web = self.web_api.get_vintage_series(
             "noseries!", datetime(2021, 4, 1), raise_error=False
         ).object()
-        com = self.com_api.revision.get_vintage_series(
+        com = self.com_api.get_vintage_series(
             "noseries!", datetime(2021, 4, 1), raise_error=False
         ).object()
 
@@ -117,37 +108,37 @@ class Common(TestCase):
         self.assertSequenceEqual(web.dates, com.dates, "dates")
 
     def test_get_vintage_series_dict(self) -> None:
-        info = self.web_api.revision.get_revision_info("gbgdp").object()[0]
+        info = self.web_api.get_revision_info("gbgdp").object()[0]
 
         time_stamp_of_last_revision = cast(datetime, info.time_stamp_of_last_revision)
 
-        web = self.web_api.revision.get_vintage_series(
+        web = self.web_api.get_vintage_series(
             "gbgdp", time_stamp_of_last_revision
         ).dict()
-        com = self.com_api.revision.get_vintage_series(
+        com = self.com_api.get_vintage_series(
             "gbgdp", time_stamp_of_last_revision
         ).dict()
         del web["MetaData"]
         del com["MetaData"]
         self.assertDictEqual(web, com)
 
-        web = self.web_api.revision.get_vintage_series(
+        web = self.web_api.get_vintage_series(
             "noseries!", datetime(2021, 4, 1), raise_error=False
         ).dict()
-        com = self.com_api.revision.get_vintage_series(
+        com = self.com_api.get_vintage_series(
             "noseries!", datetime(2021, 4, 1), raise_error=False
         ).dict()
         self.assertDictEqual(web, com)
 
     def test_get_vintage_series_data_frame(self) -> None:
-        info = self.web_api.revision.get_revision_info("gbgdp").object()[0]
+        info = self.web_api.get_revision_info("gbgdp").object()[0]
 
         time_stamp_of_last_revision = cast(datetime, info.time_stamp_of_last_revision)
 
-        web = self.web_api.revision.get_vintage_series(
+        web = self.web_api.get_vintage_series(
             "gbgdp", time_stamp_of_last_revision
         ).data_frame()
-        com = self.com_api.revision.get_vintage_series(
+        com = self.com_api.get_vintage_series(
             "gbgdp", time_stamp_of_last_revision
         ).data_frame()
 
@@ -185,7 +176,7 @@ class Com(TestCase):
 
 def get_vintage_series_error(test: TestCase, api: "Api") -> None:
     with test.assertRaises(GetEntitiesError) as context:
-        api.revision.get_vintage_series("noseries!", datetime(2021, 4, 1)).data_frame()
+        api.get_vintage_series("noseries!", datetime(2021, 4, 1)).data_frame()
 
     test.assertEqual(
         "failed to retrieve:\n\tnoseries! error_message: Not found",
@@ -195,6 +186,6 @@ def get_vintage_series_error(test: TestCase, api: "Api") -> None:
 
 def get_vintage_series_error_time(test: TestCase, api: "Api") -> None:
     with test.assertRaises(ValueError) as context:
-        api.revision.get_vintage_series("gbgdp", datetime(1800, 4, 1)).data_frame()
+        api.get_vintage_series("gbgdp", datetime(1800, 4, 1)).data_frame()
 
     test.assertEqual("Invalid time", context.exception.args[0])

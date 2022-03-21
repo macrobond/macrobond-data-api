@@ -28,42 +28,175 @@
 </summary>
 <pre><code class="python"># -*- coding: utf-8 -*-
 
-from abc import ABC
-from .meta_directory_methods import MetaDirectoryMethods
-from .search_methods import SearchMethods
-from .series_methods import SeriesMethods
-from .revision_methods import RevisionMethods
+from typing import TYPE_CHECKING, Dict, Sequence, Union
+from abc import ABC, abstractmethod
+
+from datetime import datetime
+
+from .typs import SearchFilter
+
+from .enums import SeriesFrequency, SeriesWeekdays, CalendarMergeMode
+
+if TYPE_CHECKING:  # pragma: no cover
+
+    from .api_return_typs import (
+        GetAttributeInformationReturn,
+        ListValuesReturn,
+        GetRevisionInfoReturn,
+        GetVintageSeriesReturn,
+        #  GetObservationHistoryReturn,
+        #  GetNthReleaseReturn,
+        GetOneEntitieReturn,
+        GetOneSeriesReturn,
+        GetEntitiesReturn,
+        GetSeriesReturn,
+        GetUnifiedSeriesReturn,
+    )
+
+    from .typs import SearchResult, StartOrEndPoint, SeriesEntrie
 
 
 class Api(ABC):
-    @property
-    def meta_directory(self) -&gt; MetaDirectoryMethods:
-        return self.__meta_directory
+    &#34;&#34;&#34;&#34;&#34;&#34;
 
-    @property
-    def search(self) -&gt; SearchMethods:
-        return self.__search
+    def __init__(self) -&gt; None:
+        self.raise_error = True
 
-    @property
-    def series(self) -&gt; SeriesMethods:
-        return self.__series
+    # metadata
 
-    @property
-    def revision(self) -&gt; RevisionMethods:
-        return self.__revision
+    # ToDo: @mb-jp Need a new name
+    @abstractmethod
+    def list_values(self, name: str) -&gt; &#34;ListValuesReturn&#34;:
+        &#34;&#34;&#34;
+        List all metadata attribute values.
 
-    def __init__(
+        Parameters
+        ----------
+        name : str
+            record that failed processing
+
+        Returns
+        -------
+        ListValuesReturn
+
+        Examples
+        -------
+        ```python
+        with ComClient() as api: # or WebClient
+
+            # as dict
+            print(api.list_values(&#39;RateType&#39;).list_of_dicts())
+
+            # as data_frame
+            print(api.list_values(&#39;RateType&#39;).data_frame())
+
+            # as objects
+            print(api.list_values(&#39;RateType&#39;).list_of_objects())
+        ```
+        &#34;&#34;&#34;
+
+    @abstractmethod
+    def get_attribute_information(self, name: str) -&gt; &#34;GetAttributeInformationReturn&#34;:
+        &#34;&#34;&#34;Get information about a type of metadata.&#34;&#34;&#34;
+
+    # revision
+
+    @abstractmethod
+    def get_revision_info(
+        self, *series_names: str, raise_error: bool = None
+    ) -&gt; &#34;GetRevisionInfoReturn&#34;:
+        &#34;&#34;&#34;&#34;&#34;&#34;
+
+    @abstractmethod
+    def get_vintage_series(
+        self, serie_name: str, time: datetime, raise_error: bool = None
+    ) -&gt; &#34;GetVintageSeriesReturn&#34;:
+        &#34;&#34;&#34;&#34;&#34;&#34;
+
+    # not done
+    # @abstractmethod
+    # def get_observation_history(
+    #     self, serie_name: str, time: datetime, raise_error: bool = None
+    # ) -&gt; GetObservationHistoryReturn:
+    #     &#34;&#34;&#34;&#34;&#34;&#34;
+
+    # not done
+    # @abstractmethod
+    # def get_nth_release(
+    #     self, serie_name: str, nth: int, raise_error: bool = None
+    # ) -&gt; GetNthReleaseReturn:
+    #     ...  # pragma: no cover
+
+    # Search
+
+    def search(
         self,
-        meta_directory: MetaDirectoryMethods,
-        search: SearchMethods,
-        series: SeriesMethods,
-        revision: RevisionMethods,
-    ) -&gt; None:
-        self.__meta_directory = meta_directory
-        self.__search = search
-        self.__series = series
-        self.__revision = revision
-        self.raise_error = True</code></pre>
+        text: str = None,
+        entity_types: Union[Sequence[str], str] = None,
+        must_have_values: Dict[str, object] = None,
+        must_not_have_values: Dict[str, object] = None,
+        must_have_attributes: Union[Sequence[str], str] = None,
+        must_not_have_attributes: Union[Sequence[str], str] = None,
+        include_discontinued: bool = False,
+    ) -&gt; &#34;SearchResult&#34;:
+        &#34;&#34;&#34;&#34;&#34;&#34;
+        return self.series_multi_filter(
+            SearchFilter(
+                text=text,
+                entity_types=entity_types,
+                must_have_values=must_have_values,
+                must_not_have_values=must_not_have_values,
+                must_have_attributes=must_have_attributes,
+                must_not_have_attributes=must_not_have_attributes,
+            ),
+            include_discontinued=include_discontinued,
+        )
+
+    @abstractmethod
+    def series_multi_filter(
+        self, *filters: SearchFilter, include_discontinued: bool = False
+    ) -&gt; &#34;SearchResult&#34;:
+        &#34;&#34;&#34;&#34;&#34;&#34;
+
+    # Series
+
+    @abstractmethod
+    def get_one_series(
+        self, series_name: str, raise_error: bool = None
+    ) -&gt; &#34;GetOneSeriesReturn&#34;:
+        &#34;&#34;&#34;Download one series.&#34;&#34;&#34;
+
+    @abstractmethod
+    def get_series(
+        self, *series_names: str, raise_error: bool = None
+    ) -&gt; &#34;GetSeriesReturn&#34;:
+        &#34;&#34;&#34;Download one or more series.&#34;&#34;&#34;
+
+    @abstractmethod
+    def get_one_entitie(
+        self, entity_name: str, raise_error: bool = None
+    ) -&gt; &#34;GetOneEntitieReturn&#34;:
+        &#34;&#34;&#34;Download one entity.&#34;&#34;&#34;
+
+    @abstractmethod
+    def get_entities(
+        self, *entity_names: str, raise_error: bool = None
+    ) -&gt; &#34;GetEntitiesReturn&#34;:
+        &#34;&#34;&#34;Download one or more entitys.&#34;&#34;&#34;
+
+    @abstractmethod
+    def get_unified_series(
+        self,
+        *series_entries: Union[&#34;SeriesEntrie&#34;, str],
+        frequency=SeriesFrequency.HIGHEST,
+        weekdays=SeriesWeekdays.FULL_WEEK,
+        calendar_merge_mode=CalendarMergeMode.AVAILABLE_IN_ANY,
+        currency=&#34;&#34;,
+        start_point: &#34;StartOrEndPoint&#34; = None,
+        end_point: &#34;StartOrEndPoint&#34; = None,
+        raise_error: bool = None
+    ) -&gt; &#34;GetUnifiedSeriesReturn&#34;:
+        &#34;&#34;&#34;&#34;&#34;&#34;</code></pre>
 </details>
 </section>
 <section>
@@ -77,44 +210,154 @@ class Api(ABC):
 <dl>
 <dt id="macrobond_financial.common.api.Api"><code class="flex name class">
 <span>class <span class="ident">Api</span></span>
-<span>(</span><span>meta_directory: <a title="macrobond_financial.common.meta_directory_methods.MetaDirectoryMethods" href="meta_directory_methods.html#macrobond_financial.common.meta_directory_methods.MetaDirectoryMethods">MetaDirectoryMethods</a>, search: <a title="macrobond_financial.common.search_methods.SearchMethods" href="search_methods.html#macrobond_financial.common.search_methods.SearchMethods">SearchMethods</a>, series: <a title="macrobond_financial.common.series_methods.SeriesMethods" href="series_methods.html#macrobond_financial.common.series_methods.SeriesMethods">SeriesMethods</a>, revision: <a title="macrobond_financial.common.revision_methods.RevisionMethods" href="revision_methods.html#macrobond_financial.common.revision_methods.RevisionMethods">RevisionMethods</a>)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Helper class that provides a standard way to create an ABC using
-inheritance.</p></div>
+<div class="desc"></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class Api(ABC):
-    @property
-    def meta_directory(self) -&gt; MetaDirectoryMethods:
-        return self.__meta_directory
+    &#34;&#34;&#34;&#34;&#34;&#34;
 
-    @property
-    def search(self) -&gt; SearchMethods:
-        return self.__search
+    def __init__(self) -&gt; None:
+        self.raise_error = True
 
-    @property
-    def series(self) -&gt; SeriesMethods:
-        return self.__series
+    # metadata
 
-    @property
-    def revision(self) -&gt; RevisionMethods:
-        return self.__revision
+    # ToDo: @mb-jp Need a new name
+    @abstractmethod
+    def list_values(self, name: str) -&gt; &#34;ListValuesReturn&#34;:
+        &#34;&#34;&#34;
+        List all metadata attribute values.
 
-    def __init__(
+        Parameters
+        ----------
+        name : str
+            record that failed processing
+
+        Returns
+        -------
+        ListValuesReturn
+
+        Examples
+        -------
+        ```python
+        with ComClient() as api: # or WebClient
+
+            # as dict
+            print(api.list_values(&#39;RateType&#39;).list_of_dicts())
+
+            # as data_frame
+            print(api.list_values(&#39;RateType&#39;).data_frame())
+
+            # as objects
+            print(api.list_values(&#39;RateType&#39;).list_of_objects())
+        ```
+        &#34;&#34;&#34;
+
+    @abstractmethod
+    def get_attribute_information(self, name: str) -&gt; &#34;GetAttributeInformationReturn&#34;:
+        &#34;&#34;&#34;Get information about a type of metadata.&#34;&#34;&#34;
+
+    # revision
+
+    @abstractmethod
+    def get_revision_info(
+        self, *series_names: str, raise_error: bool = None
+    ) -&gt; &#34;GetRevisionInfoReturn&#34;:
+        &#34;&#34;&#34;&#34;&#34;&#34;
+
+    @abstractmethod
+    def get_vintage_series(
+        self, serie_name: str, time: datetime, raise_error: bool = None
+    ) -&gt; &#34;GetVintageSeriesReturn&#34;:
+        &#34;&#34;&#34;&#34;&#34;&#34;
+
+    # not done
+    # @abstractmethod
+    # def get_observation_history(
+    #     self, serie_name: str, time: datetime, raise_error: bool = None
+    # ) -&gt; GetObservationHistoryReturn:
+    #     &#34;&#34;&#34;&#34;&#34;&#34;
+
+    # not done
+    # @abstractmethod
+    # def get_nth_release(
+    #     self, serie_name: str, nth: int, raise_error: bool = None
+    # ) -&gt; GetNthReleaseReturn:
+    #     ...  # pragma: no cover
+
+    # Search
+
+    def search(
         self,
-        meta_directory: MetaDirectoryMethods,
-        search: SearchMethods,
-        series: SeriesMethods,
-        revision: RevisionMethods,
-    ) -&gt; None:
-        self.__meta_directory = meta_directory
-        self.__search = search
-        self.__series = series
-        self.__revision = revision
-        self.raise_error = True</code></pre>
+        text: str = None,
+        entity_types: Union[Sequence[str], str] = None,
+        must_have_values: Dict[str, object] = None,
+        must_not_have_values: Dict[str, object] = None,
+        must_have_attributes: Union[Sequence[str], str] = None,
+        must_not_have_attributes: Union[Sequence[str], str] = None,
+        include_discontinued: bool = False,
+    ) -&gt; &#34;SearchResult&#34;:
+        &#34;&#34;&#34;&#34;&#34;&#34;
+        return self.series_multi_filter(
+            SearchFilter(
+                text=text,
+                entity_types=entity_types,
+                must_have_values=must_have_values,
+                must_not_have_values=must_not_have_values,
+                must_have_attributes=must_have_attributes,
+                must_not_have_attributes=must_not_have_attributes,
+            ),
+            include_discontinued=include_discontinued,
+        )
+
+    @abstractmethod
+    def series_multi_filter(
+        self, *filters: SearchFilter, include_discontinued: bool = False
+    ) -&gt; &#34;SearchResult&#34;:
+        &#34;&#34;&#34;&#34;&#34;&#34;
+
+    # Series
+
+    @abstractmethod
+    def get_one_series(
+        self, series_name: str, raise_error: bool = None
+    ) -&gt; &#34;GetOneSeriesReturn&#34;:
+        &#34;&#34;&#34;Download one series.&#34;&#34;&#34;
+
+    @abstractmethod
+    def get_series(
+        self, *series_names: str, raise_error: bool = None
+    ) -&gt; &#34;GetSeriesReturn&#34;:
+        &#34;&#34;&#34;Download one or more series.&#34;&#34;&#34;
+
+    @abstractmethod
+    def get_one_entitie(
+        self, entity_name: str, raise_error: bool = None
+    ) -&gt; &#34;GetOneEntitieReturn&#34;:
+        &#34;&#34;&#34;Download one entity.&#34;&#34;&#34;
+
+    @abstractmethod
+    def get_entities(
+        self, *entity_names: str, raise_error: bool = None
+    ) -&gt; &#34;GetEntitiesReturn&#34;:
+        &#34;&#34;&#34;Download one or more entitys.&#34;&#34;&#34;
+
+    @abstractmethod
+    def get_unified_series(
+        self,
+        *series_entries: Union[&#34;SeriesEntrie&#34;, str],
+        frequency=SeriesFrequency.HIGHEST,
+        weekdays=SeriesWeekdays.FULL_WEEK,
+        calendar_merge_mode=CalendarMergeMode.AVAILABLE_IN_ANY,
+        currency=&#34;&#34;,
+        start_point: &#34;StartOrEndPoint&#34; = None,
+        end_point: &#34;StartOrEndPoint&#34; = None,
+        raise_error: bool = None
+    ) -&gt; &#34;GetUnifiedSeriesReturn&#34;:
+        &#34;&#34;&#34;&#34;&#34;&#34;</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
@@ -125,54 +368,251 @@ inheritance.</p></div>
 <li><a title="macrobond_financial.com.com_api.ComApi" href="../com/com_api.html#macrobond_financial.com.com_api.ComApi">ComApi</a></li>
 <li><a title="macrobond_financial.web.web_api.WebApi" href="../web/web_api.html#macrobond_financial.web.web_api.WebApi">WebApi</a></li>
 </ul>
-<h3>Instance variables</h3>
+<h3>Methods</h3>
 <dl>
-<dt id="macrobond_financial.common.api.Api.meta_directory"><code class="name">var <span class="ident">meta_directory</span> : <a title="macrobond_financial.common.meta_directory_methods.MetaDirectoryMethods" href="meta_directory_methods.html#macrobond_financial.common.meta_directory_methods.MetaDirectoryMethods">MetaDirectoryMethods</a></code></dt>
+<dt id="macrobond_financial.common.api.Api.get_attribute_information"><code class="name flex">
+<span>def <span class="ident">get_attribute_information</span></span>(<span>self, name: str) ‑> GetAttributeInformationReturn</span>
+</code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>Get information about a type of metadata.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">@property
-def meta_directory(self) -&gt; MetaDirectoryMethods:
-    return self.__meta_directory</code></pre>
+<pre><code class="python">@abstractmethod
+def get_attribute_information(self, name: str) -&gt; &#34;GetAttributeInformationReturn&#34;:
+    &#34;&#34;&#34;Get information about a type of metadata.&#34;&#34;&#34;</code></pre>
 </details>
 </dd>
-<dt id="macrobond_financial.common.api.Api.revision"><code class="name">var <span class="ident">revision</span> : <a title="macrobond_financial.common.revision_methods.RevisionMethods" href="revision_methods.html#macrobond_financial.common.revision_methods.RevisionMethods">RevisionMethods</a></code></dt>
+<dt id="macrobond_financial.common.api.Api.get_entities"><code class="name flex">
+<span>def <span class="ident">get_entities</span></span>(<span>self, *entity_names: str, raise_error: bool = None) ‑> GetEntitiesReturn</span>
+</code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>Download one or more entitys.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">@property
-def revision(self) -&gt; RevisionMethods:
-    return self.__revision</code></pre>
+<pre><code class="python">@abstractmethod
+def get_entities(
+    self, *entity_names: str, raise_error: bool = None
+) -&gt; &#34;GetEntitiesReturn&#34;:
+    &#34;&#34;&#34;Download one or more entitys.&#34;&#34;&#34;</code></pre>
 </details>
 </dd>
-<dt id="macrobond_financial.common.api.Api.search"><code class="name">var <span class="ident">search</span> : <a title="macrobond_financial.common.search_methods.SearchMethods" href="search_methods.html#macrobond_financial.common.search_methods.SearchMethods">SearchMethods</a></code></dt>
+<dt id="macrobond_financial.common.api.Api.get_one_entitie"><code class="name flex">
+<span>def <span class="ident">get_one_entitie</span></span>(<span>self, entity_name: str, raise_error: bool = None) ‑> GetOneEntitieReturn</span>
+</code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>Download one entity.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">@property
-def search(self) -&gt; SearchMethods:
-    return self.__search</code></pre>
+<pre><code class="python">@abstractmethod
+def get_one_entitie(
+    self, entity_name: str, raise_error: bool = None
+) -&gt; &#34;GetOneEntitieReturn&#34;:
+    &#34;&#34;&#34;Download one entity.&#34;&#34;&#34;</code></pre>
 </details>
 </dd>
-<dt id="macrobond_financial.common.api.Api.series"><code class="name">var <span class="ident">series</span> : <a title="macrobond_financial.common.series_methods.SeriesMethods" href="series_methods.html#macrobond_financial.common.series_methods.SeriesMethods">SeriesMethods</a></code></dt>
+<dt id="macrobond_financial.common.api.Api.get_one_series"><code class="name flex">
+<span>def <span class="ident">get_one_series</span></span>(<span>self, series_name: str, raise_error: bool = None) ‑> GetOneSeriesReturn</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Download one series.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@abstractmethod
+def get_one_series(
+    self, series_name: str, raise_error: bool = None
+) -&gt; &#34;GetOneSeriesReturn&#34;:
+    &#34;&#34;&#34;Download one series.&#34;&#34;&#34;</code></pre>
+</details>
+</dd>
+<dt id="macrobond_financial.common.api.Api.get_revision_info"><code class="name flex">
+<span>def <span class="ident">get_revision_info</span></span>(<span>self, *series_names: str, raise_error: bool = None) ‑> GetRevisionInfoReturn</span>
+</code></dt>
 <dd>
 <div class="desc"></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">@property
-def series(self) -&gt; SeriesMethods:
-    return self.__series</code></pre>
+<pre><code class="python">@abstractmethod
+def get_revision_info(
+    self, *series_names: str, raise_error: bool = None
+) -&gt; &#34;GetRevisionInfoReturn&#34;:
+    &#34;&#34;&#34;&#34;&#34;&#34;</code></pre>
+</details>
+</dd>
+<dt id="macrobond_financial.common.api.Api.get_series"><code class="name flex">
+<span>def <span class="ident">get_series</span></span>(<span>self, *series_names: str, raise_error: bool = None) ‑> GetSeriesReturn</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Download one or more series.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@abstractmethod
+def get_series(
+    self, *series_names: str, raise_error: bool = None
+) -&gt; &#34;GetSeriesReturn&#34;:
+    &#34;&#34;&#34;Download one or more series.&#34;&#34;&#34;</code></pre>
+</details>
+</dd>
+<dt id="macrobond_financial.common.api.Api.get_unified_series"><code class="name flex">
+<span>def <span class="ident">get_unified_series</span></span>(<span>self, *series_entries: Union[ForwardRef('SeriesEntrie'), str], frequency=SeriesFrequency.HIGHEST, weekdays=SeriesWeekdays.FULL_WEEK, calendar_merge_mode=CalendarMergeMode.AVAILABLE_IN_ANY, currency='', start_point: StartOrEndPoint = None, end_point: StartOrEndPoint = None, raise_error: bool = None) ‑> GetUnifiedSeriesReturn</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@abstractmethod
+def get_unified_series(
+    self,
+    *series_entries: Union[&#34;SeriesEntrie&#34;, str],
+    frequency=SeriesFrequency.HIGHEST,
+    weekdays=SeriesWeekdays.FULL_WEEK,
+    calendar_merge_mode=CalendarMergeMode.AVAILABLE_IN_ANY,
+    currency=&#34;&#34;,
+    start_point: &#34;StartOrEndPoint&#34; = None,
+    end_point: &#34;StartOrEndPoint&#34; = None,
+    raise_error: bool = None
+) -&gt; &#34;GetUnifiedSeriesReturn&#34;:
+    &#34;&#34;&#34;&#34;&#34;&#34;</code></pre>
+</details>
+</dd>
+<dt id="macrobond_financial.common.api.Api.get_vintage_series"><code class="name flex">
+<span>def <span class="ident">get_vintage_series</span></span>(<span>self, serie_name: str, time: datetime.datetime, raise_error: bool = None) ‑> GetVintageSeriesReturn</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@abstractmethod
+def get_vintage_series(
+    self, serie_name: str, time: datetime, raise_error: bool = None
+) -&gt; &#34;GetVintageSeriesReturn&#34;:
+    &#34;&#34;&#34;&#34;&#34;&#34;</code></pre>
+</details>
+</dd>
+<dt id="macrobond_financial.common.api.Api.list_values"><code class="name flex">
+<span>def <span class="ident">list_values</span></span>(<span>self, name: str) ‑> ListValuesReturn</span>
+</code></dt>
+<dd>
+<div class="desc"><p>List all metadata attribute values.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>name</code></strong> :&ensp;<code>str</code></dt>
+<dd>record that failed processing</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>ListValuesReturn</code></dt>
+<dd>&nbsp;</dd>
+</dl>
+<h2 id="examples">Examples</h2>
+<pre><code class="language-python">with ComClient() as api: # or WebClient
+
+    # as dict
+    print(api.list_values('RateType').list_of_dicts())
+
+    # as data_frame
+    print(api.list_values('RateType').data_frame())
+
+    # as objects
+    print(api.list_values('RateType').list_of_objects())
+</code></pre></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@abstractmethod
+def list_values(self, name: str) -&gt; &#34;ListValuesReturn&#34;:
+    &#34;&#34;&#34;
+    List all metadata attribute values.
+
+    Parameters
+    ----------
+    name : str
+        record that failed processing
+
+    Returns
+    -------
+    ListValuesReturn
+
+    Examples
+    -------
+    ```python
+    with ComClient() as api: # or WebClient
+
+        # as dict
+        print(api.list_values(&#39;RateType&#39;).list_of_dicts())
+
+        # as data_frame
+        print(api.list_values(&#39;RateType&#39;).data_frame())
+
+        # as objects
+        print(api.list_values(&#39;RateType&#39;).list_of_objects())
+    ```
+    &#34;&#34;&#34;</code></pre>
+</details>
+</dd>
+<dt id="macrobond_financial.common.api.Api.search"><code class="name flex">
+<span>def <span class="ident">search</span></span>(<span>self, text: str = None, entity_types: Union[str, Sequence[str]] = None, must_have_values: Dict[str, object] = None, must_not_have_values: Dict[str, object] = None, must_have_attributes: Union[str, Sequence[str]] = None, must_not_have_attributes: Union[str, Sequence[str]] = None, include_discontinued: bool = False) ‑> SearchResult</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def search(
+    self,
+    text: str = None,
+    entity_types: Union[Sequence[str], str] = None,
+    must_have_values: Dict[str, object] = None,
+    must_not_have_values: Dict[str, object] = None,
+    must_have_attributes: Union[Sequence[str], str] = None,
+    must_not_have_attributes: Union[Sequence[str], str] = None,
+    include_discontinued: bool = False,
+) -&gt; &#34;SearchResult&#34;:
+    &#34;&#34;&#34;&#34;&#34;&#34;
+    return self.series_multi_filter(
+        SearchFilter(
+            text=text,
+            entity_types=entity_types,
+            must_have_values=must_have_values,
+            must_not_have_values=must_not_have_values,
+            must_have_attributes=must_have_attributes,
+            must_not_have_attributes=must_not_have_attributes,
+        ),
+        include_discontinued=include_discontinued,
+    )</code></pre>
+</details>
+</dd>
+<dt id="macrobond_financial.common.api.Api.series_multi_filter"><code class="name flex">
+<span>def <span class="ident">series_multi_filter</span></span>(<span>self, *filters: <a title="macrobond_financial.common.typs.search_filter.SearchFilter" href="typs/search_filter.html#macrobond_financial.common.typs.search_filter.SearchFilter">SearchFilter</a>, include_discontinued: bool = False) ‑> SearchResult</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@abstractmethod
+def series_multi_filter(
+    self, *filters: SearchFilter, include_discontinued: bool = False
+) -&gt; &#34;SearchResult&#34;:
+    &#34;&#34;&#34;&#34;&#34;&#34;</code></pre>
 </details>
 </dd>
 </dl>
@@ -182,6 +622,9 @@ def series(self) -&gt; SeriesMethods:
 </article>
 <nav id="sidebar">
 <h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
 <ul id="index">
 <li><h3>Super-module</h3>
 <ul>
@@ -193,10 +636,17 @@ def series(self) -&gt; SeriesMethods:
 <li>
 <h4><code><a title="macrobond_financial.common.api.Api" href="#macrobond_financial.common.api.Api">Api</a></code></h4>
 <ul class="">
-<li><code><a title="macrobond_financial.common.api.Api.meta_directory" href="#macrobond_financial.common.api.Api.meta_directory">meta_directory</a></code></li>
-<li><code><a title="macrobond_financial.common.api.Api.revision" href="#macrobond_financial.common.api.Api.revision">revision</a></code></li>
+<li><code><a title="macrobond_financial.common.api.Api.get_attribute_information" href="#macrobond_financial.common.api.Api.get_attribute_information">get_attribute_information</a></code></li>
+<li><code><a title="macrobond_financial.common.api.Api.get_entities" href="#macrobond_financial.common.api.Api.get_entities">get_entities</a></code></li>
+<li><code><a title="macrobond_financial.common.api.Api.get_one_entitie" href="#macrobond_financial.common.api.Api.get_one_entitie">get_one_entitie</a></code></li>
+<li><code><a title="macrobond_financial.common.api.Api.get_one_series" href="#macrobond_financial.common.api.Api.get_one_series">get_one_series</a></code></li>
+<li><code><a title="macrobond_financial.common.api.Api.get_revision_info" href="#macrobond_financial.common.api.Api.get_revision_info">get_revision_info</a></code></li>
+<li><code><a title="macrobond_financial.common.api.Api.get_series" href="#macrobond_financial.common.api.Api.get_series">get_series</a></code></li>
+<li><code><a title="macrobond_financial.common.api.Api.get_unified_series" href="#macrobond_financial.common.api.Api.get_unified_series">get_unified_series</a></code></li>
+<li><code><a title="macrobond_financial.common.api.Api.get_vintage_series" href="#macrobond_financial.common.api.Api.get_vintage_series">get_vintage_series</a></code></li>
+<li><code><a title="macrobond_financial.common.api.Api.list_values" href="#macrobond_financial.common.api.Api.list_values">list_values</a></code></li>
 <li><code><a title="macrobond_financial.common.api.Api.search" href="#macrobond_financial.common.api.Api.search">search</a></code></li>
-<li><code><a title="macrobond_financial.common.api.Api.series" href="#macrobond_financial.common.api.Api.series">series</a></code></li>
+<li><code><a title="macrobond_financial.common.api.Api.series_multi_filter" href="#macrobond_financial.common.api.Api.series_multi_filter">series_multi_filter</a></code></li>
 </ul>
 </li>
 </ul>

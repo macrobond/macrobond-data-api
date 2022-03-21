@@ -5,9 +5,7 @@ from typing import TYPE_CHECKING
 from tests.test_common import TestCase
 
 if TYPE_CHECKING:  # pragma: no cover
-    from macrobond_financial.web.web_typs.metadata_value_information_response import (
-        MetadataValueInformationResponse,
-    )
+    from macrobond_financial.web.web_typs import MetadataValueInformationResponse
 
 
 class WebMetadataMethods(TestCase):

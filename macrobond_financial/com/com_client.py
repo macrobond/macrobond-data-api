@@ -8,7 +8,7 @@ from macrobond_financial.common import Client
 from .com_api import ComApi
 
 if TYPE_CHECKING:  # pragma: no cover
-    from .com_typs.connection import Connection
+    from .com_typs import Connection
     from macrobond_financial.common import Credentials
 
 

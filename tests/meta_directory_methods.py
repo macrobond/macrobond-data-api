@@ -6,22 +6,16 @@ from pandas import DataFrame  # type: ignore
 from macrobond_financial.common import Api
 from macrobond_financial.common.enums import MetadataAttributeType
 
-from macrobond_financial.common.metadata_value_information import (
-    MetadataValueInformation,
-)
-
-from macrobond_financial.common.metadata_attribute_information import (
+from macrobond_financial.common.typs import (
+    MetadataValueInformationItem,
     MetadataAttributeInformation,
 )
 
 from tests.test_common import TestCase
 
 if TYPE_CHECKING:
-    from macrobond_financial.common.metadata_value_information import (
+    from macrobond_financial.common.typs import (
         TypedDictMetadataValueInformation,
-    )
-
-    from macrobond_financial.common.metadata_attribute_information import (
         TypedDictMetadataAttributeInformation,
     )
 
@@ -44,7 +38,7 @@ class Com(TestCase):
 
 def get_attribute_information(test: TestCase, api: Api) -> None:
     def _object() -> None:
-        actual = api.meta_directory.get_attribute_information("Description").object()
+        actual = api.get_attribute_information("Description").object()
         expected = MetadataAttributeInformation(
             "Description",
             "Short description",
@@ -62,7 +56,7 @@ def get_attribute_information(test: TestCase, api: Api) -> None:
     _object()
 
     def _dict() -> None:
-        actual = api.meta_directory.get_attribute_information("Description").dict()
+        actual = api.get_attribute_information("Description").dict()
         expected: "TypedDictMetadataAttributeInformation" = {
             "name": "Description",
             "description": "Short description",
@@ -79,7 +73,7 @@ def get_attribute_information(test: TestCase, api: Api) -> None:
     _dict()
 
     def _dataframe() -> None:
-        value = api.meta_directory.get_attribute_information("Description").data_frame()
+        value = api.get_attribute_information("Description").data_frame()
 
         test.assertIsInstance(value, DataFrame)
 
@@ -88,25 +82,24 @@ def get_attribute_information(test: TestCase, api: Api) -> None:
     _dataframe()
 
     with test.assertRaises(BaseException):
-        api.meta_directory.get_attribute_information("Description____").object()
+        api.get_attribute_information("Description____").object()
 
 
 def list_values(test: TestCase, api: Api) -> None:
     def _object() -> None:
-        values = api.meta_directory.list_values("RateType").list_of_objects()
+        value = api.list_values("RateType").object()
 
-        actual = next(filter(lambda x: x.value == "mole", values))
-        expected = MetadataValueInformation(
-            "RateType", "mole", "Mortgage Lending Rates", None
-        )
+        actual = next(filter(lambda x: x.value == "mole", value))
+        expected = MetadataValueInformationItem("mole", "Mortgage Lending Rates", None)
+
         test.assertEqual(actual, expected)
 
-        test.assertEqual(actual.__repr__(), "RateType", "actual.__repr__()")
+        test.assertEqual(actual.__repr__(), "mole")
 
     _object()
 
     def _dict() -> None:
-        values = api.meta_directory.list_values("RateType").list_of_dicts()
+        values = api.list_values("RateType").list_of_dicts()
 
         actual = next(filter(lambda x: x["value"] == "mole", values))
         expected: "TypedDictMetadataValueInformation" = {
@@ -120,7 +113,7 @@ def list_values(test: TestCase, api: Api) -> None:
     _dict()
 
     def _dataframe() -> None:
-        value = api.meta_directory.list_values("RateType").data_frame()
+        value = api.list_values("RateType").data_frame()
 
         test.assertIsInstance(value, DataFrame)
 
@@ -129,7 +122,7 @@ def list_values(test: TestCase, api: Api) -> None:
     _dataframe()
 
     with test.assertRaises(BaseException):
-        api.meta_directory.list_values("__RateType").list_of_objects()
+        api.list_values("__RateType").object()
 
     with test.assertRaises(BaseException):
-        api.meta_directory.list_values("Description").list_of_objects()
+        api.list_values("Description").object()

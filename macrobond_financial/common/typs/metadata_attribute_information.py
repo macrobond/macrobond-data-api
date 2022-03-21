@@ -1,0 +1,130 @@
+# -*- coding: utf-8 -*-
+
+from typing import Optional, List, TYPE_CHECKING
+from typing_extensions import TypedDict, Literal
+
+if TYPE_CHECKING:  # pragma: no cover
+
+    from ..enums import MetadataAttributeType
+
+
+MetadataAttributeInformationColumns = List[
+    Literal[
+        "name",
+        "description",
+        "comment",
+        "value_type",
+        "uses_value_list",
+        "can_list_values",
+        "can_have_multiple_values",
+        "is_database_entity",
+    ]
+]
+
+
+class TypedDictMetadataAttributeInformation(TypedDict):
+    name: str
+    """The name of the metadata attribute"""
+
+    description: str
+    """The description of the metadata attribute"""
+
+    comment: Optional[str]
+    """The comment of the metadata attribute"""
+
+    value_type: "MetadataAttributeType"
+    """The value type of the metadata attribute"""
+
+    uses_value_list: bool
+    """If True, the metadata attribute uses a list of values"""
+
+    can_list_values: bool
+    """
+    If True then the values of this type of
+    metadata can be listen using the ListAllValues function
+    """
+
+    can_have_multiple_values: bool
+    """If True then this type of metadata can have multiple values in a metadata collection"""
+
+    is_database_entity: bool
+    """
+    If True then this type of metadata is an entity that can be retrieved from the database
+    """
+
+
+class MetadataAttributeInformation:
+    """Information about a metadata attribute"""
+
+    def __init__(
+        self,
+        name: str,
+        description: str,
+        comment: Optional[str],
+        value_type: "MetadataAttributeType",
+        uses_value_list: bool,
+        can_list_values: bool,
+        can_have_multiple_values: bool,
+        is_database_entity: bool,
+    ) -> None:
+        self.name = name
+        """The name of the metadata attribute"""
+
+        self.description = description
+        """The description of the metadata attribute"""
+
+        self.comment = comment
+        """The comment of the metadata attribute"""
+
+        self.value_type = value_type
+        """The value type of the metadata attribute"""
+
+        self.uses_value_list = uses_value_list
+        """If True, the metadata attribute uses a list of values"""
+
+        self.can_list_values = can_list_values
+        """
+        If True then the values of this type of
+        metadata can be listen using the ListAllValues function
+        """
+
+        self.can_have_multiple_values = can_have_multiple_values
+        """If True then this type of metadata can have multiple values in a metadata collection"""
+
+        self.is_database_entity = is_database_entity
+        """
+        If True then this type of metadata is an entity that can be retrieved from the database
+        """
+
+    def __str__(self):
+        return self.name + " " + self.description
+
+    def __repr__(self):
+        return self.name
+
+    def __eq__(self, other):
+        if not isinstance(other, MetadataAttributeInformation):
+            return NotImplemented
+
+        return self is other or (
+            self.name == other.name
+            and self.description == other.description
+            and self.comment == other.comment
+            and self.uses_value_list == other.uses_value_list
+            and self.can_list_values == other.can_list_values
+            and self.can_have_multiple_values == other.can_have_multiple_values
+            and self.is_database_entity == other.is_database_entity
+        )
+
+    def __hash__(self):
+        return hash(
+            (
+                self.name,
+                self.description,
+                self.comment,
+                self.uses_value_list,
+                self.can_list_values,
+                self.can_have_multiple_values,
+                self.is_database_entity,
+            )
+        )

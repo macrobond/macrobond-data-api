@@ -4,12 +4,13 @@ from typing import Callable, Optional, Any, TYPE_CHECKING
 
 from authlib.integrations.requests_client import OAuth2Session  # type: ignore
 
-from .web_typs.metadata_methods import MetadataMethods
-from .web_typs.search_methods import SearchMethods
-from .web_typs.series_methods import SeriesMethods
-from .web_typs.series_tree_methods import SeriesTreeMethods
-
-from .web_typs.session_http_exception import SessionHttpException
+from .web_typs import (
+    MetadataMethods,
+    SearchMethods,
+    SeriesMethods,
+    SeriesTreeMethods,
+    SessionHttpException,
+)
 
 from .scope import Scope
 

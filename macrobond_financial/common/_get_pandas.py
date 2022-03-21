@@ -1,7 +1,10 @@
 # -*- coding: utf-8 -*-
 
-from typing import Optional
+from typing import Optional, TYPE_CHECKING
 
+if TYPE_CHECKING:  # pragma: no cover
+
+    from pandas import DataFrame, _typing as pandas_typing  # type: ignore
 
 __pandas_Import_error: Optional[ImportError] = None
 try:
