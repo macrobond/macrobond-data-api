@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
 from typing import TYPE_CHECKING, Optional
-from win32com import client  # type: ignore
 
 from macrobond_financial.common import Client
 
@@ -11,6 +10,11 @@ if TYPE_CHECKING:  # pragma: no cover
     from .com_typs import Connection
     from macrobond_financial.common import Credentials
 
+_win32com_import_error: Optional[ImportError] = None
+try:
+    from win32com import client as _client  # type: ignore
+except ImportError as ex:
+    _win32com_import_error = ex
 
 class ComClient(Client["ComApi"]):
     """
@@ -33,11 +37,13 @@ class ComClient(Client["ComApi"]):
         self, credentials: "Credentials" = None  # pylint: disable=unused-argument
     ) -> None:
         super().__init__(False)
+        if _win32com_import_error:
+            raise _win32com_import_error
         self.__api: Optional["ComApi"] = None
 
     def open(self) -> "ComApi":
         if self.__api is None:
-            connection: "Connection" = client.Dispatch("Macrobond.Connection")
+            connection: "Connection" = _client.Dispatch("Macrobond.Connection")
             self.__api = ComApi(connection)
         return self.__api
 

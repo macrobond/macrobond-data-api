@@ -6,7 +6,8 @@
         "**/__pycache__": true,
         "**/.mypy_cache": true,
         "dist/": true,
-        "macrobond_financial.egg-info/": true
+        "macrobond_financial.egg-info/": true,
+        "build/": true
     },
     "python.testing.unittestArgs": [
         "-v",
