@@ -1,10 +1,12 @@
 # -*- coding: utf-8 -*-
 
-from ._version import (
-    __version__,
-    __author__,
-    __author_email__,
-    __description__,
-    __license__,
-    __url__,
+# TODO: @mb-to set '__author__' , '__author_email__' 'author_email' 'url' ?
+
+__version__ = "0.0.1"
+__author__ = ""
+__author_email__ = ""
+__description__ = (
+    "Exposes a common API in Python for the Macrobobond Web and Client data APIs"
 )
+__license__ = "MIT License"
+__url__ = ""

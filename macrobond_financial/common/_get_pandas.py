@@ -11,6 +11,7 @@ try:
 except ImportError as ex:
     _pandas_import_error = ex
 
+
 def _get_pandas() -> "_pandas":
     if _pandas_import_error:
         raise _pandas_import_error

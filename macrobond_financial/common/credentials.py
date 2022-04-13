@@ -1,14 +1,22 @@
-from typing import Any, List, Union
-
+from typing import cast, List, Union, Optional, TYPE_CHECKING
 import os
+import json
 from pathlib import Path
-from importlib.util import spec_from_file_location, module_from_spec
 import platform
+from typing_extensions import Literal, TypedDict
+
+if TYPE_CHECKING:
+
+    class CredentialsJsonObj(TypedDict):
+        clientId: str
+        clientSecret: str
+        apiUrl: Optional[str]
+        authorizationUrl: Optional[str]
 
 
 class Credentials:
 
-    default_file_name = "data-api-python_credentials.py"
+    default_file_name = "mb_data_api_credentials.json"
 
     def __init__(self, paths: List[str] = None) -> None:
 
@@ -18,10 +26,12 @@ class Credentials:
             raise Exception("paths is an empty")
 
         for path in paths:
-            module = self._test_path(path)
-            if module:
-                self.client_id: str = module.CLIENT_ID
-                self.client_secret: str = module.CLIENT_SECRET
+            json_obj = self._test_path(path)
+            if json_obj:
+                self.client_id = json_obj["clientId"]
+                self.client_secret = json_obj["clientSecret"]
+                self.api_url = json_obj.get("apiUrl")
+                self.authorization_url = json_obj.get("authorizationUrl")
                 return
 
         error = "Credentials not was not found.\npaths tested\n" + str("\n".join(paths))
@@ -44,29 +54,30 @@ class Credentials:
         return paths
 
     @classmethod
-    def _test_path(cls, path: str) -> Any:
+    def _test_path(cls, path: str) -> Union[Literal[False], "CredentialsJsonObj"]:
         if not cls._is_file(path):
             return False
 
-        spec = spec_from_file_location("credentials", path)
+        json_obj: CredentialsJsonObj
+        with open(path, "r", encoding="utf-8") as file:
+            json_obj = cast("CredentialsJsonObj", json.loads(file.read()))
 
-        if not spec:
-            return None
+        if not isinstance(json_obj, dict):
+            raise Exception(f"no json obj in file {path}")
 
-        module = module_from_spec(spec)
+        if "clientId" not in json_obj:
+            raise Exception(f"missing 'clientId' in file {path}")
 
-        if not spec.loader:
-            return None
+        if not isinstance(json_obj["clientId"], str):
+            raise Exception(f"clientId is not a string in file {path}")
 
-        spec.loader.exec_module(module)
+        if "clientSecret" not in json_obj:
+            raise Exception(f"missing 'clientSecret' in file {path}")
 
-        if not hasattr(module, "CLIENT_ID"):
-            raise Exception(f"missing 'CLIENT_ID' in file {path}")
+        if not isinstance(json_obj["clientSecret"], str):
+            raise Exception(f"clientSecret is not a string in file {path}")
 
-        if not hasattr(module, "CLIENT_SECRET"):
-            raise Exception(f"missing 'CLIENT_SECRET' in file {path}")
-
-        return module
+        return json_obj
 
     @classmethod
     def _path_join(cls, *paths: str) -> str:

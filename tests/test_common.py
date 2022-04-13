@@ -14,53 +14,26 @@ import pandas  # type: ignore
 from macrobond_financial.com import ComClient, ComApi
 from macrobond_financial.web import WebClient, WebApi
 
+from macrobond_financial.common import Credentials
+
 
 pandas.set_option("display.max_rows", 500)
 pandas.set_option("display.max_columns", 500)
 pandas.set_option("display.width", 1000)
 
 
-class UserSecrets:
-    def __init__(self) -> None:
-        with open(self.path(), encoding="utf-8") as f:
-            j = json.load(f)
+def get_credentials() -> Credentials:
+    guid = "314101f0-4c66-443c-9371-d2047861915d"
 
-        self.api_url: str = j["apiUrl"]
-        self.authorization_url: str = j["authorizationUrl"]
-        self.client_id: str = j["clientId"]
-        self.client_secret: str = j["clientSecret"]
+    dir_path = os.path.join(
+        Path.home(), "AppData", "Roaming", "Microsoft", "UserSecrets", guid
+    )
 
-        if self.client_id == "":
-            raise Exception(
-                'UserSecrets.client_id is "", add client_id to ' + self.path()
-            )
-        if self.client_secret == "":
-            raise Exception(
-                'UserSecrets.client_secret is "", add client_secret to ' + self.path()
-            )
+    path = os.path.join(dir_path, "secrets.json")
 
-    @classmethod
-    def guid(cls) -> str:
-        return "314101f0-4c66-443c-9371-d2047861915d"
-
-    @classmethod
-    def dir_path(cls) -> str:
-        return os.path.join(
-            Path.home(), "AppData", "Roaming", "Microsoft", "UserSecrets", cls.guid()
-        )
-
-    @classmethod
-    def path(cls) -> str:
-        return os.path.join(cls.dir_path(), "secrets.json")
-
-    @classmethod
-    def exists(cls) -> bool:
-        return os.path.exists(cls.path())
-
-    @classmethod
-    def write_example(cls) -> None:
-        os.makedirs(cls.dir_path(), exist_ok=True)
-        with open(cls.path(), "w+", encoding="utf-8") as f:
+    if not os.path.exists(path):
+        os.makedirs(dir_path, exist_ok=True)
+        with open(path, "w+", encoding="utf-8") as f:
             json_str = json.dumps(
                 {
                     "apiUrl": "https://api.macrobondfinancial.com/",
@@ -71,11 +44,18 @@ class UserSecrets:
                 indent=4,
             )
             f.write(json_str)
+        raise Exception(
+            "Credentials has been created at "
+            + path
+            + ", add your clientId amd clientSecret"
+        )
+
+    return Credentials([path])
 
 
 class TestCase(UnittestTestCase):
 
-    __userSecrets: Optional[UserSecrets] = None
+    __credentials: Optional[Credentials] = None
 
     def __init__(self, *args, **kwargs):
         super(TestCase, self).__init__(*args, **kwargs)
@@ -86,24 +66,12 @@ class TestCase(UnittestTestCase):
 
     @property
     def web_client(self) -> WebClient:
-        if TestCase.__userSecrets is None:
-            if not UserSecrets.exists():
-                UserSecrets.write_example()
-                raise Exception(
-                    "UserSecrets has been created at "
-                    + UserSecrets.path()
-                    + ", add your clientId amd clientSecret"
-                )
-            TestCase.__userSecrets = UserSecrets()
+        if TestCase.__credentials is None:
+            TestCase.__credentials = get_credentials()
 
         if self.__web_client is None:
-            user_secrets = TestCase.__userSecrets
-            self.__web_client = WebClient(
-                user_secrets.client_id,
-                user_secrets.client_secret,
-                api_url=user_secrets.api_url,
-                authorization_url=user_secrets.authorization_url,
-            )
+            credentials = TestCase.__credentials
+            self.__web_client = WebClient(credentials)
 
         return self.__web_client
 

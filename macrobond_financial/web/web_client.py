@@ -92,6 +92,10 @@ class WebClient(Client["WebApi"]):
             credentials = client_id_or_credentials
             client_id = credentials.client_id
             client_secret = credentials.client_secret
+            if credentials.api_url:
+                api_url = credentials.api_url
+            if credentials.authorization_url:
+                authorization_url = credentials.authorization_url
         else:
             super().__init__(False)
             client_id = client_id_or_credentials

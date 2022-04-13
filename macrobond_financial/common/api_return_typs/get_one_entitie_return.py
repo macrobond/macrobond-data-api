@@ -26,7 +26,7 @@ class GetOneEntitieReturn(ABC):
     def data_frame(
         self,
         index: "pandas_typing.Axes" = None,
-        columns: Union["EntityColumns", "pandas_typing.Axes"] = None,
+        columns: Union[EntityColumns, "pandas_typing.Axes"] = None,
         dtype: "pandas_typing.Dtype" = None,
         copy: bool = False,
     ) -> "DataFrame":

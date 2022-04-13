@@ -16,6 +16,7 @@ try:
 except ImportError as ex:
     _win32com_import_error = ex
 
+
 class ComClient(Client["ComApi"]):
     """
     ComClient to get data from the web
