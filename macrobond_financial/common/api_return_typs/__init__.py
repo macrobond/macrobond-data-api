@@ -5,7 +5,7 @@ from .get_attribute_information_return import GetAttributeInformationReturn
 from .get_entities_return import GetEntitiesReturn
 from .get_nth_release_return import GetNthReleaseReturn
 from .get_observation_history_return import GetObservationHistoryReturn
-from .get_one_entitie_return import GetOneEntitieReturn
+from .get_one_entity_return import GetOneEntityReturn
 from .get_one_series_return import GetOneSeriesReturn
 from .get_revision_info_return import GetRevisionInfoReturn, RevisionInfo
 

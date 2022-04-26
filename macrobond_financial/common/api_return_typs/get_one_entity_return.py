@@ -9,7 +9,7 @@ if TYPE_CHECKING:  # pragma: no cover
     from pandas import DataFrame, _typing as pandas_typing  # type: ignore
 
 
-class GetOneEntitieReturn(ABC):
+class GetOneEntityReturn(ABC):
     @abstractmethod
     def object(self) -> Entity:
         ...

@@ -12,7 +12,7 @@ from macrobond_financial.common.enums import (
     CalendarMergeMode,
 )
 
-from macrobond_financial.common.typs import SearchResult, SeriesEntrie
+from macrobond_financial.common.typs import SearchResult, SeriesEntry
 
 from ._api_return_typs import (
     _ListValuesReturn,
@@ -21,7 +21,7 @@ from ._api_return_typs import (
     _GetVintageSeriesReturn,
     _GetOneSeriesReturn,
     _GetSeriesReturn,
-    _GetOneEntitieReturn,
+    _GetOneEntityReturn,
     _GetEntitiesReturn,
     _GetUnifiedSeriesReturn,
     _fill_metadata_from_entity,
@@ -40,7 +40,7 @@ if TYPE_CHECKING:  # pragma: no cover
         # GetNthReleaseReturn,
         GetOneSeriesReturn,
         GetSeriesReturn,
-        GetOneEntitieReturn,
+        GetOneEntityReturn,
         GetEntitiesReturn,
         GetUnifiedSeriesReturn,
     )
@@ -170,10 +170,10 @@ class ComApi(Api):
             self.raise_error if raise_error is None else raise_error,
         )
 
-    def get_one_entitie(
+    def get_one_entity(
         self, entity_name: str, raise_error: bool = None
-    ) -> "GetOneEntitieReturn":
-        return _GetOneEntitieReturn(
+    ) -> "GetOneEntityReturn":
+        return _GetOneEntityReturn(
             self.__connection.Database,
             entity_name,
             self.raise_error if raise_error is None else raise_error,
@@ -190,7 +190,7 @@ class ComApi(Api):
 
     def get_unified_series(
         self,
-        *series_entries: Union[SeriesEntrie, str],
+        *series_entries: Union[SeriesEntry, str],
         frequency=SeriesFrequency.HIGHEST,
         weekdays: SeriesWeekdays = SeriesWeekdays.FULL_WEEK,
         calendar_merge_mode=CalendarMergeMode.AVAILABLE_IN_ANY,
@@ -200,11 +200,11 @@ class ComApi(Api):
         raise_error: bool = None
     ) -> "GetUnifiedSeriesReturn":
         request = self.__connection.Database.CreateUnifiedSeriesRequest()
-        for entrie_or_name in series_entries:
-            if isinstance(entrie_or_name, str):
-                entrie_or_name = SeriesEntrie(entrie_or_name)
+        for entry_or_name in series_entries:
+            if isinstance(entry_or_name, str):
+                entry_or_name = SeriesEntry(entry_or_name)
 
-            entrie = entrie_or_name
+            entrie = entry_or_name
             series_expression = request.AddSeries(entrie.name)
 
             series_expression.MissingValueMethod = entrie.missing_value_method
@@ -212,11 +212,11 @@ class ComApi(Api):
             series_expression.ToLowerFrequencyMethod = entrie.to_lowerfrequency_method
 
             series_expression.ToHigherFrequencyMethod = (
-                entrie_or_name.to_higherfrequency_method
+                entry_or_name.to_higherfrequency_method
             )
 
             series_expression.PartialPeriodsMethod = (
-                entrie_or_name.partial_periods_method
+                entry_or_name.partial_periods_method
             )
 
         request.Frequency = frequency

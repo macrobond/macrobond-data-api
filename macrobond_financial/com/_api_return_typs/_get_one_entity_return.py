@@ -6,7 +6,7 @@ from macrobond_financial.common.typs import (
     Entity,
     GetEntitiesError,
 )
-from macrobond_financial.common.api_return_typs import GetOneEntitieReturn
+from macrobond_financial.common.api_return_typs import GetOneEntityReturn
 
 from macrobond_financial.common._get_pandas import _get_pandas
 
@@ -24,7 +24,7 @@ if TYPE_CHECKING:  # pragma: no cover
     from macrobond_financial.common.typs import EntityTypedDict
 
 
-class _GetOneEntitieReturn(GetOneEntitieReturn):
+class _GetOneEntityReturn(GetOneEntityReturn):
     def __init__(self, database: "Database", entity_name: str, _raise: bool) -> None:
         self.__database = database
         self.__entity_name = entity_name

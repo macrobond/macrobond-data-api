@@ -3,7 +3,7 @@
 from typing import TYPE_CHECKING
 from .search_result import SearchResult
 from .start_or_end_point import StartOrEndPoint
-from .series_entrie import SeriesEntrie
+from .series_entry import SeriesEntry
 from .search_filter import SearchFilter
 from .metadata_attribute_information import MetadataAttributeInformation
 from .series import Series, SeriesTypedDict, SeriesColumns

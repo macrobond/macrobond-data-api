@@ -4,7 +4,7 @@ from datetime import datetime
 from typing import TYPE_CHECKING, Union
 
 from macrobond_financial.common import Api
-from macrobond_financial.common.typs import SearchResult, SeriesEntrie
+from macrobond_financial.common.typs import SearchResult, SeriesEntry
 
 from macrobond_financial.common.enums import (
     SeriesWeekdays,
@@ -19,7 +19,7 @@ from ._api_return_typs import (
     _GetVintageSeriesReturn,
     _GetOneSeriesReturn,
     _GetSeriesReturn,
-    _GetOneEntitieReturn,
+    _GetOneEntityReturn,
     _GetEntitiesReturn,
     _GetUnifiedSeriesReturn,
 )
@@ -36,7 +36,7 @@ if TYPE_CHECKING:  # pragma: no cover
         #        GetNthReleaseReturn,
         GetOneSeriesReturn,
         GetSeriesReturn,
-        GetOneEntitieReturn,
+        GetOneEntityReturn,
         GetEntitiesReturn,
         GetUnifiedSeriesReturn,
     )
@@ -162,10 +162,10 @@ class WebApi(Api):
             self.raise_error if raise_error is None else raise_error,
         )
 
-    def get_one_entitie(
+    def get_one_entity(
         self, entity_name: str, raise_error: bool = None
-    ) -> "GetOneEntitieReturn":
-        return _GetOneEntitieReturn(
+    ) -> "GetOneEntityReturn":
+        return _GetOneEntityReturn(
             self.__session,
             entity_name,
             self.raise_error if raise_error is None else raise_error,
@@ -182,7 +182,7 @@ class WebApi(Api):
 
     def get_unified_series(
         self,
-        *series_entries: Union[SeriesEntrie, str],
+        *series_entries: Union[SeriesEntry, str],
         frequency=SeriesFrequency.HIGHEST,
         weekdays: SeriesWeekdays = SeriesWeekdays.FULL_WEEK,
         calendar_merge_mode=CalendarMergeMode.AVAILABLE_IN_ANY,
@@ -192,11 +192,11 @@ class WebApi(Api):
         raise_error: bool = None
     ) -> "GetUnifiedSeriesReturn":
         def convert_to_unified_series_entry(
-            entrie_or_name: Union[SeriesEntrie, str]
+            entry_or_name: Union[SeriesEntry, str]
         ) -> "UnifiedSeriesEntry":
-            if isinstance(entrie_or_name, str):
-                entrie_or_name = SeriesEntrie(entrie_or_name)
-            entrie = entrie_or_name
+            if isinstance(entry_or_name, str):
+                entry_or_name = SeriesEntry(entry_or_name)
+            entrie = entry_or_name
             return {
                 "name": entrie.name,
                 "missingValueMethod": entrie.missing_value_method,

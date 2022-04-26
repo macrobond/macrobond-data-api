@@ -77,7 +77,7 @@ class Series(Entity):
 <dl>
 <dt id="macrobond_financial.common.typs.series.Series"><code class="flex name class">
 <span>class <span class="ident">Series</span></span>
-<span>(</span><span>name: str, error_message: Optional[str], metadata: Optional[Dict[str, Any]], values: Optional[Tuple[Optional[float], ...]], dates: Optional[Tuple[datetime.datetime, ...]])</span>
+<span>(</span><span>name: str, error_message: Optional[str], metadata: Optional[Dict[str, Any]], values: Optional[Tuple[Union[float, NoneType], ...]], dates: Optional[Tuple[datetime.datetime, ...]])</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Interface for a Macrobond time series.</p></div>
@@ -169,7 +169,7 @@ dict(one=1, two=2)</p></div>
 <dd>
 <div class="desc"></div>
 </dd>
-<dt id="macrobond_financial.common.typs.series.SeriesTypedDict.Values"><code class="name">var <span class="ident">Values</span> : Tuple[Optional[float], ...]</code></dt>
+<dt id="macrobond_financial.common.typs.series.SeriesTypedDict.Values"><code class="name">var <span class="ident">Values</span> : Tuple[Union[float, NoneType], ...]</code></dt>
 <dd>
 <div class="desc"></div>
 </dd>

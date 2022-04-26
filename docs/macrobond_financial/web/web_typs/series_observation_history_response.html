@@ -100,12 +100,12 @@ class SeriesObservationHistoryResponse(TypedDict):
 <dd>
 <div class="desc"><p>The date of the observation</p></div>
 </dd>
-<dt id="macrobond_financial.web.web_typs.series_observation_history_response.SeriesObservationHistoryResponse.timeStamps"><code class="name">var <span class="ident">timeStamps</span> : List[Optional[str]]</code></dt>
+<dt id="macrobond_financial.web.web_typs.series_observation_history_response.SeriesObservationHistoryResponse.timeStamps"><code class="name">var <span class="ident">timeStamps</span> : List[Union[str, NoneType]]</code></dt>
 <dd>
 <div class="desc"><p>A list of timestamps of when the historical values were recorded.
 The first timestamp may be null if the time of the original is unknown.</p></div>
 </dd>
-<dt id="macrobond_financial.web.web_typs.series_observation_history_response.SeriesObservationHistoryResponse.value"><code class="name">var <span class="ident">value</span> : List[Optional[float]]</code></dt>
+<dt id="macrobond_financial.web.web_typs.series_observation_history_response.SeriesObservationHistoryResponse.value"><code class="name">var <span class="ident">value</span> : List[Union[float, NoneType]]</code></dt>
 <dd>
 <div class="desc"><p>The historical values of the observation or an empty list if
 there are no recorded values for the specified date.</p></div>

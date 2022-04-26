@@ -6,7 +6,7 @@ from typing import TYPE_CHECKING
 
 from macrobond_financial.common.typs import Entity, GetEntitiesError
 
-from macrobond_financial.common.api_return_typs import GetOneEntitieReturn
+from macrobond_financial.common.api_return_typs import GetOneEntityReturn
 
 from macrobond_financial.common._get_pandas import _get_pandas
 
@@ -21,7 +21,7 @@ if TYPE_CHECKING:  # pragma: no cover
     from ..web_typs import EntityResponse
 
 
-class _GetOneEntitieReturn(GetOneEntitieReturn):
+class _GetOneEntityReturn(GetOneEntityReturn):
     def __init__(self, session: "Session", entity_name: str, _raise: bool) -> None:
         self._session = session
         self._entity_name = entity_name

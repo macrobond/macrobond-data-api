@@ -29,7 +29,6 @@
 <pre><code class="python"># -*- coding: utf-8 -*-
 
 from typing import TYPE_CHECKING, Optional
-from win32com import client  # type: ignore
 
 from macrobond_financial.common import Client
 
@@ -38,6 +37,12 @@ from .com_api import ComApi
 if TYPE_CHECKING:  # pragma: no cover
     from .com_typs import Connection
     from macrobond_financial.common import Credentials
+
+_win32com_import_error: Optional[ImportError] = None
+try:
+    from win32com import client as _client  # type: ignore
+except ImportError as ex:
+    _win32com_import_error = ex
 
 
 class ComClient(Client[&#34;ComApi&#34;]):
@@ -61,11 +66,13 @@ class ComClient(Client[&#34;ComApi&#34;]):
         self, credentials: &#34;Credentials&#34; = None  # pylint: disable=unused-argument
     ) -&gt; None:
         super().__init__(False)
+        if _win32com_import_error:
+            raise _win32com_import_error
         self.__api: Optional[&#34;ComApi&#34;] = None
 
     def open(self) -&gt; &#34;ComApi&#34;:
         if self.__api is None:
-            connection: &#34;Connection&#34; = client.Dispatch(&#34;Macrobond.Connection&#34;)
+            connection: &#34;Connection&#34; = _client.Dispatch(&#34;Macrobond.Connection&#34;)
             self.__api = ComApi(connection)
         return self.__api
 
@@ -129,11 +136,13 @@ class ComClient(Client[&#34;ComApi&#34;]):
         self, credentials: &#34;Credentials&#34; = None  # pylint: disable=unused-argument
     ) -&gt; None:
         super().__init__(False)
+        if _win32com_import_error:
+            raise _win32com_import_error
         self.__api: Optional[&#34;ComApi&#34;] = None
 
     def open(self) -&gt; &#34;ComApi&#34;:
         if self.__api is None:
-            connection: &#34;Connection&#34; = client.Dispatch(&#34;Macrobond.Connection&#34;)
+            connection: &#34;Connection&#34; = _client.Dispatch(&#34;Macrobond.Connection&#34;)
             self.__api = ComApi(connection)
         return self.__api
 
@@ -188,7 +197,7 @@ so it is usually not a good idea to open and close them for each request</p></di
 </summary>
 <pre><code class="python">def open(self) -&gt; &#34;ComApi&#34;:
     if self.__api is None:
-        connection: &#34;Connection&#34; = client.Dispatch(&#34;Macrobond.Connection&#34;)
+        connection: &#34;Connection&#34; = _client.Dispatch(&#34;Macrobond.Connection&#34;)
         self.__api = ComApi(connection)
     return self.__api</code></pre>
 </details>

@@ -5,7 +5,7 @@ from abc import ABC, abstractmethod
 
 from datetime import datetime
 
-from .typs import SearchFilter, SearchResult, StartOrEndPoint, SeriesEntrie
+from .typs import SearchFilter, SearchResult, StartOrEndPoint, SeriesEntry
 
 from .enums import SeriesFrequency, SeriesWeekdays, CalendarMergeMode
 
@@ -16,7 +16,7 @@ from .api_return_typs import (
     GetVintageSeriesReturn,
     #  GetObservationHistoryReturn,
     #  GetNthReleaseReturn,
-    GetOneEntitieReturn,
+    GetOneEntityReturn,
     GetOneSeriesReturn,
     GetEntitiesReturn,
     GetSeriesReturn,
@@ -25,7 +25,9 @@ from .api_return_typs import (
 
 
 class Api(ABC):
-    """"""
+    """
+    Common API to interact with the Macrobond database
+    """
 
     def __init__(self) -> None:
         self.raise_error = True
@@ -107,7 +109,7 @@ class Api(ABC):
         must_not_have_attributes: Union[Sequence[str], str] = None,
         include_discontinued: bool = False,
     ) -> SearchResult:
-        """"""
+        """Search for time series and other entitites."""
         return self.series_multi_filter(
             SearchFilter(
                 text=text,
@@ -141,9 +143,9 @@ class Api(ABC):
         """Download one or more series."""
 
     @abstractmethod
-    def get_one_entitie(
+    def get_one_entity(
         self, entity_name: str, raise_error: bool = None
-    ) -> GetOneEntitieReturn:
+    ) -> GetOneEntityReturn:
         """Download one entity."""
 
     @abstractmethod
@@ -155,7 +157,7 @@ class Api(ABC):
     @abstractmethod
     def get_unified_series(
         self,
-        *series_entries: Union[SeriesEntrie, str],
+        *series_entries: Union[SeriesEntry, str],
         frequency=SeriesFrequency.HIGHEST,
         weekdays=SeriesWeekdays.FULL_WEEK,
         calendar_merge_mode=CalendarMergeMode.AVAILABLE_IN_ANY,
@@ -164,4 +166,4 @@ class Api(ABC):
         end_point: StartOrEndPoint = None,
         raise_error: bool = None
     ) -> GetUnifiedSeriesReturn:
-        """"""
+        """Get one or more series and convert them to a common frequency and calendar"""

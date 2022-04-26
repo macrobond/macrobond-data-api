@@ -8,7 +8,7 @@ from macrobond_financial.common.enums import (
 )
 
 
-class SeriesEntrie:
+class SeriesEntry:
     def __init__(
         self,
         name: str,

@@ -692,7 +692,7 @@ class SeriesMethods:
 </details>
 </dd>
 <dt id="macrobond_financial.web.web_typs.series_methods.SeriesMethods.fetch_all_vintage_series"><code class="name flex">
-<span>def <span class="ident">fetch_all_vintage_series</span></span>(<span>self, series_names: List[str], if_modified_since: datetime.datetime) ‑> List[VintageSeriesResponse]</span>
+<span>def <span class="ident">fetch_all_vintage_series</span></span>(<span>self, series_names: List[str], if_modified_since: datetime.datetime) ‑> List[_ForwardRef('VintageSeriesResponse')]</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Fetch all vintage series and the complete history of changes.</p>
@@ -737,7 +737,7 @@ class SeriesMethods:
 </details>
 </dd>
 <dt id="macrobond_financial.web.web_typs.series_methods.SeriesMethods.fetch_entities"><code class="name flex">
-<span>def <span class="ident">fetch_entities</span></span>(<span>self, *entitie_names: str) ‑> List[EntityResponse]</span>
+<span>def <span class="ident">fetch_entities</span></span>(<span>self, *entitie_names: str) ‑> List[_ForwardRef('EntityResponse')]</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Fetch one or more entities.
@@ -772,7 +772,7 @@ The result will be in the same order as the request.</p>
 </details>
 </dd>
 <dt id="macrobond_financial.web.web_typs.series_methods.SeriesMethods.fetch_nth_release_series"><code class="name flex">
-<span>def <span class="ident">fetch_nth_release_series</span></span>(<span>self, nth: int, *series_names: str, get_times_of_change: bool = None) ‑> List[SeriesWithTimesOfChangeResponse]</span>
+<span>def <span class="ident">fetch_nth_release_series</span></span>(<span>self, nth: int, *series_names: str, get_times_of_change: bool = None) ‑> List[_ForwardRef('SeriesWithTimesOfChangeResponse')]</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Fetch one or more series where each value is the nth change of the value.
@@ -817,7 +817,7 @@ The result will be in the same order as the request.</p>
 </details>
 </dd>
 <dt id="macrobond_financial.web.web_typs.series_methods.SeriesMethods.fetch_observation_history"><code class="name flex">
-<span>def <span class="ident">fetch_observation_history</span></span>(<span>self, series_names: List[str], date_of_the_observation: List[datetime.datetime]) ‑> List[SeriesObservationHistoryResponse]</span>
+<span>def <span class="ident">fetch_observation_history</span></span>(<span>self, series_names: List[str], date_of_the_observation: List[datetime.datetime]) ‑> List[_ForwardRef('SeriesObservationHistoryResponse')]</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Fetch the history of one or more observations in a time series.
@@ -864,7 +864,7 @@ The result will be in the same order as the request.</p>
 </details>
 </dd>
 <dt id="macrobond_financial.web.web_typs.series_methods.SeriesMethods.fetch_series"><code class="name flex">
-<span>def <span class="ident">fetch_series</span></span>(<span>self, *series_names: str) ‑> List[SeriesResponse]</span>
+<span>def <span class="ident">fetch_series</span></span>(<span>self, *series_names: str) ‑> List[_ForwardRef('SeriesResponse')]</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Fetch one or more entities.
@@ -902,7 +902,7 @@ The result will be in the same order as the request.</p>
 </details>
 </dd>
 <dt id="macrobond_financial.web.web_typs.series_methods.SeriesMethods.fetch_series_last_modified_time_stamp"><code class="name flex">
-<span>def <span class="ident">fetch_series_last_modified_time_stamp</span></span>(<span>self, *requests: EntityRequest) ‑> List[SeriesResponse]</span>
+<span>def <span class="ident">fetch_series_last_modified_time_stamp</span></span>(<span>self, *requests: EntityRequest) ‑> List[_ForwardRef('SeriesResponse')]</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Fetch one or more series.
@@ -988,7 +988,7 @@ The resulting list of series will be in the same order as in the request.</p>
 </details>
 </dd>
 <dt id="macrobond_financial.web.web_typs.series_methods.SeriesMethods.fetch_vintage_series"><code class="name flex">
-<span>def <span class="ident">fetch_vintage_series</span></span>(<span>self, time_of_vintage: datetime.datetime, *series_names: str, get_times_of_change: bool = None) ‑> List[VintageSeriesResponse]</span>
+<span>def <span class="ident">fetch_vintage_series</span></span>(<span>self, time_of_vintage: datetime.datetime, *series_names: str, get_times_of_change: bool = None) ‑> List[_ForwardRef('VintageSeriesResponse')]</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Fetch one or more vintage series.
@@ -1033,7 +1033,7 @@ The result will be in the same order as the request.</p>
 </details>
 </dd>
 <dt id="macrobond_financial.web.web_typs.series_methods.SeriesMethods.get_revision_info"><code class="name flex">
-<span>def <span class="ident">get_revision_info</span></span>(<span>self, *series_names: str) ‑> List[SeriesWithRevisionsInfoResponse]</span>
+<span>def <span class="ident">get_revision_info</span></span>(<span>self, *series_names: str) ‑> List[_ForwardRef('SeriesWithRevisionsInfoResponse')]</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Get information about if a record of updates is stored

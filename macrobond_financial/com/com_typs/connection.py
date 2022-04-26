@@ -23,6 +23,6 @@ class Connection:
 
     def Close(self) -> None:
         """
-        free all resources used by the Macrobond API. Opening and closing sessions can be slow,
+        Free all resources used by the Macrobond API. Opening and closing sessions can be slow,
         so it is usually not a good idea to open and close them for each request
         """

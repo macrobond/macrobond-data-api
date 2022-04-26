@@ -122,7 +122,7 @@ class UnifiedSeries(Sequence[UnifiedSerie]):
 <dl>
 <dt id="macrobond_financial.common.typs.unified_series.UnifiedSerie"><code class="flex name class">
 <span>class <span class="ident">UnifiedSerie</span></span>
-<span>(</span><span>name: str, error_message: str, metadata: Dict[str, Any], values: Tuple[Optional[float], ...])</span>
+<span>(</span><span>name: str, error_message: str, metadata: Dict[str, Any], values: Tuple[Union[float, NoneType], ...])</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Interface for a Macrobond time series.</p></div>
@@ -216,7 +216,7 @@ dict(one=1, two=2)</p></div>
 <h3>Methods</h3>
 <dl>
 <dt id="macrobond_financial.common.typs.unified_series.UnifiedSerieDict.values"><code class="name flex">
-<span>def <span class="ident">values</span></span>(<span>...) ‑> Tuple[Optional[float], ...]</span>
+<span>def <span class="ident">values</span></span>(<span>...) ‑> Tuple[Union[float, NoneType], ...]</span>
 </code></dt>
 <dd>
 <div class="desc"><p>D.values() -&gt; an object providing a view on D's values</p></div>
@@ -266,11 +266,16 @@ dict(one=1, two=2)</p></div>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
+<li>typing.Sequence</li>
 <li>collections.abc.Sequence</li>
+<li>typing.Reversible</li>
 <li>collections.abc.Reversible</li>
+<li>typing.Collection</li>
 <li>collections.abc.Collection</li>
 <li>collections.abc.Sized</li>
+<li>typing.Iterable</li>
 <li>collections.abc.Iterable</li>
+<li>typing.Container</li>
 <li>collections.abc.Container</li>
 <li>typing.Generic</li>
 </ul>

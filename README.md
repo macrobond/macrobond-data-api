@@ -1,6 +1,9 @@
 # Macrobond data-api-python
 
-Exposes a common API in Python for the Macrobobond Web and Client data APIs
+The Macrobond Data API for Python is used to access the world’s most extensive macroeconomic, aggregate financial and sector database provided by [Macrobond}(http://www.macrobond.com).
+Exposes a common API in Python for the [Macrobobond Web](https://help.macrobond.com/technical-information/the-macrobond-web-api-data-feed/) and [Client data](https://help.macrobond.com/technical-information/the-macrobond-api-for-python/) APIs
+
+You have to be a licensed user and have a Data+ or data feed user account in order to use the API.
 
 [***API reference***](https://macrobond.github.io/data-api-python/docs/macrobond_financial/)
 
@@ -22,10 +25,8 @@ with ComClient() as api:
 
 ## Features
 
-* Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum.
-* Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum.
-* Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum.
-* Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum.
+The -name- uses either the [Macrobond Web REST API](https://help.macrobond.com/technical-information/the-macrobond-web-api-data-feed/) or the [Macrobond Client data API](https://help.macrobond.com/technical-information/the-macrobond-api-for-python/) to obtain time series with values and metadata.
+The API consists of a set of functions in common between the underlying APIs as well as specialized functions unique to each implementation.
 
 ## Installing -name- and Supported Versions
 
@@ -51,4 +52,4 @@ We welcome community pull requests for bug fixes, enhancements, and documentatio
 
 ## Getting support
 
-Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum.
+[Support options](https://help.macrobond.com/support/)

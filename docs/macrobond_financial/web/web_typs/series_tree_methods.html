@@ -218,7 +218,7 @@ class SeriesTreeMethods:
 <h3>Methods</h3>
 <dl>
 <dt id="macrobond_financial.web.web_typs.series_tree_methods.SeriesTreeMethods.find_locations"><code class="name flex">
-<span>def <span class="ident">find_locations</span></span>(<span>self, series_name: str) ‑> List[SeriesTreeLocationPart]</span>
+<span>def <span class="ident">find_locations</span></span>(<span>self, series_name: str) ‑> List[_ForwardRef('SeriesTreeLocationPart')]</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Find the locations where this series can be found in the database tree.</p>
@@ -289,7 +289,7 @@ database tree identified by the path of the tree branches.</p>
 </details>
 </dd>
 <dt id="macrobond_financial.web.web_typs.series_tree_methods.SeriesTreeMethods.get_nodes"><code class="name flex">
-<span>def <span class="ident">get_nodes</span></span>(<span>self, path: str = None, filter_path: str = None) ‑> List[Union[SeriesTreeNodeLeaf, SeriesTreeNodeBranchRef, SeriesTreeNodeBranch]]</span>
+<span>def <span class="ident">get_nodes</span></span>(<span>self, path: str = None, filter_path: str = None) ‑> List[Union[_ForwardRef('SeriesTreeNodeLeaf'), _ForwardRef('SeriesTreeNodeBranchRef'), _ForwardRef('SeriesTreeNodeBranch')]]</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Get the nodes of a branch of the series database tree.</p>
