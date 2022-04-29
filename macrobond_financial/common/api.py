@@ -35,6 +35,7 @@ class Api(ABC):
     # metadata
 
     # ToDo: @mb-jp Need a new name
+    # ToDo: @mb-to Perhaps we should prefix this by "metadata_list_values"?
     @abstractmethod
     def list_values(self, name: str) -> ListValuesReturn:
         """
@@ -65,9 +66,12 @@ class Api(ABC):
         ```
         """
 
+    # ToDo: @mb-to Perhaps we should prefix this by "metadata_get_attribute_information"? We should allow for a list of names.
     @abstractmethod
     def get_attribute_information(self, name: str) -> GetAttributeInformationReturn:
         """Get information about a type of metadata."""
+
+    # ToDo: @mb-to: We should implement /v1/metadata/getvalueinformation too
 
     # revision
 
@@ -83,14 +87,14 @@ class Api(ABC):
     ) -> GetVintageSeriesReturn:
         """"""
 
-    # not done
+    # ToDo: @mb-to: not done
     # @abstractmethod
     # def get_observation_history(
     #     self, serie_name: str, time: datetime, raise_error: bool = None
     # ) -> GetObservationHistoryReturn:
     #     """"""
 
-    # not done
+    # ToDo: @mb-to: not done
     # @abstractmethod
     # def get_nth_release(
     #     self, serie_name: str, nth: int, raise_error: bool = None
@@ -99,6 +103,7 @@ class Api(ABC):
 
     # Search
 
+    # ToDo: @mb-to: I suggest we call this either entity_search, entities_search or search_entities
     def search(
         self,
         text: str = None,
