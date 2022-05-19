@@ -1,53 +1,45 @@
-# # -*- coding: utf-8 -*-
-#
-# from typing import TYPE_CHECKING
-#
-# from datetime import datetime
-#
-# from macrobond_financial.common.api_return_typs import (
-#     GetObservationHistoryReturn,
-# )
-#
-# from macrobond_financial.common.typs.series import Series
-#
-# if TYPE_CHECKING:  # pragma: no cover
-#     from macrobond_financial.common.typs.series import SeriesTypedDict
-#
-#     from ..session import Session
-#     from pandas import DataFrame, _typing as pandas_typing  # type: ignore
-#
-#
-# class _GetObservationHistoryReturn(GetObservationHistoryReturn):
-#     def __init__(
-#         self,
-#         session: "Session",
-#         serie_name: str,
-#         time: datetime,
-#         raise_error: bool,
-#     ) -> None:
-#         super().__init__()
-#         self.__session = session
-#         self.__serie_name = serie_name
-#         self.__time = time
-#         self.__raise_error = raise_error
-#
-#     # def fetch_vintage_series(self) -> "SeriesObservationHistoryResponse":
-#     #    response = self.__session.series.fetch_observation_history(
-#     #        [self.__serie_name], [self.__time]
-#     #    )[0]
-#     #
-#     #    GetEntitiesError.raise_if(
-#     #        self.__raise_error, self.__serie_name, response.get("errorText")
-#     #    )
-#     #
-#     #    return response
-#
-#     def object(self) -> Series:
-#         ...
-#
-#     def dict(self) -> "SeriesTypedDict":
-#         ...
-#
-#     def data_frame(self, *args, **kwargs) -> "DataFrame":
-#         ...
-#
+# -*- coding: utf-8 -*-
+
+
+from typing import TYPE_CHECKING, Sequence, Tuple
+from datetime import datetime
+
+from macrobond_financial.common.api_return_typs import (
+    GetObservationHistoryReturn,
+)
+from macrobond_financial.common.typs import SeriesObservationHistory
+
+from ._str_to_datetime import _str_to_datetime, _optional_str_to_datetime_z
+
+from ..session import SessionHttpException
+
+if TYPE_CHECKING:  # pragma: no cover
+    from ..session import Session
+
+
+class _GetObservationHistoryReturn(GetObservationHistoryReturn):
+    def __init__(
+        self, session: "Session", serie_name: str, times: Sequence[datetime]
+    ) -> None:
+        super().__init__(serie_name, times)
+        self._session = session
+
+    def object(self) -> Tuple[SeriesObservationHistory, ...]:
+        try:
+            response = self._session.series.fetch_observation_history(
+                self._serie_name, list(self._times)
+            )
+        except SessionHttpException as ex:
+            if ex.status_code == 404:
+                raise Exception(ex.response.json()["detail"]) from ex
+            raise ex
+        return tuple(
+            map(
+                lambda x: SeriesObservationHistory(
+                    _str_to_datetime(x["observationDate"]),
+                    tuple(x["values"]),
+                    tuple(map(_optional_str_to_datetime_z, x["timeStamps"])),
+                ),
+                response,
+            )
+        )

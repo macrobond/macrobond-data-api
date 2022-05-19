@@ -29,10 +29,10 @@
 <pre><code class="python"># -*- coding: utf-8 -*-
 
 from abc import ABC, abstractmethod
-from typing import Union, overload, List, TYPE_CHECKING
+from typing import Any, Dict, Union, overload, List, TYPE_CHECKING
 from typing_extensions import Literal
 
-from ..typs import Series, SeriesColumns, SeriesTypedDict
+from ..typs import Series, SeriesColumns, GetEntitiesError
 
 if TYPE_CHECKING:  # pragma: no cover
     from pandas import DataFrame, _typing as pandas_typing  # type: ignore
@@ -41,13 +41,22 @@ SeriesValuesAndDatesColumns = List[Literal[&#34;Values&#34;, &#34;Dates&#34;]]
 
 
 class GetOneSeriesReturn(ABC):
-    @abstractmethod
-    def object(self) -&gt; Series:
-        ...
+    def __init__(self, series_name: str, _raise: bool) -&gt; None:
+        self._series_name = series_name
+        self._raise = _raise
 
     @abstractmethod
-    def dict(self) -&gt; SeriesTypedDict:
+    def _object(self) -&gt; Series:
         ...
+
+    def object(self) -&gt; Series:
+        series = self._object()
+        if self._raise and series.is_error:
+            raise GetEntitiesError(self._series_name, series.error_message)
+        return series
+
+    def dict(self) -&gt; Dict[str, Any]:
+        return self.object().to_dict()
 
     @overload
     def data_frame(self) -&gt; &#34;DataFrame&#34;:
@@ -63,9 +72,8 @@ class GetOneSeriesReturn(ABC):
     ) -&gt; &#34;DataFrame&#34;:
         ...
 
-    @abstractmethod
     def data_frame(self, *args, **kwargs) -&gt; &#34;DataFrame&#34;:
-        ...
+        return self.object().data_frame(*args, **kwargs)
 
     @overload
     def values_and_dates_as_data_frame(self) -&gt; &#34;DataFrame&#34;:
@@ -81,9 +89,8 @@ class GetOneSeriesReturn(ABC):
     ) -&gt; &#34;DataFrame&#34;:
         ...
 
-    @abstractmethod
     def values_and_dates_as_data_frame(self, *args, **kwargs) -&gt; &#34;DataFrame&#34;:
-        ...</code></pre>
+        return self.object().get_values_and_dates_as_data_frame(*args, **kwargs)</code></pre>
 </details>
 </section>
 <section>
@@ -97,6 +104,7 @@ class GetOneSeriesReturn(ABC):
 <dl>
 <dt id="macrobond_financial.common.api_return_typs.get_one_series_return.GetOneSeriesReturn"><code class="flex name class">
 <span>class <span class="ident">GetOneSeriesReturn</span></span>
+<span>(</span><span>series_name: str, _raise: bool)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Helper class that provides a standard way to create an ABC using
@@ -106,13 +114,22 @@ inheritance.</p></div>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class GetOneSeriesReturn(ABC):
-    @abstractmethod
-    def object(self) -&gt; Series:
-        ...
+    def __init__(self, series_name: str, _raise: bool) -&gt; None:
+        self._series_name = series_name
+        self._raise = _raise
 
     @abstractmethod
-    def dict(self) -&gt; SeriesTypedDict:
+    def _object(self) -&gt; Series:
         ...
+
+    def object(self) -&gt; Series:
+        series = self._object()
+        if self._raise and series.is_error:
+            raise GetEntitiesError(self._series_name, series.error_message)
+        return series
+
+    def dict(self) -&gt; Dict[str, Any]:
+        return self.object().to_dict()
 
     @overload
     def data_frame(self) -&gt; &#34;DataFrame&#34;:
@@ -128,9 +145,8 @@ inheritance.</p></div>
     ) -&gt; &#34;DataFrame&#34;:
         ...
 
-    @abstractmethod
     def data_frame(self, *args, **kwargs) -&gt; &#34;DataFrame&#34;:
-        ...
+        return self.object().data_frame(*args, **kwargs)
 
     @overload
     def values_and_dates_as_data_frame(self) -&gt; &#34;DataFrame&#34;:
@@ -146,9 +162,8 @@ inheritance.</p></div>
     ) -&gt; &#34;DataFrame&#34;:
         ...
 
-    @abstractmethod
     def values_and_dates_as_data_frame(self, *args, **kwargs) -&gt; &#34;DataFrame&#34;:
-        ...</code></pre>
+        return self.object().get_values_and_dates_as_data_frame(*args, **kwargs)</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
@@ -170,13 +185,12 @@ inheritance.</p></div>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">@abstractmethod
-def data_frame(self, *args, **kwargs) -&gt; &#34;DataFrame&#34;:
-    ...</code></pre>
+<pre><code class="python">def data_frame(self, *args, **kwargs) -&gt; &#34;DataFrame&#34;:
+    return self.object().data_frame(*args, **kwargs)</code></pre>
 </details>
 </dd>
 <dt id="macrobond_financial.common.api_return_typs.get_one_series_return.GetOneSeriesReturn.dict"><code class="name flex">
-<span>def <span class="ident">dict</span></span>(<span>self) ‑> <a title="macrobond_financial.common.typs.series.SeriesTypedDict" href="../typs/series.html#macrobond_financial.common.typs.series.SeriesTypedDict">SeriesTypedDict</a></span>
+<span>def <span class="ident">dict</span></span>(<span>self) ‑> Dict[str, Any]</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -184,9 +198,8 @@ def data_frame(self, *args, **kwargs) -&gt; &#34;DataFrame&#34;:
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">@abstractmethod
-def dict(self) -&gt; SeriesTypedDict:
-    ...</code></pre>
+<pre><code class="python">def dict(self) -&gt; Dict[str, Any]:
+    return self.object().to_dict()</code></pre>
 </details>
 </dd>
 <dt id="macrobond_financial.common.api_return_typs.get_one_series_return.GetOneSeriesReturn.object"><code class="name flex">
@@ -198,9 +211,11 @@ def dict(self) -&gt; SeriesTypedDict:
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">@abstractmethod
-def object(self) -&gt; Series:
-    ...</code></pre>
+<pre><code class="python">def object(self) -&gt; Series:
+    series = self._object()
+    if self._raise and series.is_error:
+        raise GetEntitiesError(self._series_name, series.error_message)
+    return series</code></pre>
 </details>
 </dd>
 <dt id="macrobond_financial.common.api_return_typs.get_one_series_return.GetOneSeriesReturn.values_and_dates_as_data_frame"><code class="name flex">
@@ -212,9 +227,8 @@ def object(self) -&gt; Series:
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">@abstractmethod
-def values_and_dates_as_data_frame(self, *args, **kwargs) -&gt; &#34;DataFrame&#34;:
-    ...</code></pre>
+<pre><code class="python">def values_and_dates_as_data_frame(self, *args, **kwargs) -&gt; &#34;DataFrame&#34;:
+    return self.object().get_values_and_dates_as_data_frame(*args, **kwargs)</code></pre>
 </details>
 </dd>
 </dl>

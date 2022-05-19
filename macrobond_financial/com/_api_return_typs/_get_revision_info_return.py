@@ -9,14 +9,9 @@ from macrobond_financial.common.api_return_typs import (
 
 from macrobond_financial.common.typs import GetEntitiesError
 
-from macrobond_financial.common._get_pandas import _get_pandas
-
 
 if TYPE_CHECKING:  # pragma: no cover
-    from macrobond_financial.common.api_return_typs import RevisionInfoDict
-    from ..com_typs import Database, SeriesWithRevisions, Series as ComSeries
-    from ..com_api import ComApi
-    from pandas import DataFrame, _typing as pandas_typing  # type: ignore
+    from ..com_typs import Database, SeriesWithRevisions
 
 
 class _GetRevisionInfoReturn(GetRevisionInfoReturn):
@@ -24,21 +19,21 @@ class _GetRevisionInfoReturn(GetRevisionInfoReturn):
         self,
         database: "Database",
         series_names: Sequence[str],
-        raise_error: bool,
+        _raise: bool,
     ) -> None:
         super().__init__()
-        self.__database = database
-        self.__series_names = series_names
-        self.__raise_error = raise_error
+        self._database = database
+        self._series_names = series_names
+        self._raise = _raise
 
     def fetch_series_with_revisions(self) -> Tuple["SeriesWithRevisions", ...]:
-        series = self.__database.FetchSeriesWithRevisions(self.__series_names)
+        series = self._database.FetchSeriesWithRevisions(self._series_names)
 
         GetEntitiesError.raise_if(
-            self.__raise_error,
+            self._raise,
             map(
                 lambda x, y: (x, y.ErrorMessage if y.IsError else None),
-                self.__series_names,
+                self._series_names,
                 series,
             ),
         )
@@ -77,42 +72,4 @@ class _GetRevisionInfoReturn(GetRevisionInfoReturn):
                 vintage_time_stamps,
             )
 
-        return list(
-            map(to_obj, self.__series_names, self.fetch_series_with_revisions())
-        )
-
-    def dict(self) -> List["RevisionInfoDict"]:
-        def to_dict(name: str, serie: "SeriesWithRevisions") -> "RevisionInfoDict":
-            if serie.IsError:
-                return {
-                    "name": name,
-                    "error_message": serie.ErrorMessage,
-                }
-
-            vintage_time_stamps = tuple(serie.GetVintageDates())
-
-            time_stamp_of_first_revision = (
-                vintage_time_stamps[0] if serie.HasRevisions else None
-            )
-            time_stamp_of_last_revision = (
-                vintage_time_stamps[-1] if serie.HasRevisions else None
-            )
-
-            return {
-                "name": name,
-                "has_revisions": serie.HasRevisions,
-                "stores_revisions": serie.StoresRevisions,
-                "time_stamp_of_first_revision": time_stamp_of_first_revision,
-                "time_stamp_of_last_revision": time_stamp_of_last_revision,
-                "vintage_time_stamps": vintage_time_stamps,
-            }
-
-        return list(
-            map(to_dict, self.__series_names, self.fetch_series_with_revisions())
-        )
-
-    def data_frame(self, *args, **kwargs) -> "DataFrame":
-        pandas = _get_pandas()
-        args = args[1:]
-        kwargs["data"] = self.dict()
-        return pandas.DataFrame(*args, **kwargs)
+        return list(map(to_obj, self._series_names, self.fetch_series_with_revisions()))

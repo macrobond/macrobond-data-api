@@ -30,20 +30,19 @@
 
 from datetime import datetime
 
-from typing import Any, Dict, Tuple, Optional, List, cast
+from typing import Any, Dict, Tuple, Optional, List, cast, TYPE_CHECKING
 from typing_extensions import Literal
 
-from .entity import Entity, EntityColumnsLiterals, EntityTypedDict
+from .entity import Entity, EntityColumnsLiterals
 
+from .._get_pandas import _get_pandas
 
 SeriesColumnsLiterals = Literal[EntityColumnsLiterals, &#34;Values&#34;, &#34;Dates&#34;]
 
 SeriesColumns = List[SeriesColumnsLiterals]
 
-
-class SeriesTypedDict(EntityTypedDict, total=False):
-    Values: Tuple[Optional[float], ...]
-    Dates: Tuple[datetime, ...]
+if TYPE_CHECKING:  # pragma: no cover
+    from pandas import DataFrame  # type: ignore
 
 
 class Series(Entity):
@@ -63,7 +62,41 @@ class Series(Entity):
             self.dates: Tuple[datetime, ...] = tuple()
         else:
             self.values = values
-            self.dates = cast(Tuple[datetime, ...], dates)</code></pre>
+            self.dates = cast(Tuple[datetime, ...], dates)
+
+    def to_dict(self) -&gt; Dict[str, Any]:
+        if self.is_error:
+            return {
+                &#34;Name&#34;: self.name,
+                &#34;ErrorMessage&#34;: self.error_message,
+            }
+        ret = {
+            &#34;Name&#34;: self.name,
+            &#34;Values&#34;: self.values,
+            &#34;Dates&#34;: self.dates,
+        }
+        self._add_metadata(ret)
+        return ret
+
+    def get_values_and_dates_as_data_frame(self, *args, **kwargs) -&gt; &#34;DataFrame&#34;:
+        pandas = _get_pandas()
+
+        if self.is_error:
+            error_series = {
+                &#34;Name&#34;: self.name,
+                &#34;ErrorMessage&#34;: self.error_message,
+            }
+            kwargs[&#34;data&#34;] = [error_series]
+        else:
+            series = {
+                &#34;Values&#34;: self.values,
+                &#34;Dates&#34;: self.dates,
+            }
+
+            kwargs[&#34;data&#34;] = series
+
+        args = args[1:]
+        return pandas.DataFrame(*args, **kwargs)</code></pre>
 </details>
 </section>
 <section>
@@ -102,7 +135,41 @@ class Series(Entity):
             self.dates: Tuple[datetime, ...] = tuple()
         else:
             self.values = values
-            self.dates = cast(Tuple[datetime, ...], dates)</code></pre>
+            self.dates = cast(Tuple[datetime, ...], dates)
+
+    def to_dict(self) -&gt; Dict[str, Any]:
+        if self.is_error:
+            return {
+                &#34;Name&#34;: self.name,
+                &#34;ErrorMessage&#34;: self.error_message,
+            }
+        ret = {
+            &#34;Name&#34;: self.name,
+            &#34;Values&#34;: self.values,
+            &#34;Dates&#34;: self.dates,
+        }
+        self._add_metadata(ret)
+        return ret
+
+    def get_values_and_dates_as_data_frame(self, *args, **kwargs) -&gt; &#34;DataFrame&#34;:
+        pandas = _get_pandas()
+
+        if self.is_error:
+            error_series = {
+                &#34;Name&#34;: self.name,
+                &#34;ErrorMessage&#34;: self.error_message,
+            }
+            kwargs[&#34;data&#34;] = [error_series]
+        else:
+            series = {
+                &#34;Values&#34;: self.values,
+                &#34;Dates&#34;: self.dates,
+            }
+
+            kwargs[&#34;data&#34;] = series
+
+        args = args[1:]
+        return pandas.DataFrame(*args, **kwargs)</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
@@ -112,6 +179,63 @@ class Series(Entity):
 <ul class="hlist">
 <li><a title="macrobond_financial.common.typs.vintage_series.VintageSeries" href="vintage_series.html#macrobond_financial.common.typs.vintage_series.VintageSeries">VintageSeries</a></li>
 </ul>
+<h3>Methods</h3>
+<dl>
+<dt id="macrobond_financial.common.typs.series.Series.get_values_and_dates_as_data_frame"><code class="name flex">
+<span>def <span class="ident">get_values_and_dates_as_data_frame</span></span>(<span>self, *args, **kwargs) ‑> DataFrame</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_values_and_dates_as_data_frame(self, *args, **kwargs) -&gt; &#34;DataFrame&#34;:
+    pandas = _get_pandas()
+
+    if self.is_error:
+        error_series = {
+            &#34;Name&#34;: self.name,
+            &#34;ErrorMessage&#34;: self.error_message,
+        }
+        kwargs[&#34;data&#34;] = [error_series]
+    else:
+        series = {
+            &#34;Values&#34;: self.values,
+            &#34;Dates&#34;: self.dates,
+        }
+
+        kwargs[&#34;data&#34;] = series
+
+    args = args[1:]
+    return pandas.DataFrame(*args, **kwargs)</code></pre>
+</details>
+</dd>
+<dt id="macrobond_financial.common.typs.series.Series.to_dict"><code class="name flex">
+<span>def <span class="ident">to_dict</span></span>(<span>self) ‑> Dict[str, Any]</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def to_dict(self) -&gt; Dict[str, Any]:
+    if self.is_error:
+        return {
+            &#34;Name&#34;: self.name,
+            &#34;ErrorMessage&#34;: self.error_message,
+        }
+    ret = {
+        &#34;Name&#34;: self.name,
+        &#34;Values&#34;: self.values,
+        &#34;Dates&#34;: self.dates,
+    }
+    self._add_metadata(ret)
+    return ret</code></pre>
+</details>
+</dd>
+</dl>
 <h3>Inherited members</h3>
 <ul class="hlist">
 <li><code><b><a title="macrobond_financial.common.typs.entity.Entity" href="entity.html#macrobond_financial.common.typs.entity.Entity">Entity</a></b></code>:
@@ -122,58 +246,6 @@ class Series(Entity):
 </ul>
 </li>
 </ul>
-</dd>
-<dt id="macrobond_financial.common.typs.series.SeriesTypedDict"><code class="flex name class">
-<span>class <span class="ident">SeriesTypedDict</span></span>
-<span>(</span><span>*args, **kwargs)</span>
-</code></dt>
-<dd>
-<div class="desc"><p>dict() -&gt; new empty dictionary
-dict(mapping) -&gt; new dictionary initialized from a mapping object's
-(key, value) pairs
-dict(iterable) -&gt; new dictionary initialized as if via:
-d = {}
-for k, v in iterable:
-d[k] = v
-dict(**kwargs) -&gt; new dictionary initialized with the name=value pairs
-in the keyword argument list.
-For example:
-dict(one=1, two=2)</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">class SeriesTypedDict(EntityTypedDict, total=False):
-    Values: Tuple[Optional[float], ...]
-    Dates: Tuple[datetime, ...]</code></pre>
-</details>
-<h3>Ancestors</h3>
-<ul class="hlist">
-<li>builtins.dict</li>
-</ul>
-<h3>Class variables</h3>
-<dl>
-<dt id="macrobond_financial.common.typs.series.SeriesTypedDict.Dates"><code class="name">var <span class="ident">Dates</span> : Tuple[datetime.datetime, ...]</code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="macrobond_financial.common.typs.series.SeriesTypedDict.ErrorMessage"><code class="name">var <span class="ident">ErrorMessage</span> : str</code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="macrobond_financial.common.typs.series.SeriesTypedDict.MetaData"><code class="name">var <span class="ident">MetaData</span> : Dict[str, Any]</code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="macrobond_financial.common.typs.series.SeriesTypedDict.Name"><code class="name">var <span class="ident">Name</span> : str</code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="macrobond_financial.common.typs.series.SeriesTypedDict.Values"><code class="name">var <span class="ident">Values</span> : Tuple[Union[float, NoneType], ...]</code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-</dl>
 </dd>
 </dl>
 </section>
@@ -193,15 +265,9 @@ dict(one=1, two=2)</p></div>
 <ul>
 <li>
 <h4><code><a title="macrobond_financial.common.typs.series.Series" href="#macrobond_financial.common.typs.series.Series">Series</a></code></h4>
-</li>
-<li>
-<h4><code><a title="macrobond_financial.common.typs.series.SeriesTypedDict" href="#macrobond_financial.common.typs.series.SeriesTypedDict">SeriesTypedDict</a></code></h4>
 <ul class="">
-<li><code><a title="macrobond_financial.common.typs.series.SeriesTypedDict.Dates" href="#macrobond_financial.common.typs.series.SeriesTypedDict.Dates">Dates</a></code></li>
-<li><code><a title="macrobond_financial.common.typs.series.SeriesTypedDict.ErrorMessage" href="#macrobond_financial.common.typs.series.SeriesTypedDict.ErrorMessage">ErrorMessage</a></code></li>
-<li><code><a title="macrobond_financial.common.typs.series.SeriesTypedDict.MetaData" href="#macrobond_financial.common.typs.series.SeriesTypedDict.MetaData">MetaData</a></code></li>
-<li><code><a title="macrobond_financial.common.typs.series.SeriesTypedDict.Name" href="#macrobond_financial.common.typs.series.SeriesTypedDict.Name">Name</a></code></li>
-<li><code><a title="macrobond_financial.common.typs.series.SeriesTypedDict.Values" href="#macrobond_financial.common.typs.series.SeriesTypedDict.Values">Values</a></code></li>
+<li><code><a title="macrobond_financial.common.typs.series.Series.get_values_and_dates_as_data_frame" href="#macrobond_financial.common.typs.series.Series.get_values_and_dates_as_data_frame">get_values_and_dates_as_data_frame</a></code></li>
+<li><code><a title="macrobond_financial.common.typs.series.Series.to_dict" href="#macrobond_financial.common.typs.series.Series.to_dict">to_dict</a></code></li>
 </ul>
 </li>
 </ul>

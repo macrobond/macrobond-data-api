@@ -40,7 +40,7 @@ class SeriesObservationHistoryResponse(TypedDict):
     observationDate: str
     &#34;&#34;&#34;The date of the observation&#34;&#34;&#34;
 
-    value: List[Optional[float]]
+    values: List[Optional[float]]
     &#34;&#34;&#34;
     The historical values of the observation or an empty list if
     there are no recorded values for the specified date.
@@ -78,7 +78,7 @@ class SeriesObservationHistoryResponse(TypedDict):
     observationDate: str
     &#34;&#34;&#34;The date of the observation&#34;&#34;&#34;
 
-    value: List[Optional[float]]
+    values: List[Optional[float]]
     &#34;&#34;&#34;
     The historical values of the observation or an empty list if
     there are no recorded values for the specified date.
@@ -105,10 +105,14 @@ class SeriesObservationHistoryResponse(TypedDict):
 <div class="desc"><p>A list of timestamps of when the historical values were recorded.
 The first timestamp may be null if the time of the original is unknown.</p></div>
 </dd>
-<dt id="macrobond_financial.web.web_typs.series_observation_history_response.SeriesObservationHistoryResponse.value"><code class="name">var <span class="ident">value</span> : List[Union[float, NoneType]]</code></dt>
+</dl>
+<h3>Methods</h3>
+<dl>
+<dt id="macrobond_financial.web.web_typs.series_observation_history_response.SeriesObservationHistoryResponse.values"><code class="name flex">
+<span>def <span class="ident">values</span></span>(<span>...) ‑> List[Union[float, NoneType]]</span>
+</code></dt>
 <dd>
-<div class="desc"><p>The historical values of the observation or an empty list if
-there are no recorded values for the specified date.</p></div>
+<div class="desc"><p>D.values() -&gt; an object providing a view on D's values</p></div>
 </dd>
 </dl>
 </dd>
@@ -133,7 +137,7 @@ there are no recorded values for the specified date.</p></div>
 <ul class="">
 <li><code><a title="macrobond_financial.web.web_typs.series_observation_history_response.SeriesObservationHistoryResponse.observationDate" href="#macrobond_financial.web.web_typs.series_observation_history_response.SeriesObservationHistoryResponse.observationDate">observationDate</a></code></li>
 <li><code><a title="macrobond_financial.web.web_typs.series_observation_history_response.SeriesObservationHistoryResponse.timeStamps" href="#macrobond_financial.web.web_typs.series_observation_history_response.SeriesObservationHistoryResponse.timeStamps">timeStamps</a></code></li>
-<li><code><a title="macrobond_financial.web.web_typs.series_observation_history_response.SeriesObservationHistoryResponse.value" href="#macrobond_financial.web.web_typs.series_observation_history_response.SeriesObservationHistoryResponse.value">value</a></code></li>
+<li><code><a title="macrobond_financial.web.web_typs.series_observation_history_response.SeriesObservationHistoryResponse.values" href="#macrobond_financial.web.web_typs.series_observation_history_response.SeriesObservationHistoryResponse.values">values</a></code></li>
 </ul>
 </li>
 </ul>

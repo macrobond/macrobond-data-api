@@ -1,22 +1,39 @@
 # -*- coding: utf-8 -*-
 
-from typing import TYPE_CHECKING, overload
+from typing import TYPE_CHECKING, Any, Dict, overload
 from abc import ABC, abstractmethod
 
-from ..typs import VintageSeries, VintageSeriesTypedDict
+from datetime import datetime
+
+from ..typs import VintageSeries, GetEntitiesError
 
 if TYPE_CHECKING:  # pragma: no cover
     from pandas import DataFrame, _typing as pandas_typing  # type: ignore
 
 
 class GetVintageSeriesReturn(ABC):
-    @abstractmethod
-    def object(self) -> VintageSeries:
-        ...  # pragma: no cover
+    def __init__(
+        self,
+        serie_name: str,
+        time: datetime,
+        _raise: bool,
+    ) -> None:
+        self._serie_name = serie_name
+        self._time = time
+        self._raise = _raise
 
     @abstractmethod
-    def dict(self) -> VintageSeriesTypedDict:
+    def _object(self) -> VintageSeries:
         ...  # pragma: no cover
+
+    def object(self) -> VintageSeries:
+        series = self._object()
+        if self._raise and series.is_error:
+            raise GetEntitiesError(self._serie_name, series.error_message)
+        return series
+
+    def dict(self) -> Dict[str, Any]:
+        return self._object().to_dict()
 
     @overload
     def data_frame(self) -> "DataFrame":
@@ -32,6 +49,5 @@ class GetVintageSeriesReturn(ABC):
     ) -> "DataFrame":
         ...
 
-    @abstractmethod
     def data_frame(self, *args, **kwargs) -> "DataFrame":
-        ...  # pragma: no cover
+        return self.object().data_frame(*args, **kwargs)

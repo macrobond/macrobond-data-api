@@ -49,9 +49,8 @@ class GetAttributeInformationReturn(ABC):
     def object(self) -&gt; MetadataAttributeInformation:
         ...
 
-    @abstractmethod
     def dict(self) -&gt; TypedDictMetadataAttributeInformation:
-        ...
+        return self.object().to_dict()
 
     @overload
     def data_frame(self) -&gt; &#34;DataFrame&#34;:
@@ -69,9 +68,8 @@ class GetAttributeInformationReturn(ABC):
     ) -&gt; &#34;DataFrame&#34;:
         ...
 
-    @abstractmethod
     def data_frame(self, *args, **kwargs) -&gt; &#34;DataFrame&#34;:
-        ...</code></pre>
+        return self.object().data_frame(*args, **kwargs)</code></pre>
 </details>
 </section>
 <section>
@@ -98,9 +96,8 @@ inheritance.</p></div>
     def object(self) -&gt; MetadataAttributeInformation:
         ...
 
-    @abstractmethod
     def dict(self) -&gt; TypedDictMetadataAttributeInformation:
-        ...
+        return self.object().to_dict()
 
     @overload
     def data_frame(self) -&gt; &#34;DataFrame&#34;:
@@ -118,9 +115,8 @@ inheritance.</p></div>
     ) -&gt; &#34;DataFrame&#34;:
         ...
 
-    @abstractmethod
     def data_frame(self, *args, **kwargs) -&gt; &#34;DataFrame&#34;:
-        ...</code></pre>
+        return self.object().data_frame(*args, **kwargs)</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
@@ -142,9 +138,8 @@ inheritance.</p></div>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">@abstractmethod
-def data_frame(self, *args, **kwargs) -&gt; &#34;DataFrame&#34;:
-    ...</code></pre>
+<pre><code class="python">def data_frame(self, *args, **kwargs) -&gt; &#34;DataFrame&#34;:
+    return self.object().data_frame(*args, **kwargs)</code></pre>
 </details>
 </dd>
 <dt id="macrobond_financial.common.api_return_typs.get_attribute_information_return.GetAttributeInformationReturn.dict"><code class="name flex">
@@ -156,9 +151,8 @@ def data_frame(self, *args, **kwargs) -&gt; &#34;DataFrame&#34;:
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">@abstractmethod
-def dict(self) -&gt; TypedDictMetadataAttributeInformation:
-    ...</code></pre>
+<pre><code class="python">def dict(self) -&gt; TypedDictMetadataAttributeInformation:
+    return self.object().to_dict()</code></pre>
 </details>
 </dd>
 <dt id="macrobond_financial.common.api_return_typs.get_attribute_information_return.GetAttributeInformationReturn.object"><code class="name flex">

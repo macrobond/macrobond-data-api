@@ -20,9 +20,8 @@ class GetAttributeInformationReturn(ABC):
     def object(self) -> MetadataAttributeInformation:
         ...
 
-    @abstractmethod
     def dict(self) -> TypedDictMetadataAttributeInformation:
-        ...
+        return self.object().to_dict()
 
     @overload
     def data_frame(self) -> "DataFrame":
@@ -40,6 +39,5 @@ class GetAttributeInformationReturn(ABC):
     ) -> "DataFrame":
         ...
 
-    @abstractmethod
     def data_frame(self, *args, **kwargs) -> "DataFrame":
-        ...
+        return self.object().data_frame(*args, **kwargs)

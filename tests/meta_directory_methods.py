@@ -27,6 +27,9 @@ class Web(TestCase):
     def test_list_values(self):
         list_values(self, self.web_api)
 
+    def test_get_value_information(self):
+        get_value_information(self, self.web_api)
+
 
 class Com(TestCase):
     def test_get_attribute_information(self):
@@ -35,10 +38,13 @@ class Com(TestCase):
     def test_list_values(self):
         list_values(self, self.com_api)
 
+    def test_get_value_information(self):
+        get_value_information(self, self.com_api)
+
 
 def get_attribute_information(test: TestCase, api: Api) -> None:
     def _object() -> None:
-        actual = api.get_attribute_information("Description").object()
+        actual = api.metadata_get_attribute_information("Description").object()
         expected = MetadataAttributeInformation(
             "Description",
             "Short description",
@@ -56,7 +62,7 @@ def get_attribute_information(test: TestCase, api: Api) -> None:
     _object()
 
     def _dict() -> None:
-        actual = api.get_attribute_information("Description").dict()
+        actual = api.metadata_get_attribute_information("Description").dict()
         expected: "TypedDictMetadataAttributeInformation" = {
             "name": "Description",
             "description": "Short description",
@@ -73,7 +79,7 @@ def get_attribute_information(test: TestCase, api: Api) -> None:
     _dict()
 
     def _dataframe() -> None:
-        value = api.get_attribute_information("Description").data_frame()
+        value = api.metadata_get_attribute_information("Description").data_frame()
 
         test.assertIsInstance(value, DataFrame)
 
@@ -82,15 +88,17 @@ def get_attribute_information(test: TestCase, api: Api) -> None:
     _dataframe()
 
     with test.assertRaises(BaseException):
-        api.get_attribute_information("Description____").object()
+        api.metadata_get_attribute_information("Description____").object()
 
 
 def list_values(test: TestCase, api: Api) -> None:
     def _object() -> None:
-        value = api.list_values("RateType").object()
+        value = api.metadata_list_values("RateType").object()
 
         actual = next(filter(lambda x: x.value == "mole", value))
-        expected = MetadataValueInformationItem("mole", "Mortgage Lending Rates", None)
+        expected = MetadataValueInformationItem(
+            "RateType", "mole", "Mortgage Lending Rates", None
+        )
 
         test.assertEqual(actual, expected)
 
@@ -99,7 +107,7 @@ def list_values(test: TestCase, api: Api) -> None:
     _object()
 
     def _dict() -> None:
-        values = api.list_values("RateType").list_of_dicts()
+        values = api.metadata_list_values("RateType").list_of_dicts()
 
         actual = next(filter(lambda x: x["value"] == "mole", values))
         expected: "TypedDictMetadataValueInformation" = {
@@ -113,7 +121,7 @@ def list_values(test: TestCase, api: Api) -> None:
     _dict()
 
     def _dataframe() -> None:
-        value = api.list_values("RateType").data_frame()
+        value = api.metadata_list_values("RateType").data_frame()
 
         test.assertIsInstance(value, DataFrame)
 
@@ -122,7 +130,53 @@ def list_values(test: TestCase, api: Api) -> None:
     _dataframe()
 
     with test.assertRaises(BaseException):
-        api.list_values("__RateType").object()
+        api.metadata_list_values("__RateType").object()
 
     with test.assertRaises(BaseException):
-        api.list_values("Description").object()
+        api.metadata_list_values("Description").object()
+
+
+def get_value_information(test: TestCase, api: Api) -> None:
+
+    actual = api.metadata_get_value_information(("RateType", "mole")).object()
+    expected = [
+        MetadataValueInformationItem("RateType", "mole", "Mortgage Lending Rates", None)
+    ]
+    test.assertSequenceEqual(actual, expected)
+
+    actual = api.metadata_get_value_information(
+        ("RateType", "mole"), ("RateType", "fori")
+    ).object()
+    expected = [
+        MetadataValueInformationItem(
+            "RateType", "mole", "Mortgage Lending Rates", None
+        ),
+        MetadataValueInformationItem(
+            "RateType", "fori", "Foreign Institution Investments", None
+        ),
+    ]
+
+    # erros
+
+    with test.assertRaises(ValueError) as context:
+        api.metadata_get_value_information(("bad val", "mole")).object()
+    test.assertEqual(
+        "Unknown attribute: bad val",
+        str(context.exception),
+    )
+
+    with test.assertRaises(ValueError) as context:
+        api.metadata_get_value_information(("RateType", "bad val")).object()
+    test.assertEqual(
+        "Unknown attribute value: RateType,bad val",
+        str(context.exception),
+    )
+
+    with test.assertRaises(ValueError) as context:
+        api.metadata_get_value_information(
+            ("RateType", "mole"), ("RateType", "bad val")
+        ).object()
+    test.assertEqual(
+        "Unknown attribute value: RateType,bad val",
+        str(context.exception),
+    )

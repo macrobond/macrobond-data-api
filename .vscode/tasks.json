@@ -4,62 +4,94 @@
         {
             "label": "set up dev environment",
             "type": "shell",
-            "command": "python scripts\\set_up_dev_environment.py",
-            "problemMatcher": []
+            "command": "python",
+            "args": ["scripts\\set_up_dev_environment.py"],
+            "problemMatcher": [],
+            "windows":{
+                "command": "py"
+            }
         },
         {
             "label": "unittest",
             "type": "shell",
-            "command": "python scripts\\unittest.py",
-            "problemMatcher": []
+            "command": "python",
+                "args": ["scripts\\unittest.py"],
+            "problemMatcher": [],
+            "windows":{
+                "command": "py"
+            }
         },
         {
             "label": "pylint",
             "type": "shell",
-            "command": "python scripts\\pylint.py",
+            "command": "python",
+            "args": ["scripts\\pylint.py"],
             "problemMatcher": [],
             "presentation": {
                 "clear": true
+            },
+            "windows":{
+                "command": "py"
             }
         },
         {
             "label": "mypy",
             "type": "shell",
-            "command": "python scripts\\mypy.py",
+            "command": "python",
+            "args": ["scripts\\mypy.py"],
             "problemMatcher": [],
             "presentation": {
                 "clear": true
+            },
+            "windows":{
+                "command": "py"
             }
         },
         {
             "label": "pycodestyle",
             "type": "shell",
-            "command": "python scripts\\pycodestyle.py",
+            "command": "python",
+            "args": ["scripts\\pycodestyle.py"],
             "problemMatcher": [],
             "presentation": {
                 "clear": true
+            },
+            "windows":{
+                "command": "py"
             }
         },
         {
             "label": "pdoc3",
             "type": "shell",
-            "command": "python scripts\\pdoc3.py",
+            "command": "python",
+            "args": ["scripts\\pdoc3.py"],
             "problemMatcher": [],
             "presentation": {
                 "clear": true
+            },
+            "windows":{
+                "command": "py"
             }
         },
         {
             "label": "coverage",
             "type": "shell",
-            "command": "python scripts\\coverage.py",
-            "problemMatcher": []
+            "command": "python",
+            "args": ["scripts\\coverage.py"],
+            "problemMatcher": [],
+            "windows":{
+                "command": "py"
+            }
         },
         {
             "label": "build",
             "type": "shell",
-            "command": "python scripts\\build.py",
-            "problemMatcher": []
+            "command": "python",
+            "args": ["scripts\\build.py"],
+            "problemMatcher": [],
+            "windows":{
+                "command": "py"
+            }
         }
     ]
 }

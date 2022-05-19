@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from datetime import datetime
-from typing import TYPE_CHECKING, Union
+from typing import TYPE_CHECKING, Sequence, Union, Tuple
 
 from macrobond_financial.common import Api
 from macrobond_financial.common.typs import SearchResult, SeriesEntry
@@ -17,11 +17,14 @@ from ._api_return_typs import (
     _ListValuesReturn,
     _GetRevisionInfoReturn,
     _GetVintageSeriesReturn,
+    _GetNthReleaseReturn,
     _GetOneSeriesReturn,
     _GetSeriesReturn,
     _GetOneEntityReturn,
     _GetEntitiesReturn,
     _GetUnifiedSeriesReturn,
+    _GetValueInformationReturn,
+    _GetObservationHistoryReturn,
 )
 
 if TYPE_CHECKING:  # pragma: no cover
@@ -32,13 +35,14 @@ if TYPE_CHECKING:  # pragma: no cover
         GetAttributeInformationReturn,
         GetRevisionInfoReturn,
         GetVintageSeriesReturn,
-        #        GetObservationHistoryReturn,
-        #        GetNthReleaseReturn,
+        GetObservationHistoryReturn,
+        GetNthReleaseReturn,
         GetOneSeriesReturn,
         GetSeriesReturn,
         GetOneEntityReturn,
         GetEntitiesReturn,
         GetUnifiedSeriesReturn,
+        GetValueInformationReturn,
     )
 
     from macrobond_financial.common.typs import SearchFilter, StartOrEndPoint
@@ -67,11 +71,18 @@ class WebApi(Api):
 
     # metadata
 
-    def list_values(self, name: str) -> "ListValuesReturn":
+    def metadata_list_values(self, name: str) -> "ListValuesReturn":
         return _ListValuesReturn(self.__session, name)
 
-    def get_attribute_information(self, name: str) -> "GetAttributeInformationReturn":
+    def metadata_get_attribute_information(
+        self, name: str
+    ) -> "GetAttributeInformationReturn":
         return _GetAttributeInformationReturn(self.__session, name)
+
+    def metadata_get_value_information(
+        self, *name_val: Tuple[str, str]
+    ) -> "GetValueInformationReturn":
+        return _GetValueInformationReturn(self.__session, name_val)
 
     # revision
 
@@ -94,29 +105,28 @@ class WebApi(Api):
             self.raise_error if raise_error is None else raise_error,
         )
 
-    # def get_observation_history(
-    #     self, serie_name: str, time: datetime, raise_error: bool = None
-    # ) -> "GetObservationHistoryReturn":
-    #     return _GetObservationHistoryReturn(
-    #         self.__api.session,
-    #         serie_name,
-    #         time,
-    #         self.__api.raise_error if raise_error is None else raise_error,
-    #     )
+    def get_observation_history(
+        self, serie_name: str, times: Sequence[datetime]
+    ) -> "GetObservationHistoryReturn":
+        return _GetObservationHistoryReturn(
+            self.__session,
+            serie_name,
+            times,
+        )
 
-    # def get_nth_release(
-    #     self, serie_name: str, nth: int, raise_error: bool = None
-    # ) -> "GetNthReleaseReturn":
-    #     return _GetNthReleaseReturn(
-    #         self.__api.session,
-    #         serie_name,
-    #         nth,
-    #         self.__api.raise_error if raise_error is None else raise_error,
-    #     )
+    def get_nth_release(
+        self, serie_name: str, nth: int, raise_error: bool = None
+    ) -> "GetNthReleaseReturn":
+        return _GetNthReleaseReturn(
+            self.__session,
+            serie_name,
+            nth,
+            self.raise_error if raise_error is None else raise_error,
+        )
 
     # Search
 
-    def series_multi_filter(
+    def entity_search_multi_filter(
         self, *filters: "SearchFilter", include_discontinued: bool = False
     ) -> SearchResult:
         def convert_filter_to_web_filter(_filter: "SearchFilter") -> "WebSearchFilter":

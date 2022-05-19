@@ -28,23 +28,40 @@
 </summary>
 <pre><code class="python"># -*- coding: utf-8 -*-
 
-from typing import TYPE_CHECKING, overload
+from typing import TYPE_CHECKING, Any, Dict, overload
 from abc import ABC, abstractmethod
 
-from ..typs import VintageSeries, VintageSeriesTypedDict
+from datetime import datetime
+
+from ..typs import VintageSeries, GetEntitiesError
 
 if TYPE_CHECKING:  # pragma: no cover
     from pandas import DataFrame, _typing as pandas_typing  # type: ignore
 
 
 class GetVintageSeriesReturn(ABC):
-    @abstractmethod
-    def object(self) -&gt; VintageSeries:
-        ...  # pragma: no cover
+    def __init__(
+        self,
+        serie_name: str,
+        time: datetime,
+        _raise: bool,
+    ) -&gt; None:
+        self._serie_name = serie_name
+        self._time = time
+        self._raise = _raise
 
     @abstractmethod
-    def dict(self) -&gt; VintageSeriesTypedDict:
+    def _object(self) -&gt; VintageSeries:
         ...  # pragma: no cover
+
+    def object(self) -&gt; VintageSeries:
+        series = self._object()
+        if self._raise and series.is_error:
+            raise GetEntitiesError(self._serie_name, series.error_message)
+        return series
+
+    def dict(self) -&gt; Dict[str, Any]:
+        return self._object().to_dict()
 
     @overload
     def data_frame(self) -&gt; &#34;DataFrame&#34;:
@@ -60,9 +77,8 @@ class GetVintageSeriesReturn(ABC):
     ) -&gt; &#34;DataFrame&#34;:
         ...
 
-    @abstractmethod
     def data_frame(self, *args, **kwargs) -&gt; &#34;DataFrame&#34;:
-        ...  # pragma: no cover</code></pre>
+        return self.object().data_frame(*args, **kwargs)</code></pre>
 </details>
 </section>
 <section>
@@ -76,6 +92,7 @@ class GetVintageSeriesReturn(ABC):
 <dl>
 <dt id="macrobond_financial.common.api_return_typs.get_vintage_series_return.GetVintageSeriesReturn"><code class="flex name class">
 <span>class <span class="ident">GetVintageSeriesReturn</span></span>
+<span>(</span><span>serie_name: str, time: datetime.datetime, _raise: bool)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Helper class that provides a standard way to create an ABC using
@@ -85,13 +102,28 @@ inheritance.</p></div>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class GetVintageSeriesReturn(ABC):
-    @abstractmethod
-    def object(self) -&gt; VintageSeries:
-        ...  # pragma: no cover
+    def __init__(
+        self,
+        serie_name: str,
+        time: datetime,
+        _raise: bool,
+    ) -&gt; None:
+        self._serie_name = serie_name
+        self._time = time
+        self._raise = _raise
 
     @abstractmethod
-    def dict(self) -&gt; VintageSeriesTypedDict:
+    def _object(self) -&gt; VintageSeries:
         ...  # pragma: no cover
+
+    def object(self) -&gt; VintageSeries:
+        series = self._object()
+        if self._raise and series.is_error:
+            raise GetEntitiesError(self._serie_name, series.error_message)
+        return series
+
+    def dict(self) -&gt; Dict[str, Any]:
+        return self._object().to_dict()
 
     @overload
     def data_frame(self) -&gt; &#34;DataFrame&#34;:
@@ -107,9 +139,8 @@ inheritance.</p></div>
     ) -&gt; &#34;DataFrame&#34;:
         ...
 
-    @abstractmethod
     def data_frame(self, *args, **kwargs) -&gt; &#34;DataFrame&#34;:
-        ...  # pragma: no cover</code></pre>
+        return self.object().data_frame(*args, **kwargs)</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
@@ -131,13 +162,12 @@ inheritance.</p></div>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">@abstractmethod
-def data_frame(self, *args, **kwargs) -&gt; &#34;DataFrame&#34;:
-    ...  # pragma: no cover</code></pre>
+<pre><code class="python">def data_frame(self, *args, **kwargs) -&gt; &#34;DataFrame&#34;:
+    return self.object().data_frame(*args, **kwargs)</code></pre>
 </details>
 </dd>
 <dt id="macrobond_financial.common.api_return_typs.get_vintage_series_return.GetVintageSeriesReturn.dict"><code class="name flex">
-<span>def <span class="ident">dict</span></span>(<span>self) ‑> <a title="macrobond_financial.common.typs.vintage_series.VintageSeriesTypedDict" href="../typs/vintage_series.html#macrobond_financial.common.typs.vintage_series.VintageSeriesTypedDict">VintageSeriesTypedDict</a></span>
+<span>def <span class="ident">dict</span></span>(<span>self) ‑> Dict[str, Any]</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -145,9 +175,8 @@ def data_frame(self, *args, **kwargs) -&gt; &#34;DataFrame&#34;:
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">@abstractmethod
-def dict(self) -&gt; VintageSeriesTypedDict:
-    ...  # pragma: no cover</code></pre>
+<pre><code class="python">def dict(self) -&gt; Dict[str, Any]:
+    return self._object().to_dict()</code></pre>
 </details>
 </dd>
 <dt id="macrobond_financial.common.api_return_typs.get_vintage_series_return.GetVintageSeriesReturn.object"><code class="name flex">
@@ -159,9 +188,11 @@ def dict(self) -&gt; VintageSeriesTypedDict:
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">@abstractmethod
-def object(self) -&gt; VintageSeries:
-    ...  # pragma: no cover</code></pre>
+<pre><code class="python">def object(self) -&gt; VintageSeries:
+    series = self._object()
+    if self._raise and series.is_error:
+        raise GetEntitiesError(self._serie_name, series.error_message)
+    return series</code></pre>
 </details>
 </dd>
 </dl>

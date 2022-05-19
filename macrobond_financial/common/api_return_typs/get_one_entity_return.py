@@ -1,22 +1,31 @@
 # -*- coding: utf-8 -*-
 
-from typing import Union, overload, TYPE_CHECKING
+from typing import Any, Dict, Union, overload, TYPE_CHECKING
 from abc import ABC, abstractmethod
 
-from ..typs import Entity, EntityColumns, EntityTypedDict
+from ..typs import Entity, EntityColumns, GetEntitiesError
 
 if TYPE_CHECKING:  # pragma: no cover
     from pandas import DataFrame, _typing as pandas_typing  # type: ignore
 
 
 class GetOneEntityReturn(ABC):
-    @abstractmethod
-    def object(self) -> Entity:
-        ...
+    def __init__(self, entity_name: str, _raise: bool) -> None:
+        self._entity_name = entity_name
+        self._raise = _raise
 
     @abstractmethod
-    def dict(self) -> EntityTypedDict:
+    def _object(self) -> Entity:
         ...
+
+    def object(self) -> Entity:
+        entity = self._object()
+        if self._raise and entity.is_error:
+            raise GetEntitiesError(self._entity_name, entity.error_message)
+        return entity
+
+    def dict(self) -> Dict[str, Any]:
+        return self.object().to_dict()
 
     @overload
     def data_frame(self) -> "DataFrame":
@@ -32,12 +41,8 @@ class GetOneEntityReturn(ABC):
     ) -> "DataFrame":
         ...
 
-    @abstractmethod
     def data_frame(self, *args, **kwargs) -> "DataFrame":
-        ...
+        return self.object().data_frame(*args, **kwargs)
 
-    @abstractmethod
     def metadata_as_data_frame(self) -> "DataFrame":
-        ...
-
-    # .from_dict(i['metadata'], orient='index')
+        return self.object().get_metadata_as_data_frame()

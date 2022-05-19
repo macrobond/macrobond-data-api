@@ -12,22 +12,11 @@ if TYPE_CHECKING:  # pragma: no cover
         Entity as ComEntity,
     )
 
-    from macrobond_financial.common.typs import EntityTypedDict, SeriesTypedDict
-
 
 def _create_entity(com_entity: "ComEntity", name: str) -> Entity:
     if com_entity.IsError:
         return Entity(name, com_entity.ErrorMessage, None)
     return Entity(name, None, _fill_metadata_from_entity(com_entity))
-
-
-def _create_entity_dicts(com_entity: "ComEntity", name: str) -> "EntityTypedDict":
-    if com_entity.IsError:
-        return {
-            "Name": name,
-            "ErrorMessage": com_entity.ErrorMessage,
-        }
-    return {"Name": name, "MetaData": _fill_metadata_from_entity(com_entity)}
 
 
 def _create_series(com_series: "ComSeries", name: str) -> Series:
@@ -40,17 +29,3 @@ def _create_series(com_series: "ComSeries", name: str) -> Series:
         com_series.Values,
         com_series.DatesAtStartOfPeriod,
     )
-
-
-def _create_series_dicts(com_series: "ComSeries", name: str) -> "SeriesTypedDict":
-    if com_series.IsError:
-        return {
-            "Name": name,
-            "ErrorMessage": com_series.ErrorMessage,
-        }
-    return {
-        "Name": name,
-        "Values": com_series.Values,
-        "Dates": com_series.DatesAtStartOfPeriod,
-        "MetaData": _fill_metadata_from_entity(com_series),
-    }

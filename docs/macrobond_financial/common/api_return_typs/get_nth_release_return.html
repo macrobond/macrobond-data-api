@@ -28,24 +28,36 @@
 </summary>
 <pre><code class="python"># -*- coding: utf-8 -*-
 
-from typing import TYPE_CHECKING, overload
 from abc import ABC, abstractmethod
+from typing import Any, Dict, Union, overload, List, TYPE_CHECKING
+from typing_extensions import Literal
 
-
-from ..typs.series import Series, SeriesTypedDict
+from ..typs import Series, SeriesColumns, GetEntitiesError
 
 if TYPE_CHECKING:  # pragma: no cover
     from pandas import DataFrame, _typing as pandas_typing  # type: ignore
 
+SeriesValuesAndDatesColumns = List[Literal[&#34;Values&#34;, &#34;Dates&#34;]]
+
 
 class GetNthReleaseReturn(ABC):
-    @abstractmethod
-    def object(self) -&gt; Series:
-        ...  # pragma: no cover
+    def __init__(self, series_name: str, nth: int, _raise: bool) -&gt; None:
+        self._series_name = series_name
+        self._nth = nth
+        self._raise = _raise
 
     @abstractmethod
-    def dict(self) -&gt; SeriesTypedDict:
-        ...  # pragma: no cover
+    def _object(self) -&gt; Series:
+        ...
+
+    def object(self) -&gt; Series:
+        series = self._object()
+        if self._raise and series.is_error:
+            raise GetEntitiesError(self._series_name, series.error_message)
+        return series
+
+    def dict(self) -&gt; Dict[str, Any]:
+        return self.object().to_dict()
 
     @overload
     def data_frame(self) -&gt; &#34;DataFrame&#34;:
@@ -55,15 +67,31 @@ class GetNthReleaseReturn(ABC):
     def data_frame(
         self,
         index: &#34;pandas_typing.Axes&#34; = None,
-        columns: &#34;pandas_typing.Axes&#34; = None,
+        columns: Union[SeriesColumns, &#34;pandas_typing.Axes&#34;] = None,
         dtype: &#34;pandas_typing.Dtype&#34; = None,
         copy: bool = False,
     ) -&gt; &#34;DataFrame&#34;:
         ...
 
-    @abstractmethod
     def data_frame(self, *args, **kwargs) -&gt; &#34;DataFrame&#34;:
-        ...  # pragma: no cover</code></pre>
+        return self.object().data_frame(*args, **kwargs)
+
+    @overload
+    def values_and_dates_as_data_frame(self) -&gt; &#34;DataFrame&#34;:
+        ...
+
+    @overload
+    def values_and_dates_as_data_frame(
+        self,
+        index: &#34;pandas_typing.Axes&#34; = None,
+        columns: Union[SeriesValuesAndDatesColumns, &#34;pandas_typing.Axes&#34;] = None,
+        dtype: &#34;pandas_typing.Dtype&#34; = None,
+        copy: bool = False,
+    ) -&gt; &#34;DataFrame&#34;:
+        ...
+
+    def values_and_dates_as_data_frame(self, *args, **kwargs) -&gt; &#34;DataFrame&#34;:
+        return self.object().get_values_and_dates_as_data_frame(*args, **kwargs)</code></pre>
 </details>
 </section>
 <section>
@@ -77,6 +105,7 @@ class GetNthReleaseReturn(ABC):
 <dl>
 <dt id="macrobond_financial.common.api_return_typs.get_nth_release_return.GetNthReleaseReturn"><code class="flex name class">
 <span>class <span class="ident">GetNthReleaseReturn</span></span>
+<span>(</span><span>series_name: str, nth: int, _raise: bool)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Helper class that provides a standard way to create an ABC using
@@ -86,13 +115,23 @@ inheritance.</p></div>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class GetNthReleaseReturn(ABC):
-    @abstractmethod
-    def object(self) -&gt; Series:
-        ...  # pragma: no cover
+    def __init__(self, series_name: str, nth: int, _raise: bool) -&gt; None:
+        self._series_name = series_name
+        self._nth = nth
+        self._raise = _raise
 
     @abstractmethod
-    def dict(self) -&gt; SeriesTypedDict:
-        ...  # pragma: no cover
+    def _object(self) -&gt; Series:
+        ...
+
+    def object(self) -&gt; Series:
+        series = self._object()
+        if self._raise and series.is_error:
+            raise GetEntitiesError(self._series_name, series.error_message)
+        return series
+
+    def dict(self) -&gt; Dict[str, Any]:
+        return self.object().to_dict()
 
     @overload
     def data_frame(self) -&gt; &#34;DataFrame&#34;:
@@ -102,19 +141,40 @@ inheritance.</p></div>
     def data_frame(
         self,
         index: &#34;pandas_typing.Axes&#34; = None,
-        columns: &#34;pandas_typing.Axes&#34; = None,
+        columns: Union[SeriesColumns, &#34;pandas_typing.Axes&#34;] = None,
         dtype: &#34;pandas_typing.Dtype&#34; = None,
         copy: bool = False,
     ) -&gt; &#34;DataFrame&#34;:
         ...
 
-    @abstractmethod
     def data_frame(self, *args, **kwargs) -&gt; &#34;DataFrame&#34;:
-        ...  # pragma: no cover</code></pre>
+        return self.object().data_frame(*args, **kwargs)
+
+    @overload
+    def values_and_dates_as_data_frame(self) -&gt; &#34;DataFrame&#34;:
+        ...
+
+    @overload
+    def values_and_dates_as_data_frame(
+        self,
+        index: &#34;pandas_typing.Axes&#34; = None,
+        columns: Union[SeriesValuesAndDatesColumns, &#34;pandas_typing.Axes&#34;] = None,
+        dtype: &#34;pandas_typing.Dtype&#34; = None,
+        copy: bool = False,
+    ) -&gt; &#34;DataFrame&#34;:
+        ...
+
+    def values_and_dates_as_data_frame(self, *args, **kwargs) -&gt; &#34;DataFrame&#34;:
+        return self.object().get_values_and_dates_as_data_frame(*args, **kwargs)</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
 <li>abc.ABC</li>
+</ul>
+<h3>Subclasses</h3>
+<ul class="hlist">
+<li>macrobond_financial.com._api_return_typs._get_nth_release_return._GetNthReleaseReturn</li>
+<li>macrobond_financial.web._api_return_typs._get_nth_release_return._GetNthReleaseReturn</li>
 </ul>
 <h3>Methods</h3>
 <dl>
@@ -127,13 +187,12 @@ inheritance.</p></div>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">@abstractmethod
-def data_frame(self, *args, **kwargs) -&gt; &#34;DataFrame&#34;:
-    ...  # pragma: no cover</code></pre>
+<pre><code class="python">def data_frame(self, *args, **kwargs) -&gt; &#34;DataFrame&#34;:
+    return self.object().data_frame(*args, **kwargs)</code></pre>
 </details>
 </dd>
 <dt id="macrobond_financial.common.api_return_typs.get_nth_release_return.GetNthReleaseReturn.dict"><code class="name flex">
-<span>def <span class="ident">dict</span></span>(<span>self) ‑> <a title="macrobond_financial.common.typs.series.SeriesTypedDict" href="../typs/series.html#macrobond_financial.common.typs.series.SeriesTypedDict">SeriesTypedDict</a></span>
+<span>def <span class="ident">dict</span></span>(<span>self) ‑> Dict[str, Any]</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -141,9 +200,8 @@ def data_frame(self, *args, **kwargs) -&gt; &#34;DataFrame&#34;:
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">@abstractmethod
-def dict(self) -&gt; SeriesTypedDict:
-    ...  # pragma: no cover</code></pre>
+<pre><code class="python">def dict(self) -&gt; Dict[str, Any]:
+    return self.object().to_dict()</code></pre>
 </details>
 </dd>
 <dt id="macrobond_financial.common.api_return_typs.get_nth_release_return.GetNthReleaseReturn.object"><code class="name flex">
@@ -155,9 +213,24 @@ def dict(self) -&gt; SeriesTypedDict:
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">@abstractmethod
-def object(self) -&gt; Series:
-    ...  # pragma: no cover</code></pre>
+<pre><code class="python">def object(self) -&gt; Series:
+    series = self._object()
+    if self._raise and series.is_error:
+        raise GetEntitiesError(self._series_name, series.error_message)
+    return series</code></pre>
+</details>
+</dd>
+<dt id="macrobond_financial.common.api_return_typs.get_nth_release_return.GetNthReleaseReturn.values_and_dates_as_data_frame"><code class="name flex">
+<span>def <span class="ident">values_and_dates_as_data_frame</span></span>(<span>self, *args, **kwargs) ‑> DataFrame</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def values_and_dates_as_data_frame(self, *args, **kwargs) -&gt; &#34;DataFrame&#34;:
+    return self.object().get_values_and_dates_as_data_frame(*args, **kwargs)</code></pre>
 </details>
 </dd>
 </dl>
@@ -184,6 +257,7 @@ def object(self) -&gt; Series:
 <li><code><a title="macrobond_financial.common.api_return_typs.get_nth_release_return.GetNthReleaseReturn.data_frame" href="#macrobond_financial.common.api_return_typs.get_nth_release_return.GetNthReleaseReturn.data_frame">data_frame</a></code></li>
 <li><code><a title="macrobond_financial.common.api_return_typs.get_nth_release_return.GetNthReleaseReturn.dict" href="#macrobond_financial.common.api_return_typs.get_nth_release_return.GetNthReleaseReturn.dict">dict</a></code></li>
 <li><code><a title="macrobond_financial.common.api_return_typs.get_nth_release_return.GetNthReleaseReturn.object" href="#macrobond_financial.common.api_return_typs.get_nth_release_return.GetNthReleaseReturn.object">object</a></code></li>
+<li><code><a title="macrobond_financial.common.api_return_typs.get_nth_release_return.GetNthReleaseReturn.values_and_dates_as_data_frame" href="#macrobond_financial.common.api_return_typs.get_nth_release_return.GetNthReleaseReturn.values_and_dates_as_data_frame">values_and_dates_as_data_frame</a></code></li>
 </ul>
 </li>
 </ul>

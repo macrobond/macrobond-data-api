@@ -46,9 +46,8 @@ class ListValuesReturn(ABC):
     def object(self) -&gt; MetadataValueInformation:
         ...
 
-    @abstractmethod
     def list_of_dicts(self) -&gt; List[TypedDictMetadataValueInformation]:
-        ...
+        return self.object().to_dict()
 
     @overload
     def data_frame(self) -&gt; &#34;DataFrame&#34;:
@@ -64,9 +63,8 @@ class ListValuesReturn(ABC):
     ) -&gt; &#34;DataFrame&#34;:
         ...
 
-    @abstractmethod
     def data_frame(self, *args, **kwargs) -&gt; &#34;DataFrame&#34;:
-        ...</code></pre>
+        return self.object().data_frame(*args, **kwargs)</code></pre>
 </details>
 </section>
 <section>
@@ -93,9 +91,8 @@ inheritance.</p></div>
     def object(self) -&gt; MetadataValueInformation:
         ...
 
-    @abstractmethod
     def list_of_dicts(self) -&gt; List[TypedDictMetadataValueInformation]:
-        ...
+        return self.object().to_dict()
 
     @overload
     def data_frame(self) -&gt; &#34;DataFrame&#34;:
@@ -111,9 +108,8 @@ inheritance.</p></div>
     ) -&gt; &#34;DataFrame&#34;:
         ...
 
-    @abstractmethod
     def data_frame(self, *args, **kwargs) -&gt; &#34;DataFrame&#34;:
-        ...</code></pre>
+        return self.object().data_frame(*args, **kwargs)</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
@@ -135,9 +131,8 @@ inheritance.</p></div>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">@abstractmethod
-def data_frame(self, *args, **kwargs) -&gt; &#34;DataFrame&#34;:
-    ...</code></pre>
+<pre><code class="python">def data_frame(self, *args, **kwargs) -&gt; &#34;DataFrame&#34;:
+    return self.object().data_frame(*args, **kwargs)</code></pre>
 </details>
 </dd>
 <dt id="macrobond_financial.common.api_return_typs.list_values_return.ListValuesReturn.list_of_dicts"><code class="name flex">
@@ -149,9 +144,8 @@ def data_frame(self, *args, **kwargs) -&gt; &#34;DataFrame&#34;:
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">@abstractmethod
-def list_of_dicts(self) -&gt; List[TypedDictMetadataValueInformation]:
-    ...</code></pre>
+<pre><code class="python">def list_of_dicts(self) -&gt; List[TypedDictMetadataValueInformation]:
+    return self.object().to_dict()</code></pre>
 </details>
 </dd>
 <dt id="macrobond_financial.common.api_return_typs.list_values_return.ListValuesReturn.object"><code class="name flex">

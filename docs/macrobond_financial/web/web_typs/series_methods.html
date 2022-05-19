@@ -227,13 +227,13 @@ class SeriesMethods:
             params[&#34;getTimesOfChange&#34;] = &#34;true&#34; if get_times_of_change else &#34;false&#34;
 
         response = self.__session.get_or_raise(
-            &#34;v1/series/fetchallvintageseries&#34;, params=params
+            &#34;v1/series/fetchnthreleaseseries&#34;, params=params
         )
         return cast(List[&#34;SeriesWithTimesOfChangeResponse&#34;], response.json())
 
     # Get /v1/series/fetchobservationhistory
     def fetch_observation_history(
-        self, series_names: List[str], date_of_the_observation: List[datetime]
+        self, series_name: str, date_of_the_observation: List[datetime]
     ) -&gt; List[&#34;SeriesObservationHistoryResponse&#34;]:
         &#34;&#34;&#34;
         Fetch the history of one or more observations in a time series.
@@ -255,7 +255,7 @@ class SeriesMethods:
         response = self.__session.get_or_raise(
             &#34;v1/series/fetchobservationhistory&#34;,
             params={
-                &#34;n&#34;: series_names,
+                &#34;n&#34;: series_name,
                 &#34;t&#34;: list(map(lambda x: x.isoformat(), date_of_the_observation)),
             },
         )
@@ -538,13 +538,13 @@ class SeriesMethods:
             params[&#34;getTimesOfChange&#34;] = &#34;true&#34; if get_times_of_change else &#34;false&#34;
 
         response = self.__session.get_or_raise(
-            &#34;v1/series/fetchallvintageseries&#34;, params=params
+            &#34;v1/series/fetchnthreleaseseries&#34;, params=params
         )
         return cast(List[&#34;SeriesWithTimesOfChangeResponse&#34;], response.json())
 
     # Get /v1/series/fetchobservationhistory
     def fetch_observation_history(
-        self, series_names: List[str], date_of_the_observation: List[datetime]
+        self, series_name: str, date_of_the_observation: List[datetime]
     ) -&gt; List[&#34;SeriesObservationHistoryResponse&#34;]:
         &#34;&#34;&#34;
         Fetch the history of one or more observations in a time series.
@@ -566,7 +566,7 @@ class SeriesMethods:
         response = self.__session.get_or_raise(
             &#34;v1/series/fetchobservationhistory&#34;,
             params={
-                &#34;n&#34;: series_names,
+                &#34;n&#34;: series_name,
                 &#34;t&#34;: list(map(lambda x: x.isoformat(), date_of_the_observation)),
             },
         )
@@ -811,13 +811,13 @@ The result will be in the same order as the request.</p>
         params[&#34;getTimesOfChange&#34;] = &#34;true&#34; if get_times_of_change else &#34;false&#34;
 
     response = self.__session.get_or_raise(
-        &#34;v1/series/fetchallvintageseries&#34;, params=params
+        &#34;v1/series/fetchnthreleaseseries&#34;, params=params
     )
     return cast(List[&#34;SeriesWithTimesOfChangeResponse&#34;], response.json())</code></pre>
 </details>
 </dd>
 <dt id="macrobond_financial.web.web_typs.series_methods.SeriesMethods.fetch_observation_history"><code class="name flex">
-<span>def <span class="ident">fetch_observation_history</span></span>(<span>self, series_names: List[str], date_of_the_observation: List[datetime.datetime]) ‑> List[_ForwardRef('SeriesObservationHistoryResponse')]</span>
+<span>def <span class="ident">fetch_observation_history</span></span>(<span>self, series_name: str, date_of_the_observation: List[datetime.datetime]) ‑> List[_ForwardRef('SeriesObservationHistoryResponse')]</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Fetch the history of one or more observations in a time series.
@@ -834,7 +834,7 @@ The result will be in the same order as the request.</p>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def fetch_observation_history(
-    self, series_names: List[str], date_of_the_observation: List[datetime]
+    self, series_name: str, date_of_the_observation: List[datetime]
 ) -&gt; List[&#34;SeriesObservationHistoryResponse&#34;]:
     &#34;&#34;&#34;
     Fetch the history of one or more observations in a time series.
@@ -856,7 +856,7 @@ The result will be in the same order as the request.</p>
     response = self.__session.get_or_raise(
         &#34;v1/series/fetchobservationhistory&#34;,
         params={
-            &#34;n&#34;: series_names,
+            &#34;n&#34;: series_name,
             &#34;t&#34;: list(map(lambda x: x.isoformat(), date_of_the_observation)),
         },
     )

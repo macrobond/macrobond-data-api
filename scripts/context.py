@@ -48,6 +48,11 @@ class Context:
             return False
         return True
 
+    def python_run(self, python_path: str, name: str, *args: str) -> None:
+        self.shell_command('"' + python_path + '" -m pip install ' + name)
+        for arg in args:
+            self.shell_command('"' + python_path + '" -m ' + name + " " + arg)
+
     def pip_install(self, name: str) -> bool:
         return importlib.util.find_spec(name) is not None or self.shell_command(
             "pip install " + name

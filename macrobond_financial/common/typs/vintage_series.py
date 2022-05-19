@@ -5,16 +5,12 @@ from datetime import datetime, timezone
 from typing import List
 from typing_extensions import Literal
 
-from .series import Series, SeriesColumnsLiterals, SeriesTypedDict
+from .series import Series, SeriesColumnsLiterals
 
 
 VintageSeriesColumns = List[
     Literal[SeriesColumnsLiterals, "VintageTimeStamp", "TimesOfChange"]
 ]
-
-
-class VintageSeriesTypedDict(SeriesTypedDict, total=False):
-    ...
 
 
 class VintageSeries(Series):

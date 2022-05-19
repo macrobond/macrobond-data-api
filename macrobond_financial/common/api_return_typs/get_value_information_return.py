@@ -1,29 +1,33 @@
 # -*- coding: utf-8 -*-
 
-
-from datetime import datetime
-
-from typing import TYPE_CHECKING, Any, Dict, List, Union, overload, Sequence, Tuple
 from abc import ABC, abstractmethod
+from typing import Union, overload, List, Tuple, TYPE_CHECKING
+from typing_extensions import Literal
 
-from ..typs import SeriesObservationHistory, SeriesObservationHistoryColumns
+from ..typs import (
+    MetadataValueInformationItem,
+    TypedDictMetadataValueInformation,
+    MetadataValueInformationColumns,
+)
 
 from .._get_pandas import _get_pandas
+
 
 if TYPE_CHECKING:  # pragma: no cover
     from pandas import DataFrame, _typing as pandas_typing  # type: ignore
 
+SeriesValuesAndDatesColumns = List[Literal["Values", "Dates"]]
 
-class GetObservationHistoryReturn(ABC):
-    def __init__(self, serie_name: str, times: Sequence[datetime]) -> None:
-        self._serie_name = serie_name
-        self._times = times
+
+class GetValueInformationReturn(ABC):
+    def __init__(self, name_val: Tuple[Tuple[str, str], ...]) -> None:
+        self._name_val = name_val
 
     @abstractmethod
-    def object(self) -> Tuple[SeriesObservationHistory, ...]:
+    def object(self) -> List[MetadataValueInformationItem]:
         ...
 
-    def dict(self) -> List[Dict[str, Any]]:
+    def dict(self) -> List[TypedDictMetadataValueInformation]:
         return list(map(lambda x: x.to_dict(), self.object()))
 
     @overload
@@ -34,7 +38,7 @@ class GetObservationHistoryReturn(ABC):
     def data_frame(
         self,
         index: "pandas_typing.Axes" = None,
-        columns: Union[SeriesObservationHistoryColumns, "pandas_typing.Axes"] = None,
+        columns: Union[MetadataValueInformationColumns, "pandas_typing.Axes"] = None,
         dtype: "pandas_typing.Dtype" = None,
         copy: bool = False,
     ) -> "DataFrame":

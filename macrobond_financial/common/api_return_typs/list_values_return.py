@@ -18,9 +18,8 @@ class ListValuesReturn(ABC):
     def object(self) -> MetadataValueInformation:
         ...
 
-    @abstractmethod
     def list_of_dicts(self) -> List[TypedDictMetadataValueInformation]:
-        ...
+        return self.object().to_dict()
 
     @overload
     def data_frame(self) -> "DataFrame":
@@ -36,6 +35,5 @@ class ListValuesReturn(ABC):
     ) -> "DataFrame":
         ...
 
-    @abstractmethod
     def data_frame(self, *args, **kwargs) -> "DataFrame":
-        ...
+        return self.object().data_frame(*args, **kwargs)

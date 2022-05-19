@@ -13,7 +13,7 @@ from .get_series_return import GetSeriesReturn
 from .get_unified_series_return import GetUnifiedSeriesReturn
 from .get_vintage_series_return import GetVintageSeriesReturn
 from .list_values_return import ListValuesReturn
-
+from .get_value_information_return import GetValueInformationReturn
 
 if TYPE_CHECKING:  # pragma: no cover
 

@@ -28,11 +28,14 @@
 </summary>
 <pre><code class="python"># -*- coding: utf-8 -*-
 
-from typing import Optional, List, TYPE_CHECKING
+
+from typing import Optional, Union, cast, List, TYPE_CHECKING, overload
 from typing_extensions import TypedDict, Literal
 
-if TYPE_CHECKING:  # pragma: no cover
+from .._get_pandas import _get_pandas
 
+if TYPE_CHECKING:  # pragma: no cover
+    from pandas import DataFrame, _typing as pandas_typing  # type: ignore
     from ..enums import MetadataAttributeType
 
 
@@ -123,6 +126,31 @@ class MetadataAttributeInformation:
         &#34;&#34;&#34;
         If True then this type of metadata is an entity that can be retrieved from the database
         &#34;&#34;&#34;
+
+    def to_dict(self) -&gt; TypedDictMetadataAttributeInformation:
+        return cast(TypedDictMetadataAttributeInformation, vars(self))
+
+    @overload
+    def data_frame(self) -&gt; &#34;DataFrame&#34;:
+        ...
+
+    @overload
+    def data_frame(
+        self,
+        index: &#34;pandas_typing.Axes&#34; = None,
+        columns: Union[
+            MetadataAttributeInformationColumns, &#34;pandas_typing.Axes&#34;
+        ] = None,
+        dtype: &#34;pandas_typing.Dtype&#34; = None,
+        copy: bool = False,
+    ) -&gt; &#34;DataFrame&#34;:
+        ...
+
+    def data_frame(self, *args, **kwargs) -&gt; &#34;DataFrame&#34;:
+        pandas = _get_pandas()
+        args = args[1:]
+        kwargs[&#34;data&#34;] = [self.to_dict()]
+        return pandas.DataFrame(*args, **kwargs)
 
     def __str__(self):
         return self.name + &#34; &#34; + self.description
@@ -220,6 +248,31 @@ class MetadataAttributeInformation:
         If True then this type of metadata is an entity that can be retrieved from the database
         &#34;&#34;&#34;
 
+    def to_dict(self) -&gt; TypedDictMetadataAttributeInformation:
+        return cast(TypedDictMetadataAttributeInformation, vars(self))
+
+    @overload
+    def data_frame(self) -&gt; &#34;DataFrame&#34;:
+        ...
+
+    @overload
+    def data_frame(
+        self,
+        index: &#34;pandas_typing.Axes&#34; = None,
+        columns: Union[
+            MetadataAttributeInformationColumns, &#34;pandas_typing.Axes&#34;
+        ] = None,
+        dtype: &#34;pandas_typing.Dtype&#34; = None,
+        copy: bool = False,
+    ) -&gt; &#34;DataFrame&#34;:
+        ...
+
+    def data_frame(self, *args, **kwargs) -&gt; &#34;DataFrame&#34;:
+        pandas = _get_pandas()
+        args = args[1:]
+        kwargs[&#34;data&#34;] = [self.to_dict()]
+        return pandas.DataFrame(*args, **kwargs)
+
     def __str__(self):
         return self.name + &#34; &#34; + self.description
 
@@ -287,6 +340,38 @@ metadata can be listen using the ListAllValues function</p></div>
 <dt id="macrobond_financial.common.typs.metadata_attribute_information.MetadataAttributeInformation.value_type"><code class="name">var <span class="ident">value_type</span></code></dt>
 <dd>
 <div class="desc"><p>The value type of the metadata attribute</p></div>
+</dd>
+</dl>
+<h3>Methods</h3>
+<dl>
+<dt id="macrobond_financial.common.typs.metadata_attribute_information.MetadataAttributeInformation.data_frame"><code class="name flex">
+<span>def <span class="ident">data_frame</span></span>(<span>self, *args, **kwargs) ‑> DataFrame</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def data_frame(self, *args, **kwargs) -&gt; &#34;DataFrame&#34;:
+    pandas = _get_pandas()
+    args = args[1:]
+    kwargs[&#34;data&#34;] = [self.to_dict()]
+    return pandas.DataFrame(*args, **kwargs)</code></pre>
+</details>
+</dd>
+<dt id="macrobond_financial.common.typs.metadata_attribute_information.MetadataAttributeInformation.to_dict"><code class="name flex">
+<span>def <span class="ident">to_dict</span></span>(<span>self) ‑> <a title="macrobond_financial.common.typs.metadata_attribute_information.TypedDictMetadataAttributeInformation" href="#macrobond_financial.common.typs.metadata_attribute_information.TypedDictMetadataAttributeInformation">TypedDictMetadataAttributeInformation</a></span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def to_dict(self) -&gt; TypedDictMetadataAttributeInformation:
+    return cast(TypedDictMetadataAttributeInformation, vars(self))</code></pre>
+</details>
 </dd>
 </dl>
 </dd>
@@ -403,9 +488,11 @@ metadata can be listen using the ListAllValues function</p></div>
 <li><code><a title="macrobond_financial.common.typs.metadata_attribute_information.MetadataAttributeInformation.can_have_multiple_values" href="#macrobond_financial.common.typs.metadata_attribute_information.MetadataAttributeInformation.can_have_multiple_values">can_have_multiple_values</a></code></li>
 <li><code><a title="macrobond_financial.common.typs.metadata_attribute_information.MetadataAttributeInformation.can_list_values" href="#macrobond_financial.common.typs.metadata_attribute_information.MetadataAttributeInformation.can_list_values">can_list_values</a></code></li>
 <li><code><a title="macrobond_financial.common.typs.metadata_attribute_information.MetadataAttributeInformation.comment" href="#macrobond_financial.common.typs.metadata_attribute_information.MetadataAttributeInformation.comment">comment</a></code></li>
+<li><code><a title="macrobond_financial.common.typs.metadata_attribute_information.MetadataAttributeInformation.data_frame" href="#macrobond_financial.common.typs.metadata_attribute_information.MetadataAttributeInformation.data_frame">data_frame</a></code></li>
 <li><code><a title="macrobond_financial.common.typs.metadata_attribute_information.MetadataAttributeInformation.description" href="#macrobond_financial.common.typs.metadata_attribute_information.MetadataAttributeInformation.description">description</a></code></li>
 <li><code><a title="macrobond_financial.common.typs.metadata_attribute_information.MetadataAttributeInformation.is_database_entity" href="#macrobond_financial.common.typs.metadata_attribute_information.MetadataAttributeInformation.is_database_entity">is_database_entity</a></code></li>
 <li><code><a title="macrobond_financial.common.typs.metadata_attribute_information.MetadataAttributeInformation.name" href="#macrobond_financial.common.typs.metadata_attribute_information.MetadataAttributeInformation.name">name</a></code></li>
+<li><code><a title="macrobond_financial.common.typs.metadata_attribute_information.MetadataAttributeInformation.to_dict" href="#macrobond_financial.common.typs.metadata_attribute_information.MetadataAttributeInformation.to_dict">to_dict</a></code></li>
 <li><code><a title="macrobond_financial.common.typs.metadata_attribute_information.MetadataAttributeInformation.uses_value_list" href="#macrobond_financial.common.typs.metadata_attribute_information.MetadataAttributeInformation.uses_value_list">uses_value_list</a></code></li>
 <li><code><a title="macrobond_financial.common.typs.metadata_attribute_information.MetadataAttributeInformation.value_type" href="#macrobond_financial.common.typs.metadata_attribute_information.MetadataAttributeInformation.value_type">value_type</a></code></li>
 </ul>

@@ -1,11 +1,13 @@
 # -*- coding: utf-8 -*-
 
 import os
-from context import Context
+from context import Context, PYTHON_36
 
 
-def pdoc3(context: Context) -> None:
-    context.install_and_run(
+def pdoc3(context: Context, version_of_python: str = PYTHON_36) -> None:
+    python_path = context.get_python_path(version_of_python)
+    context.python_run(
+        python_path,
         "pdoc",
         " --html --template-dir ./scripts/docs-templates "
         + "--force -o ./docs ./macrobond_financial/",

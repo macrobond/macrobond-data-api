@@ -1,10 +1,12 @@
 # -*- coding: utf-8 -*-
 
 from datetime import datetime
-from typing import List, Tuple, TYPE_CHECKING, overload, Optional
+from typing import List, Tuple, TYPE_CHECKING, overload, Optional, cast
 from abc import ABC, abstractmethod
 
 from typing_extensions import TypedDict
+
+from .._get_pandas import _get_pandas
 
 if TYPE_CHECKING:  # pragma: no cover
     from pandas import DataFrame, _typing as pandas_typing  # type: ignore
@@ -39,15 +41,8 @@ class RevisionInfo:
         self.time_stamp_of_last_revision = time_stamp_of_last_revision
         self.vintage_time_stamps = vintage_time_stamps
 
-
-class GetRevisionInfoReturn(ABC):
-    @abstractmethod
-    def object(self) -> List[RevisionInfo]:
-        ...  # pragma: no cover
-
-    @abstractmethod
-    def dict(self) -> List[RevisionInfoDict]:
-        ...  # pragma: no cover
+    def to_dict(self) -> RevisionInfoDict:
+        return cast(RevisionInfoDict, vars(self))
 
     @overload
     def data_frame(self) -> "DataFrame":
@@ -63,6 +58,37 @@ class GetRevisionInfoReturn(ABC):
     ) -> "DataFrame":
         ...
 
-    @abstractmethod
     def data_frame(self, *args, **kwargs) -> "DataFrame":
+        pandas = _get_pandas()
+        args = args[1:]
+        kwargs["data"] = self.to_dict()
+        return pandas.DataFrame(*args, **kwargs)
+
+
+class GetRevisionInfoReturn(ABC):
+    @abstractmethod
+    def object(self) -> List[RevisionInfo]:
         ...  # pragma: no cover
+
+    def dict(self) -> List[RevisionInfoDict]:
+        return list(map(lambda x: x.to_dict(), self.object()))
+
+    @overload
+    def data_frame(self) -> "DataFrame":
+        ...
+
+    @overload
+    def data_frame(
+        self,
+        index: "pandas_typing.Axes" = None,
+        columns: "pandas_typing.Axes" = None,
+        dtype: "pandas_typing.Dtype" = None,
+        copy: bool = False,
+    ) -> "DataFrame":
+        ...
+
+    def data_frame(self, *args, **kwargs) -> "DataFrame":
+        pandas = _get_pandas()
+        args = args[1:]
+        kwargs["data"] = self.dict()
+        return pandas.DataFrame(*args, **kwargs)

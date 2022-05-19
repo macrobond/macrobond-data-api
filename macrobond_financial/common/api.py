@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from typing import Dict, Sequence, Union
+from typing import Sequence, Union, Tuple, Dict
 from abc import ABC, abstractmethod
 
 from datetime import datetime
@@ -14,8 +14,8 @@ from .api_return_typs import (
     ListValuesReturn,
     GetRevisionInfoReturn,
     GetVintageSeriesReturn,
-    #  GetObservationHistoryReturn,
-    #  GetNthReleaseReturn,
+    GetValueInformationReturn,
+    GetNthReleaseReturn,
     GetOneEntityReturn,
     GetOneSeriesReturn,
     GetEntitiesReturn,
@@ -34,10 +34,8 @@ class Api(ABC):
 
     # metadata
 
-    # ToDo: @mb-jp Need a new name
-    # ToDo: @mb-to Perhaps we should prefix this by "metadata_list_values"?
     @abstractmethod
-    def list_values(self, name: str) -> ListValuesReturn:
+    def metadata_list_values(self, name: str) -> ListValuesReturn:
         """
         List all metadata attribute values.
 
@@ -66,12 +64,17 @@ class Api(ABC):
         ```
         """
 
-    # ToDo: @mb-to Perhaps we should prefix this by "metadata_get_attribute_information"? We should allow for a list of names.
     @abstractmethod
-    def get_attribute_information(self, name: str) -> GetAttributeInformationReturn:
+    def metadata_get_attribute_information(
+        self, name: str
+    ) -> GetAttributeInformationReturn:
         """Get information about a type of metadata."""
 
-    # ToDo: @mb-to: We should implement /v1/metadata/getvalueinformation too
+    @abstractmethod
+    def metadata_get_value_information(
+        self, *name_val: Tuple[str, str]
+    ) -> GetValueInformationReturn:
+        """"""
 
     # revision
 
@@ -87,24 +90,15 @@ class Api(ABC):
     ) -> GetVintageSeriesReturn:
         """"""
 
-    # ToDo: @mb-to: not done
-    # @abstractmethod
-    # def get_observation_history(
-    #     self, serie_name: str, time: datetime, raise_error: bool = None
-    # ) -> GetObservationHistoryReturn:
-    #     """"""
-
-    # ToDo: @mb-to: not done
-    # @abstractmethod
-    # def get_nth_release(
-    #     self, serie_name: str, nth: int, raise_error: bool = None
-    # ) -> GetNthReleaseReturn:
-    #     ...  # pragma: no cover
+    @abstractmethod
+    def get_nth_release(
+        self, serie_name: str, nth: int, raise_error: bool = None
+    ) -> GetNthReleaseReturn:
+        """"""
 
     # Search
 
-    # ToDo: @mb-to: I suggest we call this either entity_search, entities_search or search_entities
-    def search(
+    def entity_search(
         self,
         text: str = None,
         entity_types: Union[Sequence[str], str] = None,
@@ -115,7 +109,7 @@ class Api(ABC):
         include_discontinued: bool = False,
     ) -> SearchResult:
         """Search for time series and other entitites."""
-        return self.series_multi_filter(
+        return self.entity_search_multi_filter(
             SearchFilter(
                 text=text,
                 entity_types=entity_types,
@@ -128,7 +122,7 @@ class Api(ABC):
         )
 
     @abstractmethod
-    def series_multi_filter(
+    def entity_search_multi_filter(
         self, *filters: SearchFilter, include_discontinued: bool = False
     ) -> SearchResult:
         """"""

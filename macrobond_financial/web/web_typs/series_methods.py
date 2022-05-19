@@ -199,13 +199,13 @@ class SeriesMethods:
             params["getTimesOfChange"] = "true" if get_times_of_change else "false"
 
         response = self.__session.get_or_raise(
-            "v1/series/fetchallvintageseries", params=params
+            "v1/series/fetchnthreleaseseries", params=params
         )
         return cast(List["SeriesWithTimesOfChangeResponse"], response.json())
 
     # Get /v1/series/fetchobservationhistory
     def fetch_observation_history(
-        self, series_names: List[str], date_of_the_observation: List[datetime]
+        self, series_name: str, date_of_the_observation: List[datetime]
     ) -> List["SeriesObservationHistoryResponse"]:
         """
         Fetch the history of one or more observations in a time series.
@@ -227,7 +227,7 @@ class SeriesMethods:
         response = self.__session.get_or_raise(
             "v1/series/fetchobservationhistory",
             params={
-                "n": series_names,
+                "n": series_name,
                 "t": list(map(lambda x: x.isoformat(), date_of_the_observation)),
             },
         )

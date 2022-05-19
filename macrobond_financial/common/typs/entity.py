@@ -1,13 +1,12 @@
 # -*- coding: utf-8 -*-
 
-from typing import Any, Dict, List, Optional, TYPE_CHECKING
-from typing_extensions import TypedDict, Literal
+from typing import Any, Dict, List, Union, Optional, TYPE_CHECKING, overload
+from typing_extensions import Literal
 
 from .._get_pandas import _get_pandas
 
 if TYPE_CHECKING:  # pragma: no cover
-
-    from pandas import DataFrame  # type: ignore
+    from pandas import DataFrame, _typing as pandas_typing  # type: ignore
 
 
 EntityColumnsLiterals = Literal[
@@ -15,12 +14,6 @@ EntityColumnsLiterals = Literal[
 ]
 
 EntityColumns = List[EntityColumnsLiterals]
-
-
-class EntityTypedDict(TypedDict, total=False):
-    ErrorMessage: str
-    Name: str
-    MetaData: Dict[str, Any]
 
 
 class Entity:
@@ -64,15 +57,50 @@ class Entity:
         self.error_message = error_message if error_message else ""
         self.metadata = metadata = metadata if metadata else {}
 
+    def _add_metadata(self, destination: Dict[str, Any]) -> None:
+        for key in self.metadata.keys():
+            destination["metadata." + key] = self.metadata[key]
+
+    def to_dict(self) -> Dict[str, Any]:
+        if self.is_error:
+            return {
+                "Name": self.name,
+                "ErrorMessage": self.error_message,
+            }
+
+        ret = {"Name": self.name}
+        self._add_metadata(ret)
+        return ret
+
+    @overload
+    def data_frame(self) -> "DataFrame":
+        ...
+
+    @overload
+    def data_frame(
+        self,
+        index: "pandas_typing.Axes" = None,
+        columns: Union[EntityColumns, "pandas_typing.Axes"] = None,
+        dtype: "pandas_typing.Dtype" = None,
+        copy: bool = False,
+    ) -> "DataFrame":
+        ...
+
+    def data_frame(self, *args, **kwargs) -> "DataFrame":
+        pandas = _get_pandas()
+        args = args[1:]
+        kwargs["data"] = [self.to_dict()]
+        return pandas.DataFrame(*args, **kwargs)
+
+    def get_metadata_as_data_frame(self) -> "DataFrame":
+        pandas = _get_pandas()
+        return pandas.DataFrame.from_dict(
+            self.metadata, orient="index", columns=["Attributes"]
+        )
+
     def __str__(self):
         if self.is_error:
             return f"Entity with error, error message: {self.error_message}"
-
-        # no name in meta data in web
-        # name = self.metadata.get('Name') or ''
-        # if isinstance(name, list):
-        #     name = name[0]
-
         return f"{self.__class__.__name__}, PrimName: {self.primary_name}"
 
     def __repr__(self):
@@ -96,11 +124,4 @@ class Entity:
                 self.error_message,
                 self.metadata,
             )
-        )
-
-    def get_metadata_as_data_frame(self) -> "DataFrame":
-        metadata = self.metadata
-        pandas = _get_pandas()
-        return pandas.DataFrame.from_dict(
-            metadata, orient="index", columns=["Attributes"]
         )

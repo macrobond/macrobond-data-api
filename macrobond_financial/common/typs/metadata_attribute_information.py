@@ -1,10 +1,13 @@
 # -*- coding: utf-8 -*-
 
-from typing import Optional, List, TYPE_CHECKING
+
+from typing import Optional, Union, cast, List, TYPE_CHECKING, overload
 from typing_extensions import TypedDict, Literal
 
-if TYPE_CHECKING:  # pragma: no cover
+from .._get_pandas import _get_pandas
 
+if TYPE_CHECKING:  # pragma: no cover
+    from pandas import DataFrame, _typing as pandas_typing  # type: ignore
     from ..enums import MetadataAttributeType
 
 
@@ -95,6 +98,31 @@ class MetadataAttributeInformation:
         """
         If True then this type of metadata is an entity that can be retrieved from the database
         """
+
+    def to_dict(self) -> TypedDictMetadataAttributeInformation:
+        return cast(TypedDictMetadataAttributeInformation, vars(self))
+
+    @overload
+    def data_frame(self) -> "DataFrame":
+        ...
+
+    @overload
+    def data_frame(
+        self,
+        index: "pandas_typing.Axes" = None,
+        columns: Union[
+            MetadataAttributeInformationColumns, "pandas_typing.Axes"
+        ] = None,
+        dtype: "pandas_typing.Dtype" = None,
+        copy: bool = False,
+    ) -> "DataFrame":
+        ...
+
+    def data_frame(self, *args, **kwargs) -> "DataFrame":
+        pandas = _get_pandas()
+        args = args[1:]
+        kwargs["data"] = [self.to_dict()]
+        return pandas.DataFrame(*args, **kwargs)
 
     def __str__(self):
         return self.name + " " + self.description

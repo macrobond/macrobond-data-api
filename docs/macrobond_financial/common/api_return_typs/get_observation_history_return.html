@@ -28,23 +28,31 @@
 </summary>
 <pre><code class="python"># -*- coding: utf-8 -*-
 
-from typing import TYPE_CHECKING, overload
+
+from datetime import datetime
+
+from typing import TYPE_CHECKING, Any, Dict, List, Union, overload, Sequence, Tuple
 from abc import ABC, abstractmethod
 
-from ..typs.series import Series, SeriesTypedDict
+from ..typs import SeriesObservationHistory, SeriesObservationHistoryColumns
+
+from .._get_pandas import _get_pandas
 
 if TYPE_CHECKING:  # pragma: no cover
     from pandas import DataFrame, _typing as pandas_typing  # type: ignore
 
 
 class GetObservationHistoryReturn(ABC):
-    @abstractmethod
-    def object(self) -&gt; Series:
-        ...  # pragma: no cover
+    def __init__(self, serie_name: str, times: Sequence[datetime]) -&gt; None:
+        self._serie_name = serie_name
+        self._times = times
 
     @abstractmethod
-    def dict(self) -&gt; SeriesTypedDict:
-        ...  # pragma: no cover
+    def object(self) -&gt; Tuple[SeriesObservationHistory, ...]:
+        ...
+
+    def dict(self) -&gt; List[Dict[str, Any]]:
+        return list(map(lambda x: x.to_dict(), self.object()))
 
     @overload
     def data_frame(self) -&gt; &#34;DataFrame&#34;:
@@ -54,15 +62,17 @@ class GetObservationHistoryReturn(ABC):
     def data_frame(
         self,
         index: &#34;pandas_typing.Axes&#34; = None,
-        columns: &#34;pandas_typing.Axes&#34; = None,
+        columns: Union[SeriesObservationHistoryColumns, &#34;pandas_typing.Axes&#34;] = None,
         dtype: &#34;pandas_typing.Dtype&#34; = None,
         copy: bool = False,
     ) -&gt; &#34;DataFrame&#34;:
         ...
 
-    @abstractmethod
     def data_frame(self, *args, **kwargs) -&gt; &#34;DataFrame&#34;:
-        ...  # pragma: no cover</code></pre>
+        pandas = _get_pandas()
+        args = args[1:]
+        kwargs[&#34;data&#34;] = self.dict()
+        return pandas.DataFrame(*args, **kwargs)</code></pre>
 </details>
 </section>
 <section>
@@ -76,6 +86,7 @@ class GetObservationHistoryReturn(ABC):
 <dl>
 <dt id="macrobond_financial.common.api_return_typs.get_observation_history_return.GetObservationHistoryReturn"><code class="flex name class">
 <span>class <span class="ident">GetObservationHistoryReturn</span></span>
+<span>(</span><span>serie_name: str, times: Sequence[datetime.datetime])</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Helper class that provides a standard way to create an ABC using
@@ -85,13 +96,16 @@ inheritance.</p></div>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class GetObservationHistoryReturn(ABC):
-    @abstractmethod
-    def object(self) -&gt; Series:
-        ...  # pragma: no cover
+    def __init__(self, serie_name: str, times: Sequence[datetime]) -&gt; None:
+        self._serie_name = serie_name
+        self._times = times
 
     @abstractmethod
-    def dict(self) -&gt; SeriesTypedDict:
-        ...  # pragma: no cover
+    def object(self) -&gt; Tuple[SeriesObservationHistory, ...]:
+        ...
+
+    def dict(self) -&gt; List[Dict[str, Any]]:
+        return list(map(lambda x: x.to_dict(), self.object()))
 
     @overload
     def data_frame(self) -&gt; &#34;DataFrame&#34;:
@@ -101,19 +115,25 @@ inheritance.</p></div>
     def data_frame(
         self,
         index: &#34;pandas_typing.Axes&#34; = None,
-        columns: &#34;pandas_typing.Axes&#34; = None,
+        columns: Union[SeriesObservationHistoryColumns, &#34;pandas_typing.Axes&#34;] = None,
         dtype: &#34;pandas_typing.Dtype&#34; = None,
         copy: bool = False,
     ) -&gt; &#34;DataFrame&#34;:
         ...
 
-    @abstractmethod
     def data_frame(self, *args, **kwargs) -&gt; &#34;DataFrame&#34;:
-        ...  # pragma: no cover</code></pre>
+        pandas = _get_pandas()
+        args = args[1:]
+        kwargs[&#34;data&#34;] = self.dict()
+        return pandas.DataFrame(*args, **kwargs)</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
 <li>abc.ABC</li>
+</ul>
+<h3>Subclasses</h3>
+<ul class="hlist">
+<li>macrobond_financial.web._api_return_typs._get_observation_history_return._GetObservationHistoryReturn</li>
 </ul>
 <h3>Methods</h3>
 <dl>
@@ -126,13 +146,15 @@ inheritance.</p></div>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">@abstractmethod
-def data_frame(self, *args, **kwargs) -&gt; &#34;DataFrame&#34;:
-    ...  # pragma: no cover</code></pre>
+<pre><code class="python">def data_frame(self, *args, **kwargs) -&gt; &#34;DataFrame&#34;:
+    pandas = _get_pandas()
+    args = args[1:]
+    kwargs[&#34;data&#34;] = self.dict()
+    return pandas.DataFrame(*args, **kwargs)</code></pre>
 </details>
 </dd>
 <dt id="macrobond_financial.common.api_return_typs.get_observation_history_return.GetObservationHistoryReturn.dict"><code class="name flex">
-<span>def <span class="ident">dict</span></span>(<span>self) ‑> <a title="macrobond_financial.common.typs.series.SeriesTypedDict" href="../typs/series.html#macrobond_financial.common.typs.series.SeriesTypedDict">SeriesTypedDict</a></span>
+<span>def <span class="ident">dict</span></span>(<span>self) ‑> List[Dict[str, Any]]</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -140,13 +162,12 @@ def data_frame(self, *args, **kwargs) -&gt; &#34;DataFrame&#34;:
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">@abstractmethod
-def dict(self) -&gt; SeriesTypedDict:
-    ...  # pragma: no cover</code></pre>
+<pre><code class="python">def dict(self) -&gt; List[Dict[str, Any]]:
+    return list(map(lambda x: x.to_dict(), self.object()))</code></pre>
 </details>
 </dd>
 <dt id="macrobond_financial.common.api_return_typs.get_observation_history_return.GetObservationHistoryReturn.object"><code class="name flex">
-<span>def <span class="ident">object</span></span>(<span>self) ‑> <a title="macrobond_financial.common.typs.series.Series" href="../typs/series.html#macrobond_financial.common.typs.series.Series">Series</a></span>
+<span>def <span class="ident">object</span></span>(<span>self) ‑> Tuple[<a title="macrobond_financial.common.typs.series_observation_history.SeriesObservationHistory" href="../typs/series_observation_history.html#macrobond_financial.common.typs.series_observation_history.SeriesObservationHistory">SeriesObservationHistory</a>, ...]</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -155,8 +176,8 @@ def dict(self) -&gt; SeriesTypedDict:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@abstractmethod
-def object(self) -&gt; Series:
-    ...  # pragma: no cover</code></pre>
+def object(self) -&gt; Tuple[SeriesObservationHistory, ...]:
+    ...</code></pre>
 </details>
 </dd>
 </dl>

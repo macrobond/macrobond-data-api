@@ -69,8 +69,8 @@ class Common(TestCase):
         )
 
     def test_series_multi_filter(self) -> None:
-        com = self.com_api.series_multi_filter(SearchFilter(text="usgdp"))
-        web = self.web_api.series_multi_filter(SearchFilter(text="usgdp"))
+        com = self.com_api.entity_search_multi_filter(SearchFilter(text="usgdp"))
+        web = self.web_api.entity_search_multi_filter(SearchFilter(text="usgdp"))
 
         self.assertEqual(
             len(com.entities),
@@ -141,7 +141,7 @@ class Com(TestCase):
 
 
 def search(test: TestCase, api: Api) -> None:
-    search_result = api.search(text="usgdp")
+    search_result = api.entity_search(text="usgdp")
 
     test.assertNotEqual(
         len(search_result.entities), 0, "len(search_result.entities) != 0"
@@ -152,7 +152,7 @@ def search(test: TestCase, api: Api) -> None:
 
 
 def series_multi_filter(test: TestCase, api: Api) -> None:
-    search_result = api.series_multi_filter(SearchFilter(text="usgdp"))
+    search_result = api.entity_search_multi_filter(SearchFilter(text="usgdp"))
 
     test.assertNotEqual(
         len(search_result.entities), 0, "len(search_result.entities) != 0"
@@ -163,7 +163,7 @@ def series_multi_filter(test: TestCase, api: Api) -> None:
 
 
 def series_multi_filter_must_have_attributes(test: TestCase, api: Api) -> None:
-    search_result = api.series_multi_filter(
+    search_result = api.entity_search_multi_filter(
         SearchFilter(must_have_attributes=["MoveBase"])
     )
 
@@ -175,7 +175,7 @@ def series_multi_filter_must_have_attributes(test: TestCase, api: Api) -> None:
 
 
 def series_multi_filter_must_not_have_attributes(test: TestCase, api: Api) -> None:
-    search_result = api.series_multi_filter(
+    search_result = api.entity_search_multi_filter(
         SearchFilter("abc", must_not_have_attributes=["MoveBase"])
     )
 
@@ -187,7 +187,7 @@ def series_multi_filter_must_not_have_attributes(test: TestCase, api: Api) -> No
 
 
 def series_multi_filter_must_have_values(test: TestCase, api: Api) -> None:
-    search_result = api.series_multi_filter(
+    search_result = api.entity_search_multi_filter(
         SearchFilter(must_have_values={"MoveBase": "pp100"})
     )
 
@@ -200,7 +200,7 @@ def series_multi_filter_must_have_values(test: TestCase, api: Api) -> None:
 
 
 def series_multi_filter_must_not_have_values(test: TestCase, api: Api) -> None:
-    search_result = api.series_multi_filter(
+    search_result = api.entity_search_multi_filter(
         SearchFilter("abc", must_not_have_values={"MoveBase": "pp100"})
     )
 
@@ -215,12 +215,12 @@ def series_multi_filter_must_not_have_values(test: TestCase, api: Api) -> None:
 def series_multi_filter_include_discontinued(test: TestCase, api: Api) -> None:
     text = "s_07707"
 
-    include = api.series_multi_filter(
+    include = api.entity_search_multi_filter(
         SearchFilter(text=text),
         include_discontinued=True,
     )
 
-    not_include = api.series_multi_filter(
+    not_include = api.entity_search_multi_filter(
         SearchFilter(text=text),
         include_discontinued=False,
     )
@@ -237,7 +237,7 @@ def series_multi_filter_include_discontinued(test: TestCase, api: Api) -> None:
 def series_multi_filter_entity_types(test: TestCase, api: Api) -> None:
     text = "abc"
 
-    security = api.series_multi_filter(
+    security = api.entity_search_multi_filter(
         SearchFilter(text=text, entity_types=["Security"])
     )
 

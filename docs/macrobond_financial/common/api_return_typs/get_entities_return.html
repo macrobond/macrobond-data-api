@@ -28,23 +28,40 @@
 </summary>
 <pre><code class="python"># -*- coding: utf-8 -*-
 
-from typing import Union, overload, List, TYPE_CHECKING
+from typing import Any, Dict, Union, overload, List, TYPE_CHECKING, Tuple
 from abc import ABC, abstractmethod
 
-from ..typs.entity import Entity, EntityColumns, EntityTypedDict
+from ..typs import Entity, EntityColumns, GetEntitiesError
+from .._get_pandas import _get_pandas
+
 
 if TYPE_CHECKING:  # pragma: no cover
     from pandas import DataFrame, _typing as pandas_typing  # type: ignore
 
 
 class GetEntitiesReturn(ABC):
-    @abstractmethod
-    def list_of_objects(self) -&gt; List[Entity]:
-        ...
+    def __init__(self, entity_names: Tuple[str, ...], _raise: bool) -&gt; None:
+        self._entity_names = entity_names
+        self._raise = _raise
 
     @abstractmethod
-    def list_of_dicts(self) -&gt; List[EntityTypedDict]:
+    def _list_of_objects(self) -&gt; List[Entity]:
         ...
+
+    def list_of_objects(self) -&gt; List[Entity]:
+        entitys = self._list_of_objects()
+        GetEntitiesError.raise_if(
+            self._raise,
+            map(
+                lambda x, y: (x, y.error_message if y.is_error else None),
+                self._entity_names,
+                entitys,
+            ),
+        )
+        return entitys
+
+    def list_of_dicts(self) -&gt; List[Dict[str, Any]]:
+        return list(map(lambda x: x.to_dict(), self.list_of_objects()))
 
     @overload
     def data_frame(self) -&gt; &#34;DataFrame&#34;:
@@ -60,9 +77,11 @@ class GetEntitiesReturn(ABC):
     ) -&gt; &#34;DataFrame&#34;:
         ...
 
-    @abstractmethod
     def data_frame(self, *args, **kwargs) -&gt; &#34;DataFrame&#34;:
-        ...</code></pre>
+        pandas = _get_pandas()
+        args = args[1:]
+        kwargs[&#34;data&#34;] = self.list_of_dicts()
+        return pandas.DataFrame(*args, **kwargs)</code></pre>
 </details>
 </section>
 <section>
@@ -76,6 +95,7 @@ class GetEntitiesReturn(ABC):
 <dl>
 <dt id="macrobond_financial.common.api_return_typs.get_entities_return.GetEntitiesReturn"><code class="flex name class">
 <span>class <span class="ident">GetEntitiesReturn</span></span>
+<span>(</span><span>entity_names: Tuple[str, ...], _raise: bool)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Helper class that provides a standard way to create an ABC using
@@ -85,13 +105,28 @@ inheritance.</p></div>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class GetEntitiesReturn(ABC):
-    @abstractmethod
-    def list_of_objects(self) -&gt; List[Entity]:
-        ...
+    def __init__(self, entity_names: Tuple[str, ...], _raise: bool) -&gt; None:
+        self._entity_names = entity_names
+        self._raise = _raise
 
     @abstractmethod
-    def list_of_dicts(self) -&gt; List[EntityTypedDict]:
+    def _list_of_objects(self) -&gt; List[Entity]:
         ...
+
+    def list_of_objects(self) -&gt; List[Entity]:
+        entitys = self._list_of_objects()
+        GetEntitiesError.raise_if(
+            self._raise,
+            map(
+                lambda x, y: (x, y.error_message if y.is_error else None),
+                self._entity_names,
+                entitys,
+            ),
+        )
+        return entitys
+
+    def list_of_dicts(self) -&gt; List[Dict[str, Any]]:
+        return list(map(lambda x: x.to_dict(), self.list_of_objects()))
 
     @overload
     def data_frame(self) -&gt; &#34;DataFrame&#34;:
@@ -107,9 +142,11 @@ inheritance.</p></div>
     ) -&gt; &#34;DataFrame&#34;:
         ...
 
-    @abstractmethod
     def data_frame(self, *args, **kwargs) -&gt; &#34;DataFrame&#34;:
-        ...</code></pre>
+        pandas = _get_pandas()
+        args = args[1:]
+        kwargs[&#34;data&#34;] = self.list_of_dicts()
+        return pandas.DataFrame(*args, **kwargs)</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
@@ -131,13 +168,15 @@ inheritance.</p></div>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">@abstractmethod
-def data_frame(self, *args, **kwargs) -&gt; &#34;DataFrame&#34;:
-    ...</code></pre>
+<pre><code class="python">def data_frame(self, *args, **kwargs) -&gt; &#34;DataFrame&#34;:
+    pandas = _get_pandas()
+    args = args[1:]
+    kwargs[&#34;data&#34;] = self.list_of_dicts()
+    return pandas.DataFrame(*args, **kwargs)</code></pre>
 </details>
 </dd>
 <dt id="macrobond_financial.common.api_return_typs.get_entities_return.GetEntitiesReturn.list_of_dicts"><code class="name flex">
-<span>def <span class="ident">list_of_dicts</span></span>(<span>self) ‑> List[<a title="macrobond_financial.common.typs.entity.EntityTypedDict" href="../typs/entity.html#macrobond_financial.common.typs.entity.EntityTypedDict">EntityTypedDict</a>]</span>
+<span>def <span class="ident">list_of_dicts</span></span>(<span>self) ‑> List[Dict[str, Any]]</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -145,9 +184,8 @@ def data_frame(self, *args, **kwargs) -&gt; &#34;DataFrame&#34;:
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">@abstractmethod
-def list_of_dicts(self) -&gt; List[EntityTypedDict]:
-    ...</code></pre>
+<pre><code class="python">def list_of_dicts(self) -&gt; List[Dict[str, Any]]:
+    return list(map(lambda x: x.to_dict(), self.list_of_objects()))</code></pre>
 </details>
 </dd>
 <dt id="macrobond_financial.common.api_return_typs.get_entities_return.GetEntitiesReturn.list_of_objects"><code class="name flex">
@@ -159,9 +197,17 @@ def list_of_dicts(self) -&gt; List[EntityTypedDict]:
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">@abstractmethod
-def list_of_objects(self) -&gt; List[Entity]:
-    ...</code></pre>
+<pre><code class="python">def list_of_objects(self) -&gt; List[Entity]:
+    entitys = self._list_of_objects()
+    GetEntitiesError.raise_if(
+        self._raise,
+        map(
+            lambda x, y: (x, y.error_message if y.is_error else None),
+            self._entity_names,
+            entitys,
+        ),
+    )
+    return entitys</code></pre>
 </details>
 </dd>
 </dl>
