@@ -5,3 +5,4 @@ dist/
 macrobond_financial.egg-info/
 **.dtmp
 build/
+.vs/VSWorkspaceState.json
