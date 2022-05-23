@@ -6,7 +6,7 @@ import importlib.util
 import sys
 from typing import Callable, List, Optional
 
-PYTHON_36 = "36"
+PYTHON_37 = "37"
 
 PYTHON_310 = "310"
 
