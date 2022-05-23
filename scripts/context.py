@@ -1,14 +1,17 @@
 # -*- coding: utf-8 -*-
 
 import os
-from pathlib import Path
-import importlib.util
 import sys
 from typing import Callable, List, Optional
 
-PYTHON_37 = "37"
 
-PYTHON_310 = "310"
+def error_print(text: str):
+    sys.stderr.write(text)
+    sys.stderr.flush()
+
+
+def warning_print(text: str):
+    print("Warning: " + text)
 
 
 class _ShellCommand:
@@ -26,20 +29,28 @@ class _ShellCommand:
 
 class Context:
     def __init__(self, *mefs: Callable[["Context"], None]) -> None:
+        def sys_exit(code: int) -> None:
+            sys.exit(code)
+
         self.hade_error = False
         self.shell_commands: List[_ShellCommand] = []
-        if mefs:
-            for mef in mefs:
-                mef(self)
-            print("--- shell commands ---")
-            for shell_command in self.shell_commands:
-                print(str(shell_command))
+        self.python_path = sys.executable
 
-            self.test_for_error()
+        for mef in mefs:
+            mef(self)
+        print("--- shell commands ---")
+        for shell_command in self.shell_commands:
+            print(str(shell_command))
 
-    def shell_command(self, command: str, ignore_exit_code=False) -> bool:
+        print("Error" if self.hade_error else "")
+        if self.hade_error:
+            sys_exit(1)
+
+    def shell_command(
+        self, command: str, ignore_exit_code=False, prefix: str = ""
+    ) -> bool:
         print("shell_command start :" + command)
-        exit_code = os.system(command)
+        exit_code = os.system(prefix + command)
         print("shell_command end :" + command)
         print("exit_code " + str(exit_code))
         self.shell_commands.append(_ShellCommand(command, ignore_exit_code, exit_code))
@@ -48,68 +59,21 @@ class Context:
             return False
         return True
 
-    def python_run(self, python_path: str, name: str, *args: str) -> None:
-        self.shell_command('"' + python_path + '" -m pip install ' + name)
-        for arg in args:
-            self.shell_command('"' + python_path + '" -m ' + name + " " + arg)
+    def python_run(
+        self, name: Optional[str], *args: str, pip_name: Optional[str] = None
+    ) -> None:
+        def run(command: str) -> None:
+            self.shell_command(command, prefix='"' + self.python_path + '" ')
 
-    def pip_install(self, name: str) -> bool:
-        return importlib.util.find_spec(name) is not None or self.shell_command(
-            "pip install " + name
-        )
+        if pip_name is None:
+            pip_name = name
 
-    def install_and_run(self, name: str, *args: str) -> None:
+        if name is not None:
+            if pip_name is not None:
+                run("-m pip install " + pip_name)
 
-        if len(args) == 0:
-            print("install_and_run :" + name + " " + args[0])
+            for arg in args:
+                run("-m " + name + " " + arg)
         else:
-            print("install_and_run :" + name + " args(" + str(len(args)) + ")")
-
-        if not self.pip_install(name):
-            return
-
-        for arg in args:
-            self.shell_command(name + " " + arg)
-
-    def test_for_error(self) -> None:
-        print("Error" if self.hade_error else "")
-        if self.hade_error:
-            sys.exit(1)
-
-    def get_python_path(self, version_of_python: str = PYTHON_310) -> str:
-        python_dir = self.__get_python_path(version_of_python)
-
-        if not os.path.isdir(python_dir):
-            self.error_print("Python" + version_of_python + " not found, " + python_dir)
-            sys.exit(1)
-
-        return f'"{os.path.join(python_dir, "Python")}"'
-
-    def try_get_python_path(self, version_of_python: str = PYTHON_310) -> Optional[str]:
-        python_dir = self.__get_python_path(version_of_python)
-
-        isdir = os.path.isdir(python_dir)
-
-        if not isdir:
-            self.warning_print(
-                "Python" + version_of_python + " not found, " + python_dir
-            )
-
-        return f'"{os.path.join(python_dir, "Python")}"' if isdir else None
-
-    def __get_python_path(self, version_of_python: str) -> str:
-        return os.path.join(
-            Path.home(),
-            "AppData",
-            "Local",
-            "Programs",
-            "Python",
-            "Python" + version_of_python,
-        )
-
-    def error_print(self, text: str):
-        sys.stderr.write(text)
-        sys.stderr.flush()
-
-    def warning_print(self, text: str):
-        print("Warning: " + text)
+            for arg in args:
+                run(arg)

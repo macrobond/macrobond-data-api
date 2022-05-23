@@ -1,13 +1,12 @@
 # -*- coding: utf-8 -*-
 
-from context import Context, PYTHON_36
+from context import Context
 
 UNITTEST_COMMAND = "unittest discover -v -s .\\tests -p **.py"
 
 
-def unittest(context: Context, version_of_python: str = PYTHON_36) -> None:
-    python_path = context.get_python_path(version_of_python)
-    context.shell_command(python_path + " -m " + UNITTEST_COMMAND)
+def unittest(context: Context) -> None:
+    context.python_run(None, " -m " + UNITTEST_COMMAND)
 
 
 if __name__ == "__main__":

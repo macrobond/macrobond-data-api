@@ -1,16 +1,15 @@
 # -*- coding: utf-8 -*-
 
 import os
-from context import Context, PYTHON_36
+from context import Context
 
 
-def pdoc3(context: Context, version_of_python: str = PYTHON_36) -> None:
-    python_path = context.get_python_path(version_of_python)
+def pdoc3(context: Context) -> None:
     context.python_run(
-        python_path,
         "pdoc",
         " --html --template-dir ./scripts/docs-templates "
         + "--force -o ./docs ./macrobond_financial/",
+        pip_name="pdoc3",
     )
 
     file_url = os.path.join(

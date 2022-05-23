@@ -1,12 +1,10 @@
 import os
 from unittest import UNITTEST_COMMAND
-from context import Context, PYTHON_36
+from context import Context
 
 
-def coverage(context: Context, version_of_python: str = PYTHON_36) -> None:
-    python_path = context.get_python_path(version_of_python)
+def coverage(context: Context) -> None:
     context.python_run(
-        python_path,
         "coverage",
         "erase",
         "run --omit=macrobond_financial/common/enums/**,tests/** -m "
@@ -19,10 +17,8 @@ def coverage(context: Context, version_of_python: str = PYTHON_36) -> None:
     print("file:///" + file_url)
 
 
-def coverage_com(context: Context, version_of_python: str = PYTHON_36) -> None:
-    python_path = context.get_python_path(version_of_python)
+def coverage_com(context: Context) -> None:
     context.python_run(
-        python_path,
         "coverage",
         "erase",
         "run --include=macrobond_financial/com/com_api.py,"
@@ -36,10 +32,8 @@ def coverage_com(context: Context, version_of_python: str = PYTHON_36) -> None:
     print("file:///" + file_url)
 
 
-def coverage_web(context: Context, version_of_python: str = PYTHON_36) -> None:
-    python_path = context.get_python_path(version_of_python)
+def coverage_web(context: Context) -> None:
     context.python_run(
-        python_path,
         "coverage",
         "erase",
         "run --include=macrobond_financial/web/web_api.py,"
