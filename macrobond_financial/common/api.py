@@ -54,13 +54,13 @@ class Api(ABC):
         with ComClient() as api: # or WebClient
 
             # as dict
-            print(api.list_values('RateType').list_of_dicts())
+            print(api.metadata_list_values('RateType').list_of_dicts())
 
             # as data_frame
-            print(api.list_values('RateType').data_frame())
+            print(api.metadata_list_values('RateType').data_frame())
 
             # as objects
-            print(api.list_values('RateType').list_of_objects())
+            print(api.metadata_list_values('RateType').list_of_objects())
         ```
         """
 

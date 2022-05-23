@@ -78,6 +78,9 @@ class Common(TestCase):
             "gbgdp", time_stamp_of_last_revision
         ).object()
 
+        self.assertEqual(float, type(web.values[0]))
+        self.assertEqual(float, type(com.values[0]))
+
         self.assertEqual(web.name, com.name, "name")
         self.assertEqual(web.primary_name, com.primary_name, "primary_name")
         self.assertEqual(web.title, com.title, "title")
@@ -194,7 +197,7 @@ class Common(TestCase):
                 [
                     col
                     for col in data_frame
-                    if not col.startswith("metadata.") and col != "Values"
+                    if not col.startswith("metadata.")  # and col != "Values"
                 ]
             ]
             self.assertGreater(len(data_frame.columns), len(ret.columns))
@@ -268,6 +271,9 @@ class Common(TestCase):
 
 
 class Web(TestCase):
+    def test_get_nth_release_values_is_float(self) -> None:
+        get_nth_release_values_is_float(self, self.web_api)
+
     def test_get_vintage_series_error(self) -> None:
         get_vintage_series_error(self, self.web_api)
 
@@ -317,8 +323,10 @@ class Web(TestCase):
             ),
             SeriesObservationHistory(get_datetime(3000, 4, 1), (None,), (None,)),
         )
+
         self.assertSequenceEqual(actual, expected)
 
+        self.assertEqual(float, type(actual[0].values[0]))
         # error
 
         with self.assertRaises(Exception) as context:
@@ -331,6 +339,9 @@ class Web(TestCase):
 
 
 class Com(TestCase):
+    def test_get_nth_release_values_is_float(self) -> None:
+        get_nth_release_values_is_float(self, self.com_api)
+
     def test_get_vintage_series_error(self) -> None:
         get_vintage_series_error(self, self.com_api)
 
@@ -353,3 +364,9 @@ def get_vintage_series_error_time(test: TestCase, api: "Api") -> None:
         api.get_vintage_series("gbgdp", datetime(1800, 4, 1)).data_frame()
 
     test.assertEqual("Invalid time", context.exception.args[0])
+
+
+def get_nth_release_values_is_float(test: TestCase, api: "Api") -> None:
+    for i in range(2):
+        obj = api.get_nth_release("gbgdp", i).object()
+        test.assertEqual(float, type(obj.values[0]))

@@ -138,11 +138,9 @@ class Entity:
         return not self.is_error
 
     def __eq__(self, other):
-        if not isinstance(other, Entity):
-            return NotImplemented
-
         return self is other or (
-            self.error_message == other.error_message
+            isinstance(other, Entity)
+            and self.error_message == other.error_message
             and self.metadata == other.metadata
         )
 
@@ -268,11 +266,9 @@ class Entity:
         return not self.is_error
 
     def __eq__(self, other):
-        if not isinstance(other, Entity):
-            return NotImplemented
-
         return self is other or (
-            self.error_message == other.error_message
+            isinstance(other, Entity)
+            and self.error_message == other.error_message
             and self.metadata == other.metadata
         )
 

@@ -1,4 +1,4 @@
-from typing import List, Optional, Tuple, Iterable, cast, Union
+from typing import Dict, List, Optional, Tuple, Iterable, cast, Union
 
 __pdoc__ = {
     "EntitieErrorInfo.__init__": False,
@@ -21,15 +21,17 @@ class EntitieErrorInfo:
 class GetEntitiesError(Exception):
     def __init__(
         self,
-        entities_or_name: Union[List[EntitieErrorInfo], str],
+        entities: Union[List[EntitieErrorInfo], str, Dict[str, str]],
         error_message: str = None,
     ):
-        if isinstance(entities_or_name, list):
-            self.entities = entities_or_name
+        if isinstance(entities, list):
+            self.entities = entities
+        elif isinstance(entities, dict):
+            self.entities = list(
+                map(EntitieErrorInfo, entities.keys(), entities.values())
+            )
         else:
-            self.entities = [
-                EntitieErrorInfo(entities_or_name, cast(str, error_message))
-            ]
+            self.entities = [EntitieErrorInfo(entities, cast(str, error_message))]
 
         self.message = "failed to retrieve:\n" + (
             "\n".join(

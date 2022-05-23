@@ -28,27 +28,56 @@
 </summary>
 <pre><code class="python"># -*- coding: utf-8 -*-
 
-from typing import List, TYPE_CHECKING
+from typing import TYPE_CHECKING, Union, overload
 from abc import ABC, abstractmethod
 
-from ..typs import UnifiedSeries, UnifiedSeriesDict
+from ..typs import (
+    UnifiedSeries,
+    UnifiedSeriesDict,
+    GetEntitiesError,
+    UnifiedSeriesColumns,
+)
 
 if TYPE_CHECKING:  # pragma: no cover
-    from pandas import DataFrame  # type: ignore
+    from pandas import DataFrame, _typing as pandas_typing  # type: ignore
 
 
 class GetUnifiedSeriesReturn(ABC):
+    def __init__(self, _raise: bool) -&gt; None:
+        self._raise = _raise
+
     @abstractmethod
+    def _object(self) -&gt; UnifiedSeries:
+        ...
+
     def object(self) -&gt; UnifiedSeries:
-        ...
+        ret = self._object()
 
-    @abstractmethod
+        errors = ret.get_errors()
+        if self._raise and len(errors) != 0:
+            raise GetEntitiesError(errors)
+
+        return ret
+
     def dict(self) -&gt; UnifiedSeriesDict:
+        return self.object().to_dict()
+
+    @overload
+    def data_frame(self) -&gt; &#34;DataFrame&#34;:
         ...
 
-    @abstractmethod
-    def data_frame(self, columns: List[str] = None) -&gt; &#34;DataFrame&#34;:
-        ...</code></pre>
+    @overload
+    def data_frame(
+        self,
+        index: &#34;pandas_typing.Axes&#34; = None,
+        columns: Union[UnifiedSeriesColumns, &#34;pandas_typing.Axes&#34;] = None,
+        dtype: &#34;pandas_typing.Dtype&#34; = None,
+        copy: bool = False,
+    ) -&gt; &#34;DataFrame&#34;:
+        ...
+
+    def data_frame(self, *args, **kwargs) -&gt; &#34;DataFrame&#34;:
+        return self.object().data_frame(*args, **kwargs)</code></pre>
 </details>
 </section>
 <section>
@@ -62,6 +91,7 @@ class GetUnifiedSeriesReturn(ABC):
 <dl>
 <dt id="macrobond_financial.common.api_return_typs.get_unified_series_return.GetUnifiedSeriesReturn"><code class="flex name class">
 <span>class <span class="ident">GetUnifiedSeriesReturn</span></span>
+<span>(</span><span>_raise: bool)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Helper class that provides a standard way to create an ABC using
@@ -71,17 +101,41 @@ inheritance.</p></div>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class GetUnifiedSeriesReturn(ABC):
+    def __init__(self, _raise: bool) -&gt; None:
+        self._raise = _raise
+
     @abstractmethod
+    def _object(self) -&gt; UnifiedSeries:
+        ...
+
     def object(self) -&gt; UnifiedSeries:
-        ...
+        ret = self._object()
 
-    @abstractmethod
+        errors = ret.get_errors()
+        if self._raise and len(errors) != 0:
+            raise GetEntitiesError(errors)
+
+        return ret
+
     def dict(self) -&gt; UnifiedSeriesDict:
+        return self.object().to_dict()
+
+    @overload
+    def data_frame(self) -&gt; &#34;DataFrame&#34;:
         ...
 
-    @abstractmethod
-    def data_frame(self, columns: List[str] = None) -&gt; &#34;DataFrame&#34;:
-        ...</code></pre>
+    @overload
+    def data_frame(
+        self,
+        index: &#34;pandas_typing.Axes&#34; = None,
+        columns: Union[UnifiedSeriesColumns, &#34;pandas_typing.Axes&#34;] = None,
+        dtype: &#34;pandas_typing.Dtype&#34; = None,
+        copy: bool = False,
+    ) -&gt; &#34;DataFrame&#34;:
+        ...
+
+    def data_frame(self, *args, **kwargs) -&gt; &#34;DataFrame&#34;:
+        return self.object().data_frame(*args, **kwargs)</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
@@ -95,7 +149,7 @@ inheritance.</p></div>
 <h3>Methods</h3>
 <dl>
 <dt id="macrobond_financial.common.api_return_typs.get_unified_series_return.GetUnifiedSeriesReturn.data_frame"><code class="name flex">
-<span>def <span class="ident">data_frame</span></span>(<span>self, columns: List[str] = None) ‑> DataFrame</span>
+<span>def <span class="ident">data_frame</span></span>(<span>self, *args, **kwargs) ‑> DataFrame</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -103,9 +157,8 @@ inheritance.</p></div>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">@abstractmethod
-def data_frame(self, columns: List[str] = None) -&gt; &#34;DataFrame&#34;:
-    ...</code></pre>
+<pre><code class="python">def data_frame(self, *args, **kwargs) -&gt; &#34;DataFrame&#34;:
+    return self.object().data_frame(*args, **kwargs)</code></pre>
 </details>
 </dd>
 <dt id="macrobond_financial.common.api_return_typs.get_unified_series_return.GetUnifiedSeriesReturn.dict"><code class="name flex">
@@ -117,9 +170,8 @@ def data_frame(self, columns: List[str] = None) -&gt; &#34;DataFrame&#34;:
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">@abstractmethod
-def dict(self) -&gt; UnifiedSeriesDict:
-    ...</code></pre>
+<pre><code class="python">def dict(self) -&gt; UnifiedSeriesDict:
+    return self.object().to_dict()</code></pre>
 </details>
 </dd>
 <dt id="macrobond_financial.common.api_return_typs.get_unified_series_return.GetUnifiedSeriesReturn.object"><code class="name flex">
@@ -131,9 +183,14 @@ def dict(self) -&gt; UnifiedSeriesDict:
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">@abstractmethod
-def object(self) -&gt; UnifiedSeries:
-    ...</code></pre>
+<pre><code class="python">def object(self) -&gt; UnifiedSeries:
+    ret = self._object()
+
+    errors = ret.get_errors()
+    if self._raise and len(errors) != 0:
+        raise GetEntitiesError(errors)
+
+    return ret</code></pre>
 </details>
 </dd>
 </dl>

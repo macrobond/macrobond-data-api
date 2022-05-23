@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from typing import Any, Dict, List, Optional, cast, TYPE_CHECKING
+from typing import Any, Dict, List, Optional, Tuple, cast, TYPE_CHECKING
 
 from datetime import datetime
 
@@ -43,7 +43,13 @@ class _GetVintageSeriesReturn(GetVintageSeriesReturn):
         ):
             raise ValueError("Invalid time")
 
-        values = tuple(cast(List[Optional[float]], response["values"]))
+        values: Tuple[Optional[float], ...] = tuple(
+            map(
+                lambda x: float(x) if x else None,
+                cast(List[Optional[float]], response["values"]),
+            )
+        )
+
         dates = tuple(map(_str_to_datetime, cast(List[str], response["dates"])))
 
         return VintageSeries(self._serie_name, None, metadata, values, dates)

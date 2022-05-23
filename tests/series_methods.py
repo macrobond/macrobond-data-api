@@ -21,19 +21,19 @@ if TYPE_CHECKING:
 def comper_unified_dict(
     test: TestCase, a_unified: "UnifiedSeriesDict", b_unified: "UnifiedSeriesDict"
 ) -> None:
-    test.assertNotEqual(len(a_unified["dates"]), 0)
+    test.assertNotEqual(len(a_unified["Dates"]), 0)
 
-    test.assertSequenceEqual(a_unified["dates"], b_unified["dates"])
+    test.assertSequenceEqual(a_unified["Dates"], b_unified["Dates"])
 
-    test.assertEqual(len(a_unified["series"]), len(b_unified["series"]))
-    for i, a_series in enumerate(a_unified["series"]):
-        b_series = b_unified["series"][i]
-        test.assertEqual(a_series["name"], b_series["name"])
-        test.assertEqual(a_series["error_message"], b_series["error_message"])
+    test.assertEqual(len(a_unified["Series"]), len(b_unified["Series"]))
+    for i, a_series in enumerate(a_unified["Series"]):
+        b_series = b_unified["Series"][i]
+        test.assertEqual(a_series["Name"], b_series["Name"])
+        test.assertEqual(a_series.get("ErrorMessage"), b_series.get("ErrorMessage"))
 
-        if a_series["error_message"] != "":
-            test.assertSequenceEqual(a_series["values"], b_series["values"])
-            test.assertDictEqual(a_series["metadata"], b_series["metadata"])
+        if not a_series.get("ErrorMessage"):
+            test.assertSequenceEqual(a_series["Values"], b_series["Values"])
+            # test.assertDictEqual(a_series["Metadata"], b_series["Metadata"])
 
 
 class Common(TestCase):
@@ -90,6 +90,40 @@ class Common(TestCase):
         self.assertIsNotNone(web_dict.get("Currency"))
         self.assertEqual(web_dict.get("Currency"), com_dict.get("Currency"))
 
+    def test_get_unified_series_object(self) -> None:
+        web = self.web_api.get_unified_series(
+            "usgdp",
+            "uscpi",
+        ).object()
+
+        com = self.com_api.get_unified_series(
+            "usgdp",
+            "uscpi",
+        ).object()
+
+        for serie in web:
+            serie.metadata = {}
+
+        for serie in com:
+            serie.metadata = {}
+
+        self.assertEqual(web, com)
+
+        web = self.web_api.get_unified_series(
+            "usgdp", "uscpi", "noseries!", raise_error=False
+        ).object()
+        com = self.com_api.get_unified_series(
+            "usgdp", "uscpi", "noseries!", raise_error=False
+        ).object()
+
+        for serie in web:
+            serie.metadata = {}
+
+        for serie in com:
+            serie.metadata = {}
+
+        self.assertEqual(web, com)
+
     def test_get_unified_series_dict(self) -> None:
         web = self.web_api.get_unified_series(
             "usgdp",
@@ -113,6 +147,11 @@ class Common(TestCase):
         comper_unified_dict(self, web, com)
 
     def test_get_unified_series_data_frame(self) -> None:
+        def remove_metadata(data_frame):
+            for i in range(len(data_frame["Series"][0])):
+                if data_frame["Series"][0][i].get("Metadata"):
+                    del data_frame["Series"][0][i]["Metadata"]
+
         web = self.web_api.get_unified_series(
             "usgdp",
             "uscpi",
@@ -121,6 +160,9 @@ class Common(TestCase):
             "usgdp",
             "uscpi",
         ).data_frame()
+
+        remove_metadata(web)
+        remove_metadata(com)
 
         self.assertEqual(len(web.compare(com)), 0)
 
@@ -130,6 +172,9 @@ class Common(TestCase):
         com = self.com_api.get_unified_series(
             "usgdp", "uscpi", "noseries!", raise_error=False
         ).data_frame()
+
+        remove_metadata(web)
+        remove_metadata(com)
 
         self.assertEqual(len(web.compare(com)), 0)
 
@@ -192,6 +237,8 @@ def get_one_series(test: TestCase, api: Api) -> None:
 
     test.assertEqual(series.entity_type, "TimeSeries", "entity_type")
 
+    test.assertEqual(float, type(series.values[0]))
+
     series = api.get_one_series("noseries!", raise_error=False).object()
     test.assertTrue(series.is_error, "is_error")
     test.assertEqual(series.error_message, "Not found", "error_message")
@@ -250,6 +297,7 @@ def get_series(test: TestCase, api: Api) -> None:
     test.assertEqual(series[0].primary_name, "usnaac0169", "primary_name")
     test.assertFalse(series[0].is_error, "is_error")
     test.assertEqual(series[0].error_message, "", "error_message")
+    test.assertEqual(float, type(series[0].values[0]))
 
     # test.assertEqual(series[1].name, 'uscpi', 'name')
     test.assertEqual(series[1].primary_name, "uspric2156", "primary_name")
@@ -392,6 +440,8 @@ def get_unified_series(test: TestCase, api: Api) -> None:
 
         test.assertFalse(unified[i].is_error, f"is_error i = {i}")
         test.assertEqual(unified[i].error_message, "", f"error_message i = {i}")
+
+        test.assertEqual(float, type(unified[i].values[0]))
 
     test.assertTrue(unified[4].is_error, "is_error")
     test.assertEqual(unified[4].error_message, "noseries! : Not found", "error_message")

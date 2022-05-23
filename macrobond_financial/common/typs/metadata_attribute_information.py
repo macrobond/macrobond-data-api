@@ -131,11 +131,9 @@ class MetadataAttributeInformation:
         return self.name
 
     def __eq__(self, other):
-        if not isinstance(other, MetadataAttributeInformation):
-            return NotImplemented
-
         return self is other or (
-            self.name == other.name
+            isinstance(other, MetadataAttributeInformation)
+            and self.name == other.name
             and self.description == other.description
             and self.comment == other.comment
             and self.uses_value_list == other.uses_value_list

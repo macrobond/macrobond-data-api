@@ -159,11 +159,9 @@ class MetadataAttributeInformation:
         return self.name
 
     def __eq__(self, other):
-        if not isinstance(other, MetadataAttributeInformation):
-            return NotImplemented
-
         return self is other or (
-            self.name == other.name
+            isinstance(other, MetadataAttributeInformation)
+            and self.name == other.name
             and self.description == other.description
             and self.comment == other.comment
             and self.uses_value_list == other.uses_value_list
@@ -280,11 +278,9 @@ class MetadataAttributeInformation:
         return self.name
 
     def __eq__(self, other):
-        if not isinstance(other, MetadataAttributeInformation):
-            return NotImplemented
-
         return self is other or (
-            self.name == other.name
+            isinstance(other, MetadataAttributeInformation)
+            and self.name == other.name
             and self.description == other.description
             and self.comment == other.comment
             and self.uses_value_list == other.uses_value_list
@@ -460,7 +456,7 @@ metadata can be listen using the ListAllValues function</p></div>
 <dd>
 <div class="desc"><p>If True, the metadata attribute uses a list of values</p></div>
 </dd>
-<dt id="macrobond_financial.common.typs.metadata_attribute_information.TypedDictMetadataAttributeInformation.value_type"><code class="name">var <span class="ident">value_type</span> : _ForwardRef('MetadataAttributeType')</code></dt>
+<dt id="macrobond_financial.common.typs.metadata_attribute_information.TypedDictMetadataAttributeInformation.value_type"><code class="name">var <span class="ident">value_type</span> : MetadataAttributeType</code></dt>
 <dd>
 <div class="desc"><p>The value type of the metadata attribute</p></div>
 </dd>

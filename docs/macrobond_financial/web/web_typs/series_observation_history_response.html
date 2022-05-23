@@ -100,7 +100,7 @@ class SeriesObservationHistoryResponse(TypedDict):
 <dd>
 <div class="desc"><p>The date of the observation</p></div>
 </dd>
-<dt id="macrobond_financial.web.web_typs.series_observation_history_response.SeriesObservationHistoryResponse.timeStamps"><code class="name">var <span class="ident">timeStamps</span> : List[Union[str, NoneType]]</code></dt>
+<dt id="macrobond_financial.web.web_typs.series_observation_history_response.SeriesObservationHistoryResponse.timeStamps"><code class="name">var <span class="ident">timeStamps</span> : List[Optional[str]]</code></dt>
 <dd>
 <div class="desc"><p>A list of timestamps of when the historical values were recorded.
 The first timestamp may be null if the time of the original is unknown.</p></div>
@@ -109,7 +109,7 @@ The first timestamp may be null if the time of the original is unknown.</p></div
 <h3>Methods</h3>
 <dl>
 <dt id="macrobond_financial.web.web_typs.series_observation_history_response.SeriesObservationHistoryResponse.values"><code class="name flex">
-<span>def <span class="ident">values</span></span>(<span>...) ‑> List[Union[float, NoneType]]</span>
+<span>def <span class="ident">values</span></span>(<span>...) ‑> List[Optional[float]]</span>
 </code></dt>
 <dd>
 <div class="desc"><p>D.values() -&gt; an object providing a view on D's values</p></div>

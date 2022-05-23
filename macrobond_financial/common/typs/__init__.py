@@ -14,7 +14,7 @@ from .unified_series import (
     UnifiedSeries,
     UnifiedSerie,
     UnifiedSeriesDict,
-    UnifiedSerieDict,
+    UnifiedSeriesColumns,
 )
 
 from .vintage_series import VintageSeries

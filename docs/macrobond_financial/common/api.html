@@ -82,13 +82,13 @@ class Api(ABC):
         with ComClient() as api: # or WebClient
 
             # as dict
-            print(api.list_values(&#39;RateType&#39;).list_of_dicts())
+            print(api.metadata_list_values(&#39;RateType&#39;).list_of_dicts())
 
             # as data_frame
-            print(api.list_values(&#39;RateType&#39;).data_frame())
+            print(api.metadata_list_values(&#39;RateType&#39;).data_frame())
 
             # as objects
-            print(api.list_values(&#39;RateType&#39;).list_of_objects())
+            print(api.metadata_list_values(&#39;RateType&#39;).list_of_objects())
         ```
         &#34;&#34;&#34;
 
@@ -244,13 +244,13 @@ class Api(ABC):
         with ComClient() as api: # or WebClient
 
             # as dict
-            print(api.list_values(&#39;RateType&#39;).list_of_dicts())
+            print(api.metadata_list_values(&#39;RateType&#39;).list_of_dicts())
 
             # as data_frame
-            print(api.list_values(&#39;RateType&#39;).data_frame())
+            print(api.metadata_list_values(&#39;RateType&#39;).data_frame())
 
             # as objects
-            print(api.list_values(&#39;RateType&#39;).list_of_objects())
+            print(api.metadata_list_values(&#39;RateType&#39;).list_of_objects())
         ```
         &#34;&#34;&#34;
 
@@ -601,13 +601,13 @@ def metadata_get_value_information(
 <pre><code class="language-python">with ComClient() as api: # or WebClient
 
     # as dict
-    print(api.list_values('RateType').list_of_dicts())
+    print(api.metadata_list_values('RateType').list_of_dicts())
 
     # as data_frame
-    print(api.list_values('RateType').data_frame())
+    print(api.metadata_list_values('RateType').data_frame())
 
     # as objects
-    print(api.list_values('RateType').list_of_objects())
+    print(api.metadata_list_values('RateType').list_of_objects())
 </code></pre></div>
 <details class="source">
 <summary>
@@ -633,13 +633,13 @@ def metadata_list_values(self, name: str) -&gt; ListValuesReturn:
     with ComClient() as api: # or WebClient
 
         # as dict
-        print(api.list_values(&#39;RateType&#39;).list_of_dicts())
+        print(api.metadata_list_values(&#39;RateType&#39;).list_of_dicts())
 
         # as data_frame
-        print(api.list_values(&#39;RateType&#39;).data_frame())
+        print(api.metadata_list_values(&#39;RateType&#39;).data_frame())
 
         # as objects
-        print(api.list_values(&#39;RateType&#39;).list_of_objects())
+        print(api.metadata_list_values(&#39;RateType&#39;).list_of_objects())
     ```
     &#34;&#34;&#34;</code></pre>
 </details>

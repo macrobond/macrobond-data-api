@@ -96,7 +96,14 @@ class Series(Entity):
             kwargs[&#34;data&#34;] = series
 
         args = args[1:]
-        return pandas.DataFrame(*args, **kwargs)</code></pre>
+        return pandas.DataFrame(*args, **kwargs)
+
+    def __eq__(self, other):
+        return self is other or (
+            isinstance(other, Series)
+            and self.error_message == other.error_message
+            and self.metadata == other.metadata
+        )</code></pre>
 </details>
 </section>
 <section>
@@ -110,7 +117,7 @@ class Series(Entity):
 <dl>
 <dt id="macrobond_financial.common.typs.series.Series"><code class="flex name class">
 <span>class <span class="ident">Series</span></span>
-<span>(</span><span>name: str, error_message: Optional[str], metadata: Optional[Dict[str, Any]], values: Optional[Tuple[Union[float, NoneType], ...]], dates: Optional[Tuple[datetime.datetime, ...]])</span>
+<span>(</span><span>name: str, error_message: Optional[str], metadata: Optional[Dict[str, Any]], values: Optional[Tuple[Optional[float], ...]], dates: Optional[Tuple[datetime.datetime, ...]])</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Interface for a Macrobond time series.</p></div>
@@ -169,7 +176,14 @@ class Series(Entity):
             kwargs[&#34;data&#34;] = series
 
         args = args[1:]
-        return pandas.DataFrame(*args, **kwargs)</code></pre>
+        return pandas.DataFrame(*args, **kwargs)
+
+    def __eq__(self, other):
+        return self is other or (
+            isinstance(other, Series)
+            and self.error_message == other.error_message
+            and self.metadata == other.metadata
+        )</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">

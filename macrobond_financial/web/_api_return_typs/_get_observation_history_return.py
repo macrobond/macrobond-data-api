@@ -33,11 +33,12 @@ class _GetObservationHistoryReturn(GetObservationHistoryReturn):
             if ex.status_code == 404:
                 raise Exception(ex.response.json()["detail"]) from ex
             raise ex
+
         return tuple(
             map(
                 lambda x: SeriesObservationHistory(
                     _str_to_datetime(x["observationDate"]),
-                    tuple(x["values"]),
+                    tuple(map(lambda v: float(v) if v else None, x["values"])),
                     tuple(map(_optional_str_to_datetime_z, x["timeStamps"])),
                 ),
                 response,

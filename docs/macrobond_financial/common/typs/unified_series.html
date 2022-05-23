@@ -31,6 +31,7 @@
 from typing import (
     Any,
     Dict,
+    List,
     Sequence,
     Tuple,
     Optional,
@@ -40,22 +41,22 @@ from typing import (
 )
 
 from datetime import datetime
-from typing_extensions import TypedDict
+from typing_extensions import Literal, TypedDict
+
+
+from .._get_pandas import _get_pandas
+
+UnifiedSeriesColumnsLiterals = Literal[&#34;Dates&#34;, &#34;Series&#34;]
+
+UnifiedSeriesColumns = List[UnifiedSeriesColumnsLiterals]
 
 if TYPE_CHECKING:  # pragma: no cover
-    from pandas import DataFrame  # type: ignore
-
-
-class UnifiedSerieDict(TypedDict):
-    name: str
-    error_message: str
-    metadata: Dict[str, Any]
-    values: Tuple[Optional[float], ...]
+    from pandas import DataFrame, _typing as pandas_typing  # type: ignore
 
 
 class UnifiedSeriesDict(TypedDict):
-    dates: Tuple[datetime, ...]
-    series: Tuple[UnifiedSerieDict, ...]
+    Dates: Tuple[datetime, ...]
+    Series: Tuple[Dict[str, Any], ...]
 
 
 class UnifiedSerie:
@@ -77,11 +78,38 @@ class UnifiedSerie:
         self.metadata = metadata
         self.values = values
 
+    def to_dict(self) -&gt; Dict[str, Any]:
+        if self.is_error:
+            return {
+                &#34;Name&#34;: self.name,
+                &#34;ErrorMessage&#34;: self.error_message,
+            }
+        ret = {
+            &#34;Name&#34;: self.name,
+            &#34;Values&#34;: self.values,
+            &#34;Metadata&#34;: self.metadata,
+        }
+        # self._add_metadata(ret)
+        return ret
+
     def __bool__(self):
         return self.error_message == &#34;&#34;
 
+    def __eq__(self, other):
+        return self is other or (
+            isinstance(other, UnifiedSerie)
+            and self.name == other.name
+            and self.error_message == other.error_message
+            and self.values == other.values
+            and self.metadata == other.metadata
+        )
+
 
 class UnifiedSeries(Sequence[UnifiedSerie]):
+    @property
+    def is_error(self) -&gt; bool:
+        return any(self.series)
+
     def __init__(
         self,
         dates: Tuple[datetime, ...],
@@ -89,6 +117,37 @@ class UnifiedSeries(Sequence[UnifiedSerie]):
     ) -&gt; None:
         self.dates = dates
         self.series = series
+
+    def to_dict(self) -&gt; UnifiedSeriesDict:
+        return {
+            &#34;Dates&#34;: self.dates,
+            &#34;Series&#34;: tuple(map(lambda x: x.to_dict(), self.series)),
+        }
+
+    def get_errors(self) -&gt; Dict[str, str]:
+        return {
+            e.name: e.error_message for e in filter(lambda x: x.is_error, self.series)
+        }
+
+    @overload
+    def data_frame(self) -&gt; &#34;DataFrame&#34;:
+        ...
+
+    @overload
+    def data_frame(
+        self,
+        index: &#34;pandas_typing.Axes&#34; = None,
+        columns: Union[UnifiedSeriesColumns, &#34;pandas_typing.Axes&#34;] = None,
+        dtype: &#34;pandas_typing.Dtype&#34; = None,
+        copy: bool = False,
+    ) -&gt; &#34;DataFrame&#34;:
+        ...
+
+    def data_frame(self, *args, **kwargs) -&gt; &#34;DataFrame&#34;:
+        pandas = _get_pandas()
+        args = args[1:]
+        kwargs[&#34;data&#34;] = [self.to_dict()]
+        return pandas.DataFrame(*args, **kwargs)
 
     def __str__(self):
         return f&#34;UnifiedSeries of {len(self)} series&#34;
@@ -108,7 +167,17 @@ class UnifiedSeries(Sequence[UnifiedSerie]):
         return self.series.__getitem__(idx_or_slice)
 
     def __len__(self) -&gt; int:
-        return len(self.series)</code></pre>
+        return len(self.series)
+
+    def __bool__(self):
+        return self.is_error
+
+    def __eq__(self, other):
+        return self is other or (
+            isinstance(other, UnifiedSeries)
+            and self.series == other.series
+            and self.dates == other.dates
+        )</code></pre>
 </details>
 </section>
 <section>
@@ -122,7 +191,7 @@ class UnifiedSeries(Sequence[UnifiedSerie]):
 <dl>
 <dt id="macrobond_financial.common.typs.unified_series.UnifiedSerie"><code class="flex name class">
 <span>class <span class="ident">UnifiedSerie</span></span>
-<span>(</span><span>name: str, error_message: str, metadata: Dict[str, Any], values: Tuple[Union[float, NoneType], ...])</span>
+<span>(</span><span>name: str, error_message: str, metadata: Dict[str, Any], values: Tuple[Optional[float], ...])</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Interface for a Macrobond time series.</p></div>
@@ -149,8 +218,31 @@ class UnifiedSeries(Sequence[UnifiedSerie]):
         self.metadata = metadata
         self.values = values
 
+    def to_dict(self) -&gt; Dict[str, Any]:
+        if self.is_error:
+            return {
+                &#34;Name&#34;: self.name,
+                &#34;ErrorMessage&#34;: self.error_message,
+            }
+        ret = {
+            &#34;Name&#34;: self.name,
+            &#34;Values&#34;: self.values,
+            &#34;Metadata&#34;: self.metadata,
+        }
+        # self._add_metadata(ret)
+        return ret
+
     def __bool__(self):
-        return self.error_message == &#34;&#34;</code></pre>
+        return self.error_message == &#34;&#34;
+
+    def __eq__(self, other):
+        return self is other or (
+            isinstance(other, UnifiedSerie)
+            and self.name == other.name
+            and self.error_message == other.error_message
+            and self.values == other.values
+            and self.metadata == other.metadata
+        )</code></pre>
 </details>
 <h3>Instance variables</h3>
 <dl>
@@ -167,59 +259,31 @@ def is_error(self) -&gt; bool:
 </details>
 </dd>
 </dl>
-</dd>
-<dt id="macrobond_financial.common.typs.unified_series.UnifiedSerieDict"><code class="flex name class">
-<span>class <span class="ident">UnifiedSerieDict</span></span>
-<span>(</span><span>*args, **kwargs)</span>
+<h3>Methods</h3>
+<dl>
+<dt id="macrobond_financial.common.typs.unified_series.UnifiedSerie.to_dict"><code class="name flex">
+<span>def <span class="ident">to_dict</span></span>(<span>self) ‑> Dict[str, Any]</span>
 </code></dt>
 <dd>
-<div class="desc"><p>dict() -&gt; new empty dictionary
-dict(mapping) -&gt; new dictionary initialized from a mapping object's
-(key, value) pairs
-dict(iterable) -&gt; new dictionary initialized as if via:
-d = {}
-for k, v in iterable:
-d[k] = v
-dict(**kwargs) -&gt; new dictionary initialized with the name=value pairs
-in the keyword argument list.
-For example:
-dict(one=1, two=2)</p></div>
+<div class="desc"></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class UnifiedSerieDict(TypedDict):
-    name: str
-    error_message: str
-    metadata: Dict[str, Any]
-    values: Tuple[Optional[float], ...]</code></pre>
+<pre><code class="python">def to_dict(self) -&gt; Dict[str, Any]:
+    if self.is_error:
+        return {
+            &#34;Name&#34;: self.name,
+            &#34;ErrorMessage&#34;: self.error_message,
+        }
+    ret = {
+        &#34;Name&#34;: self.name,
+        &#34;Values&#34;: self.values,
+        &#34;Metadata&#34;: self.metadata,
+    }
+    # self._add_metadata(ret)
+    return ret</code></pre>
 </details>
-<h3>Ancestors</h3>
-<ul class="hlist">
-<li>builtins.dict</li>
-</ul>
-<h3>Class variables</h3>
-<dl>
-<dt id="macrobond_financial.common.typs.unified_series.UnifiedSerieDict.error_message"><code class="name">var <span class="ident">error_message</span> : str</code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="macrobond_financial.common.typs.unified_series.UnifiedSerieDict.metadata"><code class="name">var <span class="ident">metadata</span> : Dict[str, Any]</code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="macrobond_financial.common.typs.unified_series.UnifiedSerieDict.name"><code class="name">var <span class="ident">name</span> : str</code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-</dl>
-<h3>Methods</h3>
-<dl>
-<dt id="macrobond_financial.common.typs.unified_series.UnifiedSerieDict.values"><code class="name flex">
-<span>def <span class="ident">values</span></span>(<span>...) ‑> Tuple[Union[float, NoneType], ...]</span>
-</code></dt>
-<dd>
-<div class="desc"><p>D.values() -&gt; an object providing a view on D's values</p></div>
 </dd>
 </dl>
 </dd>
@@ -236,6 +300,10 @@ dict(one=1, two=2)</p></div>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class UnifiedSeries(Sequence[UnifiedSerie]):
+    @property
+    def is_error(self) -&gt; bool:
+        return any(self.series)
+
     def __init__(
         self,
         dates: Tuple[datetime, ...],
@@ -243,6 +311,37 @@ dict(one=1, two=2)</p></div>
     ) -&gt; None:
         self.dates = dates
         self.series = series
+
+    def to_dict(self) -&gt; UnifiedSeriesDict:
+        return {
+            &#34;Dates&#34;: self.dates,
+            &#34;Series&#34;: tuple(map(lambda x: x.to_dict(), self.series)),
+        }
+
+    def get_errors(self) -&gt; Dict[str, str]:
+        return {
+            e.name: e.error_message for e in filter(lambda x: x.is_error, self.series)
+        }
+
+    @overload
+    def data_frame(self) -&gt; &#34;DataFrame&#34;:
+        ...
+
+    @overload
+    def data_frame(
+        self,
+        index: &#34;pandas_typing.Axes&#34; = None,
+        columns: Union[UnifiedSeriesColumns, &#34;pandas_typing.Axes&#34;] = None,
+        dtype: &#34;pandas_typing.Dtype&#34; = None,
+        copy: bool = False,
+    ) -&gt; &#34;DataFrame&#34;:
+        ...
+
+    def data_frame(self, *args, **kwargs) -&gt; &#34;DataFrame&#34;:
+        pandas = _get_pandas()
+        args = args[1:]
+        kwargs[&#34;data&#34;] = [self.to_dict()]
+        return pandas.DataFrame(*args, **kwargs)
 
     def __str__(self):
         return f&#34;UnifiedSeries of {len(self)} series&#34;
@@ -262,23 +361,93 @@ dict(one=1, two=2)</p></div>
         return self.series.__getitem__(idx_or_slice)
 
     def __len__(self) -&gt; int:
-        return len(self.series)</code></pre>
+        return len(self.series)
+
+    def __bool__(self):
+        return self.is_error
+
+    def __eq__(self, other):
+        return self is other or (
+            isinstance(other, UnifiedSeries)
+            and self.series == other.series
+            and self.dates == other.dates
+        )</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
-<li>typing.Sequence</li>
 <li>collections.abc.Sequence</li>
-<li>typing.Reversible</li>
 <li>collections.abc.Reversible</li>
-<li>typing.Collection</li>
 <li>collections.abc.Collection</li>
 <li>collections.abc.Sized</li>
-<li>typing.Iterable</li>
 <li>collections.abc.Iterable</li>
-<li>typing.Container</li>
 <li>collections.abc.Container</li>
 <li>typing.Generic</li>
 </ul>
+<h3>Instance variables</h3>
+<dl>
+<dt id="macrobond_financial.common.typs.unified_series.UnifiedSeries.is_error"><code class="name">var <span class="ident">is_error</span> : bool</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def is_error(self) -&gt; bool:
+    return any(self.series)</code></pre>
+</details>
+</dd>
+</dl>
+<h3>Methods</h3>
+<dl>
+<dt id="macrobond_financial.common.typs.unified_series.UnifiedSeries.data_frame"><code class="name flex">
+<span>def <span class="ident">data_frame</span></span>(<span>self, *args, **kwargs) ‑> DataFrame</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def data_frame(self, *args, **kwargs) -&gt; &#34;DataFrame&#34;:
+    pandas = _get_pandas()
+    args = args[1:]
+    kwargs[&#34;data&#34;] = [self.to_dict()]
+    return pandas.DataFrame(*args, **kwargs)</code></pre>
+</details>
+</dd>
+<dt id="macrobond_financial.common.typs.unified_series.UnifiedSeries.get_errors"><code class="name flex">
+<span>def <span class="ident">get_errors</span></span>(<span>self) ‑> Dict[str, str]</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_errors(self) -&gt; Dict[str, str]:
+    return {
+        e.name: e.error_message for e in filter(lambda x: x.is_error, self.series)
+    }</code></pre>
+</details>
+</dd>
+<dt id="macrobond_financial.common.typs.unified_series.UnifiedSeries.to_dict"><code class="name flex">
+<span>def <span class="ident">to_dict</span></span>(<span>self) ‑> <a title="macrobond_financial.common.typs.unified_series.UnifiedSeriesDict" href="#macrobond_financial.common.typs.unified_series.UnifiedSeriesDict">UnifiedSeriesDict</a></span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def to_dict(self) -&gt; UnifiedSeriesDict:
+    return {
+        &#34;Dates&#34;: self.dates,
+        &#34;Series&#34;: tuple(map(lambda x: x.to_dict(), self.series)),
+    }</code></pre>
+</details>
+</dd>
+</dl>
 </dd>
 <dt id="macrobond_financial.common.typs.unified_series.UnifiedSeriesDict"><code class="flex name class">
 <span>class <span class="ident">UnifiedSeriesDict</span></span>
@@ -301,8 +470,8 @@ dict(one=1, two=2)</p></div>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class UnifiedSeriesDict(TypedDict):
-    dates: Tuple[datetime, ...]
-    series: Tuple[UnifiedSerieDict, ...]</code></pre>
+    Dates: Tuple[datetime, ...]
+    Series: Tuple[Dict[str, Any], ...]</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
@@ -310,11 +479,11 @@ dict(one=1, two=2)</p></div>
 </ul>
 <h3>Class variables</h3>
 <dl>
-<dt id="macrobond_financial.common.typs.unified_series.UnifiedSeriesDict.dates"><code class="name">var <span class="ident">dates</span> : Tuple[datetime.datetime, ...]</code></dt>
+<dt id="macrobond_financial.common.typs.unified_series.UnifiedSeriesDict.Dates"><code class="name">var <span class="ident">Dates</span> : Tuple[datetime.datetime, ...]</code></dt>
 <dd>
 <div class="desc"></div>
 </dd>
-<dt id="macrobond_financial.common.typs.unified_series.UnifiedSeriesDict.series"><code class="name">var <span class="ident">series</span> : Tuple[<a title="macrobond_financial.common.typs.unified_series.UnifiedSerieDict" href="#macrobond_financial.common.typs.unified_series.UnifiedSerieDict">UnifiedSerieDict</a>, ...]</code></dt>
+<dt id="macrobond_financial.common.typs.unified_series.UnifiedSeriesDict.Series"><code class="name">var <span class="ident">Series</span> : Tuple[Dict[str, Any], ...]</code></dt>
 <dd>
 <div class="desc"></div>
 </dd>
@@ -340,25 +509,23 @@ dict(one=1, two=2)</p></div>
 <h4><code><a title="macrobond_financial.common.typs.unified_series.UnifiedSerie" href="#macrobond_financial.common.typs.unified_series.UnifiedSerie">UnifiedSerie</a></code></h4>
 <ul class="">
 <li><code><a title="macrobond_financial.common.typs.unified_series.UnifiedSerie.is_error" href="#macrobond_financial.common.typs.unified_series.UnifiedSerie.is_error">is_error</a></code></li>
-</ul>
-</li>
-<li>
-<h4><code><a title="macrobond_financial.common.typs.unified_series.UnifiedSerieDict" href="#macrobond_financial.common.typs.unified_series.UnifiedSerieDict">UnifiedSerieDict</a></code></h4>
-<ul class="">
-<li><code><a title="macrobond_financial.common.typs.unified_series.UnifiedSerieDict.error_message" href="#macrobond_financial.common.typs.unified_series.UnifiedSerieDict.error_message">error_message</a></code></li>
-<li><code><a title="macrobond_financial.common.typs.unified_series.UnifiedSerieDict.metadata" href="#macrobond_financial.common.typs.unified_series.UnifiedSerieDict.metadata">metadata</a></code></li>
-<li><code><a title="macrobond_financial.common.typs.unified_series.UnifiedSerieDict.name" href="#macrobond_financial.common.typs.unified_series.UnifiedSerieDict.name">name</a></code></li>
-<li><code><a title="macrobond_financial.common.typs.unified_series.UnifiedSerieDict.values" href="#macrobond_financial.common.typs.unified_series.UnifiedSerieDict.values">values</a></code></li>
+<li><code><a title="macrobond_financial.common.typs.unified_series.UnifiedSerie.to_dict" href="#macrobond_financial.common.typs.unified_series.UnifiedSerie.to_dict">to_dict</a></code></li>
 </ul>
 </li>
 <li>
 <h4><code><a title="macrobond_financial.common.typs.unified_series.UnifiedSeries" href="#macrobond_financial.common.typs.unified_series.UnifiedSeries">UnifiedSeries</a></code></h4>
+<ul class="">
+<li><code><a title="macrobond_financial.common.typs.unified_series.UnifiedSeries.data_frame" href="#macrobond_financial.common.typs.unified_series.UnifiedSeries.data_frame">data_frame</a></code></li>
+<li><code><a title="macrobond_financial.common.typs.unified_series.UnifiedSeries.get_errors" href="#macrobond_financial.common.typs.unified_series.UnifiedSeries.get_errors">get_errors</a></code></li>
+<li><code><a title="macrobond_financial.common.typs.unified_series.UnifiedSeries.is_error" href="#macrobond_financial.common.typs.unified_series.UnifiedSeries.is_error">is_error</a></code></li>
+<li><code><a title="macrobond_financial.common.typs.unified_series.UnifiedSeries.to_dict" href="#macrobond_financial.common.typs.unified_series.UnifiedSeries.to_dict">to_dict</a></code></li>
+</ul>
 </li>
 <li>
 <h4><code><a title="macrobond_financial.common.typs.unified_series.UnifiedSeriesDict" href="#macrobond_financial.common.typs.unified_series.UnifiedSeriesDict">UnifiedSeriesDict</a></code></h4>
 <ul class="">
-<li><code><a title="macrobond_financial.common.typs.unified_series.UnifiedSeriesDict.dates" href="#macrobond_financial.common.typs.unified_series.UnifiedSeriesDict.dates">dates</a></code></li>
-<li><code><a title="macrobond_financial.common.typs.unified_series.UnifiedSeriesDict.series" href="#macrobond_financial.common.typs.unified_series.UnifiedSeriesDict.series">series</a></code></li>
+<li><code><a title="macrobond_financial.common.typs.unified_series.UnifiedSeriesDict.Dates" href="#macrobond_financial.common.typs.unified_series.UnifiedSeriesDict.Dates">Dates</a></code></li>
+<li><code><a title="macrobond_financial.common.typs.unified_series.UnifiedSeriesDict.Series" href="#macrobond_financial.common.typs.unified_series.UnifiedSeriesDict.Series">Series</a></code></li>
 </ul>
 </li>
 </ul>

@@ -2,7 +2,7 @@
 
 # pylint: disable = missing-module-docstring
 
-from typing import Any, Dict, Tuple, List, Optional, cast, TYPE_CHECKING
+from typing import Any, Dict, List, Optional, cast, TYPE_CHECKING
 
 from datetime import datetime, timezone
 
@@ -36,6 +36,11 @@ def _create_series(response: "SeriesResponse", name: str) -> Series:
             cast(List[str], response["dates"]),
         )
     )
-
-    values = cast(Tuple[Optional[float]], response["values"])
+    values = tuple(
+        map(
+            lambda x: float(x) if x else None,
+            cast(List[Optional[float]], response["values"]),
+        )
+    )
+    # values = cast(Tuple[Optional[float]], response["values"])
     return Series(name, "", cast(Dict[str, Any], response["metadata"]), values, dates)
