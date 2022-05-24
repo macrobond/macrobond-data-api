@@ -3,7 +3,7 @@
 from typing import Any, Dict, Union, overload, TYPE_CHECKING
 from abc import ABC, abstractmethod
 
-from ..typs import Entity, EntityColumns, GetEntitiesError
+from ..types import Entity, EntityColumns, GetEntitiesError
 
 if TYPE_CHECKING:  # pragma: no cover
     from pandas import DataFrame, _typing as pandas_typing  # type: ignore

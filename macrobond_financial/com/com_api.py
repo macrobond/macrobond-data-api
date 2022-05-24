@@ -12,9 +12,9 @@ from macrobond_financial.common.enums import (
     CalendarMergeMode,
 )
 
-from macrobond_financial.common.typs import SearchResult, SeriesEntry
+from macrobond_financial.common.types import SearchResult, SeriesEntry
 
-from ._api_return_typs import (
+from ._api_return_types import (
     _ListValuesReturn,
     _GetAttributeInformationReturn,
     _GetRevisionInfoReturn,
@@ -48,7 +48,7 @@ if TYPE_CHECKING:  # pragma: no cover
         GetUnifiedSeriesReturn,
     )
 
-    from macrobond_financial.common.typs import SearchFilter, StartOrEndPoint
+    from macrobond_financial.common.types import SearchFilter, StartOrEndPoint
 
     from .com_typs import Connection, SearchQuery
 

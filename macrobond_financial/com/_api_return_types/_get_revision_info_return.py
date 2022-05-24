@@ -7,7 +7,7 @@ from macrobond_financial.common.api_return_typs import (
     RevisionInfo,
 )
 
-from macrobond_financial.common.typs import GetEntitiesError
+from macrobond_financial.common.types import GetEntitiesError
 
 
 if TYPE_CHECKING:  # pragma: no cover

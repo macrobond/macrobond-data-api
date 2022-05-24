@@ -40,9 +40,9 @@ from macrobond_financial.common.enums import (
     CalendarMergeMode,
 )
 
-from macrobond_financial.common.typs import SearchResult, SeriesEntry
+from macrobond_financial.common.types import SearchResult, SeriesEntry
 
-from ._api_return_typs import (
+from ._api_return_types import (
     _ListValuesReturn,
     _GetAttributeInformationReturn,
     _GetRevisionInfoReturn,
@@ -76,7 +76,7 @@ if TYPE_CHECKING:  # pragma: no cover
         GetUnifiedSeriesReturn,
     )
 
-    from macrobond_financial.common.typs import SearchFilter, StartOrEndPoint
+    from macrobond_financial.common.types import SearchFilter, StartOrEndPoint
 
     from .com_typs import Connection, SearchQuery
 
@@ -495,7 +495,7 @@ def connection(self) -&gt; &#34;Connection&#34;:
 <h3>Methods</h3>
 <dl>
 <dt id="macrobond_financial.com.com_api.ComApi.entity_search_multi_filter"><code class="name flex">
-<span>def <span class="ident">entity_search_multi_filter</span></span>(<span>self, *filters: SearchFilter, include_discontinued: bool = False) ‑> <a title="macrobond_financial.common.typs.search_result.SearchResult" href="../common/typs/search_result.html#macrobond_financial.common.typs.search_result.SearchResult">SearchResult</a></span>
+<span>def <span class="ident">entity_search_multi_filter</span></span>(<span>self, *filters: SearchFilter, include_discontinued: bool = False) ‑> <a title="macrobond_financial.common.types.search_result.SearchResult" href="../common/types/search_result.html#macrobond_financial.common.types.search_result.SearchResult">SearchResult</a></span>
 </code></dt>
 <dd>
 <div class="desc"></div>

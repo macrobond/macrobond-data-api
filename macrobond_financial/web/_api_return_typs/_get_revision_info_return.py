@@ -2,7 +2,7 @@
 
 from typing import List, Sequence, TYPE_CHECKING
 
-from macrobond_financial.common.typs import GetEntitiesError
+from macrobond_financial.common.types import GetEntitiesError
 
 from macrobond_financial.common.api_return_typs import (
     GetRevisionInfoReturn,

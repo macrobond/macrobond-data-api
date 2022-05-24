@@ -4,7 +4,7 @@ from datetime import datetime
 from typing import TYPE_CHECKING, Sequence, Union, Tuple
 
 from macrobond_financial.common import Api
-from macrobond_financial.common.typs import SearchResult, SeriesEntry
+from macrobond_financial.common.types import SearchResult, SeriesEntry
 
 from macrobond_financial.common.enums import (
     SeriesWeekdays,
@@ -45,7 +45,7 @@ if TYPE_CHECKING:  # pragma: no cover
         GetValueInformationReturn,
     )
 
-    from macrobond_financial.common.typs import SearchFilter, StartOrEndPoint
+    from macrobond_financial.common.types import SearchFilter, StartOrEndPoint
 
     from .web_typs import (
         SearchFilter as WebSearchFilter,

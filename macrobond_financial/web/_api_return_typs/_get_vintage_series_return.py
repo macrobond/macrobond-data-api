@@ -6,7 +6,7 @@ from datetime import datetime
 
 from macrobond_financial.common.api_return_typs import GetVintageSeriesReturn
 
-from macrobond_financial.common.typs import VintageSeries
+from macrobond_financial.common.types import VintageSeries
 
 from ._str_to_datetime import _str_to_datetime, _str_to_datetime_z
 

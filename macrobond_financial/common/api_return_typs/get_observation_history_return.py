@@ -6,7 +6,7 @@ from datetime import datetime
 from typing import TYPE_CHECKING, Any, Dict, List, Union, overload, Sequence, Tuple
 from abc import ABC, abstractmethod
 
-from ..typs import SeriesObservationHistory, SeriesObservationHistoryColumns
+from ..types import SeriesObservationHistory, SeriesObservationHistoryColumns
 
 from .._get_pandas import _get_pandas
 

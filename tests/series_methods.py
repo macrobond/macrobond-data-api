@@ -5,7 +5,7 @@ from datetime import datetime
 from typing import TYPE_CHECKING
 
 from macrobond_financial.common import Api
-from macrobond_financial.common.typs import (
+from macrobond_financial.common.types import (
     SeriesEntry,
     StartOrEndPoint,
     GetEntitiesError,
@@ -15,7 +15,7 @@ from macrobond_financial.common.enums import SeriesMissingValueMethod, SeriesFre
 from tests.test_common import TestCase
 
 if TYPE_CHECKING:
-    from macrobond_financial.common.typs import UnifiedSeriesDict
+    from macrobond_financial.common.types import UnifiedSeriesDict
 
 
 def comper_unified_dict(

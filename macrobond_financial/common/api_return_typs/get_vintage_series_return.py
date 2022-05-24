@@ -5,7 +5,7 @@ from abc import ABC, abstractmethod
 
 from datetime import datetime
 
-from ..typs import VintageSeries, GetEntitiesError
+from ..types import VintageSeries, GetEntitiesError
 
 if TYPE_CHECKING:  # pragma: no cover
     from pandas import DataFrame, _typing as pandas_typing  # type: ignore

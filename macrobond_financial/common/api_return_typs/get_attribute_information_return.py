@@ -5,7 +5,7 @@
 from typing import overload, Union, TYPE_CHECKING
 from abc import ABC, abstractmethod
 
-from ..typs import (
+from ..types import (
     MetadataAttributeInformation,
     TypedDictMetadataAttributeInformation,
     MetadataAttributeInformationColumns,

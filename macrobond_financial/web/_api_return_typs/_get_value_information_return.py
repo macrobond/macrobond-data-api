@@ -5,7 +5,7 @@ from typing import List, TYPE_CHECKING, Tuple
 
 from macrobond_financial.common.api_return_typs import GetValueInformationReturn
 
-from macrobond_financial.common.typs import MetadataValueInformationItem
+from macrobond_financial.common.types import MetadataValueInformationItem
 
 from ..session import SessionHttpException
 

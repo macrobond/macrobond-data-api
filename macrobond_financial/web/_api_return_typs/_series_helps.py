@@ -6,7 +6,7 @@ from typing import Any, Dict, List, Optional, cast, TYPE_CHECKING
 
 from datetime import datetime, timezone
 
-from macrobond_financial.common.typs import Entity, Series
+from macrobond_financial.common.types import Entity, Series
 
 
 if TYPE_CHECKING:  # pragma: no cover

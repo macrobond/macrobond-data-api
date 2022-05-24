@@ -6,7 +6,7 @@ from typing import TYPE_CHECKING
 
 from macrobond_financial.common.api_return_typs import ListValuesReturn
 
-from macrobond_financial.common.typs import (
+from macrobond_financial.common.types import (
     MetadataValueInformation,
     MetadataValueInformationItem,
 )

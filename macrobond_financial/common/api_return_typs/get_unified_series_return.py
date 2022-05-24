@@ -3,7 +3,7 @@
 from typing import TYPE_CHECKING, Union, overload
 from abc import ABC, abstractmethod
 
-from ..typs import (
+from ..types import (
     UnifiedSeries,
     UnifiedSeriesDict,
     GetEntitiesError,

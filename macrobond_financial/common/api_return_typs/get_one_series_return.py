@@ -4,7 +4,7 @@ from abc import ABC, abstractmethod
 from typing import Any, Dict, Union, overload, List, TYPE_CHECKING
 from typing_extensions import Literal
 
-from ..typs import Series, SeriesColumns, GetEntitiesError
+from ..types import Series, SeriesColumns, GetEntitiesError
 
 if TYPE_CHECKING:  # pragma: no cover
     from pandas import DataFrame, _typing as pandas_typing  # type: ignore

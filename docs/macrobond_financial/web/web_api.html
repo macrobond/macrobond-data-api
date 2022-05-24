@@ -32,7 +32,7 @@ from datetime import datetime
 from typing import TYPE_CHECKING, Sequence, Union, Tuple
 
 from macrobond_financial.common import Api
-from macrobond_financial.common.typs import SearchResult, SeriesEntry
+from macrobond_financial.common.types import SearchResult, SeriesEntry
 
 from macrobond_financial.common.enums import (
     SeriesWeekdays,
@@ -73,7 +73,7 @@ if TYPE_CHECKING:  # pragma: no cover
         GetValueInformationReturn,
     )
 
-    from macrobond_financial.common.typs import SearchFilter, StartOrEndPoint
+    from macrobond_financial.common.types import SearchFilter, StartOrEndPoint
 
     from .web_typs import (
         SearchFilter as WebSearchFilter,
@@ -488,7 +488,7 @@ def session(self) -&gt; &#34;Session&#34;:
 <h3>Methods</h3>
 <dl>
 <dt id="macrobond_financial.web.web_api.WebApi.entity_search_multi_filter"><code class="name flex">
-<span>def <span class="ident">entity_search_multi_filter</span></span>(<span>self, *filters: SearchFilter, include_discontinued: bool = False) ‑> <a title="macrobond_financial.common.typs.search_result.SearchResult" href="../common/typs/search_result.html#macrobond_financial.common.typs.search_result.SearchResult">SearchResult</a></span>
+<span>def <span class="ident">entity_search_multi_filter</span></span>(<span>self, *filters: SearchFilter, include_discontinued: bool = False) ‑> <a title="macrobond_financial.common.types.search_result.SearchResult" href="../common/types/search_result.html#macrobond_financial.common.types.search_result.SearchResult">SearchResult</a></span>
 </code></dt>
 <dd>
 <div class="desc"></div>

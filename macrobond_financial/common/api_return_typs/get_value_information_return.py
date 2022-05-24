@@ -4,7 +4,7 @@ from abc import ABC, abstractmethod
 from typing import Union, overload, List, Tuple, TYPE_CHECKING
 from typing_extensions import Literal
 
-from ..typs import (
+from ..types import (
     MetadataValueInformationItem,
     TypedDictMetadataValueInformation,
     MetadataValueInformationColumns,

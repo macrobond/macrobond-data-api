@@ -3,7 +3,7 @@
 from typing import TYPE_CHECKING
 from macrobond_financial.common.api_return_typs import GetNthReleaseReturn
 
-from macrobond_financial.common.typs import Series
+from macrobond_financial.common.types import Series
 
 from ._series_helps import _create_series
 

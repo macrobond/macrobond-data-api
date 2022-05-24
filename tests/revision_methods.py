@@ -6,7 +6,7 @@ from datetime import datetime, timezone
 
 from tests.test_common import TestCase
 
-from macrobond_financial.common.typs import GetEntitiesError, SeriesObservationHistory
+from macrobond_financial.common.types import GetEntitiesError, SeriesObservationHistory
 
 if TYPE_CHECKING:
     from macrobond_financial.common import Api

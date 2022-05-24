@@ -3,7 +3,7 @@
 from typing import Any, Dict, Union, overload, List, Tuple, TYPE_CHECKING
 from abc import ABC, abstractmethod
 
-from ..typs import Series, SeriesColumns, GetEntitiesError
+from ..types import Series, SeriesColumns, GetEntitiesError
 
 from .._get_pandas import _get_pandas
 

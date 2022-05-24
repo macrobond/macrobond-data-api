@@ -7,7 +7,7 @@ from datetime import datetime
 from macrobond_financial.common.api_return_typs import (
     GetObservationHistoryReturn,
 )
-from macrobond_financial.common.typs import SeriesObservationHistory
+from macrobond_financial.common.types import SeriesObservationHistory
 
 from ._str_to_datetime import _str_to_datetime, _optional_str_to_datetime_z
 

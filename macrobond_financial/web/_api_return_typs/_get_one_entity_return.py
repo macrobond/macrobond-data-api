@@ -4,7 +4,7 @@
 
 from typing import TYPE_CHECKING
 
-from macrobond_financial.common.typs import Entity
+from macrobond_financial.common.types import Entity
 
 from macrobond_financial.common.api_return_typs import GetOneEntityReturn
 

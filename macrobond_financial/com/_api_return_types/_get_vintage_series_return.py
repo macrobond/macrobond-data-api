@@ -8,7 +8,7 @@ from math import isnan
 
 from macrobond_financial.common.api_return_typs import GetVintageSeriesReturn
 
-from macrobond_financial.common.typs import VintageSeries
+from macrobond_financial.common.types import VintageSeries
 
 from ._fill_metadata_from_entity import _fill_metadata_from_entity
 

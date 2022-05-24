@@ -4,7 +4,7 @@
 
 from typing import Any, Dict, List, Optional, cast, TYPE_CHECKING
 
-from macrobond_financial.common.typs import UnifiedSeries, UnifiedSerie
+from macrobond_financial.common.types import UnifiedSeries, UnifiedSerie
 from macrobond_financial.common.api_return_typs import GetUnifiedSeriesReturn
 
 from ._str_to_datetime import _str_to_datetime

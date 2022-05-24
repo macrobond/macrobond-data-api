@@ -6,7 +6,7 @@ from pandas import DataFrame  # type: ignore
 from macrobond_financial.common import Api
 from macrobond_financial.common.enums import MetadataAttributeType
 
-from macrobond_financial.common.typs import (
+from macrobond_financial.common.types import (
     MetadataValueInformationItem,
     MetadataAttributeInformation,
 )
@@ -14,7 +14,7 @@ from macrobond_financial.common.typs import (
 from tests.test_common import TestCase
 
 if TYPE_CHECKING:
-    from macrobond_financial.common.typs import (
+    from macrobond_financial.common.types import (
         TypedDictMetadataValueInformation,
         TypedDictMetadataAttributeInformation,
     )

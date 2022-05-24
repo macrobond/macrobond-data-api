@@ -4,7 +4,7 @@ from typing import cast, TYPE_CHECKING
 
 from macrobond_financial.common.api_return_typs import GetAttributeInformationReturn
 
-from macrobond_financial.common.typs import MetadataAttributeInformation
+from macrobond_financial.common.types import MetadataAttributeInformation
 
 if TYPE_CHECKING:  # pragma: no cover
     from ..com_typs import Database

@@ -4,7 +4,7 @@ from typing import Any, Dict, List, TYPE_CHECKING
 
 from math import isnan
 
-from macrobond_financial.common.typs import UnifiedSeries, UnifiedSerie
+from macrobond_financial.common.types import UnifiedSeries, UnifiedSerie
 from macrobond_financial.common.api_return_typs import GetUnifiedSeriesReturn
 
 if TYPE_CHECKING:  # pragma: no cover

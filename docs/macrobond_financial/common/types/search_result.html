@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.10.0" />
-<title>macrobond_financial.common.api_return_typs.list_values_return API documentation</title>
+<title>macrobond_financial.common.types.search_result API documentation</title>
 <meta name="description" content="" />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
@@ -19,7 +19,7 @@
 <main>
 <article id="content">
 <header>
-<h1 class="title">Module <code>macrobond_financial.common.api_return_typs.list_values_return</code></h1>
+<h1 class="title">Module <code>macrobond_financial.common.types.search_result</code></h1>
 </header>
 <section id="section-intro">
 <details class="source">
@@ -28,26 +28,42 @@
 </summary>
 <pre><code class="python"># -*- coding: utf-8 -*-
 
-from typing import List, overload, Union, TYPE_CHECKING
-from abc import ABC, abstractmethod
+from typing import Any, Dict, Sequence, Union, Tuple, overload, TYPE_CHECKING
 
-from ..types import (
-    MetadataValueInformation,
-    TypedDictMetadataValueInformation,
-    MetadataValueInformationColumns,
-)
+from .._get_pandas import _get_pandas
 
 if TYPE_CHECKING:  # pragma: no cover
     from pandas import DataFrame, _typing as pandas_typing  # type: ignore
 
 
-class ListValuesReturn(ABC):
-    @abstractmethod
-    def object(self) -&gt; MetadataValueInformation:
+class SearchResult(Sequence[Dict[str, Any]]):
+    def __init__(
+        self, entities: Tuple[Dict[str, Any], ...], is_truncated: bool
+    ) -&gt; None:
+        self.entities = entities
+        self.is_truncated = is_truncated
+
+    def __str__(self):
+        return (
+            f&#34;SearchResult of {len(self)} entities, is is_truncated {self.is_truncated}&#34;
+        )
+
+    def __repr__(self):
+        return str(self)
+
+    @overload
+    def __getitem__(self, idx: int) -&gt; Dict[str, Any]:
         ...
 
-    def list_of_dicts(self) -&gt; List[TypedDictMetadataValueInformation]:
-        return self.object().to_dict()
+    @overload
+    def __getitem__(self, _slice: slice) -&gt; Sequence[Dict[str, Any]]:
+        ...
+
+    def __getitem__(self, idx_or_slice: Union[int, slice]):
+        return self.entities.__getitem__(idx_or_slice)
+
+    def __len__(self) -&gt; int:
+        return len(self.entities)
 
     @overload
     def data_frame(self) -&gt; &#34;DataFrame&#34;:
@@ -57,14 +73,17 @@ class ListValuesReturn(ABC):
     def data_frame(
         self,
         index: &#34;pandas_typing.Axes&#34; = None,
-        columns: Union[MetadataValueInformationColumns, &#34;pandas_typing.Axes&#34;] = None,
+        columns: &#34;pandas_typing.Axes&#34; = None,
         dtype: &#34;pandas_typing.Dtype&#34; = None,
         copy: bool = False,
     ) -&gt; &#34;DataFrame&#34;:
         ...
 
     def data_frame(self, *args, **kwargs) -&gt; &#34;DataFrame&#34;:
-        return self.object().data_frame(*args, **kwargs)</code></pre>
+        pandas = _get_pandas()
+        args = args[1:]
+        kwargs[&#34;data&#34;] = self.entities
+        return pandas.DataFrame(*args, **kwargs)</code></pre>
 </details>
 </section>
 <section>
@@ -76,23 +95,46 @@ class ListValuesReturn(ABC):
 <section>
 <h2 class="section-title" id="header-classes">Classes</h2>
 <dl>
-<dt id="macrobond_financial.common.api_return_typs.list_values_return.ListValuesReturn"><code class="flex name class">
-<span>class <span class="ident">ListValuesReturn</span></span>
+<dt id="macrobond_financial.common.types.search_result.SearchResult"><code class="flex name class">
+<span>class <span class="ident">SearchResult</span></span>
+<span>(</span><span>entities: Tuple[Dict[str, Any], ...], is_truncated: bool)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Helper class that provides a standard way to create an ABC using
-inheritance.</p></div>
+<div class="desc"><p>All the operations on a read-only sequence.</p>
+<p>Concrete subclasses must override <strong>new</strong> or <strong>init</strong>,
+<strong>getitem</strong>, and <strong>len</strong>.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class ListValuesReturn(ABC):
-    @abstractmethod
-    def object(self) -&gt; MetadataValueInformation:
+<pre><code class="python">class SearchResult(Sequence[Dict[str, Any]]):
+    def __init__(
+        self, entities: Tuple[Dict[str, Any], ...], is_truncated: bool
+    ) -&gt; None:
+        self.entities = entities
+        self.is_truncated = is_truncated
+
+    def __str__(self):
+        return (
+            f&#34;SearchResult of {len(self)} entities, is is_truncated {self.is_truncated}&#34;
+        )
+
+    def __repr__(self):
+        return str(self)
+
+    @overload
+    def __getitem__(self, idx: int) -&gt; Dict[str, Any]:
         ...
 
-    def list_of_dicts(self) -&gt; List[TypedDictMetadataValueInformation]:
-        return self.object().to_dict()
+    @overload
+    def __getitem__(self, _slice: slice) -&gt; Sequence[Dict[str, Any]]:
+        ...
+
+    def __getitem__(self, idx_or_slice: Union[int, slice]):
+        return self.entities.__getitem__(idx_or_slice)
+
+    def __len__(self) -&gt; int:
+        return len(self.entities)
 
     @overload
     def data_frame(self) -&gt; &#34;DataFrame&#34;:
@@ -102,27 +144,31 @@ inheritance.</p></div>
     def data_frame(
         self,
         index: &#34;pandas_typing.Axes&#34; = None,
-        columns: Union[MetadataValueInformationColumns, &#34;pandas_typing.Axes&#34;] = None,
+        columns: &#34;pandas_typing.Axes&#34; = None,
         dtype: &#34;pandas_typing.Dtype&#34; = None,
         copy: bool = False,
     ) -&gt; &#34;DataFrame&#34;:
         ...
 
     def data_frame(self, *args, **kwargs) -&gt; &#34;DataFrame&#34;:
-        return self.object().data_frame(*args, **kwargs)</code></pre>
+        pandas = _get_pandas()
+        args = args[1:]
+        kwargs[&#34;data&#34;] = self.entities
+        return pandas.DataFrame(*args, **kwargs)</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
-<li>abc.ABC</li>
-</ul>
-<h3>Subclasses</h3>
-<ul class="hlist">
-<li>macrobond_financial.com._api_return_types._list_values_return._ListValuesReturn</li>
-<li>macrobond_financial.web._api_return_typs._list_values_return._ListValuesReturn</li>
+<li>collections.abc.Sequence</li>
+<li>collections.abc.Reversible</li>
+<li>collections.abc.Collection</li>
+<li>collections.abc.Sized</li>
+<li>collections.abc.Iterable</li>
+<li>collections.abc.Container</li>
+<li>typing.Generic</li>
 </ul>
 <h3>Methods</h3>
 <dl>
-<dt id="macrobond_financial.common.api_return_typs.list_values_return.ListValuesReturn.data_frame"><code class="name flex">
+<dt id="macrobond_financial.common.types.search_result.SearchResult.data_frame"><code class="name flex">
 <span>def <span class="ident">data_frame</span></span>(<span>self, *args, **kwargs) ‑> DataFrame</span>
 </code></dt>
 <dd>
@@ -132,34 +178,10 @@ inheritance.</p></div>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def data_frame(self, *args, **kwargs) -&gt; &#34;DataFrame&#34;:
-    return self.object().data_frame(*args, **kwargs)</code></pre>
-</details>
-</dd>
-<dt id="macrobond_financial.common.api_return_typs.list_values_return.ListValuesReturn.list_of_dicts"><code class="name flex">
-<span>def <span class="ident">list_of_dicts</span></span>(<span>self) ‑> List[<a title="macrobond_financial.common.types.metadata_value_information.TypedDictMetadataValueInformation" href="../types/metadata_value_information.html#macrobond_financial.common.types.metadata_value_information.TypedDictMetadataValueInformation">TypedDictMetadataValueInformation</a>]</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def list_of_dicts(self) -&gt; List[TypedDictMetadataValueInformation]:
-    return self.object().to_dict()</code></pre>
-</details>
-</dd>
-<dt id="macrobond_financial.common.api_return_typs.list_values_return.ListValuesReturn.object"><code class="name flex">
-<span>def <span class="ident">object</span></span>(<span>self) ‑> <a title="macrobond_financial.common.types.metadata_value_information.MetadataValueInformation" href="../types/metadata_value_information.html#macrobond_financial.common.types.metadata_value_information.MetadataValueInformation">MetadataValueInformation</a></span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@abstractmethod
-def object(self) -&gt; MetadataValueInformation:
-    ...</code></pre>
+    pandas = _get_pandas()
+    args = args[1:]
+    kwargs[&#34;data&#34;] = self.entities
+    return pandas.DataFrame(*args, **kwargs)</code></pre>
 </details>
 </dd>
 </dl>
@@ -175,17 +197,15 @@ def object(self) -&gt; MetadataValueInformation:
 <ul id="index">
 <li><h3>Super-module</h3>
 <ul>
-<li><code><a title="macrobond_financial.common.api_return_typs" href="index.html">macrobond_financial.common.api_return_typs</a></code></li>
+<li><code><a title="macrobond_financial.common.types" href="index.html">macrobond_financial.common.types</a></code></li>
 </ul>
 </li>
 <li><h3><a href="#header-classes">Classes</a></h3>
 <ul>
 <li>
-<h4><code><a title="macrobond_financial.common.api_return_typs.list_values_return.ListValuesReturn" href="#macrobond_financial.common.api_return_typs.list_values_return.ListValuesReturn">ListValuesReturn</a></code></h4>
+<h4><code><a title="macrobond_financial.common.types.search_result.SearchResult" href="#macrobond_financial.common.types.search_result.SearchResult">SearchResult</a></code></h4>
 <ul class="">
-<li><code><a title="macrobond_financial.common.api_return_typs.list_values_return.ListValuesReturn.data_frame" href="#macrobond_financial.common.api_return_typs.list_values_return.ListValuesReturn.data_frame">data_frame</a></code></li>
-<li><code><a title="macrobond_financial.common.api_return_typs.list_values_return.ListValuesReturn.list_of_dicts" href="#macrobond_financial.common.api_return_typs.list_values_return.ListValuesReturn.list_of_dicts">list_of_dicts</a></code></li>
-<li><code><a title="macrobond_financial.common.api_return_typs.list_values_return.ListValuesReturn.object" href="#macrobond_financial.common.api_return_typs.list_values_return.ListValuesReturn.object">object</a></code></li>
+<li><code><a title="macrobond_financial.common.types.search_result.SearchResult.data_frame" href="#macrobond_financial.common.types.search_result.SearchResult.data_frame">data_frame</a></code></li>
 </ul>
 </li>
 </ul>

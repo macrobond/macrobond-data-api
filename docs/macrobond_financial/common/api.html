@@ -33,7 +33,7 @@ from abc import ABC, abstractmethod
 
 from datetime import datetime
 
-from .typs import SearchFilter, SearchResult, StartOrEndPoint, SeriesEntry
+from .types import SearchFilter, SearchResult, StartOrEndPoint, SeriesEntry
 
 from .enums import SeriesFrequency, SeriesWeekdays, CalendarMergeMode
 
@@ -61,7 +61,7 @@ class Api(ABC):
         self.raise_error = True
 
     # metadata
-    
+
     @abstractmethod
     def metadata_list_values(self, name: str) -&gt; ListValuesReturn:
         &#34;&#34;&#34;
@@ -108,7 +108,7 @@ class Api(ABC):
     ) -&gt; GetValueInformationReturn:
         &#34;&#34;&#34;
         Get information about metadata values.
-        
+
         Parameters
         ----------
         name_val : Tuple[str, str]
@@ -196,7 +196,7 @@ class Api(ABC):
     ) -&gt; SearchResult:
         &#34;&#34;&#34;&#34;&#34;&#34;
 
-    # Series    
+    # Series
 
     @abstractmethod
     def get_one_series(
@@ -264,7 +264,7 @@ class Api(ABC):
         self.raise_error = True
 
     # metadata
-    
+
     @abstractmethod
     def metadata_list_values(self, name: str) -&gt; ListValuesReturn:
         &#34;&#34;&#34;
@@ -311,7 +311,7 @@ class Api(ABC):
     ) -&gt; GetValueInformationReturn:
         &#34;&#34;&#34;
         Get information about metadata values.
-        
+
         Parameters
         ----------
         name_val : Tuple[str, str]
@@ -399,7 +399,7 @@ class Api(ABC):
     ) -&gt; SearchResult:
         &#34;&#34;&#34;&#34;&#34;&#34;
 
-    # Series    
+    # Series
 
     @abstractmethod
     def get_one_series(
@@ -451,7 +451,7 @@ class Api(ABC):
 <h3>Methods</h3>
 <dl>
 <dt id="macrobond_financial.common.api.Api.entity_search"><code class="name flex">
-<span>def <span class="ident">entity_search</span></span>(<span>self, text: str = None, entity_types: Union[str, Sequence[str]] = None, must_have_values: Dict[str, object] = None, must_not_have_values: Dict[str, object] = None, must_have_attributes: Union[str, Sequence[str]] = None, must_not_have_attributes: Union[str, Sequence[str]] = None, include_discontinued: bool = False) ‑> <a title="macrobond_financial.common.typs.search_result.SearchResult" href="typs/search_result.html#macrobond_financial.common.typs.search_result.SearchResult">SearchResult</a></span>
+<span>def <span class="ident">entity_search</span></span>(<span>self, text: str = None, entity_types: Union[str, Sequence[str]] = None, must_have_values: Dict[str, object] = None, must_not_have_values: Dict[str, object] = None, must_have_attributes: Union[str, Sequence[str]] = None, must_not_have_attributes: Union[str, Sequence[str]] = None, include_discontinued: bool = False) ‑> <a title="macrobond_financial.common.types.search_result.SearchResult" href="types/search_result.html#macrobond_financial.common.types.search_result.SearchResult">SearchResult</a></span>
 </code></dt>
 <dd>
 <div class="desc"><p>Search for time series and other entitites.</p>
@@ -532,7 +532,7 @@ The value can be a single value or a sequence of values.</dd>
 </details>
 </dd>
 <dt id="macrobond_financial.common.api.Api.entity_search_multi_filter"><code class="name flex">
-<span>def <span class="ident">entity_search_multi_filter</span></span>(<span>self, *filters: <a title="macrobond_financial.common.typs.search_filter.SearchFilter" href="typs/search_filter.html#macrobond_financial.common.typs.search_filter.SearchFilter">SearchFilter</a>, include_discontinued: bool = False) ‑> <a title="macrobond_financial.common.typs.search_result.SearchResult" href="typs/search_result.html#macrobond_financial.common.typs.search_result.SearchResult">SearchResult</a></span>
+<span>def <span class="ident">entity_search_multi_filter</span></span>(<span>self, *filters: <a title="macrobond_financial.common.types.search_filter.SearchFilter" href="types/search_filter.html#macrobond_financial.common.types.search_filter.SearchFilter">SearchFilter</a>, include_discontinued: bool = False) ‑> <a title="macrobond_financial.common.types.search_result.SearchResult" href="types/search_result.html#macrobond_financial.common.types.search_result.SearchResult">SearchResult</a></span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -644,7 +644,7 @@ def get_series(
 </details>
 </dd>
 <dt id="macrobond_financial.common.api.Api.get_unified_series"><code class="name flex">
-<span>def <span class="ident">get_unified_series</span></span>(<span>self, *series_entries: Union[<a title="macrobond_financial.common.typs.series_entry.SeriesEntry" href="typs/series_entry.html#macrobond_financial.common.typs.series_entry.SeriesEntry">SeriesEntry</a>, str], frequency=SeriesFrequency.HIGHEST, weekdays=SeriesWeekdays.FULL_WEEK, calendar_merge_mode=CalendarMergeMode.AVAILABLE_IN_ANY, currency='', start_point: <a title="macrobond_financial.common.typs.start_or_end_point.StartOrEndPoint" href="typs/start_or_end_point.html#macrobond_financial.common.typs.start_or_end_point.StartOrEndPoint">StartOrEndPoint</a> = None, end_point: <a title="macrobond_financial.common.typs.start_or_end_point.StartOrEndPoint" href="typs/start_or_end_point.html#macrobond_financial.common.typs.start_or_end_point.StartOrEndPoint">StartOrEndPoint</a> = None, raise_error: bool = None) ‑> <a title="macrobond_financial.common.api_return_typs.get_unified_series_return.GetUnifiedSeriesReturn" href="api_return_typs/get_unified_series_return.html#macrobond_financial.common.api_return_typs.get_unified_series_return.GetUnifiedSeriesReturn">GetUnifiedSeriesReturn</a></span>
+<span>def <span class="ident">get_unified_series</span></span>(<span>self, *series_entries: Union[<a title="macrobond_financial.common.types.series_entry.SeriesEntry" href="types/series_entry.html#macrobond_financial.common.types.series_entry.SeriesEntry">SeriesEntry</a>, str], frequency=SeriesFrequency.HIGHEST, weekdays=SeriesWeekdays.FULL_WEEK, calendar_merge_mode=CalendarMergeMode.AVAILABLE_IN_ANY, currency='', start_point: <a title="macrobond_financial.common.types.start_or_end_point.StartOrEndPoint" href="types/start_or_end_point.html#macrobond_financial.common.types.start_or_end_point.StartOrEndPoint">StartOrEndPoint</a> = None, end_point: <a title="macrobond_financial.common.types.start_or_end_point.StartOrEndPoint" href="types/start_or_end_point.html#macrobond_financial.common.types.start_or_end_point.StartOrEndPoint">StartOrEndPoint</a> = None, raise_error: bool = None) ‑> <a title="macrobond_financial.common.api_return_typs.get_unified_series_return.GetUnifiedSeriesReturn" href="api_return_typs/get_unified_series_return.html#macrobond_financial.common.api_return_typs.get_unified_series_return.GetUnifiedSeriesReturn">GetUnifiedSeriesReturn</a></span>
 </code></dt>
 <dd>
 <div class="desc"><p>Get one or more series and convert them to a common frequency and calendar</p></div>
@@ -723,7 +723,7 @@ def metadata_get_value_information(
 ) -&gt; GetValueInformationReturn:
     &#34;&#34;&#34;
     Get information about metadata values.
-    
+
     Parameters
     ----------
     name_val : Tuple[str, str]

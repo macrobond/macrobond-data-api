@@ -3,7 +3,7 @@
 from typing import List, overload, Union, TYPE_CHECKING
 from abc import ABC, abstractmethod
 
-from ..typs import (
+from ..types import (
     MetadataValueInformation,
     TypedDictMetadataValueInformation,
     MetadataValueInformationColumns,

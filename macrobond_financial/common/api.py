@@ -5,7 +5,7 @@ from abc import ABC, abstractmethod
 
 from datetime import datetime
 
-from .typs import SearchFilter, SearchResult, StartOrEndPoint, SeriesEntry
+from .types import SearchFilter, SearchResult, StartOrEndPoint, SeriesEntry
 
 from .enums import SeriesFrequency, SeriesWeekdays, CalendarMergeMode
 
@@ -33,7 +33,7 @@ class Api(ABC):
         self.raise_error = True
 
     # metadata
-    
+
     @abstractmethod
     def metadata_list_values(self, name: str) -> ListValuesReturn:
         """
@@ -46,7 +46,7 @@ class Api(ABC):
 
         Returns
         -------
-        `macrobond_financial.common.api_return_typs.list_values_return.ListValuesReturn`
+        `macrobond_financial.common.api_return_types.list_values_return.ListValuesReturn`
 
         Examples
         -------
@@ -80,7 +80,7 @@ class Api(ABC):
     ) -> GetValueInformationReturn:
         """
         Get information about metadata values.
-        
+
         Parameters
         ----------
         name_val : Tuple[str, str]
@@ -88,7 +88,7 @@ class Api(ABC):
 
         Returns
         -------
-        `macrobond_financial.common.api_return_typs.get_value_information_return.GetValueInformationReturn`
+        `macrobond_financial.common.api_return_types.get_value_information_return.GetValueInformationReturn`
         """
 
     # revision
@@ -148,7 +148,7 @@ class Api(ABC):
 
         Returns
         -------
-        `macrobond_financial.common.typs.search_result.SearchFilter`
+        `macrobond_financial.common.types.search_result.SearchFilter`
         """
         return self.entity_search_multi_filter(
             SearchFilter(
@@ -168,7 +168,7 @@ class Api(ABC):
     ) -> SearchResult:
         """"""
 
-    # Series    
+    # Series
 
     @abstractmethod
     def get_one_series(
