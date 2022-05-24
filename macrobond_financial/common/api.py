@@ -33,16 +33,16 @@ class Api(ABC):
         self.raise_error = True
 
     # metadata
-
+    
     @abstractmethod
     def metadata_list_values(self, name: str) -> ListValuesReturn:
         """
-        List all metadata attribute values.
+        List all metadata attribute values of an attribute that uses a value list.
 
         Parameters
         ----------
         name : str
-            record that failed processing
+            The name of the metadata attribute
 
         Returns
         -------
@@ -64,17 +64,32 @@ class Api(ABC):
         ```
         """
 
+    # TODO: @mb-to Wouldn't it be better if you could specify several names (such as Union[Sequence[str], str])? This is possible in the WebAPI and is more efficient.
+
     @abstractmethod
     def metadata_get_attribute_information(
         self, name: str
     ) -> GetAttributeInformationReturn:
-        """Get information about a type of metadata."""
+        """
+        Get information about a type of metadata.
+        """
 
     @abstractmethod
     def metadata_get_value_information(
         self, *name_val: Tuple[str, str]
     ) -> GetValueInformationReturn:
-        """"""
+        """
+        Get information about metadata values.
+        
+        Parameters
+        ----------
+        name_val : Tuple[str, str]
+            The attribute name and a value.
+
+        Returns
+        -------
+        `macrobond_financial.common.api_return_typs.get_value_information_return.GetValueInformationReturn`
+        """
 
     # revision
 
@@ -108,7 +123,33 @@ class Api(ABC):
         must_not_have_attributes: Union[Sequence[str], str] = None,
         include_discontinued: bool = False,
     ) -> SearchResult:
-        """Search for time series and other entitites."""
+        """
+        Search for time series and other entitites.
+
+        Parameters
+        ----------
+        text : str
+            Optional set of keywords separated by space.
+        must_have_values : Dict[str, object]
+            Optional dictionary of values that must be present in the entity metadata.
+            The value can be a single value or an array of values. If there are several values
+            for an attribute, it means that either of them must be present.
+        must_not_have_values : Dict[str, object]
+            Optional dictionary of values that must not be present in the entity metadata.
+            The value can be a single value or an array of values.
+        must_have_attributes : Union[Sequence[str], str]
+            Optional set of attributes that must be present in the entity metadata.
+            The value can be a single value or a sequence of values.
+        must_not_have_attributes : Union[Sequence[str], str]
+            Optional set of attributes that must no be present in the entity metadata.
+            The value can be a single value or a sequence of values.
+        include_discontinued : bool
+            Set this value to true in order to include discontinued entities in the search.
+
+        Returns
+        -------
+        `macrobond_financial.common.typs.search_result.SearchFilter`
+        """
         return self.entity_search_multi_filter(
             SearchFilter(
                 text=text,
@@ -127,7 +168,7 @@ class Api(ABC):
     ) -> SearchResult:
         """"""
 
-    # Series
+    # Series    
 
     @abstractmethod
     def get_one_series(

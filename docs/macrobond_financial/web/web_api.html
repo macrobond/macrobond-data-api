@@ -601,21 +601,6 @@ def session(self) -&gt; &#34;Session&#34;:
     )</code></pre>
 </details>
 </dd>
-<dt id="macrobond_financial.web.web_api.WebApi.metadata_get_value_information"><code class="name flex">
-<span>def <span class="ident">metadata_get_value_information</span></span>(<span>self, *name_val: Tuple[str, str]) ‑> GetValueInformationReturn</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def metadata_get_value_information(
-    self, *name_val: Tuple[str, str]
-) -&gt; &#34;GetValueInformationReturn&#34;:
-    return _GetValueInformationReturn(self.__session, name_val)</code></pre>
-</details>
-</dd>
 </dl>
 <h3>Inherited members</h3>
 <ul class="hlist">
@@ -628,6 +613,7 @@ def session(self) -&gt; &#34;Session&#34;:
 <li><code><a title="macrobond_financial.common.api.Api.get_series" href="../common/api.html#macrobond_financial.common.api.Api.get_series">get_series</a></code></li>
 <li><code><a title="macrobond_financial.common.api.Api.get_unified_series" href="../common/api.html#macrobond_financial.common.api.Api.get_unified_series">get_unified_series</a></code></li>
 <li><code><a title="macrobond_financial.common.api.Api.metadata_get_attribute_information" href="../common/api.html#macrobond_financial.common.api.Api.metadata_get_attribute_information">metadata_get_attribute_information</a></code></li>
+<li><code><a title="macrobond_financial.common.api.Api.metadata_get_value_information" href="../common/api.html#macrobond_financial.common.api.Api.metadata_get_value_information">metadata_get_value_information</a></code></li>
 <li><code><a title="macrobond_financial.common.api.Api.metadata_list_values" href="../common/api.html#macrobond_financial.common.api.Api.metadata_list_values">metadata_list_values</a></code></li>
 </ul>
 </li>
@@ -657,7 +643,6 @@ def session(self) -&gt; &#34;Session&#34;:
 <li><code><a title="macrobond_financial.web.web_api.WebApi.get_observation_history" href="#macrobond_financial.web.web_api.WebApi.get_observation_history">get_observation_history</a></code></li>
 <li><code><a title="macrobond_financial.web.web_api.WebApi.get_revision_info" href="#macrobond_financial.web.web_api.WebApi.get_revision_info">get_revision_info</a></code></li>
 <li><code><a title="macrobond_financial.web.web_api.WebApi.get_vintage_series" href="#macrobond_financial.web.web_api.WebApi.get_vintage_series">get_vintage_series</a></code></li>
-<li><code><a title="macrobond_financial.web.web_api.WebApi.metadata_get_value_information" href="#macrobond_financial.web.web_api.WebApi.metadata_get_value_information">metadata_get_value_information</a></code></li>
 <li><code><a title="macrobond_financial.web.web_api.WebApi.session" href="#macrobond_financial.web.web_api.WebApi.session">session</a></code></li>
 </ul>
 </li>
