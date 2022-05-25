@@ -113,6 +113,8 @@ class Api(ABC):
 
     # Search
 
+    # TODO: @mb-to We should consider to add noMetaData as a parameter, even if is used only in Web
+
     def entity_search(
         self,
         text: str = None,
@@ -144,11 +146,11 @@ class Api(ABC):
             Optional set of attributes that must no be present in the entity metadata.
             The value can be a single value or a sequence of values.
         include_discontinued : bool
-            Set this value to true in order to include discontinued entities in the search.
+            Set this value to True in order to include discontinued entities in the search.
 
         Returns
         -------
-        `macrobond_financial.common.types.search_result.SearchFilter`
+        `macrobond_financial.common.types.search_result.SearchResult`
         """
         return self.entity_search_multi_filter(
             SearchFilter(
@@ -166,15 +168,47 @@ class Api(ABC):
     def entity_search_multi_filter(
         self, *filters: SearchFilter, include_discontinued: bool = False
     ) -> SearchResult:
-        """"""
+        """
+        Search for time series and other entitites.
+        You can pass more than one search filter. In this case the filters have to use different
+        entity types and searches will be nested so that the result of the previous filter will be
+        used as a condition in the subsequent filter linked by the entity type.
+
+        Parameters
+        ----------
+        *filters : SearchFilter
+            One or more search filters.
+        include_discontinued : bool
+            Set this value to True in order to include discontinued entities in the search.
+
+        Returns
+        -------
+        `macrobond_financial.common.types.search_result.SearchResult`
+        """
 
     # Series
+
+    # TODO: @mb-to Why is the default value of raise_error = None instead of True or False?
 
     @abstractmethod
     def get_one_series(
         self, series_name: str, raise_error: bool = None
     ) -> GetOneSeriesReturn:
-        """Download one series."""
+        """
+        Download one series.
+
+        Parameters
+        ----------
+        series_name : str
+            The name of the series.
+        raise_error : bool
+            If True, accessing the resulting series raises a GetEntitiesError.
+            If False you should inspect the is_error property of the result instead.
+
+        Returns
+        -------
+        `macrobond_financial.common.api_return_types.get_one_series_return.GetOneSeriesReturn`
+        """
 
     @abstractmethod
     def get_series(
