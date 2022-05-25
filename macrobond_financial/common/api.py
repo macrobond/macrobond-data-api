@@ -29,6 +29,8 @@ class Api(ABC):
     Common API to interact with the Macrobond database
     """
 
+    # TODO: @mb-to How do you document fields like raise_error?
+
     def __init__(self) -> None:
         self.raise_error = True
 
@@ -188,8 +190,6 @@ class Api(ABC):
 
     # Series
 
-    # TODO: @mb-to Why is the default value of raise_error = None instead of True or False?
-
     @abstractmethod
     def get_one_series(
         self, series_name: str, raise_error: bool = None
@@ -204,6 +204,7 @@ class Api(ABC):
         raise_error : bool
             If True, accessing the resulting series raises a GetEntitiesError.
             If False you should inspect the is_error property of the result instead.
+            If None, it will use the global value `macrobond_financial.common.api.API.raise_error`
 
         Returns
         -------
@@ -214,30 +215,106 @@ class Api(ABC):
     def get_series(
         self, *series_names: str, raise_error: bool = None
     ) -> GetSeriesReturn:
-        """Download one or more series."""
+        """
+        Download one or more series.
+
+        Parameters
+        ----------
+        *series_names : str
+            One or more names of series.
+        raise_error : bool
+            If True, accessing the resulting series raises a GetEntitiesError.
+            If False you should inspect the is_error property of the result instead.
+            If None, it will use the global value `macrobond_financial.common.api.API.raise_error`
+
+        Returns
+        -------
+        `macrobond_financial.common.api_return_types.get_series_return.GetSeriesReturn`
+        """
 
     @abstractmethod
     def get_one_entity(
         self, entity_name: str, raise_error: bool = None
     ) -> GetOneEntityReturn:
-        """Download one entity."""
+        """
+        Download one entity.
+
+        Parameters
+        ----------
+        entity_name : str
+            The name the entity.
+        raise_error : bool
+            If True, accessing the resulting entity raises a GetEntitiesError.
+            If False you should inspect the is_error property of the result instead.
+            If None, it will use the global value `macrobond_financial.common.api.API.raise_error`
+
+        Returns
+        -------
+        `macrobond_financial.common.api_return_types.get_one_entity_return.GetOneEntityReturn`
+        """
 
     @abstractmethod
     def get_entities(
         self, *entity_names: str, raise_error: bool = None
     ) -> GetEntitiesReturn:
-        """Download one or more entitys."""
+        """
+        Download one or more entities.
+
+        Parameters
+        ----------
+        *entity_names : str
+            One or more names of entities.
+        raise_error : bool
+            If True, accessing the resulting entities raises a GetEntitiesError.
+            If False you should inspect the is_error property of the result instead.
+            If None, it will use the global value `macrobond_financial.common.api.API.raise_error`
+
+        Returns
+        -------
+        `macrobond_financial.common.api_return_types.get_entitites_return.GetEntitiesReturn`
+        """
+
+    # TODO: @mb-to We should add startDateMode and endDateMode as parameters too
 
     @abstractmethod
     def get_unified_series(
         self,
         *series_entries: Union[SeriesEntry, str],
         frequency=SeriesFrequency.HIGHEST,
-        weekdays=SeriesWeekdays.FULL_WEEK,
+        weekdays=SeriesWeekdays.MONDAY_TO_FRIDAY,
         calendar_merge_mode=CalendarMergeMode.AVAILABLE_IN_ANY,
         currency="",
         start_point: StartOrEndPoint = None,
         end_point: StartOrEndPoint = None,
         raise_error: bool = None
     ) -> GetUnifiedSeriesReturn:
-        """Get one or more series and convert them to a common frequency and calendar"""
+        """
+        Get one or more series and convert them to a common frequency and calendar.
+
+        Parameters
+        ----------
+        *series_entries : Union[SeriesEntry, str]
+            One or more names of series or SeriesEntry objects.
+        frequency : SeriesFrequency
+            Specifies what frequency the series should be converted to.
+            By default, it will be converted to the highest frequency of any series.
+        weekdays : SeriesWeekdays
+            The days of the week used for daily series. The default is Monday to Friday.
+        calendar_merge_mode : CalendarMergeMode
+            The start date mode determines how the start date is calculated.
+            By default the mode is to start when there is data in any series.
+        currency : str
+            The currency to use for currency conversion or omitted for no conversion.
+        start_point : StartOrEndPoint
+            The start point. By default, this is determined by the startDateMode.
+        end_point : StartOrEndPoint
+            The end point. By default, this is determined by the endDateMode.
+        raise_error : bool
+            If True, accessing the resulting entities raises a GetEntitiesError.
+            If False you should inspect the is_error property of the result instead.
+            If None, it will use the global value `macrobond_financial.common.api.API.raise_error`
+
+        Returns
+        -------
+        `macrobond_financial.common.api_return_types.get_unified_series_return.GetUnifiedSeriesReturn`
+        """
