@@ -4,12 +4,12 @@ from typing import TYPE_CHECKING
 
 from macrobond_financial.common.types import Series
 
-from macrobond_financial.common.api_return_typs import GetOneSeriesReturn
+from macrobond_financial.common.api_return_types import GetOneSeriesReturn
 
 from ._fill_metadata_from_entity import _fill_metadata_from_entity
 
 if TYPE_CHECKING:  # pragma: no cover
-    from ..com_typs import Database
+    from ..com_types import Database
 
 
 class _GetOneSeriesReturn(GetOneSeriesReturn):

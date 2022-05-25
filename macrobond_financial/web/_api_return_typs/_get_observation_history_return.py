@@ -4,7 +4,7 @@
 from typing import TYPE_CHECKING, Sequence, Tuple
 from datetime import datetime
 
-from macrobond_financial.common.api_return_typs import (
+from macrobond_financial.common.api_return_types import (
     GetObservationHistoryReturn,
 )
 from macrobond_financial.common.types import SeriesObservationHistory

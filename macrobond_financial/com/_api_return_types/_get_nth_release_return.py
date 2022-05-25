@@ -3,14 +3,14 @@
 from typing import TYPE_CHECKING
 from math import isnan
 
-from macrobond_financial.common.api_return_typs import GetNthReleaseReturn
+from macrobond_financial.common.api_return_types import GetNthReleaseReturn
 
 from macrobond_financial.common.types import Series
 
 from ._fill_metadata_from_entity import _fill_metadata_from_entity
 
 if TYPE_CHECKING:  # pragma: no cover
-    from ..com_typs import Database
+    from ..com_types import Database
 
 
 class _GetNthReleaseReturn(GetNthReleaseReturn):

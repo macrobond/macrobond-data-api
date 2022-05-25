@@ -4,12 +4,12 @@ from typing import Tuple, List, TYPE_CHECKING
 
 from macrobond_financial.common.types import Entity
 
-from macrobond_financial.common.api_return_typs import GetEntitiesReturn
+from macrobond_financial.common.api_return_types import GetEntitiesReturn
 
 from ._series_helps import _create_entity
 
 if TYPE_CHECKING:  # pragma: no cover
-    from ..com_typs import Database
+    from ..com_types import Database
 
 
 class _GetEntitiesReturn(GetEntitiesReturn):

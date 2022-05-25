@@ -3,13 +3,13 @@
 from typing import TYPE_CHECKING
 
 from macrobond_financial.common.types import Entity
-from macrobond_financial.common.api_return_typs import GetOneEntityReturn
+from macrobond_financial.common.api_return_types import GetOneEntityReturn
 
 from ._fill_metadata_from_entity import _fill_metadata_from_entity
 
 
 if TYPE_CHECKING:  # pragma: no cover
-    from ..com_typs import Database
+    from ..com_types import Database
 
 
 class _GetOneEntityReturn(GetOneEntityReturn):

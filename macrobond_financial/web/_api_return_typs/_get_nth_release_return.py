@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from typing import TYPE_CHECKING
-from macrobond_financial.common.api_return_typs import GetNthReleaseReturn
+from macrobond_financial.common.api_return_types import GetNthReleaseReturn
 
 from macrobond_financial.common.types import Series
 

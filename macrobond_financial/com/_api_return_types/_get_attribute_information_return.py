@@ -2,12 +2,12 @@
 
 from typing import cast, TYPE_CHECKING
 
-from macrobond_financial.common.api_return_typs import GetAttributeInformationReturn
+from macrobond_financial.common.api_return_types import GetAttributeInformationReturn
 
 from macrobond_financial.common.types import MetadataAttributeInformation
 
 if TYPE_CHECKING:  # pragma: no cover
-    from ..com_typs import Database
+    from ..com_types import Database
 
     from macrobond_financial.common.enums import MetadataAttributeType
 

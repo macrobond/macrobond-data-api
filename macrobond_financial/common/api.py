@@ -9,7 +9,7 @@ from .types import SearchFilter, SearchResult, StartOrEndPoint, SeriesEntry
 
 from .enums import SeriesFrequency, SeriesWeekdays, CalendarMergeMode
 
-from .api_return_typs import (
+from .api_return_types import (
     GetAttributeInformationReturn,
     ListValuesReturn,
     GetRevisionInfoReturn,

@@ -3,12 +3,12 @@
 from typing import Tuple, List, TYPE_CHECKING
 
 from macrobond_financial.common.types import Series
-from macrobond_financial.common.api_return_typs import GetSeriesReturn
+from macrobond_financial.common.api_return_types import GetSeriesReturn
 
 from ._series_helps import _create_series
 
 if TYPE_CHECKING:  # pragma: no cover
-    from ..com_typs import Database
+    from ..com_types import Database
 
 
 class _GetSeriesReturn(GetSeriesReturn):

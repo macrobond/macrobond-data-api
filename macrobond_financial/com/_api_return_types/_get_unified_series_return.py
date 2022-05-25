@@ -5,10 +5,10 @@ from typing import Any, Dict, List, TYPE_CHECKING
 from math import isnan
 
 from macrobond_financial.common.types import UnifiedSeries, UnifiedSerie
-from macrobond_financial.common.api_return_typs import GetUnifiedSeriesReturn
+from macrobond_financial.common.api_return_types import GetUnifiedSeriesReturn
 
 if TYPE_CHECKING:  # pragma: no cover
-    from ..com_typs import Database, SeriesRequest
+    from ..com_types import Database, SeriesRequest
 
 
 class _GetUnifiedSeriesReturn(GetUnifiedSeriesReturn):

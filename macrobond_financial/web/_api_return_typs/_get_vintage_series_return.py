@@ -4,7 +4,7 @@ from typing import Any, Dict, List, Optional, Tuple, cast, TYPE_CHECKING
 
 from datetime import datetime
 
-from macrobond_financial.common.api_return_typs import GetVintageSeriesReturn
+from macrobond_financial.common.api_return_types import GetVintageSeriesReturn
 
 from macrobond_financial.common.types import VintageSeries
 

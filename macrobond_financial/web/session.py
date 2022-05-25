@@ -4,7 +4,7 @@ from typing import Callable, Optional, Any, TYPE_CHECKING
 
 from authlib.integrations.requests_client import OAuth2Session  # type: ignore
 
-from .web_typs import (
+from .web_types import (
     MetadataMethods,
     SearchMethods,
     SeriesMethods,

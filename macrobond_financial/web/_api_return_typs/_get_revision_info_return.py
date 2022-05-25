@@ -4,7 +4,7 @@ from typing import List, Sequence, TYPE_CHECKING
 
 from macrobond_financial.common.types import GetEntitiesError
 
-from macrobond_financial.common.api_return_typs import (
+from macrobond_financial.common.api_return_types import (
     GetRevisionInfoReturn,
     RevisionInfo,
 )
@@ -12,7 +12,7 @@ from macrobond_financial.common.api_return_typs import (
 from ._str_to_datetime import _optional_str_to_datetime_z, _str_to_datetime_z
 
 if TYPE_CHECKING:  # pragma: no cover
-    from ..web_typs import SeriesWithRevisionsInfoResponse
+    from ..web_types import SeriesWithRevisionsInfoResponse
 
     from ..session import Session
 

@@ -4,7 +4,7 @@ from typing import Any, Dict, TYPE_CHECKING
 
 if TYPE_CHECKING:  # pragma: no cover
 
-    from ..com_typs import Entity as ComEntity
+    from ..com_types import Entity as ComEntity
 
 
 def _fill_metadata_from_entity(com_entity: "ComEntity") -> Dict[str, Any]:

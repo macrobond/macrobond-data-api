@@ -5,13 +5,13 @@
 from typing import Any, Dict, List, Optional, cast, TYPE_CHECKING
 
 from macrobond_financial.common.types import UnifiedSeries, UnifiedSerie
-from macrobond_financial.common.api_return_typs import GetUnifiedSeriesReturn
+from macrobond_financial.common.api_return_types import GetUnifiedSeriesReturn
 
 from ._str_to_datetime import _str_to_datetime
 
 if TYPE_CHECKING:  # pragma: no cover
     from ..session import Session
-    from ..web_typs import UnifiedSeriesRequest
+    from ..web_types import UnifiedSeriesRequest
 
 
 class _GetUnifiedSeriesReturn(GetUnifiedSeriesReturn):

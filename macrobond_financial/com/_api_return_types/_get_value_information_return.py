@@ -2,13 +2,13 @@
 
 from typing import List, TYPE_CHECKING, Tuple
 
-from macrobond_financial.common.api_return_typs import GetValueInformationReturn
+from macrobond_financial.common.api_return_types import GetValueInformationReturn
 
 from macrobond_financial.common.types import MetadataValueInformationItem
 
 
 if TYPE_CHECKING:  # pragma: no cover
-    from ..com_typs import Database
+    from ..com_types import Database
 
 
 def is_error_with_text(ex: Exception, text: str) -> bool:

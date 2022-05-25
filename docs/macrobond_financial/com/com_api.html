@@ -59,9 +59,9 @@ from ._api_return_types import (
 
 
 if TYPE_CHECKING:  # pragma: no cover
-    from macrobond_financial.com.com_typs import Connection
+    from macrobond_financial.com.com_types import Connection
 
-    from macrobond_financial.common.api_return_typs import (
+    from macrobond_financial.common.api_return_types import (
         ListValuesReturn,
         GetAttributeInformationReturn,
         GetRevisionInfoReturn,
@@ -78,7 +78,7 @@ if TYPE_CHECKING:  # pragma: no cover
 
     from macrobond_financial.common.types import SearchFilter, StartOrEndPoint
 
-    from .com_typs import Connection, SearchQuery
+    from .com_types import Connection, SearchQuery
 
 __pdoc__ = {
     &#34;ComApi.__init__&#34;: False,
@@ -494,52 +494,6 @@ def connection(self) -&gt; &#34;Connection&#34;:
 </dl>
 <h3>Methods</h3>
 <dl>
-<dt id="macrobond_financial.com.com_api.ComApi.entity_search_multi_filter"><code class="name flex">
-<span>def <span class="ident">entity_search_multi_filter</span></span>(<span>self, *filters: SearchFilter, include_discontinued: bool = False) ‑> <a title="macrobond_financial.common.types.search_result.SearchResult" href="../common/types/search_result.html#macrobond_financial.common.types.search_result.SearchResult">SearchResult</a></span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def entity_search_multi_filter(
-    self, *filters: &#34;SearchFilter&#34;, include_discontinued: bool = False
-) -&gt; SearchResult:
-    querys: List[&#34;SearchQuery&#34;] = []
-    for _filter in filters:
-        query = self.__connection.Database.CreateSearchQuery()
-
-        for entity_type in _filter.entity_types:
-            query.SetEntityTypeFilter(entity_type)
-
-        if _filter.text:
-            query.Text = _filter.text
-
-        for key in _filter.must_have_values:
-            query.AddAttributeValueFilter(key, _filter.must_have_values[key])
-
-        for key in _filter.must_not_have_values:
-            query.AddAttributeValueFilter(
-                key, _filter.must_not_have_values[key], False
-            )
-
-        for attribute in _filter.must_have_attributes:
-            query.AddAttributeFilter(attribute)
-
-        for attribute in _filter.must_not_have_attributes:
-            query.AddAttributeFilter(attribute, False)
-
-        query.IncludeDiscontinued = include_discontinued
-
-        querys.append(query)
-
-    result = self.__connection.Database.Search(querys)
-
-    entities = tuple(list(map(_fill_metadata_from_entity, result.Entities)))
-    return SearchResult(entities, result.IsTruncated)</code></pre>
-</details>
-</dd>
 <dt id="macrobond_financial.com.com_api.ComApi.get_nth_release"><code class="name flex">
 <span>def <span class="ident">get_nth_release</span></span>(<span>self, serie_name: str, nth: int, raise_error: bool = None) ‑> GetNthReleaseReturn</span>
 </code></dt>
@@ -605,6 +559,7 @@ def connection(self) -&gt; &#34;Connection&#34;:
 <li><code><b><a title="macrobond_financial.common.api.Api" href="../common/api.html#macrobond_financial.common.api.Api">Api</a></b></code>:
 <ul class="hlist">
 <li><code><a title="macrobond_financial.common.api.Api.entity_search" href="../common/api.html#macrobond_financial.common.api.Api.entity_search">entity_search</a></code></li>
+<li><code><a title="macrobond_financial.common.api.Api.entity_search_multi_filter" href="../common/api.html#macrobond_financial.common.api.Api.entity_search_multi_filter">entity_search_multi_filter</a></code></li>
 <li><code><a title="macrobond_financial.common.api.Api.get_entities" href="../common/api.html#macrobond_financial.common.api.Api.get_entities">get_entities</a></code></li>
 <li><code><a title="macrobond_financial.common.api.Api.get_one_entity" href="../common/api.html#macrobond_financial.common.api.Api.get_one_entity">get_one_entity</a></code></li>
 <li><code><a title="macrobond_financial.common.api.Api.get_one_series" href="../common/api.html#macrobond_financial.common.api.Api.get_one_series">get_one_series</a></code></li>
@@ -637,7 +592,6 @@ def connection(self) -&gt; &#34;Connection&#34;:
 <h4><code><a title="macrobond_financial.com.com_api.ComApi" href="#macrobond_financial.com.com_api.ComApi">ComApi</a></code></h4>
 <ul class="">
 <li><code><a title="macrobond_financial.com.com_api.ComApi.connection" href="#macrobond_financial.com.com_api.ComApi.connection">connection</a></code></li>
-<li><code><a title="macrobond_financial.com.com_api.ComApi.entity_search_multi_filter" href="#macrobond_financial.com.com_api.ComApi.entity_search_multi_filter">entity_search_multi_filter</a></code></li>
 <li><code><a title="macrobond_financial.com.com_api.ComApi.get_nth_release" href="#macrobond_financial.com.com_api.ComApi.get_nth_release">get_nth_release</a></code></li>
 <li><code><a title="macrobond_financial.com.com_api.ComApi.get_revision_info" href="#macrobond_financial.com.com_api.ComApi.get_revision_info">get_revision_info</a></code></li>
 <li><code><a title="macrobond_financial.com.com_api.ComApi.get_vintage_series" href="#macrobond_financial.com.com_api.ComApi.get_vintage_series">get_vintage_series</a></code></li>

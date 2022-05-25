@@ -7,7 +7,7 @@ from macrobond_financial.common.types import Entity, Series
 from ._fill_metadata_from_entity import _fill_metadata_from_entity
 
 if TYPE_CHECKING:  # pragma: no cover
-    from ..com_typs import (
+    from ..com_types import (
         Series as ComSeries,
         Entity as ComEntity,
     )

@@ -3,7 +3,7 @@
 from typing import TYPE_CHECKING
 
 
-from macrobond_financial.common.api_return_typs import ListValuesReturn
+from macrobond_financial.common.api_return_types import ListValuesReturn
 
 from macrobond_financial.common.types import (
     MetadataValueInformation,
@@ -12,7 +12,7 @@ from macrobond_financial.common.types import (
 
 
 if TYPE_CHECKING:  # pragma: no cover
-    from ..com_typs import Database
+    from ..com_types import Database
 
 
 class _ListValuesReturn(ListValuesReturn):

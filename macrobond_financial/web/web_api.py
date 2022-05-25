@@ -30,7 +30,7 @@ from ._api_return_typs import (
 if TYPE_CHECKING:  # pragma: no cover
     from .session import Session
 
-    from macrobond_financial.common.api_return_typs import (
+    from macrobond_financial.common.api_return_types import (
         ListValuesReturn,
         GetAttributeInformationReturn,
         GetRevisionInfoReturn,
@@ -47,7 +47,7 @@ if TYPE_CHECKING:  # pragma: no cover
 
     from macrobond_financial.common.types import SearchFilter, StartOrEndPoint
 
-    from .web_typs import (
+    from .web_types import (
         SearchFilter as WebSearchFilter,
         SearchRequest,
         UnifiedSeriesRequest,

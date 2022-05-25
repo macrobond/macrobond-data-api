@@ -58,7 +58,7 @@ from ._api_return_typs import (
 if TYPE_CHECKING:  # pragma: no cover
     from .session import Session
 
-    from macrobond_financial.common.api_return_typs import (
+    from macrobond_financial.common.api_return_types import (
         ListValuesReturn,
         GetAttributeInformationReturn,
         GetRevisionInfoReturn,
@@ -75,7 +75,7 @@ if TYPE_CHECKING:  # pragma: no cover
 
     from macrobond_financial.common.types import SearchFilter, StartOrEndPoint
 
-    from .web_typs import (
+    from .web_types import (
         SearchFilter as WebSearchFilter,
         SearchRequest,
         UnifiedSeriesRequest,
@@ -487,42 +487,6 @@ def session(self) -&gt; &#34;Session&#34;:
 </dl>
 <h3>Methods</h3>
 <dl>
-<dt id="macrobond_financial.web.web_api.WebApi.entity_search_multi_filter"><code class="name flex">
-<span>def <span class="ident">entity_search_multi_filter</span></span>(<span>self, *filters: SearchFilter, include_discontinued: bool = False) ‑> <a title="macrobond_financial.common.types.search_result.SearchResult" href="../common/types/search_result.html#macrobond_financial.common.types.search_result.SearchResult">SearchResult</a></span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def entity_search_multi_filter(
-    self, *filters: &#34;SearchFilter&#34;, include_discontinued: bool = False
-) -&gt; SearchResult:
-    def convert_filter_to_web_filter(_filter: &#34;SearchFilter&#34;) -&gt; &#34;WebSearchFilter&#34;:
-        return {
-            &#34;text&#34;: _filter.text,
-            &#34;entityTypes&#34;: list(_filter.entity_types),
-            &#34;mustHaveValues&#34;: _filter.must_have_values,
-            &#34;mustNotHaveValues&#34;: _filter.must_not_have_values,
-            &#34;mustHaveAttributes&#34;: list(_filter.must_have_attributes),
-            &#34;mustNotHaveAttributes&#34;: list(_filter.must_not_have_attributes),
-        }
-
-    web_filters = list(map(convert_filter_to_web_filter, filters))
-
-    request: &#34;SearchRequest&#34; = {
-        &#34;filters&#34;: web_filters,
-        &#34;includeDiscontinued&#34;: include_discontinued,
-    }
-
-    response = self.__session.search.post_entities(request)
-
-    return SearchResult(
-        tuple(response[&#34;results&#34;]), response.get(&#34;isTruncated&#34;) is True
-    )</code></pre>
-</details>
-</dd>
 <dt id="macrobond_financial.web.web_api.WebApi.get_nth_release"><code class="name flex">
 <span>def <span class="ident">get_nth_release</span></span>(<span>self, serie_name: str, nth: int, raise_error: bool = None) ‑> GetNthReleaseReturn</span>
 </code></dt>
@@ -607,6 +571,7 @@ def session(self) -&gt; &#34;Session&#34;:
 <li><code><b><a title="macrobond_financial.common.api.Api" href="../common/api.html#macrobond_financial.common.api.Api">Api</a></b></code>:
 <ul class="hlist">
 <li><code><a title="macrobond_financial.common.api.Api.entity_search" href="../common/api.html#macrobond_financial.common.api.Api.entity_search">entity_search</a></code></li>
+<li><code><a title="macrobond_financial.common.api.Api.entity_search_multi_filter" href="../common/api.html#macrobond_financial.common.api.Api.entity_search_multi_filter">entity_search_multi_filter</a></code></li>
 <li><code><a title="macrobond_financial.common.api.Api.get_entities" href="../common/api.html#macrobond_financial.common.api.Api.get_entities">get_entities</a></code></li>
 <li><code><a title="macrobond_financial.common.api.Api.get_one_entity" href="../common/api.html#macrobond_financial.common.api.Api.get_one_entity">get_one_entity</a></code></li>
 <li><code><a title="macrobond_financial.common.api.Api.get_one_series" href="../common/api.html#macrobond_financial.common.api.Api.get_one_series">get_one_series</a></code></li>
@@ -638,7 +603,6 @@ def session(self) -&gt; &#34;Session&#34;:
 <li>
 <h4><code><a title="macrobond_financial.web.web_api.WebApi" href="#macrobond_financial.web.web_api.WebApi">WebApi</a></code></h4>
 <ul class="">
-<li><code><a title="macrobond_financial.web.web_api.WebApi.entity_search_multi_filter" href="#macrobond_financial.web.web_api.WebApi.entity_search_multi_filter">entity_search_multi_filter</a></code></li>
 <li><code><a title="macrobond_financial.web.web_api.WebApi.get_nth_release" href="#macrobond_financial.web.web_api.WebApi.get_nth_release">get_nth_release</a></code></li>
 <li><code><a title="macrobond_financial.web.web_api.WebApi.get_observation_history" href="#macrobond_financial.web.web_api.WebApi.get_observation_history">get_observation_history</a></code></li>
 <li><code><a title="macrobond_financial.web.web_api.WebApi.get_revision_info" href="#macrobond_financial.web.web_api.WebApi.get_revision_info">get_revision_info</a></code></li>

@@ -10,7 +10,7 @@ from macrobond_financial.common.types import Entity, Series
 
 
 if TYPE_CHECKING:  # pragma: no cover
-    from ..web_typs import SeriesResponse, EntityResponse
+    from ..web_types import SeriesResponse, EntityResponse
 
 
 def _create_entity(response: "EntityResponse", name: str) -> Entity:

@@ -2,7 +2,7 @@
 
 from typing import Sequence, Tuple, List, TYPE_CHECKING
 
-from macrobond_financial.common.api_return_typs import (
+from macrobond_financial.common.api_return_types import (
     GetRevisionInfoReturn,
     RevisionInfo,
 )
@@ -11,7 +11,7 @@ from macrobond_financial.common.types import GetEntitiesError
 
 
 if TYPE_CHECKING:  # pragma: no cover
-    from ..com_typs import Database, SeriesWithRevisions
+    from ..com_types import Database, SeriesWithRevisions
 
 
 class _GetRevisionInfoReturn(GetRevisionInfoReturn):

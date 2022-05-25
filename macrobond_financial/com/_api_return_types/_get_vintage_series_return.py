@@ -6,14 +6,14 @@ from datetime import datetime
 
 from math import isnan
 
-from macrobond_financial.common.api_return_typs import GetVintageSeriesReturn
+from macrobond_financial.common.api_return_types import GetVintageSeriesReturn
 
 from macrobond_financial.common.types import VintageSeries
 
 from ._fill_metadata_from_entity import _fill_metadata_from_entity
 
 if TYPE_CHECKING:  # pragma: no cover
-    from ..com_typs import Database, Series as ComSeries
+    from ..com_types import Database, Series as ComSeries
 
 
 class _GetVintageSeriesReturn(GetVintageSeriesReturn):

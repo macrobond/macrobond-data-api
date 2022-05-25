@@ -32,7 +32,7 @@ from typing import Callable, Optional, Any, TYPE_CHECKING
 
 from authlib.integrations.requests_client import OAuth2Session  # type: ignore
 
-from .web_typs import (
+from .web_types import (
     MetadataMethods,
     SearchMethods,
     SeriesMethods,
@@ -380,7 +380,7 @@ def authorization_url(self):
     return self.__authorization_url</code></pre>
 </details>
 </dd>
-<dt id="macrobond_financial.web.session.Session.metadata"><code class="name">var <span class="ident">metadata</span> : <a title="macrobond_financial.web.web_typs.metadata_methods.MetadataMethods" href="web_typs/metadata_methods.html#macrobond_financial.web.web_typs.metadata_methods.MetadataMethods">MetadataMethods</a></code></dt>
+<dt id="macrobond_financial.web.session.Session.metadata"><code class="name">var <span class="ident">metadata</span> : <a title="macrobond_financial.web.web_types.metadata_methods.MetadataMethods" href="web_types/metadata_methods.html#macrobond_financial.web.web_types.metadata_methods.MetadataMethods">MetadataMethods</a></code></dt>
 <dd>
 <div class="desc"><p>Metadata operations</p></div>
 <details class="source">
@@ -393,7 +393,7 @@ def metadata(self) -&gt; MetadataMethods:
     return self.__metadata</code></pre>
 </details>
 </dd>
-<dt id="macrobond_financial.web.session.Session.search"><code class="name">var <span class="ident">search</span> : <a title="macrobond_financial.web.web_typs.search_methods.SearchMethods" href="web_typs/search_methods.html#macrobond_financial.web.web_typs.search_methods.SearchMethods">SearchMethods</a></code></dt>
+<dt id="macrobond_financial.web.session.Session.search"><code class="name">var <span class="ident">search</span> : <a title="macrobond_financial.web.web_types.search_methods.SearchMethods" href="web_types/search_methods.html#macrobond_financial.web.web_types.search_methods.SearchMethods">SearchMethods</a></code></dt>
 <dd>
 <div class="desc"><p>Search for time series and other entites</p></div>
 <details class="source">
@@ -406,7 +406,7 @@ def search(self) -&gt; SearchMethods:
     return self.__search</code></pre>
 </details>
 </dd>
-<dt id="macrobond_financial.web.session.Session.series"><code class="name">var <span class="ident">series</span> : <a title="macrobond_financial.web.web_typs.series_methods.SeriesMethods" href="web_typs/series_methods.html#macrobond_financial.web.web_typs.series_methods.SeriesMethods">SeriesMethods</a></code></dt>
+<dt id="macrobond_financial.web.session.Session.series"><code class="name">var <span class="ident">series</span> : <a title="macrobond_financial.web.web_types.series_methods.SeriesMethods" href="web_types/series_methods.html#macrobond_financial.web.web_types.series_methods.SeriesMethods">SeriesMethods</a></code></dt>
 <dd>
 <div class="desc"><p>Time series and entity operations</p></div>
 <details class="source">
@@ -419,7 +419,7 @@ def series(self) -&gt; SeriesMethods:
     return self.__series</code></pre>
 </details>
 </dd>
-<dt id="macrobond_financial.web.session.Session.series_tree"><code class="name">var <span class="ident">series_tree</span> : <a title="macrobond_financial.web.web_typs.series_tree_methods.SeriesTreeMethods" href="web_typs/series_tree_methods.html#macrobond_financial.web.web_typs.series_tree_methods.SeriesTreeMethods">SeriesTreeMethods</a></code></dt>
+<dt id="macrobond_financial.web.session.Session.series_tree"><code class="name">var <span class="ident">series_tree</span> : <a title="macrobond_financial.web.web_types.series_tree_methods.SeriesTreeMethods" href="web_types/series_tree_methods.html#macrobond_financial.web.web_types.series_tree_methods.SeriesTreeMethods">SeriesTreeMethods</a></code></dt>
 <dd>
 <div class="desc"><p>Operations related to the visual series database tree structure</p></div>
 <details class="source">

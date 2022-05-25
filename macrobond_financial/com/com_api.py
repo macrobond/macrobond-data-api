@@ -31,9 +31,9 @@ from ._api_return_types import (
 
 
 if TYPE_CHECKING:  # pragma: no cover
-    from macrobond_financial.com.com_typs import Connection
+    from macrobond_financial.com.com_types import Connection
 
-    from macrobond_financial.common.api_return_typs import (
+    from macrobond_financial.common.api_return_types import (
         ListValuesReturn,
         GetAttributeInformationReturn,
         GetRevisionInfoReturn,
@@ -50,7 +50,7 @@ if TYPE_CHECKING:  # pragma: no cover
 
     from macrobond_financial.common.types import SearchFilter, StartOrEndPoint
 
-    from .com_typs import Connection, SearchQuery
+    from .com_types import Connection, SearchQuery
 
 __pdoc__ = {
     "ComApi.__init__": False,
