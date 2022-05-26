@@ -73,7 +73,7 @@ class Api(ABC):
         self, name: str
     ) -> GetAttributeInformationReturn:
         """
-        Get information about a type of metadata.
+        Get information about metadata attributes.
         """
 
     @abstractmethod
@@ -99,19 +99,75 @@ class Api(ABC):
     def get_revision_info(
         self, *series_names: str, raise_error: bool = None
     ) -> GetRevisionInfoReturn:
-        """"""
+        """
+        Get information about if revision history is available for a series
+        and a list of revision timestamps.
+
+        Parameters
+        ----------
+        *series_names : str
+            One or more series names.
+        raise_error : bool
+            If True, accessing the resulting series raises a GetEntitiesError.
+            If False you should inspect the is_error property of the result instead.
+            If None, it will use the global value `macrobond_financial.common.api.API.raise_error`
+
+        Returns
+        -------
+        `macrobond_financial.common.api_return_types.get_revision_info_return.GetRevisionInfoReturn`
+        """
+
+    # TODO: @mb-to Wouldn't it be better if you could specify several names (such as Union[Sequence[str], str])? This is possible in the WebAPI and is more efficient.
 
     @abstractmethod
     def get_vintage_series(
         self, serie_name: str, time: datetime, raise_error: bool = None
     ) -> GetVintageSeriesReturn:
-        """"""
+        """
+        Fetch a vintage series.
+
+        Parameters
+        ----------
+        series_name : str
+            A series name.
+        time : datetime
+            The time of the vintage to return.
+        raise_error : bool
+            If True, accessing the resulting series raises a GetEntitiesError.
+            If False you should inspect the is_error property of the result instead.
+            If None, it will use the global value `macrobond_financial.common.api.API.raise_error`
+
+        Returns
+        -------
+        `macrobond_financial.common.api_return_types.get_vintage_series_return.GetVintageSeriesReturn`
+        """
+
+    # TODO: @mb-to Wouldn't it be better if you could specify several names (such as Union[Sequence[str], str])? This is possible in the WebAPI and is more efficient.
 
     @abstractmethod
     def get_nth_release(
         self, serie_name: str, nth: int, raise_error: bool = None
     ) -> GetNthReleaseReturn:
-        """"""
+        """
+        Fetcha series where each value is the nth change of the value.
+
+        Parameters
+        ----------
+        series_name : str
+            A series name.
+        time : nth
+            The nth change of each value.
+        raise_error : bool
+            If True, accessing the resulting series raises a GetEntitiesError.
+            If False you should inspect the is_error property of the result instead.
+            If None, it will use the global value `macrobond_financial.common.api.API.raise_error`
+
+        Returns
+        -------
+        `macrobond_financial.common.api_return_types.get_nth_release_return.GetNthReleaseReturn`
+        """
+
+    # TODO: @mb-to We should add a method get_all_vintage_series that takes _one_ series name.
 
     # Search
 
