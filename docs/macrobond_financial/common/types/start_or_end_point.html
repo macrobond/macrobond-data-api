@@ -36,6 +36,28 @@ from ..enums import CalendarDateMode
 
 
 class StartOrEndPoint:
+    &#34;&#34;&#34;
+    Defines a start or endpoint of a data intervall. Use this constructor, or one of the static
+    methods of this class.
+
+    Parameters
+    ----------
+    time: str
+        - A year, ex. &#34;2010&#34;
+        - A year and month, ex. &#34;2010-05&#34;
+        - A full date on the format &#34;2010-05-19&#34;
+        - A reference relative the end of the interval
+            - +/-n, a number of observations, ex. &#34;-10&#34;
+            - +/-nd, a number of calendar days, ex. &#34;-30d&#34;
+            - +/-nw, a number of weeks, ex. &#34;-7w&#34;
+            - +/-nm, a number of months, ex. &#34;-3m&#34;
+            - +/-nq, a number of quarters, ex &#34;-2q&#34;
+            - +/-ny, a number of years, ex &#34;-5y&#34;
+
+    mode: `macrobond_financial.common.enums.calendar_date_mode.CalendarDateMode`
+        Defines how the automatic start or end is calculated.
+    &#34;&#34;&#34;
+
     def __init__(self, time: str, mode: Optional[CalendarDateMode]) -&gt; None:
         self.time = time
         self.mode = CalendarDateMode.DATA_IN_ANY_SERIES if mode is None else mode
@@ -50,34 +72,52 @@ class StartOrEndPoint:
     def relative_to_observations(
         observations: int, mode: CalendarDateMode = None
     ) -&gt; &#34;StartOrEndPoint&#34;:
+        &#34;&#34;&#34;
+        Create a start or endpoint as a number of observations relative the end of the intervall.
+        &#34;&#34;&#34;
         return StartOrEndPoint(str(observations), mode)
 
     @staticmethod
     def relative_to_years(
         years: int, mode: CalendarDateMode = None
     ) -&gt; &#34;StartOrEndPoint&#34;:
+        &#34;&#34;&#34;
+        Create a start or endpoint as a number of years relative the end of the intervall.
+        &#34;&#34;&#34;
         return StartOrEndPoint(str(years) + &#34;y&#34;, mode)
 
     @staticmethod
     def relative_to_quarters(
         quarters: int, mode: CalendarDateMode = None
     ) -&gt; &#34;StartOrEndPoint&#34;:
+        &#34;&#34;&#34;
+        Create a start or endpoint as a number of quarters relative the end of the intervall.
+        &#34;&#34;&#34;
         return StartOrEndPoint(str(quarters) + &#34;q&#34;, mode)
 
     @staticmethod
     def relative_to_months(
         months: int, mode: CalendarDateMode = None
     ) -&gt; &#34;StartOrEndPoint&#34;:
+        &#34;&#34;&#34;
+        Create a start or endpoint as a number of months relative the end of the intervall.
+        &#34;&#34;&#34;
         return StartOrEndPoint(str(months) + &#34;m&#34;, mode)
 
     @staticmethod
     def relative_to_weeks(
         weeks: int, mode: CalendarDateMode = None
     ) -&gt; &#34;StartOrEndPoint&#34;:
+        &#34;&#34;&#34;
+        Create a start or endpoint as a number of weeks relative the end of the intervall.
+        &#34;&#34;&#34;
         return StartOrEndPoint(str(weeks) + &#34;w&#34;, mode)
 
     @staticmethod
     def relative_to_days(days: int, mode: CalendarDateMode = None) -&gt; &#34;StartOrEndPoint&#34;:
+        &#34;&#34;&#34;
+        Create a start or endpoint as a number of days relative the end of the intervall.
+        &#34;&#34;&#34;
         return StartOrEndPoint(str(days) + &#34;d&#34;, mode)
 
     @overload
@@ -100,6 +140,19 @@ class StartOrEndPoint:
         mm: int = None,  # pylint: disable = invalid-name
         dd: int = None,  # pylint: disable = invalid-name
     ) -&gt; &#34;StartOrEndPoint&#34;:
+        &#34;&#34;&#34;
+        Create a start or endpoint as a full or partial date.
+
+        Parameters
+        ----------
+        yyyy_or_datetime: Union[int, datetime]
+            A `datetime` or a year. If it is a year, the mm and dd parameters will be used too,
+            if specified.
+        mm: int
+            An optional month 1-12
+        dd: int
+            An optional day 1-31
+        &#34;&#34;&#34;
         if isinstance(yyyy_or_datetime, datetime):
             return StartOrEndPoint(yyyy_or_datetime.strftime(&#34;%Y-%m-%d&#34;), None)
         time = str(yyyy_or_datetime).zfill(4)
@@ -111,10 +164,16 @@ class StartOrEndPoint:
 
     @staticmethod
     def data_in_any_series() -&gt; &#34;StartOrEndPoint&#34;:
+        &#34;&#34;&#34;
+        Create a start or endpoint as the first or last point where thers is data in any series.
+        &#34;&#34;&#34;
         return StartOrEndPoint(&#34;&#34;, CalendarDateMode.DATA_IN_ANY_SERIES)
 
     @staticmethod
     def data_in_all_series() -&gt; &#34;StartOrEndPoint&#34;:
+        &#34;&#34;&#34;
+        Create a start or endpoint as the first or last point where thers is data in all series.
+        &#34;&#34;&#34;
         return StartOrEndPoint(&#34;&#34;, CalendarDateMode.DATA_IN_ALL_SERIES)</code></pre>
 </details>
 </section>
@@ -132,12 +191,57 @@ class StartOrEndPoint:
 <span>(</span><span>time: str, mode: Optional[<a title="macrobond_financial.common.enums.calendar_date_mode.CalendarDateMode" href="../enums/calendar_date_mode.html#macrobond_financial.common.enums.calendar_date_mode.CalendarDateMode">CalendarDateMode</a>])</span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>Defines a start or endpoint of a data intervall. Use this constructor, or one of the static
+methods of this class.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>time</code></strong> :&ensp;<code>str</code></dt>
+<dd>
+<ul>
+<li>A year, ex. "2010"</li>
+<li>A year and month, ex. "2010-05"</li>
+<li>A full date on the format "2010-05-19"</li>
+<li>A reference relative the end of the interval<ul>
+<li>+/-n, a number of observations, ex. "-10"</li>
+<li>+/-nd, a number of calendar days, ex. "-30d"</li>
+<li>+/-nw, a number of weeks, ex. "-7w"</li>
+<li>+/-nm, a number of months, ex. "-3m"</li>
+<li>+/-nq, a number of quarters, ex "-2q"</li>
+<li>+/-ny, a number of years, ex "-5y"</li>
+</ul>
+</li>
+</ul>
+</dd>
+<dt><strong><code>mode</code></strong> :&ensp;<code><a title="macrobond_financial.common.enums.calendar_date_mode.CalendarDateMode" href="../enums/calendar_date_mode.html#macrobond_financial.common.enums.calendar_date_mode.CalendarDateMode">CalendarDateMode</a></code></dt>
+<dd>Defines how the automatic start or end is calculated.</dd>
+</dl></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class StartOrEndPoint:
+    &#34;&#34;&#34;
+    Defines a start or endpoint of a data intervall. Use this constructor, or one of the static
+    methods of this class.
+
+    Parameters
+    ----------
+    time: str
+        - A year, ex. &#34;2010&#34;
+        - A year and month, ex. &#34;2010-05&#34;
+        - A full date on the format &#34;2010-05-19&#34;
+        - A reference relative the end of the interval
+            - +/-n, a number of observations, ex. &#34;-10&#34;
+            - +/-nd, a number of calendar days, ex. &#34;-30d&#34;
+            - +/-nw, a number of weeks, ex. &#34;-7w&#34;
+            - +/-nm, a number of months, ex. &#34;-3m&#34;
+            - +/-nq, a number of quarters, ex &#34;-2q&#34;
+            - +/-ny, a number of years, ex &#34;-5y&#34;
+
+    mode: `macrobond_financial.common.enums.calendar_date_mode.CalendarDateMode`
+        Defines how the automatic start or end is calculated.
+    &#34;&#34;&#34;
+
     def __init__(self, time: str, mode: Optional[CalendarDateMode]) -&gt; None:
         self.time = time
         self.mode = CalendarDateMode.DATA_IN_ANY_SERIES if mode is None else mode
@@ -152,34 +256,52 @@ class StartOrEndPoint:
     def relative_to_observations(
         observations: int, mode: CalendarDateMode = None
     ) -&gt; &#34;StartOrEndPoint&#34;:
+        &#34;&#34;&#34;
+        Create a start or endpoint as a number of observations relative the end of the intervall.
+        &#34;&#34;&#34;
         return StartOrEndPoint(str(observations), mode)
 
     @staticmethod
     def relative_to_years(
         years: int, mode: CalendarDateMode = None
     ) -&gt; &#34;StartOrEndPoint&#34;:
+        &#34;&#34;&#34;
+        Create a start or endpoint as a number of years relative the end of the intervall.
+        &#34;&#34;&#34;
         return StartOrEndPoint(str(years) + &#34;y&#34;, mode)
 
     @staticmethod
     def relative_to_quarters(
         quarters: int, mode: CalendarDateMode = None
     ) -&gt; &#34;StartOrEndPoint&#34;:
+        &#34;&#34;&#34;
+        Create a start or endpoint as a number of quarters relative the end of the intervall.
+        &#34;&#34;&#34;
         return StartOrEndPoint(str(quarters) + &#34;q&#34;, mode)
 
     @staticmethod
     def relative_to_months(
         months: int, mode: CalendarDateMode = None
     ) -&gt; &#34;StartOrEndPoint&#34;:
+        &#34;&#34;&#34;
+        Create a start or endpoint as a number of months relative the end of the intervall.
+        &#34;&#34;&#34;
         return StartOrEndPoint(str(months) + &#34;m&#34;, mode)
 
     @staticmethod
     def relative_to_weeks(
         weeks: int, mode: CalendarDateMode = None
     ) -&gt; &#34;StartOrEndPoint&#34;:
+        &#34;&#34;&#34;
+        Create a start or endpoint as a number of weeks relative the end of the intervall.
+        &#34;&#34;&#34;
         return StartOrEndPoint(str(weeks) + &#34;w&#34;, mode)
 
     @staticmethod
     def relative_to_days(days: int, mode: CalendarDateMode = None) -&gt; &#34;StartOrEndPoint&#34;:
+        &#34;&#34;&#34;
+        Create a start or endpoint as a number of days relative the end of the intervall.
+        &#34;&#34;&#34;
         return StartOrEndPoint(str(days) + &#34;d&#34;, mode)
 
     @overload
@@ -202,6 +324,19 @@ class StartOrEndPoint:
         mm: int = None,  # pylint: disable = invalid-name
         dd: int = None,  # pylint: disable = invalid-name
     ) -&gt; &#34;StartOrEndPoint&#34;:
+        &#34;&#34;&#34;
+        Create a start or endpoint as a full or partial date.
+
+        Parameters
+        ----------
+        yyyy_or_datetime: Union[int, datetime]
+            A `datetime` or a year. If it is a year, the mm and dd parameters will be used too,
+            if specified.
+        mm: int
+            An optional month 1-12
+        dd: int
+            An optional day 1-31
+        &#34;&#34;&#34;
         if isinstance(yyyy_or_datetime, datetime):
             return StartOrEndPoint(yyyy_or_datetime.strftime(&#34;%Y-%m-%d&#34;), None)
         time = str(yyyy_or_datetime).zfill(4)
@@ -213,10 +348,16 @@ class StartOrEndPoint:
 
     @staticmethod
     def data_in_any_series() -&gt; &#34;StartOrEndPoint&#34;:
+        &#34;&#34;&#34;
+        Create a start or endpoint as the first or last point where thers is data in any series.
+        &#34;&#34;&#34;
         return StartOrEndPoint(&#34;&#34;, CalendarDateMode.DATA_IN_ANY_SERIES)
 
     @staticmethod
     def data_in_all_series() -&gt; &#34;StartOrEndPoint&#34;:
+        &#34;&#34;&#34;
+        Create a start or endpoint as the first or last point where thers is data in all series.
+        &#34;&#34;&#34;
         return StartOrEndPoint(&#34;&#34;, CalendarDateMode.DATA_IN_ALL_SERIES)</code></pre>
 </details>
 <h3>Static methods</h3>
@@ -225,13 +366,16 @@ class StartOrEndPoint:
 <span>def <span class="ident">data_in_all_series</span></span>(<span>) ‑> <a title="macrobond_financial.common.types.start_or_end_point.StartOrEndPoint" href="#macrobond_financial.common.types.start_or_end_point.StartOrEndPoint">StartOrEndPoint</a></span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>Create a start or endpoint as the first or last point where thers is data in all series.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@staticmethod
 def data_in_all_series() -&gt; &#34;StartOrEndPoint&#34;:
+    &#34;&#34;&#34;
+    Create a start or endpoint as the first or last point where thers is data in all series.
+    &#34;&#34;&#34;
     return StartOrEndPoint(&#34;&#34;, CalendarDateMode.DATA_IN_ALL_SERIES)</code></pre>
 </details>
 </dd>
@@ -239,13 +383,16 @@ def data_in_all_series() -&gt; &#34;StartOrEndPoint&#34;:
 <span>def <span class="ident">data_in_any_series</span></span>(<span>) ‑> <a title="macrobond_financial.common.types.start_or_end_point.StartOrEndPoint" href="#macrobond_financial.common.types.start_or_end_point.StartOrEndPoint">StartOrEndPoint</a></span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>Create a start or endpoint as the first or last point where thers is data in any series.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@staticmethod
 def data_in_any_series() -&gt; &#34;StartOrEndPoint&#34;:
+    &#34;&#34;&#34;
+    Create a start or endpoint as the first or last point where thers is data in any series.
+    &#34;&#34;&#34;
     return StartOrEndPoint(&#34;&#34;, CalendarDateMode.DATA_IN_ANY_SERIES)</code></pre>
 </details>
 </dd>
@@ -253,7 +400,17 @@ def data_in_any_series() -&gt; &#34;StartOrEndPoint&#34;:
 <span>def <span class="ident">point_in_time</span></span>(<span>yyyy_or_datetime: Union[int, datetime.datetime], mm: int = None, dd: int = None) ‑> <a title="macrobond_financial.common.types.start_or_end_point.StartOrEndPoint" href="#macrobond_financial.common.types.start_or_end_point.StartOrEndPoint">StartOrEndPoint</a></span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>Create a start or endpoint as a full or partial date.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>yyyy_or_datetime</code></strong> :&ensp;<code>Union[int, datetime]</code></dt>
+<dd>A <code>datetime</code> or a year. If it is a year, the mm and dd parameters will be used too,
+if specified.</dd>
+<dt><strong><code>mm</code></strong> :&ensp;<code>int</code></dt>
+<dd>An optional month 1-12</dd>
+<dt><strong><code>dd</code></strong> :&ensp;<code>int</code></dt>
+<dd>An optional day 1-31</dd>
+</dl></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -264,6 +421,19 @@ def point_in_time(
     mm: int = None,  # pylint: disable = invalid-name
     dd: int = None,  # pylint: disable = invalid-name
 ) -&gt; &#34;StartOrEndPoint&#34;:
+    &#34;&#34;&#34;
+    Create a start or endpoint as a full or partial date.
+
+    Parameters
+    ----------
+    yyyy_or_datetime: Union[int, datetime]
+        A `datetime` or a year. If it is a year, the mm and dd parameters will be used too,
+        if specified.
+    mm: int
+        An optional month 1-12
+    dd: int
+        An optional day 1-31
+    &#34;&#34;&#34;
     if isinstance(yyyy_or_datetime, datetime):
         return StartOrEndPoint(yyyy_or_datetime.strftime(&#34;%Y-%m-%d&#34;), None)
     time = str(yyyy_or_datetime).zfill(4)
@@ -278,13 +448,16 @@ def point_in_time(
 <span>def <span class="ident">relative_to_days</span></span>(<span>days: int, mode: <a title="macrobond_financial.common.enums.calendar_date_mode.CalendarDateMode" href="../enums/calendar_date_mode.html#macrobond_financial.common.enums.calendar_date_mode.CalendarDateMode">CalendarDateMode</a> = None) ‑> <a title="macrobond_financial.common.types.start_or_end_point.StartOrEndPoint" href="#macrobond_financial.common.types.start_or_end_point.StartOrEndPoint">StartOrEndPoint</a></span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>Create a start or endpoint as a number of days relative the end of the intervall.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@staticmethod
 def relative_to_days(days: int, mode: CalendarDateMode = None) -&gt; &#34;StartOrEndPoint&#34;:
+    &#34;&#34;&#34;
+    Create a start or endpoint as a number of days relative the end of the intervall.
+    &#34;&#34;&#34;
     return StartOrEndPoint(str(days) + &#34;d&#34;, mode)</code></pre>
 </details>
 </dd>
@@ -292,7 +465,7 @@ def relative_to_days(days: int, mode: CalendarDateMode = None) -&gt; &#34;StartO
 <span>def <span class="ident">relative_to_months</span></span>(<span>months: int, mode: <a title="macrobond_financial.common.enums.calendar_date_mode.CalendarDateMode" href="../enums/calendar_date_mode.html#macrobond_financial.common.enums.calendar_date_mode.CalendarDateMode">CalendarDateMode</a> = None) ‑> <a title="macrobond_financial.common.types.start_or_end_point.StartOrEndPoint" href="#macrobond_financial.common.types.start_or_end_point.StartOrEndPoint">StartOrEndPoint</a></span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>Create a start or endpoint as a number of months relative the end of the intervall.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -301,6 +474,9 @@ def relative_to_days(days: int, mode: CalendarDateMode = None) -&gt; &#34;StartO
 def relative_to_months(
     months: int, mode: CalendarDateMode = None
 ) -&gt; &#34;StartOrEndPoint&#34;:
+    &#34;&#34;&#34;
+    Create a start or endpoint as a number of months relative the end of the intervall.
+    &#34;&#34;&#34;
     return StartOrEndPoint(str(months) + &#34;m&#34;, mode)</code></pre>
 </details>
 </dd>
@@ -308,7 +484,7 @@ def relative_to_months(
 <span>def <span class="ident">relative_to_observations</span></span>(<span>observations: int, mode: <a title="macrobond_financial.common.enums.calendar_date_mode.CalendarDateMode" href="../enums/calendar_date_mode.html#macrobond_financial.common.enums.calendar_date_mode.CalendarDateMode">CalendarDateMode</a> = None) ‑> <a title="macrobond_financial.common.types.start_or_end_point.StartOrEndPoint" href="#macrobond_financial.common.types.start_or_end_point.StartOrEndPoint">StartOrEndPoint</a></span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>Create a start or endpoint as a number of observations relative the end of the intervall.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -317,6 +493,9 @@ def relative_to_months(
 def relative_to_observations(
     observations: int, mode: CalendarDateMode = None
 ) -&gt; &#34;StartOrEndPoint&#34;:
+    &#34;&#34;&#34;
+    Create a start or endpoint as a number of observations relative the end of the intervall.
+    &#34;&#34;&#34;
     return StartOrEndPoint(str(observations), mode)</code></pre>
 </details>
 </dd>
@@ -324,7 +503,7 @@ def relative_to_observations(
 <span>def <span class="ident">relative_to_quarters</span></span>(<span>quarters: int, mode: <a title="macrobond_financial.common.enums.calendar_date_mode.CalendarDateMode" href="../enums/calendar_date_mode.html#macrobond_financial.common.enums.calendar_date_mode.CalendarDateMode">CalendarDateMode</a> = None) ‑> <a title="macrobond_financial.common.types.start_or_end_point.StartOrEndPoint" href="#macrobond_financial.common.types.start_or_end_point.StartOrEndPoint">StartOrEndPoint</a></span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>Create a start or endpoint as a number of quarters relative the end of the intervall.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -333,6 +512,9 @@ def relative_to_observations(
 def relative_to_quarters(
     quarters: int, mode: CalendarDateMode = None
 ) -&gt; &#34;StartOrEndPoint&#34;:
+    &#34;&#34;&#34;
+    Create a start or endpoint as a number of quarters relative the end of the intervall.
+    &#34;&#34;&#34;
     return StartOrEndPoint(str(quarters) + &#34;q&#34;, mode)</code></pre>
 </details>
 </dd>
@@ -340,7 +522,7 @@ def relative_to_quarters(
 <span>def <span class="ident">relative_to_weeks</span></span>(<span>weeks: int, mode: <a title="macrobond_financial.common.enums.calendar_date_mode.CalendarDateMode" href="../enums/calendar_date_mode.html#macrobond_financial.common.enums.calendar_date_mode.CalendarDateMode">CalendarDateMode</a> = None) ‑> <a title="macrobond_financial.common.types.start_or_end_point.StartOrEndPoint" href="#macrobond_financial.common.types.start_or_end_point.StartOrEndPoint">StartOrEndPoint</a></span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>Create a start or endpoint as a number of weeks relative the end of the intervall.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -349,6 +531,9 @@ def relative_to_quarters(
 def relative_to_weeks(
     weeks: int, mode: CalendarDateMode = None
 ) -&gt; &#34;StartOrEndPoint&#34;:
+    &#34;&#34;&#34;
+    Create a start or endpoint as a number of weeks relative the end of the intervall.
+    &#34;&#34;&#34;
     return StartOrEndPoint(str(weeks) + &#34;w&#34;, mode)</code></pre>
 </details>
 </dd>
@@ -356,7 +541,7 @@ def relative_to_weeks(
 <span>def <span class="ident">relative_to_years</span></span>(<span>years: int, mode: <a title="macrobond_financial.common.enums.calendar_date_mode.CalendarDateMode" href="../enums/calendar_date_mode.html#macrobond_financial.common.enums.calendar_date_mode.CalendarDateMode">CalendarDateMode</a> = None) ‑> <a title="macrobond_financial.common.types.start_or_end_point.StartOrEndPoint" href="#macrobond_financial.common.types.start_or_end_point.StartOrEndPoint">StartOrEndPoint</a></span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>Create a start or endpoint as a number of years relative the end of the intervall.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -365,6 +550,9 @@ def relative_to_weeks(
 def relative_to_years(
     years: int, mode: CalendarDateMode = None
 ) -&gt; &#34;StartOrEndPoint&#34;:
+    &#34;&#34;&#34;
+    Create a start or endpoint as a number of years relative the end of the intervall.
+    &#34;&#34;&#34;
     return StartOrEndPoint(str(years) + &#34;y&#34;, mode)</code></pre>
 </details>
 </dd>

@@ -360,8 +360,6 @@ class Api(ABC):
         `macrobond_financial.common.api_return_types.get_entities_return.GetEntitiesReturn`
         &#34;&#34;&#34;
 
-    # TODO: @mb-to We should add startDateMode and endDateMode as parameters too
-
     @abstractmethod
     def get_unified_series(
         self,
@@ -380,20 +378,21 @@ class Api(ABC):
         Parameters
         ----------
         *series_entries : Union[SeriesEntry, str]
-            One or more names of series or SeriesEntry objects.
-        frequency : SeriesFrequency
+            One or more names of series or
+            `macrobond_financial.common.types.series_entry.SeriesEntry` objects.
+        frequency : `macrobond_financial.common.enums.series_frequency.SeriesFrequency`
             Specifies what frequency the series should be converted to.
             By default, it will be converted to the highest frequency of any series.
-        weekdays : SeriesWeekdays
+        weekdays : `macrobond_financial.common.enums.series_weekdays.SeriesWeekdays`
             The days of the week used for daily series. The default is Monday to Friday.
-        calendar_merge_mode : CalendarMergeMode
+        calendar_merge_mode : `macrobond_financial.common.enums.calendar_merge_mode.CalendarMergeMode`
             The start date mode determines how the start date is calculated.
             By default the mode is to start when there is data in any series.
         currency : str
             The currency to use for currency conversion or omitted for no conversion.
-        start_point : StartOrEndPoint
+        start_point : `macrobond_financial.common.types.start_or_end_point.StartOrEndPoint`
             The start point. By default, this is determined by the startDateMode.
-        end_point : StartOrEndPoint
+        end_point : `macrobond_financial.common.types.start_or_end_point.StartOrEndPoint`
             The end point. By default, this is determined by the endDateMode.
         raise_error : bool
             If True, accessing the resulting entities raises a GetEntitiesError.
@@ -732,8 +731,6 @@ class Api(ABC):
         `macrobond_financial.common.api_return_types.get_entities_return.GetEntitiesReturn`
         &#34;&#34;&#34;
 
-    # TODO: @mb-to We should add startDateMode and endDateMode as parameters too
-
     @abstractmethod
     def get_unified_series(
         self,
@@ -752,20 +749,21 @@ class Api(ABC):
         Parameters
         ----------
         *series_entries : Union[SeriesEntry, str]
-            One or more names of series or SeriesEntry objects.
-        frequency : SeriesFrequency
+            One or more names of series or
+            `macrobond_financial.common.types.series_entry.SeriesEntry` objects.
+        frequency : `macrobond_financial.common.enums.series_frequency.SeriesFrequency`
             Specifies what frequency the series should be converted to.
             By default, it will be converted to the highest frequency of any series.
-        weekdays : SeriesWeekdays
+        weekdays : `macrobond_financial.common.enums.series_weekdays.SeriesWeekdays`
             The days of the week used for daily series. The default is Monday to Friday.
-        calendar_merge_mode : CalendarMergeMode
+        calendar_merge_mode : `macrobond_financial.common.enums.calendar_merge_mode.CalendarMergeMode`
             The start date mode determines how the start date is calculated.
             By default the mode is to start when there is data in any series.
         currency : str
             The currency to use for currency conversion or omitted for no conversion.
-        start_point : StartOrEndPoint
+        start_point : `macrobond_financial.common.types.start_or_end_point.StartOrEndPoint`
             The start point. By default, this is determined by the startDateMode.
-        end_point : StartOrEndPoint
+        end_point : `macrobond_financial.common.types.start_or_end_point.StartOrEndPoint`
             The end point. By default, this is determined by the endDateMode.
         raise_error : bool
             If True, accessing the resulting entities raises a GetEntitiesError.
@@ -1187,20 +1185,21 @@ def get_series(
 <h2 id="parameters">Parameters</h2>
 <dl>
 <dt><strong><code>*series_entries</code></strong> :&ensp;<code>Union[SeriesEntry, str]</code></dt>
-<dd>One or more names of series or SeriesEntry objects.</dd>
-<dt><strong><code>frequency</code></strong> :&ensp;<code>SeriesFrequency</code></dt>
+<dd>One or more names of series or
+<code><a title="macrobond_financial.common.types.series_entry.SeriesEntry" href="types/series_entry.html#macrobond_financial.common.types.series_entry.SeriesEntry">SeriesEntry</a></code> objects.</dd>
+<dt><strong><code>frequency</code></strong> :&ensp;<code><a title="macrobond_financial.common.enums.series_frequency.SeriesFrequency" href="enums/series_frequency.html#macrobond_financial.common.enums.series_frequency.SeriesFrequency">SeriesFrequency</a></code></dt>
 <dd>Specifies what frequency the series should be converted to.
 By default, it will be converted to the highest frequency of any series.</dd>
-<dt><strong><code>weekdays</code></strong> :&ensp;<code>SeriesWeekdays</code></dt>
+<dt><strong><code>weekdays</code></strong> :&ensp;<code><a title="macrobond_financial.common.enums.series_weekdays.SeriesWeekdays" href="enums/series_weekdays.html#macrobond_financial.common.enums.series_weekdays.SeriesWeekdays">SeriesWeekdays</a></code></dt>
 <dd>The days of the week used for daily series. The default is Monday to Friday.</dd>
-<dt><strong><code>calendar_merge_mode</code></strong> :&ensp;<code>CalendarMergeMode</code></dt>
+<dt><strong><code>calendar_merge_mode</code></strong> :&ensp;<code><a title="macrobond_financial.common.enums.calendar_merge_mode.CalendarMergeMode" href="enums/calendar_merge_mode.html#macrobond_financial.common.enums.calendar_merge_mode.CalendarMergeMode">CalendarMergeMode</a></code></dt>
 <dd>The start date mode determines how the start date is calculated.
 By default the mode is to start when there is data in any series.</dd>
 <dt><strong><code>currency</code></strong> :&ensp;<code>str</code></dt>
 <dd>The currency to use for currency conversion or omitted for no conversion.</dd>
-<dt><strong><code>start_point</code></strong> :&ensp;<code>StartOrEndPoint</code></dt>
+<dt><strong><code>start_point</code></strong> :&ensp;<code><a title="macrobond_financial.common.types.start_or_end_point.StartOrEndPoint" href="types/start_or_end_point.html#macrobond_financial.common.types.start_or_end_point.StartOrEndPoint">StartOrEndPoint</a></code></dt>
 <dd>The start point. By default, this is determined by the startDateMode.</dd>
-<dt><strong><code>end_point</code></strong> :&ensp;<code>StartOrEndPoint</code></dt>
+<dt><strong><code>end_point</code></strong> :&ensp;<code><a title="macrobond_financial.common.types.start_or_end_point.StartOrEndPoint" href="types/start_or_end_point.html#macrobond_financial.common.types.start_or_end_point.StartOrEndPoint">StartOrEndPoint</a></code></dt>
 <dd>The end point. By default, this is determined by the endDateMode.</dd>
 <dt><strong><code>raise_error</code></strong> :&ensp;<code>bool</code></dt>
 <dd>If True, accessing the resulting entities raises a GetEntitiesError.
@@ -1231,20 +1230,21 @@ def get_unified_series(
     Parameters
     ----------
     *series_entries : Union[SeriesEntry, str]
-        One or more names of series or SeriesEntry objects.
-    frequency : SeriesFrequency
+        One or more names of series or
+        `macrobond_financial.common.types.series_entry.SeriesEntry` objects.
+    frequency : `macrobond_financial.common.enums.series_frequency.SeriesFrequency`
         Specifies what frequency the series should be converted to.
         By default, it will be converted to the highest frequency of any series.
-    weekdays : SeriesWeekdays
+    weekdays : `macrobond_financial.common.enums.series_weekdays.SeriesWeekdays`
         The days of the week used for daily series. The default is Monday to Friday.
-    calendar_merge_mode : CalendarMergeMode
+    calendar_merge_mode : `macrobond_financial.common.enums.calendar_merge_mode.CalendarMergeMode`
         The start date mode determines how the start date is calculated.
         By default the mode is to start when there is data in any series.
     currency : str
         The currency to use for currency conversion or omitted for no conversion.
-    start_point : StartOrEndPoint
+    start_point : `macrobond_financial.common.types.start_or_end_point.StartOrEndPoint`
         The start point. By default, this is determined by the startDateMode.
-    end_point : StartOrEndPoint
+    end_point : `macrobond_financial.common.types.start_or_end_point.StartOrEndPoint`
         The end point. By default, this is determined by the endDateMode.
     raise_error : bool
         If True, accessing the resulting entities raises a GetEntitiesError.

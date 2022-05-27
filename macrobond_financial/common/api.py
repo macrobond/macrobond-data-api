@@ -332,8 +332,6 @@ class Api(ABC):
         `macrobond_financial.common.api_return_types.get_entities_return.GetEntitiesReturn`
         """
 
-    # TODO: @mb-to We should add startDateMode and endDateMode as parameters too
-
     @abstractmethod
     def get_unified_series(
         self,
@@ -352,20 +350,21 @@ class Api(ABC):
         Parameters
         ----------
         *series_entries : Union[SeriesEntry, str]
-            One or more names of series or SeriesEntry objects.
-        frequency : SeriesFrequency
+            One or more names of series or
+            `macrobond_financial.common.types.series_entry.SeriesEntry` objects.
+        frequency : `macrobond_financial.common.enums.series_frequency.SeriesFrequency`
             Specifies what frequency the series should be converted to.
             By default, it will be converted to the highest frequency of any series.
-        weekdays : SeriesWeekdays
+        weekdays : `macrobond_financial.common.enums.series_weekdays.SeriesWeekdays`
             The days of the week used for daily series. The default is Monday to Friday.
-        calendar_merge_mode : CalendarMergeMode
+        calendar_merge_mode : `macrobond_financial.common.enums.calendar_merge_mode.CalendarMergeMode`
             The start date mode determines how the start date is calculated.
             By default the mode is to start when there is data in any series.
         currency : str
             The currency to use for currency conversion or omitted for no conversion.
-        start_point : StartOrEndPoint
+        start_point : `macrobond_financial.common.types.start_or_end_point.StartOrEndPoint`
             The start point. By default, this is determined by the startDateMode.
-        end_point : StartOrEndPoint
+        end_point : `macrobond_financial.common.types.start_or_end_point.StartOrEndPoint`
             The end point. By default, this is determined by the endDateMode.
         raise_error : bool
             If True, accessing the resulting entities raises a GetEntitiesError.
