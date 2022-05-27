@@ -44,6 +44,27 @@ class SearchFilter:
         must_have_attributes: Union[Sequence[str], str] = None,
         must_not_have_attributes: Union[Sequence[str], str] = None,
     ) -&gt; None:
+        &#34;&#34;&#34;
+        Specification of a search filter.
+
+        Parameters
+        ----------
+        text: str
+            Optional set of keywords separated by space.
+        must_have_values: Dict[str, object]
+            Optional dictionary of values that must be present in the entity metadata.
+            The value can be a single value or an array of values. If there are several values
+            for an attribute, it means that either of them must be present.
+        must_not_have_values: Dict[str, object]
+            Optional dictionary of values that must not be present in the entity metadata.
+            The value can be a single value or an array of values.
+        must_have_attributes: Union[Sequence[str], str]
+            Optional set of attributes that must be present in the entity metadata.
+            The value can be a single value or a sequence of values.
+        must_not_have_attributes: Union[Sequence[str], str]
+            Optional set of attributes that must no be present in the entity metadata.
+            The value can be a single value or a sequence of values.
+        &#34;&#34;&#34;
         self.text = text
 
         if isinstance(entity_types, str):
@@ -88,7 +109,25 @@ class SearchFilter:
 <span>(</span><span>text: str = None, entity_types: Union[str, Sequence[str]] = None, must_have_values: Dict[str, object] = None, must_not_have_values: Dict[str, object] = None, must_have_attributes: Union[str, Sequence[str]] = None, must_not_have_attributes: Union[str, Sequence[str]] = None)</span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>Specification of a search filter.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>text</code></strong> :&ensp;<code>str</code></dt>
+<dd>Optional set of keywords separated by space.</dd>
+<dt><strong><code>must_have_values</code></strong> :&ensp;<code>Dict[str, object]</code></dt>
+<dd>Optional dictionary of values that must be present in the entity metadata.
+The value can be a single value or an array of values. If there are several values
+for an attribute, it means that either of them must be present.</dd>
+<dt><strong><code>must_not_have_values</code></strong> :&ensp;<code>Dict[str, object]</code></dt>
+<dd>Optional dictionary of values that must not be present in the entity metadata.
+The value can be a single value or an array of values.</dd>
+<dt><strong><code>must_have_attributes</code></strong> :&ensp;<code>Union[Sequence[str], str]</code></dt>
+<dd>Optional set of attributes that must be present in the entity metadata.
+The value can be a single value or a sequence of values.</dd>
+<dt><strong><code>must_not_have_attributes</code></strong> :&ensp;<code>Union[Sequence[str], str]</code></dt>
+<dd>Optional set of attributes that must no be present in the entity metadata.
+The value can be a single value or a sequence of values.</dd>
+</dl></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -103,6 +142,27 @@ class SearchFilter:
         must_have_attributes: Union[Sequence[str], str] = None,
         must_not_have_attributes: Union[Sequence[str], str] = None,
     ) -&gt; None:
+        &#34;&#34;&#34;
+        Specification of a search filter.
+
+        Parameters
+        ----------
+        text: str
+            Optional set of keywords separated by space.
+        must_have_values: Dict[str, object]
+            Optional dictionary of values that must be present in the entity metadata.
+            The value can be a single value or an array of values. If there are several values
+            for an attribute, it means that either of them must be present.
+        must_not_have_values: Dict[str, object]
+            Optional dictionary of values that must not be present in the entity metadata.
+            The value can be a single value or an array of values.
+        must_have_attributes: Union[Sequence[str], str]
+            Optional set of attributes that must be present in the entity metadata.
+            The value can be a single value or a sequence of values.
+        must_not_have_attributes: Union[Sequence[str], str]
+            Optional set of attributes that must no be present in the entity metadata.
+            The value can be a single value or a sequence of values.
+        &#34;&#34;&#34;
         self.text = text
 
         if isinstance(entity_types, str):

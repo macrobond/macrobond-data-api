@@ -16,6 +16,27 @@ class SearchFilter:
         must_have_attributes: Union[Sequence[str], str] = None,
         must_not_have_attributes: Union[Sequence[str], str] = None,
     ) -> None:
+        """
+        Specification of a search filter.
+
+        Parameters
+        ----------
+        text: str
+            Optional set of keywords separated by space.
+        must_have_values: Dict[str, object]
+            Optional dictionary of values that must be present in the entity metadata.
+            The value can be a single value or an array of values. If there are several values
+            for an attribute, it means that either of them must be present.
+        must_not_have_values: Dict[str, object]
+            Optional dictionary of values that must not be present in the entity metadata.
+            The value can be a single value or an array of values.
+        must_have_attributes: Union[Sequence[str], str]
+            Optional set of attributes that must be present in the entity metadata.
+            The value can be a single value or a sequence of values.
+        must_not_have_attributes: Union[Sequence[str], str]
+            Optional set of attributes that must no be present in the entity metadata.
+            The value can be a single value or a sequence of values.
+        """
         self.text = text
 
         if isinstance(entity_types, str):

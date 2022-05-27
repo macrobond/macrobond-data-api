@@ -281,7 +281,7 @@ class WebApi(Api):
 <span>class <span class="ident">WebApi</span></span>
 </code></dt>
 <dd>
-<div class="desc"><p>Common API to interact with the Macrobond database</p></div>
+<div class="desc"><p>Common API to interact with the Macrobond database.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -487,26 +487,6 @@ def session(self) -&gt; &#34;Session&#34;:
 </dl>
 <h3>Methods</h3>
 <dl>
-<dt id="macrobond_financial.web.web_api.WebApi.get_nth_release"><code class="name flex">
-<span>def <span class="ident">get_nth_release</span></span>(<span>self, serie_name: str, nth: int, raise_error: bool = None) ‑> GetNthReleaseReturn</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def get_nth_release(
-    self, serie_name: str, nth: int, raise_error: bool = None
-) -&gt; &#34;GetNthReleaseReturn&#34;:
-    return _GetNthReleaseReturn(
-        self.__session,
-        serie_name,
-        nth,
-        self.raise_error if raise_error is None else raise_error,
-    )</code></pre>
-</details>
-</dd>
 <dt id="macrobond_financial.web.web_api.WebApi.get_observation_history"><code class="name flex">
 <span>def <span class="ident">get_observation_history</span></span>(<span>self, serie_name: str, times: Sequence[datetime.datetime]) ‑> GetObservationHistoryReturn</span>
 </code></dt>
@@ -526,45 +506,6 @@ def session(self) -&gt; &#34;Session&#34;:
     )</code></pre>
 </details>
 </dd>
-<dt id="macrobond_financial.web.web_api.WebApi.get_revision_info"><code class="name flex">
-<span>def <span class="ident">get_revision_info</span></span>(<span>self, *series_names: str, raise_error: bool = None) ‑> GetRevisionInfoReturn</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def get_revision_info(
-    self, *series_names: str, raise_error: bool = None
-) -&gt; &#34;GetRevisionInfoReturn&#34;:
-    return _GetRevisionInfoReturn(
-        self.__session,
-        series_names,
-        self.raise_error if raise_error is None else raise_error,
-    )</code></pre>
-</details>
-</dd>
-<dt id="macrobond_financial.web.web_api.WebApi.get_vintage_series"><code class="name flex">
-<span>def <span class="ident">get_vintage_series</span></span>(<span>self, serie_name: str, time: datetime.datetime, raise_error: bool = None) ‑> GetVintageSeriesReturn</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def get_vintage_series(
-    self, serie_name: str, time: datetime, raise_error: bool = None
-) -&gt; &#34;GetVintageSeriesReturn&#34;:
-    return _GetVintageSeriesReturn(
-        self.__session,
-        serie_name,
-        time,
-        self.raise_error if raise_error is None else raise_error,
-    )</code></pre>
-</details>
-</dd>
 </dl>
 <h3>Inherited members</h3>
 <ul class="hlist">
@@ -573,13 +514,17 @@ def session(self) -&gt; &#34;Session&#34;:
 <li><code><a title="macrobond_financial.common.api.Api.entity_search" href="../common/api.html#macrobond_financial.common.api.Api.entity_search">entity_search</a></code></li>
 <li><code><a title="macrobond_financial.common.api.Api.entity_search_multi_filter" href="../common/api.html#macrobond_financial.common.api.Api.entity_search_multi_filter">entity_search_multi_filter</a></code></li>
 <li><code><a title="macrobond_financial.common.api.Api.get_entities" href="../common/api.html#macrobond_financial.common.api.Api.get_entities">get_entities</a></code></li>
+<li><code><a title="macrobond_financial.common.api.Api.get_nth_release" href="../common/api.html#macrobond_financial.common.api.Api.get_nth_release">get_nth_release</a></code></li>
 <li><code><a title="macrobond_financial.common.api.Api.get_one_entity" href="../common/api.html#macrobond_financial.common.api.Api.get_one_entity">get_one_entity</a></code></li>
 <li><code><a title="macrobond_financial.common.api.Api.get_one_series" href="../common/api.html#macrobond_financial.common.api.Api.get_one_series">get_one_series</a></code></li>
+<li><code><a title="macrobond_financial.common.api.Api.get_revision_info" href="../common/api.html#macrobond_financial.common.api.Api.get_revision_info">get_revision_info</a></code></li>
 <li><code><a title="macrobond_financial.common.api.Api.get_series" href="../common/api.html#macrobond_financial.common.api.Api.get_series">get_series</a></code></li>
 <li><code><a title="macrobond_financial.common.api.Api.get_unified_series" href="../common/api.html#macrobond_financial.common.api.Api.get_unified_series">get_unified_series</a></code></li>
+<li><code><a title="macrobond_financial.common.api.Api.get_vintage_series" href="../common/api.html#macrobond_financial.common.api.Api.get_vintage_series">get_vintage_series</a></code></li>
 <li><code><a title="macrobond_financial.common.api.Api.metadata_get_attribute_information" href="../common/api.html#macrobond_financial.common.api.Api.metadata_get_attribute_information">metadata_get_attribute_information</a></code></li>
 <li><code><a title="macrobond_financial.common.api.Api.metadata_get_value_information" href="../common/api.html#macrobond_financial.common.api.Api.metadata_get_value_information">metadata_get_value_information</a></code></li>
 <li><code><a title="macrobond_financial.common.api.Api.metadata_list_values" href="../common/api.html#macrobond_financial.common.api.Api.metadata_list_values">metadata_list_values</a></code></li>
+<li><code><a title="macrobond_financial.common.api.Api.raise_error" href="../common/api.html#macrobond_financial.common.api.Api.raise_error">raise_error</a></code></li>
 </ul>
 </li>
 </ul>
@@ -603,10 +548,7 @@ def session(self) -&gt; &#34;Session&#34;:
 <li>
 <h4><code><a title="macrobond_financial.web.web_api.WebApi" href="#macrobond_financial.web.web_api.WebApi">WebApi</a></code></h4>
 <ul class="">
-<li><code><a title="macrobond_financial.web.web_api.WebApi.get_nth_release" href="#macrobond_financial.web.web_api.WebApi.get_nth_release">get_nth_release</a></code></li>
 <li><code><a title="macrobond_financial.web.web_api.WebApi.get_observation_history" href="#macrobond_financial.web.web_api.WebApi.get_observation_history">get_observation_history</a></code></li>
-<li><code><a title="macrobond_financial.web.web_api.WebApi.get_revision_info" href="#macrobond_financial.web.web_api.WebApi.get_revision_info">get_revision_info</a></code></li>
-<li><code><a title="macrobond_financial.web.web_api.WebApi.get_vintage_series" href="#macrobond_financial.web.web_api.WebApi.get_vintage_series">get_vintage_series</a></code></li>
 <li><code><a title="macrobond_financial.web.web_api.WebApi.session" href="#macrobond_financial.web.web_api.WebApi.session">session</a></code></li>
 </ul>
 </li>

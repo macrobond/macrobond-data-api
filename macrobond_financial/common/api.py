@@ -26,13 +26,15 @@ from .api_return_types import (
 
 class Api(ABC):
     """
-    Common API to interact with the Macrobond database
+    Common API to interact with the Macrobond database.
     """
-
-    # TODO: @mb-to How do you document fields like raise_error?
 
     def __init__(self) -> None:
         self.raise_error = True
+        """
+        Controls the default value of the parameter called raise_error, which is used in many
+        API calls. The default value is "True".
+        """
 
     # metadata
 
@@ -110,7 +112,7 @@ class Api(ABC):
         raise_error : bool
             If True, accessing the resulting series raises a GetEntitiesError.
             If False you should inspect the is_error property of the result instead.
-            If None, it will use the global value `macrobond_financial.common.api.API.raise_error`
+            If None, it will use the global value `macrobond_financial.common.api.Api.raise_error`
 
         Returns
         -------
@@ -135,7 +137,7 @@ class Api(ABC):
         raise_error : bool
             If True, accessing the resulting series raises a GetEntitiesError.
             If False you should inspect the is_error property of the result instead.
-            If None, it will use the global value `macrobond_financial.common.api.API.raise_error`
+            If None, it will use the global value `macrobond_financial.common.api.Api.raise_error`
 
         Returns
         -------
@@ -160,7 +162,7 @@ class Api(ABC):
         raise_error : bool
             If True, accessing the resulting series raises a GetEntitiesError.
             If False you should inspect the is_error property of the result instead.
-            If None, it will use the global value `macrobond_financial.common.api.API.raise_error`
+            If None, it will use the global value `macrobond_financial.common.api.Api.raise_error`
 
         Returns
         -------
@@ -188,22 +190,22 @@ class Api(ABC):
 
         Parameters
         ----------
-        text : str
+        text: str
             Optional set of keywords separated by space.
-        must_have_values : Dict[str, object]
+        must_have_values: Dict[str, object]
             Optional dictionary of values that must be present in the entity metadata.
             The value can be a single value or an array of values. If there are several values
             for an attribute, it means that either of them must be present.
-        must_not_have_values : Dict[str, object]
+        must_not_have_values: Dict[str, object]
             Optional dictionary of values that must not be present in the entity metadata.
             The value can be a single value or an array of values.
-        must_have_attributes : Union[Sequence[str], str]
+        must_have_attributes: Union[Sequence[str], str]
             Optional set of attributes that must be present in the entity metadata.
             The value can be a single value or a sequence of values.
-        must_not_have_attributes : Union[Sequence[str], str]
+        must_not_have_attributes: Union[Sequence[str], str]
             Optional set of attributes that must no be present in the entity metadata.
             The value can be a single value or a sequence of values.
-        include_discontinued : bool
+        include_discontinued: bool
             Set this value to True in order to include discontinued entities in the search.
 
         Returns
@@ -234,7 +236,7 @@ class Api(ABC):
 
         Parameters
         ----------
-        *filters : SearchFilter
+        *filters : `macrobond_financial.common.types.search_filter.SearchFilter`
             One or more search filters.
         include_discontinued : bool
             Set this value to True in order to include discontinued entities in the search.
@@ -260,7 +262,7 @@ class Api(ABC):
         raise_error : bool
             If True, accessing the resulting series raises a GetEntitiesError.
             If False you should inspect the is_error property of the result instead.
-            If None, it will use the global value `macrobond_financial.common.api.API.raise_error`
+            If None, it will use the global value `macrobond_financial.common.api.Api.raise_error`
 
         Returns
         -------
@@ -281,7 +283,7 @@ class Api(ABC):
         raise_error : bool
             If True, accessing the resulting series raises a GetEntitiesError.
             If False you should inspect the is_error property of the result instead.
-            If None, it will use the global value `macrobond_financial.common.api.API.raise_error`
+            If None, it will use the global value `macrobond_financial.common.api.Api.raise_error`
 
         Returns
         -------
@@ -302,7 +304,7 @@ class Api(ABC):
         raise_error : bool
             If True, accessing the resulting entity raises a GetEntitiesError.
             If False you should inspect the is_error property of the result instead.
-            If None, it will use the global value `macrobond_financial.common.api.API.raise_error`
+            If None, it will use the global value `macrobond_financial.common.api.Api.raise_error`
 
         Returns
         -------
@@ -323,11 +325,11 @@ class Api(ABC):
         raise_error : bool
             If True, accessing the resulting entities raises a GetEntitiesError.
             If False you should inspect the is_error property of the result instead.
-            If None, it will use the global value `macrobond_financial.common.api.API.raise_error`
+            If None, it will use the global value `macrobond_financial.common.api.Api.raise_error`
 
         Returns
         -------
-        `macrobond_financial.common.api_return_types.get_entitites_return.GetEntitiesReturn`
+        `macrobond_financial.common.api_return_types.get_entities_return.GetEntitiesReturn`
         """
 
     # TODO: @mb-to We should add startDateMode and endDateMode as parameters too
@@ -368,7 +370,7 @@ class Api(ABC):
         raise_error : bool
             If True, accessing the resulting entities raises a GetEntitiesError.
             If False you should inspect the is_error property of the result instead.
-            If None, it will use the global value `macrobond_financial.common.api.API.raise_error`
+            If None, it will use the global value `macrobond_financial.common.api.Api.raise_error`
 
         Returns
         -------

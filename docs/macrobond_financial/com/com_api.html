@@ -283,7 +283,7 @@ class ComApi(Api):
 <span>class <span class="ident">ComApi</span></span>
 </code></dt>
 <dd>
-<div class="desc"><p>Common API to interact with the Macrobond database</p></div>
+<div class="desc"><p>Common API to interact with the Macrobond database.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -492,68 +492,6 @@ def connection(self) -&gt; &#34;Connection&#34;:
 </details>
 </dd>
 </dl>
-<h3>Methods</h3>
-<dl>
-<dt id="macrobond_financial.com.com_api.ComApi.get_nth_release"><code class="name flex">
-<span>def <span class="ident">get_nth_release</span></span>(<span>self, serie_name: str, nth: int, raise_error: bool = None) ‑> GetNthReleaseReturn</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def get_nth_release(
-    self, serie_name: str, nth: int, raise_error: bool = None
-) -&gt; &#34;GetNthReleaseReturn&#34;:
-    return _GetNthReleaseReturn(
-        self.__connection.Database,
-        serie_name,
-        nth,
-        self.raise_error if raise_error is None else raise_error,
-    )</code></pre>
-</details>
-</dd>
-<dt id="macrobond_financial.com.com_api.ComApi.get_revision_info"><code class="name flex">
-<span>def <span class="ident">get_revision_info</span></span>(<span>self, *series_names: str, raise_error: bool = None) ‑> GetRevisionInfoReturn</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def get_revision_info(
-    self, *series_names: str, raise_error: bool = None
-) -&gt; &#34;GetRevisionInfoReturn&#34;:
-    return _GetRevisionInfoReturn(
-        self.__connection.Database,
-        series_names,
-        self.raise_error if raise_error is None else raise_error,
-    )</code></pre>
-</details>
-</dd>
-<dt id="macrobond_financial.com.com_api.ComApi.get_vintage_series"><code class="name flex">
-<span>def <span class="ident">get_vintage_series</span></span>(<span>self, serie_name: str, time: datetime.datetime, raise_error: bool = None) ‑> GetVintageSeriesReturn</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def get_vintage_series(
-    self, serie_name: str, time: datetime, raise_error: bool = None
-) -&gt; &#34;GetVintageSeriesReturn&#34;:
-    return _GetVintageSeriesReturn(
-        self.__connection.Database,
-        serie_name,
-        time,
-        self.raise_error if raise_error is None else raise_error,
-    )</code></pre>
-</details>
-</dd>
-</dl>
 <h3>Inherited members</h3>
 <ul class="hlist">
 <li><code><b><a title="macrobond_financial.common.api.Api" href="../common/api.html#macrobond_financial.common.api.Api">Api</a></b></code>:
@@ -561,13 +499,17 @@ def connection(self) -&gt; &#34;Connection&#34;:
 <li><code><a title="macrobond_financial.common.api.Api.entity_search" href="../common/api.html#macrobond_financial.common.api.Api.entity_search">entity_search</a></code></li>
 <li><code><a title="macrobond_financial.common.api.Api.entity_search_multi_filter" href="../common/api.html#macrobond_financial.common.api.Api.entity_search_multi_filter">entity_search_multi_filter</a></code></li>
 <li><code><a title="macrobond_financial.common.api.Api.get_entities" href="../common/api.html#macrobond_financial.common.api.Api.get_entities">get_entities</a></code></li>
+<li><code><a title="macrobond_financial.common.api.Api.get_nth_release" href="../common/api.html#macrobond_financial.common.api.Api.get_nth_release">get_nth_release</a></code></li>
 <li><code><a title="macrobond_financial.common.api.Api.get_one_entity" href="../common/api.html#macrobond_financial.common.api.Api.get_one_entity">get_one_entity</a></code></li>
 <li><code><a title="macrobond_financial.common.api.Api.get_one_series" href="../common/api.html#macrobond_financial.common.api.Api.get_one_series">get_one_series</a></code></li>
+<li><code><a title="macrobond_financial.common.api.Api.get_revision_info" href="../common/api.html#macrobond_financial.common.api.Api.get_revision_info">get_revision_info</a></code></li>
 <li><code><a title="macrobond_financial.common.api.Api.get_series" href="../common/api.html#macrobond_financial.common.api.Api.get_series">get_series</a></code></li>
 <li><code><a title="macrobond_financial.common.api.Api.get_unified_series" href="../common/api.html#macrobond_financial.common.api.Api.get_unified_series">get_unified_series</a></code></li>
+<li><code><a title="macrobond_financial.common.api.Api.get_vintage_series" href="../common/api.html#macrobond_financial.common.api.Api.get_vintage_series">get_vintage_series</a></code></li>
 <li><code><a title="macrobond_financial.common.api.Api.metadata_get_attribute_information" href="../common/api.html#macrobond_financial.common.api.Api.metadata_get_attribute_information">metadata_get_attribute_information</a></code></li>
 <li><code><a title="macrobond_financial.common.api.Api.metadata_get_value_information" href="../common/api.html#macrobond_financial.common.api.Api.metadata_get_value_information">metadata_get_value_information</a></code></li>
 <li><code><a title="macrobond_financial.common.api.Api.metadata_list_values" href="../common/api.html#macrobond_financial.common.api.Api.metadata_list_values">metadata_list_values</a></code></li>
+<li><code><a title="macrobond_financial.common.api.Api.raise_error" href="../common/api.html#macrobond_financial.common.api.Api.raise_error">raise_error</a></code></li>
 </ul>
 </li>
 </ul>
@@ -592,9 +534,6 @@ def connection(self) -&gt; &#34;Connection&#34;:
 <h4><code><a title="macrobond_financial.com.com_api.ComApi" href="#macrobond_financial.com.com_api.ComApi">ComApi</a></code></h4>
 <ul class="">
 <li><code><a title="macrobond_financial.com.com_api.ComApi.connection" href="#macrobond_financial.com.com_api.ComApi.connection">connection</a></code></li>
-<li><code><a title="macrobond_financial.com.com_api.ComApi.get_nth_release" href="#macrobond_financial.com.com_api.ComApi.get_nth_release">get_nth_release</a></code></li>
-<li><code><a title="macrobond_financial.com.com_api.ComApi.get_revision_info" href="#macrobond_financial.com.com_api.ComApi.get_revision_info">get_revision_info</a></code></li>
-<li><code><a title="macrobond_financial.com.com_api.ComApi.get_vintage_series" href="#macrobond_financial.com.com_api.ComApi.get_vintage_series">get_vintage_series</a></code></li>
 </ul>
 </li>
 </ul>

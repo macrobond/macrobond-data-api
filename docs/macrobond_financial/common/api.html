@@ -54,11 +54,15 @@ from .api_return_types import (
 
 class Api(ABC):
     &#34;&#34;&#34;
-    Common API to interact with the Macrobond database
+    Common API to interact with the Macrobond database.
     &#34;&#34;&#34;
 
     def __init__(self) -&gt; None:
         self.raise_error = True
+        &#34;&#34;&#34;
+        Controls the default value of the parameter called raise_error, which is used in many
+        API calls. The default value is &#34;True&#34;.
+        &#34;&#34;&#34;
 
     # metadata
 
@@ -99,7 +103,7 @@ class Api(ABC):
         self, name: str
     ) -&gt; GetAttributeInformationReturn:
         &#34;&#34;&#34;
-        Get information about a type of metadata.
+        Get information about metadata attributes.
         &#34;&#34;&#34;
 
     @abstractmethod
@@ -125,19 +129,75 @@ class Api(ABC):
     def get_revision_info(
         self, *series_names: str, raise_error: bool = None
     ) -&gt; GetRevisionInfoReturn:
-        &#34;&#34;&#34;&#34;&#34;&#34;
+        &#34;&#34;&#34;
+        Get information about if revision history is available for a series
+        and a list of revision timestamps.
+
+        Parameters
+        ----------
+        *series_names : str
+            One or more series names.
+        raise_error : bool
+            If True, accessing the resulting series raises a GetEntitiesError.
+            If False you should inspect the is_error property of the result instead.
+            If None, it will use the global value `macrobond_financial.common.api.Api.raise_error`
+
+        Returns
+        -------
+        `macrobond_financial.common.api_return_types.get_revision_info_return.GetRevisionInfoReturn`
+        &#34;&#34;&#34;
+
+    # TODO: @mb-to Wouldn&#39;t it be better if you could specify several names (such as Union[Sequence[str], str])? This is possible in the WebAPI and is more efficient.
 
     @abstractmethod
     def get_vintage_series(
         self, serie_name: str, time: datetime, raise_error: bool = None
     ) -&gt; GetVintageSeriesReturn:
-        &#34;&#34;&#34;&#34;&#34;&#34;
+        &#34;&#34;&#34;
+        Fetch a vintage series.
+
+        Parameters
+        ----------
+        series_name : str
+            A series name.
+        time : datetime
+            The time of the vintage to return.
+        raise_error : bool
+            If True, accessing the resulting series raises a GetEntitiesError.
+            If False you should inspect the is_error property of the result instead.
+            If None, it will use the global value `macrobond_financial.common.api.Api.raise_error`
+
+        Returns
+        -------
+        `macrobond_financial.common.api_return_types.get_vintage_series_return.GetVintageSeriesReturn`
+        &#34;&#34;&#34;
+
+    # TODO: @mb-to Wouldn&#39;t it be better if you could specify several names (such as Union[Sequence[str], str])? This is possible in the WebAPI and is more efficient.
 
     @abstractmethod
     def get_nth_release(
         self, serie_name: str, nth: int, raise_error: bool = None
     ) -&gt; GetNthReleaseReturn:
-        &#34;&#34;&#34;&#34;&#34;&#34;
+        &#34;&#34;&#34;
+        Fetcha series where each value is the nth change of the value.
+
+        Parameters
+        ----------
+        series_name : str
+            A series name.
+        time : nth
+            The nth change of each value.
+        raise_error : bool
+            If True, accessing the resulting series raises a GetEntitiesError.
+            If False you should inspect the is_error property of the result instead.
+            If None, it will use the global value `macrobond_financial.common.api.Api.raise_error`
+
+        Returns
+        -------
+        `macrobond_financial.common.api_return_types.get_nth_release_return.GetNthReleaseReturn`
+        &#34;&#34;&#34;
+
+    # TODO: @mb-to We should add a method get_all_vintage_series that takes _one_ series name.
 
     # Search
 
@@ -158,22 +218,22 @@ class Api(ABC):
 
         Parameters
         ----------
-        text : str
+        text: str
             Optional set of keywords separated by space.
-        must_have_values : Dict[str, object]
+        must_have_values: Dict[str, object]
             Optional dictionary of values that must be present in the entity metadata.
             The value can be a single value or an array of values. If there are several values
             for an attribute, it means that either of them must be present.
-        must_not_have_values : Dict[str, object]
+        must_not_have_values: Dict[str, object]
             Optional dictionary of values that must not be present in the entity metadata.
             The value can be a single value or an array of values.
-        must_have_attributes : Union[Sequence[str], str]
+        must_have_attributes: Union[Sequence[str], str]
             Optional set of attributes that must be present in the entity metadata.
             The value can be a single value or a sequence of values.
-        must_not_have_attributes : Union[Sequence[str], str]
+        must_not_have_attributes: Union[Sequence[str], str]
             Optional set of attributes that must no be present in the entity metadata.
             The value can be a single value or a sequence of values.
-        include_discontinued : bool
+        include_discontinued: bool
             Set this value to True in order to include discontinued entities in the search.
 
         Returns
@@ -204,7 +264,7 @@ class Api(ABC):
 
         Parameters
         ----------
-        *filters : SearchFilter
+        *filters : `macrobond_financial.common.types.search_filter.SearchFilter`
             One or more search filters.
         include_discontinued : bool
             Set this value to True in order to include discontinued entities in the search.
@@ -215,8 +275,6 @@ class Api(ABC):
         &#34;&#34;&#34;
 
     # Series
-
-    # TODO: @mb-to Why is the default value of raise_error = None instead of True or False?
 
     @abstractmethod
     def get_one_series(
@@ -232,6 +290,7 @@ class Api(ABC):
         raise_error : bool
             If True, accessing the resulting series raises a GetEntitiesError.
             If False you should inspect the is_error property of the result instead.
+            If None, it will use the global value `macrobond_financial.common.api.Api.raise_error`
 
         Returns
         -------
@@ -242,33 +301,109 @@ class Api(ABC):
     def get_series(
         self, *series_names: str, raise_error: bool = None
     ) -&gt; GetSeriesReturn:
-        &#34;&#34;&#34;Download one or more series.&#34;&#34;&#34;
+        &#34;&#34;&#34;
+        Download one or more series.
+
+        Parameters
+        ----------
+        *series_names : str
+            One or more names of series.
+        raise_error : bool
+            If True, accessing the resulting series raises a GetEntitiesError.
+            If False you should inspect the is_error property of the result instead.
+            If None, it will use the global value `macrobond_financial.common.api.Api.raise_error`
+
+        Returns
+        -------
+        `macrobond_financial.common.api_return_types.get_series_return.GetSeriesReturn`
+        &#34;&#34;&#34;
 
     @abstractmethod
     def get_one_entity(
         self, entity_name: str, raise_error: bool = None
     ) -&gt; GetOneEntityReturn:
-        &#34;&#34;&#34;Download one entity.&#34;&#34;&#34;
+        &#34;&#34;&#34;
+        Download one entity.
+
+        Parameters
+        ----------
+        entity_name : str
+            The name the entity.
+        raise_error : bool
+            If True, accessing the resulting entity raises a GetEntitiesError.
+            If False you should inspect the is_error property of the result instead.
+            If None, it will use the global value `macrobond_financial.common.api.Api.raise_error`
+
+        Returns
+        -------
+        `macrobond_financial.common.api_return_types.get_one_entity_return.GetOneEntityReturn`
+        &#34;&#34;&#34;
 
     @abstractmethod
     def get_entities(
         self, *entity_names: str, raise_error: bool = None
     ) -&gt; GetEntitiesReturn:
-        &#34;&#34;&#34;Download one or more entitys.&#34;&#34;&#34;
+        &#34;&#34;&#34;
+        Download one or more entities.
+
+        Parameters
+        ----------
+        *entity_names : str
+            One or more names of entities.
+        raise_error : bool
+            If True, accessing the resulting entities raises a GetEntitiesError.
+            If False you should inspect the is_error property of the result instead.
+            If None, it will use the global value `macrobond_financial.common.api.Api.raise_error`
+
+        Returns
+        -------
+        `macrobond_financial.common.api_return_types.get_entities_return.GetEntitiesReturn`
+        &#34;&#34;&#34;
+
+    # TODO: @mb-to We should add startDateMode and endDateMode as parameters too
 
     @abstractmethod
     def get_unified_series(
         self,
         *series_entries: Union[SeriesEntry, str],
         frequency=SeriesFrequency.HIGHEST,
-        weekdays=SeriesWeekdays.FULL_WEEK,
+        weekdays=SeriesWeekdays.MONDAY_TO_FRIDAY,
         calendar_merge_mode=CalendarMergeMode.AVAILABLE_IN_ANY,
         currency=&#34;&#34;,
         start_point: StartOrEndPoint = None,
         end_point: StartOrEndPoint = None,
         raise_error: bool = None
     ) -&gt; GetUnifiedSeriesReturn:
-        &#34;&#34;&#34;Get one or more series and convert them to a common frequency and calendar&#34;&#34;&#34;</code></pre>
+        &#34;&#34;&#34;
+        Get one or more series and convert them to a common frequency and calendar.
+
+        Parameters
+        ----------
+        *series_entries : Union[SeriesEntry, str]
+            One or more names of series or SeriesEntry objects.
+        frequency : SeriesFrequency
+            Specifies what frequency the series should be converted to.
+            By default, it will be converted to the highest frequency of any series.
+        weekdays : SeriesWeekdays
+            The days of the week used for daily series. The default is Monday to Friday.
+        calendar_merge_mode : CalendarMergeMode
+            The start date mode determines how the start date is calculated.
+            By default the mode is to start when there is data in any series.
+        currency : str
+            The currency to use for currency conversion or omitted for no conversion.
+        start_point : StartOrEndPoint
+            The start point. By default, this is determined by the startDateMode.
+        end_point : StartOrEndPoint
+            The end point. By default, this is determined by the endDateMode.
+        raise_error : bool
+            If True, accessing the resulting entities raises a GetEntitiesError.
+            If False you should inspect the is_error property of the result instead.
+            If None, it will use the global value `macrobond_financial.common.api.Api.raise_error`
+
+        Returns
+        -------
+        `macrobond_financial.common.api_return_types.get_unified_series_return.GetUnifiedSeriesReturn`
+        &#34;&#34;&#34;</code></pre>
 </details>
 </section>
 <section>
@@ -284,18 +419,22 @@ class Api(ABC):
 <span>class <span class="ident">Api</span></span>
 </code></dt>
 <dd>
-<div class="desc"><p>Common API to interact with the Macrobond database</p></div>
+<div class="desc"><p>Common API to interact with the Macrobond database.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class Api(ABC):
     &#34;&#34;&#34;
-    Common API to interact with the Macrobond database
+    Common API to interact with the Macrobond database.
     &#34;&#34;&#34;
 
     def __init__(self) -&gt; None:
         self.raise_error = True
+        &#34;&#34;&#34;
+        Controls the default value of the parameter called raise_error, which is used in many
+        API calls. The default value is &#34;True&#34;.
+        &#34;&#34;&#34;
 
     # metadata
 
@@ -336,7 +475,7 @@ class Api(ABC):
         self, name: str
     ) -&gt; GetAttributeInformationReturn:
         &#34;&#34;&#34;
-        Get information about a type of metadata.
+        Get information about metadata attributes.
         &#34;&#34;&#34;
 
     @abstractmethod
@@ -362,19 +501,75 @@ class Api(ABC):
     def get_revision_info(
         self, *series_names: str, raise_error: bool = None
     ) -&gt; GetRevisionInfoReturn:
-        &#34;&#34;&#34;&#34;&#34;&#34;
+        &#34;&#34;&#34;
+        Get information about if revision history is available for a series
+        and a list of revision timestamps.
+
+        Parameters
+        ----------
+        *series_names : str
+            One or more series names.
+        raise_error : bool
+            If True, accessing the resulting series raises a GetEntitiesError.
+            If False you should inspect the is_error property of the result instead.
+            If None, it will use the global value `macrobond_financial.common.api.Api.raise_error`
+
+        Returns
+        -------
+        `macrobond_financial.common.api_return_types.get_revision_info_return.GetRevisionInfoReturn`
+        &#34;&#34;&#34;
+
+    # TODO: @mb-to Wouldn&#39;t it be better if you could specify several names (such as Union[Sequence[str], str])? This is possible in the WebAPI and is more efficient.
 
     @abstractmethod
     def get_vintage_series(
         self, serie_name: str, time: datetime, raise_error: bool = None
     ) -&gt; GetVintageSeriesReturn:
-        &#34;&#34;&#34;&#34;&#34;&#34;
+        &#34;&#34;&#34;
+        Fetch a vintage series.
+
+        Parameters
+        ----------
+        series_name : str
+            A series name.
+        time : datetime
+            The time of the vintage to return.
+        raise_error : bool
+            If True, accessing the resulting series raises a GetEntitiesError.
+            If False you should inspect the is_error property of the result instead.
+            If None, it will use the global value `macrobond_financial.common.api.Api.raise_error`
+
+        Returns
+        -------
+        `macrobond_financial.common.api_return_types.get_vintage_series_return.GetVintageSeriesReturn`
+        &#34;&#34;&#34;
+
+    # TODO: @mb-to Wouldn&#39;t it be better if you could specify several names (such as Union[Sequence[str], str])? This is possible in the WebAPI and is more efficient.
 
     @abstractmethod
     def get_nth_release(
         self, serie_name: str, nth: int, raise_error: bool = None
     ) -&gt; GetNthReleaseReturn:
-        &#34;&#34;&#34;&#34;&#34;&#34;
+        &#34;&#34;&#34;
+        Fetcha series where each value is the nth change of the value.
+
+        Parameters
+        ----------
+        series_name : str
+            A series name.
+        time : nth
+            The nth change of each value.
+        raise_error : bool
+            If True, accessing the resulting series raises a GetEntitiesError.
+            If False you should inspect the is_error property of the result instead.
+            If None, it will use the global value `macrobond_financial.common.api.Api.raise_error`
+
+        Returns
+        -------
+        `macrobond_financial.common.api_return_types.get_nth_release_return.GetNthReleaseReturn`
+        &#34;&#34;&#34;
+
+    # TODO: @mb-to We should add a method get_all_vintage_series that takes _one_ series name.
 
     # Search
 
@@ -395,22 +590,22 @@ class Api(ABC):
 
         Parameters
         ----------
-        text : str
+        text: str
             Optional set of keywords separated by space.
-        must_have_values : Dict[str, object]
+        must_have_values: Dict[str, object]
             Optional dictionary of values that must be present in the entity metadata.
             The value can be a single value or an array of values. If there are several values
             for an attribute, it means that either of them must be present.
-        must_not_have_values : Dict[str, object]
+        must_not_have_values: Dict[str, object]
             Optional dictionary of values that must not be present in the entity metadata.
             The value can be a single value or an array of values.
-        must_have_attributes : Union[Sequence[str], str]
+        must_have_attributes: Union[Sequence[str], str]
             Optional set of attributes that must be present in the entity metadata.
             The value can be a single value or a sequence of values.
-        must_not_have_attributes : Union[Sequence[str], str]
+        must_not_have_attributes: Union[Sequence[str], str]
             Optional set of attributes that must no be present in the entity metadata.
             The value can be a single value or a sequence of values.
-        include_discontinued : bool
+        include_discontinued: bool
             Set this value to True in order to include discontinued entities in the search.
 
         Returns
@@ -441,7 +636,7 @@ class Api(ABC):
 
         Parameters
         ----------
-        *filters : SearchFilter
+        *filters : `macrobond_financial.common.types.search_filter.SearchFilter`
             One or more search filters.
         include_discontinued : bool
             Set this value to True in order to include discontinued entities in the search.
@@ -452,8 +647,6 @@ class Api(ABC):
         &#34;&#34;&#34;
 
     # Series
-
-    # TODO: @mb-to Why is the default value of raise_error = None instead of True or False?
 
     @abstractmethod
     def get_one_series(
@@ -469,6 +662,7 @@ class Api(ABC):
         raise_error : bool
             If True, accessing the resulting series raises a GetEntitiesError.
             If False you should inspect the is_error property of the result instead.
+            If None, it will use the global value `macrobond_financial.common.api.Api.raise_error`
 
         Returns
         -------
@@ -479,33 +673,109 @@ class Api(ABC):
     def get_series(
         self, *series_names: str, raise_error: bool = None
     ) -&gt; GetSeriesReturn:
-        &#34;&#34;&#34;Download one or more series.&#34;&#34;&#34;
+        &#34;&#34;&#34;
+        Download one or more series.
+
+        Parameters
+        ----------
+        *series_names : str
+            One or more names of series.
+        raise_error : bool
+            If True, accessing the resulting series raises a GetEntitiesError.
+            If False you should inspect the is_error property of the result instead.
+            If None, it will use the global value `macrobond_financial.common.api.Api.raise_error`
+
+        Returns
+        -------
+        `macrobond_financial.common.api_return_types.get_series_return.GetSeriesReturn`
+        &#34;&#34;&#34;
 
     @abstractmethod
     def get_one_entity(
         self, entity_name: str, raise_error: bool = None
     ) -&gt; GetOneEntityReturn:
-        &#34;&#34;&#34;Download one entity.&#34;&#34;&#34;
+        &#34;&#34;&#34;
+        Download one entity.
+
+        Parameters
+        ----------
+        entity_name : str
+            The name the entity.
+        raise_error : bool
+            If True, accessing the resulting entity raises a GetEntitiesError.
+            If False you should inspect the is_error property of the result instead.
+            If None, it will use the global value `macrobond_financial.common.api.Api.raise_error`
+
+        Returns
+        -------
+        `macrobond_financial.common.api_return_types.get_one_entity_return.GetOneEntityReturn`
+        &#34;&#34;&#34;
 
     @abstractmethod
     def get_entities(
         self, *entity_names: str, raise_error: bool = None
     ) -&gt; GetEntitiesReturn:
-        &#34;&#34;&#34;Download one or more entitys.&#34;&#34;&#34;
+        &#34;&#34;&#34;
+        Download one or more entities.
+
+        Parameters
+        ----------
+        *entity_names : str
+            One or more names of entities.
+        raise_error : bool
+            If True, accessing the resulting entities raises a GetEntitiesError.
+            If False you should inspect the is_error property of the result instead.
+            If None, it will use the global value `macrobond_financial.common.api.Api.raise_error`
+
+        Returns
+        -------
+        `macrobond_financial.common.api_return_types.get_entities_return.GetEntitiesReturn`
+        &#34;&#34;&#34;
+
+    # TODO: @mb-to We should add startDateMode and endDateMode as parameters too
 
     @abstractmethod
     def get_unified_series(
         self,
         *series_entries: Union[SeriesEntry, str],
         frequency=SeriesFrequency.HIGHEST,
-        weekdays=SeriesWeekdays.FULL_WEEK,
+        weekdays=SeriesWeekdays.MONDAY_TO_FRIDAY,
         calendar_merge_mode=CalendarMergeMode.AVAILABLE_IN_ANY,
         currency=&#34;&#34;,
         start_point: StartOrEndPoint = None,
         end_point: StartOrEndPoint = None,
         raise_error: bool = None
     ) -&gt; GetUnifiedSeriesReturn:
-        &#34;&#34;&#34;Get one or more series and convert them to a common frequency and calendar&#34;&#34;&#34;</code></pre>
+        &#34;&#34;&#34;
+        Get one or more series and convert them to a common frequency and calendar.
+
+        Parameters
+        ----------
+        *series_entries : Union[SeriesEntry, str]
+            One or more names of series or SeriesEntry objects.
+        frequency : SeriesFrequency
+            Specifies what frequency the series should be converted to.
+            By default, it will be converted to the highest frequency of any series.
+        weekdays : SeriesWeekdays
+            The days of the week used for daily series. The default is Monday to Friday.
+        calendar_merge_mode : CalendarMergeMode
+            The start date mode determines how the start date is calculated.
+            By default the mode is to start when there is data in any series.
+        currency : str
+            The currency to use for currency conversion or omitted for no conversion.
+        start_point : StartOrEndPoint
+            The start point. By default, this is determined by the startDateMode.
+        end_point : StartOrEndPoint
+            The end point. By default, this is determined by the endDateMode.
+        raise_error : bool
+            If True, accessing the resulting entities raises a GetEntitiesError.
+            If False you should inspect the is_error property of the result instead.
+            If None, it will use the global value `macrobond_financial.common.api.Api.raise_error`
+
+        Returns
+        -------
+        `macrobond_financial.common.api_return_types.get_unified_series_return.GetUnifiedSeriesReturn`
+        &#34;&#34;&#34;</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
@@ -516,6 +786,14 @@ class Api(ABC):
 <li><a title="macrobond_financial.com.com_api.ComApi" href="../com/com_api.html#macrobond_financial.com.com_api.ComApi">ComApi</a></li>
 <li><a title="macrobond_financial.web.web_api.WebApi" href="../web/web_api.html#macrobond_financial.web.web_api.WebApi">WebApi</a></li>
 </ul>
+<h3>Instance variables</h3>
+<dl>
+<dt id="macrobond_financial.common.api.Api.raise_error"><code class="name">var <span class="ident">raise_error</span></code></dt>
+<dd>
+<div class="desc"><p>Controls the default value of the parameter called raise_error, which is used in many
+API calls. The default value is "True".</p></div>
+</dd>
+</dl>
 <h3>Methods</h3>
 <dl>
 <dt id="macrobond_financial.common.api.Api.entity_search"><code class="name flex">
@@ -564,22 +842,22 @@ The value can be a single value or a sequence of values.</dd>
 
     Parameters
     ----------
-    text : str
+    text: str
         Optional set of keywords separated by space.
-    must_have_values : Dict[str, object]
+    must_have_values: Dict[str, object]
         Optional dictionary of values that must be present in the entity metadata.
         The value can be a single value or an array of values. If there are several values
         for an attribute, it means that either of them must be present.
-    must_not_have_values : Dict[str, object]
+    must_not_have_values: Dict[str, object]
         Optional dictionary of values that must not be present in the entity metadata.
         The value can be a single value or an array of values.
-    must_have_attributes : Union[Sequence[str], str]
+    must_have_attributes: Union[Sequence[str], str]
         Optional set of attributes that must be present in the entity metadata.
         The value can be a single value or a sequence of values.
-    must_not_have_attributes : Union[Sequence[str], str]
+    must_not_have_attributes: Union[Sequence[str], str]
         Optional set of attributes that must no be present in the entity metadata.
         The value can be a single value or a sequence of values.
-    include_discontinued : bool
+    include_discontinued: bool
         Set this value to True in order to include discontinued entities in the search.
 
     Returns
@@ -609,7 +887,7 @@ entity types and searches will be nested so that the result of the previous filt
 used as a condition in the subsequent filter linked by the entity type.</p>
 <h2 id="parameters">Parameters</h2>
 <dl>
-<dt><strong><code>*filters</code></strong> :&ensp;<code>SearchFilter</code></dt>
+<dt><strong><code>*filters</code></strong> :&ensp;<code><a title="macrobond_financial.common.types.search_filter.SearchFilter" href="types/search_filter.html#macrobond_financial.common.types.search_filter.SearchFilter">SearchFilter</a></code></dt>
 <dd>One or more search filters.</dd>
 <dt><strong><code>include_discontinued</code></strong> :&ensp;<code>bool</code></dt>
 <dd>Set this value to True in order to include discontinued entities in the search.</dd>
@@ -632,7 +910,7 @@ def entity_search_multi_filter(
 
     Parameters
     ----------
-    *filters : SearchFilter
+    *filters : `macrobond_financial.common.types.search_filter.SearchFilter`
         One or more search filters.
     include_discontinued : bool
         Set this value to True in order to include discontinued entities in the search.
@@ -647,7 +925,18 @@ def entity_search_multi_filter(
 <span>def <span class="ident">get_entities</span></span>(<span>self, *entity_names: str, raise_error: bool = None) ‑> <a title="macrobond_financial.common.api_return_types.get_entities_return.GetEntitiesReturn" href="api_return_types/get_entities_return.html#macrobond_financial.common.api_return_types.get_entities_return.GetEntitiesReturn">GetEntitiesReturn</a></span>
 </code></dt>
 <dd>
-<div class="desc"><p>Download one or more entitys.</p></div>
+<div class="desc"><p>Download one or more entities.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>*entity_names</code></strong> :&ensp;<code>str</code></dt>
+<dd>One or more names of entities.</dd>
+<dt><strong><code>raise_error</code></strong> :&ensp;<code>bool</code></dt>
+<dd>If True, accessing the resulting entities raises a GetEntitiesError.
+If False you should inspect the is_error property of the result instead.
+If None, it will use the global value <code><a title="macrobond_financial.common.api.Api.raise_error" href="#macrobond_financial.common.api.Api.raise_error">Api.raise_error</a></code></dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p><code><a title="macrobond_financial.common.api_return_types.get_entities_return.GetEntitiesReturn" href="api_return_types/get_entities_return.html#macrobond_financial.common.api_return_types.get_entities_return.GetEntitiesReturn">GetEntitiesReturn</a></code></p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -656,14 +945,42 @@ def entity_search_multi_filter(
 def get_entities(
     self, *entity_names: str, raise_error: bool = None
 ) -&gt; GetEntitiesReturn:
-    &#34;&#34;&#34;Download one or more entitys.&#34;&#34;&#34;</code></pre>
+    &#34;&#34;&#34;
+    Download one or more entities.
+
+    Parameters
+    ----------
+    *entity_names : str
+        One or more names of entities.
+    raise_error : bool
+        If True, accessing the resulting entities raises a GetEntitiesError.
+        If False you should inspect the is_error property of the result instead.
+        If None, it will use the global value `macrobond_financial.common.api.Api.raise_error`
+
+    Returns
+    -------
+    `macrobond_financial.common.api_return_types.get_entities_return.GetEntitiesReturn`
+    &#34;&#34;&#34;</code></pre>
 </details>
 </dd>
 <dt id="macrobond_financial.common.api.Api.get_nth_release"><code class="name flex">
 <span>def <span class="ident">get_nth_release</span></span>(<span>self, serie_name: str, nth: int, raise_error: bool = None) ‑> <a title="macrobond_financial.common.api_return_types.get_nth_release_return.GetNthReleaseReturn" href="api_return_types/get_nth_release_return.html#macrobond_financial.common.api_return_types.get_nth_release_return.GetNthReleaseReturn">GetNthReleaseReturn</a></span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>Fetcha series where each value is the nth change of the value.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>series_name</code></strong> :&ensp;<code>str</code></dt>
+<dd>A series name.</dd>
+<dt><strong><code>time</code></strong> :&ensp;<code>nth</code></dt>
+<dd>The nth change of each value.</dd>
+<dt><strong><code>raise_error</code></strong> :&ensp;<code>bool</code></dt>
+<dd>If True, accessing the resulting series raises a GetEntitiesError.
+If False you should inspect the is_error property of the result instead.
+If None, it will use the global value <code><a title="macrobond_financial.common.api.Api.raise_error" href="#macrobond_financial.common.api.Api.raise_error">Api.raise_error</a></code></dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p><code><a title="macrobond_financial.common.api_return_types.get_nth_release_return.GetNthReleaseReturn" href="api_return_types/get_nth_release_return.html#macrobond_financial.common.api_return_types.get_nth_release_return.GetNthReleaseReturn">GetNthReleaseReturn</a></code></p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -672,14 +989,42 @@ def get_entities(
 def get_nth_release(
     self, serie_name: str, nth: int, raise_error: bool = None
 ) -&gt; GetNthReleaseReturn:
-    &#34;&#34;&#34;&#34;&#34;&#34;</code></pre>
+    &#34;&#34;&#34;
+    Fetcha series where each value is the nth change of the value.
+
+    Parameters
+    ----------
+    series_name : str
+        A series name.
+    time : nth
+        The nth change of each value.
+    raise_error : bool
+        If True, accessing the resulting series raises a GetEntitiesError.
+        If False you should inspect the is_error property of the result instead.
+        If None, it will use the global value `macrobond_financial.common.api.Api.raise_error`
+
+    Returns
+    -------
+    `macrobond_financial.common.api_return_types.get_nth_release_return.GetNthReleaseReturn`
+    &#34;&#34;&#34;</code></pre>
 </details>
 </dd>
 <dt id="macrobond_financial.common.api.Api.get_one_entity"><code class="name flex">
 <span>def <span class="ident">get_one_entity</span></span>(<span>self, entity_name: str, raise_error: bool = None) ‑> <a title="macrobond_financial.common.api_return_types.get_one_entity_return.GetOneEntityReturn" href="api_return_types/get_one_entity_return.html#macrobond_financial.common.api_return_types.get_one_entity_return.GetOneEntityReturn">GetOneEntityReturn</a></span>
 </code></dt>
 <dd>
-<div class="desc"><p>Download one entity.</p></div>
+<div class="desc"><p>Download one entity.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>entity_name</code></strong> :&ensp;<code>str</code></dt>
+<dd>The name the entity.</dd>
+<dt><strong><code>raise_error</code></strong> :&ensp;<code>bool</code></dt>
+<dd>If True, accessing the resulting entity raises a GetEntitiesError.
+If False you should inspect the is_error property of the result instead.
+If None, it will use the global value <code><a title="macrobond_financial.common.api.Api.raise_error" href="#macrobond_financial.common.api.Api.raise_error">Api.raise_error</a></code></dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p><code><a title="macrobond_financial.common.api_return_types.get_one_entity_return.GetOneEntityReturn" href="api_return_types/get_one_entity_return.html#macrobond_financial.common.api_return_types.get_one_entity_return.GetOneEntityReturn">GetOneEntityReturn</a></code></p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -688,7 +1033,22 @@ def get_nth_release(
 def get_one_entity(
     self, entity_name: str, raise_error: bool = None
 ) -&gt; GetOneEntityReturn:
-    &#34;&#34;&#34;Download one entity.&#34;&#34;&#34;</code></pre>
+    &#34;&#34;&#34;
+    Download one entity.
+
+    Parameters
+    ----------
+    entity_name : str
+        The name the entity.
+    raise_error : bool
+        If True, accessing the resulting entity raises a GetEntitiesError.
+        If False you should inspect the is_error property of the result instead.
+        If None, it will use the global value `macrobond_financial.common.api.Api.raise_error`
+
+    Returns
+    -------
+    `macrobond_financial.common.api_return_types.get_one_entity_return.GetOneEntityReturn`
+    &#34;&#34;&#34;</code></pre>
 </details>
 </dd>
 <dt id="macrobond_financial.common.api.Api.get_one_series"><code class="name flex">
@@ -702,7 +1062,8 @@ def get_one_entity(
 <dd>The name of the series.</dd>
 <dt><strong><code>raise_error</code></strong> :&ensp;<code>bool</code></dt>
 <dd>If True, accessing the resulting series raises a GetEntitiesError.
-If False you should inspect the is_error property of the result instead.</dd>
+If False you should inspect the is_error property of the result instead.
+If None, it will use the global value <code><a title="macrobond_financial.common.api.Api.raise_error" href="#macrobond_financial.common.api.Api.raise_error">Api.raise_error</a></code></dd>
 </dl>
 <h2 id="returns">Returns</h2>
 <p><code><a title="macrobond_financial.common.api_return_types.get_one_series_return.GetOneSeriesReturn" href="api_return_types/get_one_series_return.html#macrobond_financial.common.api_return_types.get_one_series_return.GetOneSeriesReturn">GetOneSeriesReturn</a></code></p></div>
@@ -724,6 +1085,7 @@ def get_one_series(
     raise_error : bool
         If True, accessing the resulting series raises a GetEntitiesError.
         If False you should inspect the is_error property of the result instead.
+        If None, it will use the global value `macrobond_financial.common.api.Api.raise_error`
 
     Returns
     -------
@@ -735,7 +1097,19 @@ def get_one_series(
 <span>def <span class="ident">get_revision_info</span></span>(<span>self, *series_names: str, raise_error: bool = None) ‑> <a title="macrobond_financial.common.api_return_types.get_revision_info_return.GetRevisionInfoReturn" href="api_return_types/get_revision_info_return.html#macrobond_financial.common.api_return_types.get_revision_info_return.GetRevisionInfoReturn">GetRevisionInfoReturn</a></span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>Get information about if revision history is available for a series
+and a list of revision timestamps.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>*series_names</code></strong> :&ensp;<code>str</code></dt>
+<dd>One or more series names.</dd>
+<dt><strong><code>raise_error</code></strong> :&ensp;<code>bool</code></dt>
+<dd>If True, accessing the resulting series raises a GetEntitiesError.
+If False you should inspect the is_error property of the result instead.
+If None, it will use the global value <code><a title="macrobond_financial.common.api.Api.raise_error" href="#macrobond_financial.common.api.Api.raise_error">Api.raise_error</a></code></dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p><code><a title="macrobond_financial.common.api_return_types.get_revision_info_return.GetRevisionInfoReturn" href="api_return_types/get_revision_info_return.html#macrobond_financial.common.api_return_types.get_revision_info_return.GetRevisionInfoReturn">GetRevisionInfoReturn</a></code></p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -744,14 +1118,41 @@ def get_one_series(
 def get_revision_info(
     self, *series_names: str, raise_error: bool = None
 ) -&gt; GetRevisionInfoReturn:
-    &#34;&#34;&#34;&#34;&#34;&#34;</code></pre>
+    &#34;&#34;&#34;
+    Get information about if revision history is available for a series
+    and a list of revision timestamps.
+
+    Parameters
+    ----------
+    *series_names : str
+        One or more series names.
+    raise_error : bool
+        If True, accessing the resulting series raises a GetEntitiesError.
+        If False you should inspect the is_error property of the result instead.
+        If None, it will use the global value `macrobond_financial.common.api.Api.raise_error`
+
+    Returns
+    -------
+    `macrobond_financial.common.api_return_types.get_revision_info_return.GetRevisionInfoReturn`
+    &#34;&#34;&#34;</code></pre>
 </details>
 </dd>
 <dt id="macrobond_financial.common.api.Api.get_series"><code class="name flex">
 <span>def <span class="ident">get_series</span></span>(<span>self, *series_names: str, raise_error: bool = None) ‑> <a title="macrobond_financial.common.api_return_types.get_series_return.GetSeriesReturn" href="api_return_types/get_series_return.html#macrobond_financial.common.api_return_types.get_series_return.GetSeriesReturn">GetSeriesReturn</a></span>
 </code></dt>
 <dd>
-<div class="desc"><p>Download one or more series.</p></div>
+<div class="desc"><p>Download one or more series.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>*series_names</code></strong> :&ensp;<code>str</code></dt>
+<dd>One or more names of series.</dd>
+<dt><strong><code>raise_error</code></strong> :&ensp;<code>bool</code></dt>
+<dd>If True, accessing the resulting series raises a GetEntitiesError.
+If False you should inspect the is_error property of the result instead.
+If None, it will use the global value <code><a title="macrobond_financial.common.api.Api.raise_error" href="#macrobond_financial.common.api.Api.raise_error">Api.raise_error</a></code></dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p><code><a title="macrobond_financial.common.api_return_types.get_series_return.GetSeriesReturn" href="api_return_types/get_series_return.html#macrobond_financial.common.api_return_types.get_series_return.GetSeriesReturn">GetSeriesReturn</a></code></p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -760,14 +1161,54 @@ def get_revision_info(
 def get_series(
     self, *series_names: str, raise_error: bool = None
 ) -&gt; GetSeriesReturn:
-    &#34;&#34;&#34;Download one or more series.&#34;&#34;&#34;</code></pre>
+    &#34;&#34;&#34;
+    Download one or more series.
+
+    Parameters
+    ----------
+    *series_names : str
+        One or more names of series.
+    raise_error : bool
+        If True, accessing the resulting series raises a GetEntitiesError.
+        If False you should inspect the is_error property of the result instead.
+        If None, it will use the global value `macrobond_financial.common.api.Api.raise_error`
+
+    Returns
+    -------
+    `macrobond_financial.common.api_return_types.get_series_return.GetSeriesReturn`
+    &#34;&#34;&#34;</code></pre>
 </details>
 </dd>
 <dt id="macrobond_financial.common.api.Api.get_unified_series"><code class="name flex">
-<span>def <span class="ident">get_unified_series</span></span>(<span>self, *series_entries: Union[<a title="macrobond_financial.common.types.series_entry.SeriesEntry" href="types/series_entry.html#macrobond_financial.common.types.series_entry.SeriesEntry">SeriesEntry</a>, str], frequency=SeriesFrequency.HIGHEST, weekdays=SeriesWeekdays.FULL_WEEK, calendar_merge_mode=CalendarMergeMode.AVAILABLE_IN_ANY, currency='', start_point: <a title="macrobond_financial.common.types.start_or_end_point.StartOrEndPoint" href="types/start_or_end_point.html#macrobond_financial.common.types.start_or_end_point.StartOrEndPoint">StartOrEndPoint</a> = None, end_point: <a title="macrobond_financial.common.types.start_or_end_point.StartOrEndPoint" href="types/start_or_end_point.html#macrobond_financial.common.types.start_or_end_point.StartOrEndPoint">StartOrEndPoint</a> = None, raise_error: bool = None) ‑> <a title="macrobond_financial.common.api_return_types.get_unified_series_return.GetUnifiedSeriesReturn" href="api_return_types/get_unified_series_return.html#macrobond_financial.common.api_return_types.get_unified_series_return.GetUnifiedSeriesReturn">GetUnifiedSeriesReturn</a></span>
+<span>def <span class="ident">get_unified_series</span></span>(<span>self, *series_entries: Union[<a title="macrobond_financial.common.types.series_entry.SeriesEntry" href="types/series_entry.html#macrobond_financial.common.types.series_entry.SeriesEntry">SeriesEntry</a>, str], frequency=SeriesFrequency.HIGHEST, weekdays=SeriesWeekdays.MONDAY_TO_FRIDAY, calendar_merge_mode=CalendarMergeMode.AVAILABLE_IN_ANY, currency='', start_point: <a title="macrobond_financial.common.types.start_or_end_point.StartOrEndPoint" href="types/start_or_end_point.html#macrobond_financial.common.types.start_or_end_point.StartOrEndPoint">StartOrEndPoint</a> = None, end_point: <a title="macrobond_financial.common.types.start_or_end_point.StartOrEndPoint" href="types/start_or_end_point.html#macrobond_financial.common.types.start_or_end_point.StartOrEndPoint">StartOrEndPoint</a> = None, raise_error: bool = None) ‑> <a title="macrobond_financial.common.api_return_types.get_unified_series_return.GetUnifiedSeriesReturn" href="api_return_types/get_unified_series_return.html#macrobond_financial.common.api_return_types.get_unified_series_return.GetUnifiedSeriesReturn">GetUnifiedSeriesReturn</a></span>
 </code></dt>
 <dd>
-<div class="desc"><p>Get one or more series and convert them to a common frequency and calendar</p></div>
+<div class="desc"><p>Get one or more series and convert them to a common frequency and calendar.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>*series_entries</code></strong> :&ensp;<code>Union[SeriesEntry, str]</code></dt>
+<dd>One or more names of series or SeriesEntry objects.</dd>
+<dt><strong><code>frequency</code></strong> :&ensp;<code>SeriesFrequency</code></dt>
+<dd>Specifies what frequency the series should be converted to.
+By default, it will be converted to the highest frequency of any series.</dd>
+<dt><strong><code>weekdays</code></strong> :&ensp;<code>SeriesWeekdays</code></dt>
+<dd>The days of the week used for daily series. The default is Monday to Friday.</dd>
+<dt><strong><code>calendar_merge_mode</code></strong> :&ensp;<code>CalendarMergeMode</code></dt>
+<dd>The start date mode determines how the start date is calculated.
+By default the mode is to start when there is data in any series.</dd>
+<dt><strong><code>currency</code></strong> :&ensp;<code>str</code></dt>
+<dd>The currency to use for currency conversion or omitted for no conversion.</dd>
+<dt><strong><code>start_point</code></strong> :&ensp;<code>StartOrEndPoint</code></dt>
+<dd>The start point. By default, this is determined by the startDateMode.</dd>
+<dt><strong><code>end_point</code></strong> :&ensp;<code>StartOrEndPoint</code></dt>
+<dd>The end point. By default, this is determined by the endDateMode.</dd>
+<dt><strong><code>raise_error</code></strong> :&ensp;<code>bool</code></dt>
+<dd>If True, accessing the resulting entities raises a GetEntitiesError.
+If False you should inspect the is_error property of the result instead.
+If None, it will use the global value <code><a title="macrobond_financial.common.api.Api.raise_error" href="#macrobond_financial.common.api.Api.raise_error">Api.raise_error</a></code></dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p><code><a title="macrobond_financial.common.api_return_types.get_unified_series_return.GetUnifiedSeriesReturn" href="api_return_types/get_unified_series_return.html#macrobond_financial.common.api_return_types.get_unified_series_return.GetUnifiedSeriesReturn">GetUnifiedSeriesReturn</a></code></p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -777,21 +1218,63 @@ def get_unified_series(
     self,
     *series_entries: Union[SeriesEntry, str],
     frequency=SeriesFrequency.HIGHEST,
-    weekdays=SeriesWeekdays.FULL_WEEK,
+    weekdays=SeriesWeekdays.MONDAY_TO_FRIDAY,
     calendar_merge_mode=CalendarMergeMode.AVAILABLE_IN_ANY,
     currency=&#34;&#34;,
     start_point: StartOrEndPoint = None,
     end_point: StartOrEndPoint = None,
     raise_error: bool = None
 ) -&gt; GetUnifiedSeriesReturn:
-    &#34;&#34;&#34;Get one or more series and convert them to a common frequency and calendar&#34;&#34;&#34;</code></pre>
+    &#34;&#34;&#34;
+    Get one or more series and convert them to a common frequency and calendar.
+
+    Parameters
+    ----------
+    *series_entries : Union[SeriesEntry, str]
+        One or more names of series or SeriesEntry objects.
+    frequency : SeriesFrequency
+        Specifies what frequency the series should be converted to.
+        By default, it will be converted to the highest frequency of any series.
+    weekdays : SeriesWeekdays
+        The days of the week used for daily series. The default is Monday to Friday.
+    calendar_merge_mode : CalendarMergeMode
+        The start date mode determines how the start date is calculated.
+        By default the mode is to start when there is data in any series.
+    currency : str
+        The currency to use for currency conversion or omitted for no conversion.
+    start_point : StartOrEndPoint
+        The start point. By default, this is determined by the startDateMode.
+    end_point : StartOrEndPoint
+        The end point. By default, this is determined by the endDateMode.
+    raise_error : bool
+        If True, accessing the resulting entities raises a GetEntitiesError.
+        If False you should inspect the is_error property of the result instead.
+        If None, it will use the global value `macrobond_financial.common.api.Api.raise_error`
+
+    Returns
+    -------
+    `macrobond_financial.common.api_return_types.get_unified_series_return.GetUnifiedSeriesReturn`
+    &#34;&#34;&#34;</code></pre>
 </details>
 </dd>
 <dt id="macrobond_financial.common.api.Api.get_vintage_series"><code class="name flex">
 <span>def <span class="ident">get_vintage_series</span></span>(<span>self, serie_name: str, time: datetime.datetime, raise_error: bool = None) ‑> <a title="macrobond_financial.common.api_return_types.get_vintage_series_return.GetVintageSeriesReturn" href="api_return_types/get_vintage_series_return.html#macrobond_financial.common.api_return_types.get_vintage_series_return.GetVintageSeriesReturn">GetVintageSeriesReturn</a></span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>Fetch a vintage series.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>series_name</code></strong> :&ensp;<code>str</code></dt>
+<dd>A series name.</dd>
+<dt><strong><code>time</code></strong> :&ensp;<code>datetime</code></dt>
+<dd>The time of the vintage to return.</dd>
+<dt><strong><code>raise_error</code></strong> :&ensp;<code>bool</code></dt>
+<dd>If True, accessing the resulting series raises a GetEntitiesError.
+If False you should inspect the is_error property of the result instead.
+If None, it will use the global value <code><a title="macrobond_financial.common.api.Api.raise_error" href="#macrobond_financial.common.api.Api.raise_error">Api.raise_error</a></code></dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p><code><a title="macrobond_financial.common.api_return_types.get_vintage_series_return.GetVintageSeriesReturn" href="api_return_types/get_vintage_series_return.html#macrobond_financial.common.api_return_types.get_vintage_series_return.GetVintageSeriesReturn">GetVintageSeriesReturn</a></code></p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -800,14 +1283,31 @@ def get_unified_series(
 def get_vintage_series(
     self, serie_name: str, time: datetime, raise_error: bool = None
 ) -&gt; GetVintageSeriesReturn:
-    &#34;&#34;&#34;&#34;&#34;&#34;</code></pre>
+    &#34;&#34;&#34;
+    Fetch a vintage series.
+
+    Parameters
+    ----------
+    series_name : str
+        A series name.
+    time : datetime
+        The time of the vintage to return.
+    raise_error : bool
+        If True, accessing the resulting series raises a GetEntitiesError.
+        If False you should inspect the is_error property of the result instead.
+        If None, it will use the global value `macrobond_financial.common.api.Api.raise_error`
+
+    Returns
+    -------
+    `macrobond_financial.common.api_return_types.get_vintage_series_return.GetVintageSeriesReturn`
+    &#34;&#34;&#34;</code></pre>
 </details>
 </dd>
 <dt id="macrobond_financial.common.api.Api.metadata_get_attribute_information"><code class="name flex">
 <span>def <span class="ident">metadata_get_attribute_information</span></span>(<span>self, name: str) ‑> <a title="macrobond_financial.common.api_return_types.get_attribute_information_return.GetAttributeInformationReturn" href="api_return_types/get_attribute_information_return.html#macrobond_financial.common.api_return_types.get_attribute_information_return.GetAttributeInformationReturn">GetAttributeInformationReturn</a></span>
 </code></dt>
 <dd>
-<div class="desc"><p>Get information about a type of metadata.</p></div>
+<div class="desc"><p>Get information about metadata attributes.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -817,7 +1317,7 @@ def metadata_get_attribute_information(
     self, name: str
 ) -&gt; GetAttributeInformationReturn:
     &#34;&#34;&#34;
-    Get information about a type of metadata.
+    Get information about metadata attributes.
     &#34;&#34;&#34;</code></pre>
 </details>
 </dd>
@@ -948,6 +1448,7 @@ def metadata_list_values(self, name: str) -&gt; ListValuesReturn:
 <li><code><a title="macrobond_financial.common.api.Api.metadata_get_attribute_information" href="#macrobond_financial.common.api.Api.metadata_get_attribute_information">metadata_get_attribute_information</a></code></li>
 <li><code><a title="macrobond_financial.common.api.Api.metadata_get_value_information" href="#macrobond_financial.common.api.Api.metadata_get_value_information">metadata_get_value_information</a></code></li>
 <li><code><a title="macrobond_financial.common.api.Api.metadata_list_values" href="#macrobond_financial.common.api.Api.metadata_list_values">metadata_list_values</a></code></li>
+<li><code><a title="macrobond_financial.common.api.Api.raise_error" href="#macrobond_financial.common.api.Api.raise_error">raise_error</a></code></li>
 </ul>
 </li>
 </ul>

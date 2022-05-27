@@ -9,11 +9,20 @@ if TYPE_CHECKING:  # pragma: no cover
 
 
 class SearchResult(Sequence[Dict[str, Any]]):
+    """
+    The result of a entity search operation.
+    """
     def __init__(
         self, entities: Tuple[Dict[str, Any], ...], is_truncated: bool
     ) -> None:
         self.entities = entities
+        """
+        A sequence of the metadata of the entities found.
+        """
         self.is_truncated = is_truncated
+        """
+        Indicates whether the search result was too long and truncated.
+        """
 
     def __str__(self):
         return (
@@ -52,6 +61,9 @@ class SearchResult(Sequence[Dict[str, Any]]):
         ...
 
     def data_frame(self, *args, **kwargs) -> "DataFrame":
+        """
+        Return the result as a `DataFrame`.
+        """
         pandas = _get_pandas()
         args = args[1:]
         kwargs["data"] = self.entities
