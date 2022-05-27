@@ -255,6 +255,9 @@ class Api(ABC):
         """
         Download one series.
 
+        .. important:: It is much more efficient to download more than one series at a time.
+           See `Api.get_series`.
+
         Parameters
         ----------
         series_name : str
@@ -275,6 +278,10 @@ class Api(ABC):
     ) -> GetSeriesReturn:
         """
         Download one or more series.
+
+        .. Important:: It is much more efficient to download more than one series at a time.
+           However, downloading too many at a time is less efficient and can exhaust memory.
+           A good habit is to download series in batches of around 200.
 
         Parameters
         ----------
@@ -297,6 +304,9 @@ class Api(ABC):
         """
         Download one entity.
 
+        .. important:: It is much more efficient to download more than one entity at a time.
+           See `Api.get_entities`.
+
         Parameters
         ----------
         entity_name : str
@@ -317,6 +327,10 @@ class Api(ABC):
     ) -> GetEntitiesReturn:
         """
         Download one or more entities.
+
+        .. Important:: It is much more efficient to download more than one entity at a time.
+           However, downloading too many at a time is less efficient and can exhaust memory.
+           A good habit is to download entities in batches of around 200.
 
         Parameters
         ----------
