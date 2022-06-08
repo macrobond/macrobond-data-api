@@ -8,7 +8,6 @@ from .com_api import ComApi
 
 if TYPE_CHECKING:  # pragma: no cover
     from .com_types import Connection
-    from macrobond_financial.common import Credentials
 
 _win32com_import_error: Optional[ImportError] = None
 try:
@@ -34,10 +33,8 @@ class ComClient(Client["ComApi"]):
     ```
     """
 
-    def __init__(
-        self, credentials: "Credentials" = None  # pylint: disable=unused-argument
-    ) -> None:
-        super().__init__(False)
+    def __init__(self) -> None:
+        super().__init__()
         if _win32com_import_error:
             raise _win32com_import_error
         self.__api: Optional["ComApi"] = None

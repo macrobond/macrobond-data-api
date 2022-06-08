@@ -1,12 +1,18 @@
 # -*- coding: utf-8 -*-
 
-from typing import Optional, overload, Union, List
+from typing import Optional, List
 
-from macrobond_financial.common import Client, Credentials
+from macrobond_financial.common import Client
 
 from .session import Session, API_URL_DEFAULT, AUTHORIZATION_URL_DEFAULT
 from .scope import Scope
 from .web_api import WebApi
+
+_keyring_import_error: Optional[ImportError] = None
+try:
+    import keyring as _keyring  # type: ignore
+except ImportError as ex:
+    _keyring_import_error = ex
 
 
 class WebClient(Client["WebApi"]):
@@ -43,68 +49,34 @@ class WebClient(Client["WebApi"]):
     ```
     """
 
-    @overload
     def __init__(
         self,
-        client_id_or_credentials: str,
-        client_secret: str,
-        scopes: List[Scope] = None,
-        api_url: str = API_URL_DEFAULT,
-        authorization_url: str = AUTHORIZATION_URL_DEFAULT,
-    ) -> None:
-        ...
-
-    @overload
-    def __init__(
-        self,
-        client_id_or_credentials: Credentials,
-        client_secret: str = ...,
-        scopes: List[Scope] = None,
-        api_url: str = API_URL_DEFAULT,
-        authorization_url: str = AUTHORIZATION_URL_DEFAULT,
-    ) -> None:
-        ...
-
-    @overload
-    def __init__(
-        self,
-        client_id_or_credentials: str = None,
-        client_secret: str = ...,
-        scopes: List[Scope] = None,
-        api_url: str = API_URL_DEFAULT,
-        authorization_url: str = AUTHORIZATION_URL_DEFAULT,
-    ) -> None:
-        ...
-
-    def __init__(
-        self,
-        client_id_or_credentials: Union[str, Credentials] = None,
+        client_id: str = None,
         client_secret: str = None,
         scopes: List[Scope] = None,
         api_url: str = API_URL_DEFAULT,
         authorization_url: str = AUTHORIZATION_URL_DEFAULT,
     ) -> None:
-        if client_id_or_credentials is None:
-            client_id_or_credentials = Credentials()
-
-        if isinstance(client_id_or_credentials, Credentials):
-            super().__init__(client_id_or_credentials)
-            credentials = client_id_or_credentials
-            client_id = credentials.client_id
-            client_secret = credentials.client_secret
-            if credentials.api_url:
-                api_url = credentials.api_url
-            if credentials.authorization_url:
-                authorization_url = credentials.authorization_url
-        else:
-            super().__init__(False)
-            client_id = client_id_or_credentials
-
-        if client_id is None:
-            raise ValueError("client_id is None")
+        super().__init__()
 
         if client_secret is None:
-            raise ValueError("client_secret is None")
+            if _keyring_import_error:
+                raise _keyring_import_error
+
+            credential = _keyring.get_credential(
+                "macrobond-web-api", client_id if client_id else ""
+            )
+
+            if credential is None:
+                raise ValueError("can not find the key in keyring")
+
+            if client_id is None:
+                client_id = credential.username
+
+            client_secret = credential.password
+        else:
+            if client_id is None:
+                raise ValueError("client_id is None")
 
         if scopes is None:
             scopes = []

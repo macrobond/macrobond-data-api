@@ -1,15 +1,11 @@
 # -*- coding: utf-8 -*-
 
 from abc import ABC, abstractmethod
-from typing import Generic, TypeVar, Union, TYPE_CHECKING
-from typing_extensions import Literal
+from typing import Generic, TypeVar
 
 from .api import Api
 
 TypeVarApi = TypeVar("TypeVarApi", bound=Api)
-
-if TYPE_CHECKING:
-    from .credentials import Credentials
 
 __pdoc__ = {
     "Client.__init__": False,
@@ -17,12 +13,7 @@ __pdoc__ = {
 
 
 class Client(ABC, Generic[TypeVarApi]):
-    def __init__(
-        self,
-        credentials: Union[  # pylint: disable=unused-argument
-            "Credentials", Literal[False]
-        ] = None,
-    ) -> None:
+    def __init__(self) -> None:
         ...  # pragma: no cover
 
     def __enter__(self) -> TypeVarApi:
