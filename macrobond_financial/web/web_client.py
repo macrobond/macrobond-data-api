@@ -8,6 +8,8 @@ from .session import Session, API_URL_DEFAULT, AUTHORIZATION_URL_DEFAULT
 from .scope import Scope
 from .web_api import WebApi
 
+DEFAULT_SERVICE_NAME = AUTHORIZATION_URL_DEFAULT
+
 _keyring_import_error: Optional[ImportError] = None
 try:
     import keyring as _keyring  # type: ignore
@@ -56,6 +58,7 @@ class WebClient(Client["WebApi"]):
         scopes: List[Scope] = None,
         api_url: str = API_URL_DEFAULT,
         authorization_url: str = AUTHORIZATION_URL_DEFAULT,
+        service_name: str = DEFAULT_SERVICE_NAME,
     ) -> None:
         super().__init__()
 
@@ -63,12 +66,11 @@ class WebClient(Client["WebApi"]):
             if _keyring_import_error:
                 raise _keyring_import_error
 
-            credential = _keyring.get_credential(
-                "macrobond-web-api", client_id if client_id else ""
-            )
+            credential = _keyring.get_credential(service_name, "")
 
             if credential is None:
-                raise ValueError("can not find the key in keyring")
+                keyring_name = str(_keyring.get_keyring())
+                raise ValueError("can not find the key in keyring " + keyring_name)
 
             if client_id is None:
                 client_id = credential.username

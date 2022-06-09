@@ -92,6 +92,16 @@
             "windows":{
                 "command": "py"
             }
+        },
+        {
+            "label": "add key to keyring",
+            "type": "shell",
+            "command": "python",
+            "args": ["macrobond_financial\\util\\set_api_keys.py"],
+            "problemMatcher": [],
+            "windows":{
+                "command": "py"
+            }
         }
     ]
 }
