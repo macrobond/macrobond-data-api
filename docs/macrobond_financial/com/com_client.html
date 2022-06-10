@@ -36,7 +36,6 @@ from .com_api import ComApi
 
 if TYPE_CHECKING:  # pragma: no cover
     from .com_types import Connection
-    from macrobond_financial.common import Credentials
 
 _win32com_import_error: Optional[ImportError] = None
 try:
@@ -62,10 +61,8 @@ class ComClient(Client[&#34;ComApi&#34;]):
     ```
     &#34;&#34;&#34;
 
-    def __init__(
-        self, credentials: &#34;Credentials&#34; = None  # pylint: disable=unused-argument
-    ) -&gt; None:
-        super().__init__(False)
+    def __init__(self) -&gt; None:
+        super().__init__()
         if _win32com_import_error:
             raise _win32com_import_error
         self.__api: Optional[&#34;ComApi&#34;] = None
@@ -98,7 +95,6 @@ class ComClient(Client[&#34;ComApi&#34;]):
 <dl>
 <dt id="macrobond_financial.com.com_client.ComClient"><code class="flex name class">
 <span>class <span class="ident">ComClient</span></span>
-<span>(</span><span>credentials: Credentials = None)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>ComClient to get data from the web</p>
@@ -132,10 +128,8 @@ class ComClient(Client[&#34;ComApi&#34;]):
     ```
     &#34;&#34;&#34;
 
-    def __init__(
-        self, credentials: &#34;Credentials&#34; = None  # pylint: disable=unused-argument
-    ) -&gt; None:
-        super().__init__(False)
+    def __init__(self) -&gt; None:
+        super().__init__()
         if _win32com_import_error:
             raise _win32com_import_error
         self.__api: Optional[&#34;ComApi&#34;] = None

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from typing import List, Tuple, Union, TYPE_CHECKING
+from typing import List, Sequence, Tuple, Union, TYPE_CHECKING, cast
 
 from datetime import datetime
 
@@ -12,11 +12,15 @@ from macrobond_financial.common.enums import (
     CalendarMergeMode,
 )
 
-from macrobond_financial.common.types import SearchResult, SeriesEntry
+from macrobond_financial.common.types import (
+    SearchResult,
+    SeriesEntry,
+    MetadataValueInformation,
+    MetadataValueInformationItem,
+    MetadataAttributeInformation,
+)
 
 from ._api_return_types import (
-    _ListValuesReturn,
-    _GetAttributeInformationReturn,
     _GetRevisionInfoReturn,
     _GetVintageSeriesReturn,
     _GetNthReleaseReturn,
@@ -26,7 +30,6 @@ from ._api_return_types import (
     _GetEntitiesReturn,
     _GetUnifiedSeriesReturn,
     _fill_metadata_from_entity,
-    _GetValueInformationReturn,
 )
 
 
@@ -34,11 +37,8 @@ if TYPE_CHECKING:  # pragma: no cover
     from macrobond_financial.com.com_types import Connection
 
     from macrobond_financial.common.api_return_types import (
-        ListValuesReturn,
-        GetAttributeInformationReturn,
         GetRevisionInfoReturn,
         GetVintageSeriesReturn,
-        GetValueInformationReturn,
         # GetObservationHistoryReturn,
         GetNthReleaseReturn,
         GetOneSeriesReturn,
@@ -48,9 +48,11 @@ if TYPE_CHECKING:  # pragma: no cover
         GetUnifiedSeriesReturn,
     )
 
+    from macrobond_financial.common.enums import MetadataAttributeType
+
     from macrobond_financial.common.types import SearchFilter, StartOrEndPoint
 
-    from .com_types import Connection, SearchQuery
+    from .com_types import Connection, SearchQuery, Database
 
 __pdoc__ = {
     "ComApi.__init__": False,
@@ -66,20 +68,85 @@ class ComApi(Api):
     def connection(self) -> "Connection":
         return self.__connection
 
+    @property
+    def database(self) -> "Database":
+        return self.__connection.Database
+
     # metadata
 
-    def metadata_list_values(self, name: str) -> "ListValuesReturn":
-        return _ListValuesReturn(self.__connection.Database, name)
+    def metadata_list_values(self, name: str) -> MetadataValueInformation:
+        info = self.database.GetMetadataInformation(name)
+        values = info.ListAllValues()
+
+        return MetadataValueInformation(
+            name,
+            tuple(
+                map(
+                    lambda x: MetadataValueInformationItem(
+                        name, x.Value, x.Description, x.Comment
+                    ),
+                    values,
+                )
+            ),
+        )
 
     def metadata_get_attribute_information(
-        self, name: str
-    ) -> "GetAttributeInformationReturn":
-        return _GetAttributeInformationReturn(self.__connection.Database, name)
+        self, *name: str
+    ) -> Sequence[MetadataAttributeInformation]:
+        def get_metadata_attribute_information(name: str):
+            info = self.database.GetMetadataInformation(name)
+            return MetadataAttributeInformation(
+                info.Name,
+                info.Description,
+                info.Comment,
+                cast("MetadataAttributeType", info.ValueType),
+                info.UsesValueList,
+                info.CanListValues,
+                info.CanHaveMultipleValues,
+                info.IsDatabaseEntity,
+            )
+
+        return tuple(map(get_metadata_attribute_information, name))
 
     def metadata_get_value_information(
         self, *name_val: Tuple[str, str]
-    ) -> "GetValueInformationReturn":
-        return _GetValueInformationReturn(self.__connection.Database, name_val)
+    ) -> Tuple[MetadataValueInformationItem, ...]:
+        def is_error_with_text(ex: Exception, text: str) -> bool:
+            return (
+                len(ex.args) >= 3
+                and len(ex.args[2]) >= 3
+                and ex.args[2][2].startswith(text)
+            )
+
+        ret: List[MetadataValueInformationItem] = []
+        for i in name_val:
+            name = i[0]
+            val = i[1]
+
+            try:
+                info = self.database.GetMetadataInformation(name)
+            except Exception as ex:
+                if is_error_with_text(ex, "Unknown metadata name: "):
+                    raise ValueError("Unknown attribute: " + name) from ex
+                raise ex
+
+            try:
+                value_info = info.GetValueInformation(val)
+            except Exception as ex:
+                if is_error_with_text(
+                    ex, "The attribute '" + name + "' does not have a value called "
+                ):
+                    raise ValueError(
+                        "Unknown attribute value: " + name + "," + val
+                    ) from ex
+                raise ex
+
+            ret.append(
+                MetadataValueInformationItem(
+                    name, value_info.Value, value_info.Description, value_info.Comment
+                )
+            )
+        return tuple(ret)
 
     # revision
 

@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.10.0" />
-<title>macrobond_financial.web.web_typs.session_http_exception API documentation</title>
+<title>macrobond_financial.util API documentation</title>
 <meta name="description" content="" />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
@@ -19,118 +19,24 @@
 <main>
 <article id="content">
 <header>
-<h1 class="title">Module <code>macrobond_financial.web.web_typs.session_http_exception</code></h1>
+<h1 class="title">Namespace <code>macrobond_financial.util</code></h1>
 </header>
 <section id="section-intro">
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python"># -*- coding: utf-8 -*-
-
-from typing import TYPE_CHECKING
-
-if TYPE_CHECKING:  # pragma: no cover
-    try:
-        from requests import Response  # type: ignore
-    except ImportError:
-        ...
-
-
-class SessionHttpException(Exception):
-    @property
-    def status_code(self):
-        return self.__response.status_code
-
-    @property
-    def response(self):
-        return self.__response
-
-    def __init__(self, response: &#34;Response&#34;) -&gt; None:
-        request = response.request
-        super().__init__(
-            (
-                f&#34;http {request.method} request to {request.path_url} &#34;
-                f&#34;returnd status_code: {str(response.status_code)} &#34;
-                f&#39;text: &#34;{response.text}&#34;&#39;
-            )
-        )
-        self.__response = response</code></pre>
-</details>
 </section>
 <section>
-</section>
-<section>
-</section>
-<section>
-</section>
-<section>
-<h2 class="section-title" id="header-classes">Classes</h2>
+<h2 class="section-title" id="header-submodules">Sub-modules</h2>
 <dl>
-<dt id="macrobond_financial.web.web_typs.session_http_exception.SessionHttpException"><code class="flex name class">
-<span>class <span class="ident">SessionHttpException</span></span>
-<span>(</span><span>response: Response)</span>
-</code></dt>
-<dd>
-<div class="desc"><p>Common base class for all non-exit exceptions.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">class SessionHttpException(Exception):
-    @property
-    def status_code(self):
-        return self.__response.status_code
-
-    @property
-    def response(self):
-        return self.__response
-
-    def __init__(self, response: &#34;Response&#34;) -&gt; None:
-        request = response.request
-        super().__init__(
-            (
-                f&#34;http {request.method} request to {request.path_url} &#34;
-                f&#34;returnd status_code: {str(response.status_code)} &#34;
-                f&#39;text: &#34;{response.text}&#34;&#39;
-            )
-        )
-        self.__response = response</code></pre>
-</details>
-<h3>Ancestors</h3>
-<ul class="hlist">
-<li>builtins.Exception</li>
-<li>builtins.BaseException</li>
-</ul>
-<h3>Instance variables</h3>
-<dl>
-<dt id="macrobond_financial.web.web_typs.session_http_exception.SessionHttpException.response"><code class="name">var <span class="ident">response</span></code></dt>
+<dt><code class="name"><a title="macrobond_financial.util.save_credential_to_keyring" href="save_credential_to_keyring.html">macrobond_financial.util.save_credential_to_keyring</a></code></dt>
 <dd>
 <div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@property
-def response(self):
-    return self.__response</code></pre>
-</details>
-</dd>
-<dt id="macrobond_financial.web.web_typs.session_http_exception.SessionHttpException.status_code"><code class="name">var <span class="ident">status_code</span></code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@property
-def status_code(self):
-    return self.__response.status_code</code></pre>
-</details>
 </dd>
 </dl>
-</dd>
-</dl>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
 </section>
 </article>
 <nav id="sidebar">
@@ -141,18 +47,12 @@ def status_code(self):
 <ul id="index">
 <li><h3>Super-module</h3>
 <ul>
-<li><code><a title="macrobond_financial.web.web_typs" href="index.html">macrobond_financial.web.web_typs</a></code></li>
+<li><code><a title="macrobond_financial" href="../index.html">macrobond_financial</a></code></li>
 </ul>
 </li>
-<li><h3><a href="#header-classes">Classes</a></h3>
+<li><h3><a href="#header-submodules">Sub-modules</a></h3>
 <ul>
-<li>
-<h4><code><a title="macrobond_financial.web.web_typs.session_http_exception.SessionHttpException" href="#macrobond_financial.web.web_typs.session_http_exception.SessionHttpException">SessionHttpException</a></code></h4>
-<ul class="">
-<li><code><a title="macrobond_financial.web.web_typs.session_http_exception.SessionHttpException.response" href="#macrobond_financial.web.web_typs.session_http_exception.SessionHttpException.response">response</a></code></li>
-<li><code><a title="macrobond_financial.web.web_typs.session_http_exception.SessionHttpException.status_code" href="#macrobond_financial.web.web_typs.session_http_exception.SessionHttpException.status_code">status_code</a></code></li>
-</ul>
-</li>
+<li><code><a title="macrobond_financial.util.save_credential_to_keyring" href="save_credential_to_keyring.html">macrobond_financial.util.save_credential_to_keyring</a></code></li>
 </ul>
 </li>
 </ul>

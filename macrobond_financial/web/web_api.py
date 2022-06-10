@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from datetime import datetime
-from typing import TYPE_CHECKING, Sequence, Union, Tuple
+from typing import TYPE_CHECKING, List, Sequence, Union, Tuple
 
 from macrobond_financial.common import Api
 from macrobond_financial.common.types import SearchResult, SeriesEntry
@@ -12,9 +12,13 @@ from macrobond_financial.common.enums import (
     CalendarMergeMode,
 )
 
+from macrobond_financial.common.types import (
+    MetadataValueInformation,
+    MetadataValueInformationItem,
+    MetadataAttributeInformation,
+)
+
 from ._api_return_typs import (
-    _GetAttributeInformationReturn,
-    _ListValuesReturn,
     _GetRevisionInfoReturn,
     _GetVintageSeriesReturn,
     _GetNthReleaseReturn,
@@ -23,16 +27,15 @@ from ._api_return_typs import (
     _GetOneEntityReturn,
     _GetEntitiesReturn,
     _GetUnifiedSeriesReturn,
-    _GetValueInformationReturn,
     _GetObservationHistoryReturn,
 )
+
+from .session import SessionHttpException
 
 if TYPE_CHECKING:  # pragma: no cover
     from .session import Session
 
     from macrobond_financial.common.api_return_types import (
-        ListValuesReturn,
-        GetAttributeInformationReturn,
         GetRevisionInfoReturn,
         GetVintageSeriesReturn,
         GetObservationHistoryReturn,
@@ -42,7 +45,6 @@ if TYPE_CHECKING:  # pragma: no cover
         GetOneEntityReturn,
         GetEntitiesReturn,
         GetUnifiedSeriesReturn,
-        GetValueInformationReturn,
     )
 
     from macrobond_financial.common.types import SearchFilter, StartOrEndPoint
@@ -61,28 +63,67 @@ __pdoc__ = {
 
 
 class WebApi(Api):
-    @property
-    def session(self) -> "Session":
-        return self.__session
-
     def __init__(self, session: "Session") -> None:
         super().__init__()
         self.__session = session
 
+    @property
+    def session(self) -> "Session":
+        return self.__session
+
     # metadata
 
-    def metadata_list_values(self, name: str) -> "ListValuesReturn":
-        return _ListValuesReturn(self.__session, name)
+    def metadata_list_values(self, name: str) -> MetadataValueInformation:
+        values = self.session.metadata.list_attribute_values(name)
+        return MetadataValueInformation(
+            name,
+            tuple(
+                map(
+                    lambda x: MetadataValueInformationItem(
+                        name, x["value"], x["description"], x.get("comment")
+                    ),
+                    values,
+                )
+            ),
+        )
 
     def metadata_get_attribute_information(
-        self, name: str
-    ) -> "GetAttributeInformationReturn":
-        return _GetAttributeInformationReturn(self.__session, name)
+        self, *name: str
+    ) -> Sequence[MetadataAttributeInformation]:
+        def get_metadata_attribute_information(info):
+            return MetadataAttributeInformation(
+                info["name"],
+                info["description"],
+                info.get("comment"),
+                info["valueType"],
+                info["usesValueList"],
+                info["canListValues"],
+                info["canHaveMultipleValues"],
+                info["isDatabaseEntity"],
+            )
+
+        info = self.session.metadata.get_attribute_information(*name)
+        return tuple(map(get_metadata_attribute_information, info))
 
     def metadata_get_value_information(
         self, *name_val: Tuple[str, str]
-    ) -> "GetValueInformationReturn":
-        return _GetValueInformationReturn(self.__session, name_val)
+    ) -> Tuple[MetadataValueInformationItem, ...]:
+        ret: List[MetadataValueInformationItem] = []
+        try:
+            for info in self.session.metadata.get_value_information(*name_val):
+                ret.append(
+                    MetadataValueInformationItem(
+                        info["attributeName"],
+                        info["value"],
+                        info["description"],
+                        info.get("comment"),
+                    )
+                )
+        except SessionHttpException as ex:
+            if ex.status_code == 404:
+                raise ValueError(ex.response.json()["detail"]) from ex
+            raise ex
+        return tuple(ret)
 
     # revision
 

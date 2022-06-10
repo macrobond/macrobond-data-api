@@ -44,7 +44,7 @@ class Com(TestCase):
 
 def get_attribute_information(test: TestCase, api: Api) -> None:
     def _object() -> None:
-        actual = api.metadata_get_attribute_information("Description").object()
+        actual = api.metadata_get_attribute_information("Description")[0]
         expected = MetadataAttributeInformation(
             "Description",
             "Short description",
@@ -62,7 +62,7 @@ def get_attribute_information(test: TestCase, api: Api) -> None:
     _object()
 
     def _dict() -> None:
-        actual = api.metadata_get_attribute_information("Description").dict()
+        actual = api.metadata_get_attribute_information("Description")[0].to_dict()
         expected: "TypedDictMetadataAttributeInformation" = {
             "name": "Description",
             "description": "Short description",
@@ -79,7 +79,7 @@ def get_attribute_information(test: TestCase, api: Api) -> None:
     _dict()
 
     def _dataframe() -> None:
-        value = api.metadata_get_attribute_information("Description").data_frame()
+        value = api.metadata_get_attribute_information("Description")[0].data_frame()
 
         test.assertIsInstance(value, DataFrame)
 
@@ -88,12 +88,12 @@ def get_attribute_information(test: TestCase, api: Api) -> None:
     _dataframe()
 
     with test.assertRaises(BaseException):
-        api.metadata_get_attribute_information("Description____").object()
+        api.metadata_get_attribute_information("Description____")
 
 
 def list_values(test: TestCase, api: Api) -> None:
     def _object() -> None:
-        value = api.metadata_list_values("RateType").object()
+        value = api.metadata_list_values("RateType")
 
         actual = next(filter(lambda x: x.value == "mole", value))
         expected = MetadataValueInformationItem(
@@ -107,7 +107,7 @@ def list_values(test: TestCase, api: Api) -> None:
     _object()
 
     def _dict() -> None:
-        values = api.metadata_list_values("RateType").list_of_dicts()
+        values = api.metadata_list_values("RateType").to_dict()
 
         actual = next(filter(lambda x: x["value"] == "mole", values))
         expected: "TypedDictMetadataValueInformation" = {
@@ -130,15 +130,15 @@ def list_values(test: TestCase, api: Api) -> None:
     _dataframe()
 
     with test.assertRaises(BaseException):
-        api.metadata_list_values("__RateType").object()
+        api.metadata_list_values("__RateType")
 
     with test.assertRaises(BaseException):
-        api.metadata_list_values("Description").object()
+        api.metadata_list_values("Description")
 
 
 def get_value_information(test: TestCase, api: Api) -> None:
 
-    actual = api.metadata_get_value_information(("RateType", "mole")).object()
+    actual = api.metadata_get_value_information(("RateType", "mole"))
     expected = [
         MetadataValueInformationItem("RateType", "mole", "Mortgage Lending Rates", None)
     ]
@@ -146,7 +146,7 @@ def get_value_information(test: TestCase, api: Api) -> None:
 
     actual = api.metadata_get_value_information(
         ("RateType", "mole"), ("RateType", "fori")
-    ).object()
+    )
     expected = [
         MetadataValueInformationItem(
             "RateType", "mole", "Mortgage Lending Rates", None
@@ -159,14 +159,14 @@ def get_value_information(test: TestCase, api: Api) -> None:
     # erros
 
     with test.assertRaises(ValueError) as context:
-        api.metadata_get_value_information(("bad val", "mole")).object()
+        api.metadata_get_value_information(("bad val", "mole"))
     test.assertEqual(
         "Unknown attribute: bad val",
         str(context.exception),
     )
 
     with test.assertRaises(ValueError) as context:
-        api.metadata_get_value_information(("RateType", "bad val")).object()
+        api.metadata_get_value_information(("RateType", "bad val"))
     test.assertEqual(
         "Unknown attribute value: RateType,bad val",
         str(context.exception),
@@ -175,7 +175,7 @@ def get_value_information(test: TestCase, api: Api) -> None:
     with test.assertRaises(ValueError) as context:
         api.metadata_get_value_information(
             ("RateType", "mole"), ("RateType", "bad val")
-        ).object()
+        )
     test.assertEqual(
         "Unknown attribute value: RateType,bad val",
         str(context.exception),

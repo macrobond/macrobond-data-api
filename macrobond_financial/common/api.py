@@ -5,16 +5,21 @@ from abc import ABC, abstractmethod
 
 from datetime import datetime
 
-from .types import SearchFilter, SearchResult, StartOrEndPoint, SeriesEntry
+from .types import (
+    SearchFilter,
+    SearchResult,
+    StartOrEndPoint,
+    SeriesEntry,
+    MetadataValueInformation,
+    MetadataAttributeInformation,
+    MetadataValueInformationItem,
+)
 
 from .enums import SeriesFrequency, SeriesWeekdays, CalendarMergeMode
 
 from .api_return_types import (
-    GetAttributeInformationReturn,
-    ListValuesReturn,
     GetRevisionInfoReturn,
     GetVintageSeriesReturn,
-    GetValueInformationReturn,
     GetNthReleaseReturn,
     GetOneEntityReturn,
     GetOneSeriesReturn,
@@ -39,7 +44,7 @@ class Api(ABC):
     # metadata
 
     @abstractmethod
-    def metadata_list_values(self, name: str) -> ListValuesReturn:
+    def metadata_list_values(self, name: str) -> MetadataValueInformation:
         """
         List all metadata attribute values of an attribute that uses a value list.
 
@@ -50,7 +55,7 @@ class Api(ABC):
 
         Returns
         -------
-        `macrobond_financial.common.api_return_types.list_values_return.ListValuesReturn`
+        `MetadataValueInformation`
 
         Examples
         -------
@@ -68,12 +73,10 @@ class Api(ABC):
         ```
         """
 
-    # TODO: @mb-to Wouldn't it be better if you could specify several names (such as Union[Sequence[str], str])? This is possible in the WebAPI and is more efficient.
-
     @abstractmethod
     def metadata_get_attribute_information(
-        self, name: str
-    ) -> GetAttributeInformationReturn:
+        self, *name: str
+    ) -> Sequence[MetadataAttributeInformation]:
         """
         Get information about metadata attributes.
         """
@@ -81,18 +84,18 @@ class Api(ABC):
     @abstractmethod
     def metadata_get_value_information(
         self, *name_val: Tuple[str, str]
-    ) -> GetValueInformationReturn:
+    ) -> Tuple[MetadataValueInformationItem, ...]:
         """
         Get information about metadata values.
 
         Parameters
         ----------
-        name_val : Tuple[str, str]
+        *name_val : Tuple[str, str]
             The attribute name and a value.
 
         Returns
         -------
-        `macrobond_financial.common.api_return_types.get_value_information_return.GetValueInformationReturn`
+        `Tuple[MetadataValueInformationItem]`
         """
 
     # revision

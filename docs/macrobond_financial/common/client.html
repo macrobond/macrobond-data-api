@@ -29,15 +29,11 @@
 <pre><code class="python"># -*- coding: utf-8 -*-
 
 from abc import ABC, abstractmethod
-from typing import Generic, TypeVar, Union, TYPE_CHECKING
-from typing_extensions import Literal
+from typing import Generic, TypeVar
 
 from .api import Api
 
 TypeVarApi = TypeVar(&#34;TypeVarApi&#34;, bound=Api)
-
-if TYPE_CHECKING:
-    from .credentials import Credentials
 
 __pdoc__ = {
     &#34;Client.__init__&#34;: False,
@@ -45,12 +41,7 @@ __pdoc__ = {
 
 
 class Client(ABC, Generic[TypeVarApi]):
-    def __init__(
-        self,
-        credentials: Union[  # pylint: disable=unused-argument
-            &#34;Credentials&#34;, Literal[False]
-        ] = None,
-    ) -&gt; None:
+    def __init__(self) -&gt; None:
         ...  # pragma: no cover
 
     def __enter__(self) -&gt; TypeVarApi:
@@ -88,12 +79,7 @@ inheritance.</p></div>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class Client(ABC, Generic[TypeVarApi]):
-    def __init__(
-        self,
-        credentials: Union[  # pylint: disable=unused-argument
-            &#34;Credentials&#34;, Literal[False]
-        ] = None,
-    ) -&gt; None:
+    def __init__(self) -&gt; None:
         ...  # pragma: no cover
 
     def __enter__(self) -&gt; TypeVarApi:
