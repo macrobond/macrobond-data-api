@@ -280,6 +280,16 @@ class WebApi(Api):
 
         return series
 
+    def get_all_vintage_series(self, series_name: str) -> List[Series]:
+        try:
+            response = self.session.series.fetch_all_vintage_series(series_name)
+        except SessionHttpException as ex:
+            if ex.status_code == 404:
+                raise ValueError("Series not found: " + series_name) from ex
+            raise ex
+
+        return list(map(lambda x: _create_series(x, series_name), response))
+
     def get_observation_history(
         self, serie_name: str, times: Sequence[datetime]
     ) -> List[SeriesObservationHistory]:
@@ -304,7 +314,10 @@ class WebApi(Api):
     # Search
 
     def entity_search_multi_filter(
-        self, *filters: "SearchFilter", include_discontinued: bool = False
+        self,
+        *filters: "SearchFilter",
+        include_discontinued: bool = False,
+        no_metadata: bool = False
     ) -> SearchResult:
         def convert_filter_to_web_filter(_filter: "SearchFilter") -> "WebSearchFilter":
             return {
@@ -321,6 +334,7 @@ class WebApi(Api):
         request: "SearchRequest" = {
             "filters": web_filters,
             "includeDiscontinued": include_discontinued,
+            "noMetadata": no_metadata,
         }
 
         response = self.__session.search.post_entities(request)

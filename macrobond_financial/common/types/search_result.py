@@ -8,6 +8,9 @@ if TYPE_CHECKING:  # pragma: no cover
     from pandas import DataFrame, _typing as pandas_typing  # type: ignore
 
 
+# TODO: @mb-jp in inheritance dict [str, Any] ?
+
+
 class SearchResult(Sequence[Dict[str, Any]]):
     """
     The result of a entity search operation.

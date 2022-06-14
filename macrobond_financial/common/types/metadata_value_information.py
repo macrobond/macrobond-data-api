@@ -94,6 +94,9 @@ class MetadataValueInformationItem:
         )
 
 
+# TODO: @mb-jp in inheritance list [MetadataValueInformationItem] ?
+
+
 class MetadataValueInformation(Sequence[MetadataValueInformationItem]):
     def __init__(
         self,

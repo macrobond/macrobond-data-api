@@ -5,11 +5,6 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:  # pragma: no cover
     from requests import Response  # type: ignore
 
-    try:
-        ...
-    except ImportError:
-        ...
-
 
 class SessionHttpException(Exception):
     @property

@@ -160,11 +160,11 @@ class Api(ABC):
         `List[Series]`
         """
 
-    # TODO: @mb-to We should add a method get_all_vintage_series that takes _one_ series name.
+    @abstractmethod
+    def get_all_vintage_series(self, series_name: str) -> List[Series]:
+        ...
 
     # Search
-
-    # TODO: @mb-to We should consider to add noMetaData as a parameter, even if is used only in Web
 
     def entity_search(
         self,
@@ -175,6 +175,7 @@ class Api(ABC):
         must_have_attributes: Union[Sequence[str], str] = None,
         must_not_have_attributes: Union[Sequence[str], str] = None,
         include_discontinued: bool = False,
+        no_metadata: bool = False,
     ) -> SearchResult:
         """
         Search for time series and other entitites.
@@ -213,11 +214,12 @@ class Api(ABC):
                 must_not_have_attributes=must_not_have_attributes,
             ),
             include_discontinued=include_discontinued,
+            no_metadata=no_metadata,
         )
 
     @abstractmethod
     def entity_search_multi_filter(
-        self, *filters: SearchFilter, include_discontinued: bool = False
+        self, *filters: SearchFilter, include_discontinued: bool = False, no_metadata: bool = False
     ) -> SearchResult:
         """
         Search for time series and other entitites.

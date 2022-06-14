@@ -75,8 +75,8 @@ class Common(TestCase):
         self.assertEqual(web.entity_type, com.entity_type, "entity_type")
         self.assertEqual(web.error_message, com.error_message, "error_message")
         self.assertEqual(web.is_error, com.is_error, "is_error")
-        self.assertEqual(str(web), com.__str__(), "__str__() or str(series)")
-        self.assertEqual(web.__repr__(), com.__repr__(), "__repr__")
+        self.assertEqual(str(web), str(com), "str(series)")
+        self.assertEqual(repr(web), repr(com), "repr(series)")
         self.assertSequenceEqual(web.values, com.values, "values")
         self.assertSequenceEqual(web.dates, com.dates, "dates")
         self.assertEqual(web.revision_time_stamp, com.revision_time_stamp, "revision_time_stamp")
@@ -91,8 +91,8 @@ class Common(TestCase):
         self.assertEqual(web.name, com.name, "name")
         self.assertEqual(web.error_message, com.error_message, "error_message")
         self.assertEqual(web.is_error, com.is_error, "is_error")
-        self.assertEqual(str(web), com.__str__(), "__str__() or str(series)")
-        self.assertEqual(web.__repr__(), com.__repr__(), "__repr__")
+        self.assertEqual(str(web), str(com), "str(series)")
+        self.assertEqual(repr(web), repr(com), "repr(series)")
         self.assertSequenceEqual(web.values, com.values, "values")
         self.assertSequenceEqual(web.dates, com.dates, "dates")
 
@@ -157,8 +157,8 @@ class Common(TestCase):
             self.assertEqual(web.entity_type, com.entity_type, "entity_type")
             self.assertEqual(web.error_message, com.error_message, "error_message")
             self.assertEqual(web.is_error, com.is_error, "is_error")
-            self.assertEqual(str(web), com.__str__(), "__str__() or str(series)")
-            self.assertEqual(web.__repr__(), com.__repr__(), "__repr__")
+            self.assertEqual(str(web), str(com), "str(series)")
+            self.assertEqual(repr(web), repr(com), "repr(series)")
 
             self.assertSequenceEqual(web.values, com.values, "values i = " + str(i))
             self.assertSequenceEqual(web.dates, com.dates, "dates i = " + str(i))
@@ -242,6 +242,22 @@ class Common(TestCase):
         com = remove_metadata_and_values(com)
 
         self.assertDictEqual(web, com)
+
+    def test_get_all_vintage_series(self) -> None:
+        web = self.web_api.get_all_vintage_series("usgdp")
+        com = self.com_api.get_all_vintage_series("usgdp")
+
+        self.assertEqual(len(web), len(com))
+
+        # error
+
+        with self.assertRaises(ValueError) as context1:
+            self.web_api.get_all_vintage_series("badName")
+
+        with self.assertRaises(ValueError) as context2:
+            self.com_api.get_all_vintage_series("badName")
+
+        self.assertEqual(str(context1.exception), str(context2.exception))
 
 
 class Web(TestCase):

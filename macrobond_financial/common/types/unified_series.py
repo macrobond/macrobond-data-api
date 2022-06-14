@@ -77,6 +77,9 @@ class UnifiedSerie:
         )
 
 
+# TODO: @mb-jp in inheritance list [UnifiedSerie] ?
+
+
 class UnifiedSeries(Sequence[UnifiedSerie]):
     @property
     def is_error(self) -> bool:

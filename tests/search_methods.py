@@ -8,16 +8,17 @@ from tests.test_common import TestCase
 
 class Common(TestCase):
     def test_start_or_end_point(self) -> None:
+
         self.assertEqual(
-            StartOrEndPoint.relative_to_observations(-1).__repr__(),
+            repr(StartOrEndPoint.relative_to_observations(-1)),
             "-1 mode:CalendarDateMode.DATA_IN_ANY_SERIES",
-            "StartOrEndPoint.relative_to_observations(-1).__repr__()",
+            "repr(StartOrEndPoint.relative_to_observations(-1))",
         )
 
         self.assertEqual(
             str(StartOrEndPoint.relative_to_observations(-1)),
             "-1 mode:CalendarDateMode.DATA_IN_ANY_SERIES",
-            "StartOrEndPoint.relative_to_observations(-1).__str__()",
+            "str(StartOrEndPoint.relative_to_observations(-1))",
         )
 
         self.assertEqual(
@@ -87,55 +88,79 @@ class Common(TestCase):
 
 
 class Web(TestCase):
+    @property
+    def api(self) -> Api:
+        return self.web_api
+
     def test_search(self) -> None:
-        search(self, self.web_api)
+        search(self, self.api)
 
     def test_series_multi_filter(self) -> None:
-        series_multi_filter(self, self.web_api)
+        series_multi_filter(self, self.api)
 
     def test_series_multi_filter_must_have_attributes(self) -> None:
-        series_multi_filter_must_have_attributes(self, self.web_api)
+        series_multi_filter_must_have_attributes(self, self.api)
 
     def test_series_multi_filter_must_not_have_attributes(self) -> None:
-        series_multi_filter_must_not_have_attributes(self, self.web_api)
+        series_multi_filter_must_not_have_attributes(self, self.api)
 
     def test_series_multi_filter_must_have_values(self) -> None:
-        series_multi_filter_must_have_values(self, self.web_api)
+        series_multi_filter_must_have_values(self, self.api)
 
     def test_series_multi_filter_must_not_have_values(self) -> None:
-        series_multi_filter_must_not_have_values(self, self.web_api)
+        series_multi_filter_must_not_have_values(self, self.api)
 
     def test_web_series_multi_filter_include_discontinued(self) -> None:
-        series_multi_filter_include_discontinued(self, self.web_api)
+        series_multi_filter_include_discontinued(self, self.api)
 
     def test_series_multi_filter_entity_types(self) -> None:
-        series_multi_filter_entity_types(self, self.web_api)
+        series_multi_filter_entity_types(self, self.api)
+
+    def test_search_no_metadata(self) -> None:
+        search_result = self.api.entity_search(text="usgdp", no_metadata=True)
+
+        self.assertNotEqual(len(search_result.entities), 0, "len(search_result.entities) != 0")
+        first = search_result.entities[0]
+
+        self.assertEqual(len(first), 1, "len(first)")
 
 
 class Com(TestCase):
+    @property
+    def api(self) -> Api:
+        return self.com_api
+
     def test_search(self) -> None:
-        search(self, self.com_api)
+        search(self, self.api)
 
     def test_series_multi_filter(self) -> None:
-        series_multi_filter(self, self.com_api)
+        series_multi_filter(self, self.api)
 
     def test_series_multi_filter_must_have_attributes(self) -> None:
-        series_multi_filter_must_have_attributes(self, self.com_api)
+        series_multi_filter_must_have_attributes(self, self.api)
 
     def test_series_multi_filter_must_not_have_attributes(self) -> None:
-        series_multi_filter_must_not_have_attributes(self, self.com_api)
+        series_multi_filter_must_not_have_attributes(self, self.api)
 
     def test_series_multi_filter_must_have_values(self) -> None:
-        series_multi_filter_must_have_values(self, self.com_api)
+        series_multi_filter_must_have_values(self, self.api)
 
     def test_series_multi_filter_must_not_have_values(self) -> None:
-        series_multi_filter_must_not_have_values(self, self.com_api)
+        series_multi_filter_must_not_have_values(self, self.api)
 
     def test_web_series_multi_filter_include_discontinued(self) -> None:
-        series_multi_filter_include_discontinued(self, self.com_api)
+        series_multi_filter_include_discontinued(self, self.api)
 
     def test_series_multi_filter_entity_types(self) -> None:
-        series_multi_filter_entity_types(self, self.com_api)
+        series_multi_filter_entity_types(self, self.api)
+
+    def test_search_no_metadata(self) -> None:
+        search_result = self.api.entity_search(text="usgdp", no_metadata=True)
+
+        self.assertNotEqual(len(search_result.entities), 0, "len(search_result.entities) != 0")
+        first = search_result.entities[0]
+
+        self.assertNotEqual(len(first), 1, "len(first)")
 
 
 def search(test: TestCase, api: Api) -> None:

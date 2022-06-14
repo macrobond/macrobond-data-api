@@ -305,10 +305,27 @@ class ComApi(Api):
 
         return series
 
+    def get_all_vintage_series(self, series_name: str) -> List[Series]:
+        series_with_revisions = self.database.FetchOneSeriesWithRevisions(series_name)
+
+        if series_with_revisions.IsError:
+            if series_with_revisions.ErrorMessage == "Not found":
+                raise ValueError("Series not found: " + series_name)
+            raise Exception(series_with_revisions.ErrorMessage)
+
+        return list(
+            map(
+                lambda x: _create_series(x, series_name), series_with_revisions.GetCompleteHistory()
+            )
+        )
+
     # Search
 
     def entity_search_multi_filter(
-        self, *filters: "SearchFilter", include_discontinued: bool = False
+        self,
+        *filters: "SearchFilter",
+        include_discontinued: bool = False,
+        no_metadata: bool = False  # pylint: disable=unused-argument
     ) -> SearchResult:
         querys: List["SearchQuery"] = []
         for _filter in filters:

@@ -165,15 +165,26 @@ class SeriesMethods:
 
     # Get /v1/series/fetchallvintageseries
     def fetch_all_vintage_series(
-        self, series_names: List[str], if_modified_since: datetime
+        self,
+        series_name: str,
+        if_modified_since: datetime = None,
+        last_revision: datetime = None,
+        last_revision_adjustment: datetime = None,
     ) -&gt; List[&#34;VintageSeriesResponse&#34;]:
         &#34;&#34;&#34;
         Fetch all vintage series and the complete history of changes.
+        Metadata from the prevision response can be specified to get conditional and
+        incremental changes.
 
         OAuth scope: macrobond_web_api.read_mb
 
         Codes:
+
             200 The operation was successful.
+
+            206 The operation was successful, but only new revisions are included.
+
+            304 The series was not modified since the timestamp passed as parmeter ifModifiedSince.
 
             400 The operation failed.
 
@@ -183,12 +194,21 @@ class SeriesMethods:
 
             404 The series could not be found
         &#34;&#34;&#34;
+
+        params = {&#34;n&#34;: series_name}
+
+        if if_modified_since:
+            params[&#34;ifModifiedSince&#34;] = if_modified_since.isoformat()
+
+        if last_revision:
+            params[&#34;lastRevision&#34;] = last_revision.isoformat()
+
+        if last_revision_adjustment:
+            params[&#34;lastRevisionAdjustment&#34;] = last_revision_adjustment.isoformat()
+
         response = self.__session.get_or_raise(
             &#34;v1/series/fetchallvintageseries&#34;,
-            params={
-                &#34;n&#34;: series_names,
-                &#34;ifModifiedSince&#34;: if_modified_since.isoformat(),
-            },
+            params=params,
         )
         return cast(List[&#34;VintageSeriesResponse&#34;], response.json())
 
@@ -455,15 +475,26 @@ class SeriesMethods:
 
     # Get /v1/series/fetchallvintageseries
     def fetch_all_vintage_series(
-        self, series_names: List[str], if_modified_since: datetime
+        self,
+        series_name: str,
+        if_modified_since: datetime = None,
+        last_revision: datetime = None,
+        last_revision_adjustment: datetime = None,
     ) -&gt; List[&#34;VintageSeriesResponse&#34;]:
         &#34;&#34;&#34;
         Fetch all vintage series and the complete history of changes.
+        Metadata from the prevision response can be specified to get conditional and
+        incremental changes.
 
         OAuth scope: macrobond_web_api.read_mb
 
         Codes:
+
             200 The operation was successful.
+
+            206 The operation was successful, but only new revisions are included.
+
+            304 The series was not modified since the timestamp passed as parmeter ifModifiedSince.
 
             400 The operation failed.
 
@@ -473,12 +504,21 @@ class SeriesMethods:
 
             404 The series could not be found
         &#34;&#34;&#34;
+
+        params = {&#34;n&#34;: series_name}
+
+        if if_modified_since:
+            params[&#34;ifModifiedSince&#34;] = if_modified_since.isoformat()
+
+        if last_revision:
+            params[&#34;lastRevision&#34;] = last_revision.isoformat()
+
+        if last_revision_adjustment:
+            params[&#34;lastRevisionAdjustment&#34;] = last_revision_adjustment.isoformat()
+
         response = self.__session.get_or_raise(
             &#34;v1/series/fetchallvintageseries&#34;,
-            params={
-                &#34;n&#34;: series_names,
-                &#34;ifModifiedSince&#34;: if_modified_since.isoformat(),
-            },
+            params=params,
         )
         return cast(List[&#34;VintageSeriesResponse&#34;], response.json())
 
@@ -648,13 +688,17 @@ class SeriesMethods:
 </details>
 </dd>
 <dt id="macrobond_financial.web.web_types.series_methods.SeriesMethods.fetch_all_vintage_series"><code class="name flex">
-<span>def <span class="ident">fetch_all_vintage_series</span></span>(<span>self, series_names: List[str], if_modified_since: datetime.datetime) ‑> List[VintageSeriesResponse]</span>
+<span>def <span class="ident">fetch_all_vintage_series</span></span>(<span>self, series_name: str, if_modified_since: datetime.datetime = None, last_revision: datetime.datetime = None, last_revision_adjustment: datetime.datetime = None) ‑> List[VintageSeriesResponse]</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Fetch all vintage series and the complete history of changes.</p>
+<div class="desc"><p>Fetch all vintage series and the complete history of changes.
+Metadata from the prevision response can be specified to get conditional and
+incremental changes.</p>
 <p>OAuth scope: macrobond_web_api.read_mb</p>
 <h2 id="codes">Codes</h2>
 <p>200 The operation was successful.</p>
+<p>206 The operation was successful, but only new revisions are included.</p>
+<p>304 The series was not modified since the timestamp passed as parmeter ifModifiedSince.</p>
 <p>400 The operation failed.</p>
 <p>401 Unauthorized. Missing, invalid or expired access token.</p>
 <p>403 Forbidden. Not authorized.</p>
@@ -664,15 +708,26 @@ class SeriesMethods:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def fetch_all_vintage_series(
-    self, series_names: List[str], if_modified_since: datetime
+    self,
+    series_name: str,
+    if_modified_since: datetime = None,
+    last_revision: datetime = None,
+    last_revision_adjustment: datetime = None,
 ) -&gt; List[&#34;VintageSeriesResponse&#34;]:
     &#34;&#34;&#34;
     Fetch all vintage series and the complete history of changes.
+    Metadata from the prevision response can be specified to get conditional and
+    incremental changes.
 
     OAuth scope: macrobond_web_api.read_mb
 
     Codes:
+
         200 The operation was successful.
+
+        206 The operation was successful, but only new revisions are included.
+
+        304 The series was not modified since the timestamp passed as parmeter ifModifiedSince.
 
         400 The operation failed.
 
@@ -682,12 +737,21 @@ class SeriesMethods:
 
         404 The series could not be found
     &#34;&#34;&#34;
+
+    params = {&#34;n&#34;: series_name}
+
+    if if_modified_since:
+        params[&#34;ifModifiedSince&#34;] = if_modified_since.isoformat()
+
+    if last_revision:
+        params[&#34;lastRevision&#34;] = last_revision.isoformat()
+
+    if last_revision_adjustment:
+        params[&#34;lastRevisionAdjustment&#34;] = last_revision_adjustment.isoformat()
+
     response = self.__session.get_or_raise(
         &#34;v1/series/fetchallvintageseries&#34;,
-        params={
-            &#34;n&#34;: series_names,
-            &#34;ifModifiedSince&#34;: if_modified_since.isoformat(),
-        },
+        params=params,
     )
     return cast(List[&#34;VintageSeriesResponse&#34;], response.json())</code></pre>
 </details>

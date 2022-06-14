@@ -308,6 +308,16 @@ class WebApi(Api):
 
         return series
 
+    def get_all_vintage_series(self, series_name: str) -&gt; List[Series]:
+        try:
+            response = self.session.series.fetch_all_vintage_series(series_name)
+        except SessionHttpException as ex:
+            if ex.status_code == 404:
+                raise ValueError(&#34;Series not found: &#34; + series_name) from ex
+            raise ex
+
+        return list(map(lambda x: _create_series(x, series_name), response))
+
     def get_observation_history(
         self, serie_name: str, times: Sequence[datetime]
     ) -&gt; List[SeriesObservationHistory]:
@@ -332,7 +342,10 @@ class WebApi(Api):
     # Search
 
     def entity_search_multi_filter(
-        self, *filters: &#34;SearchFilter&#34;, include_discontinued: bool = False
+        self,
+        *filters: &#34;SearchFilter&#34;,
+        include_discontinued: bool = False,
+        no_metadata: bool = False
     ) -&gt; SearchResult:
         def convert_filter_to_web_filter(_filter: &#34;SearchFilter&#34;) -&gt; &#34;WebSearchFilter&#34;:
             return {
@@ -349,6 +362,7 @@ class WebApi(Api):
         request: &#34;SearchRequest&#34; = {
             &#34;filters&#34;: web_filters,
             &#34;includeDiscontinued&#34;: include_discontinued,
+            &#34;noMetadata&#34;: no_metadata,
         }
 
         response = self.__session.search.post_entities(request)
@@ -658,6 +672,16 @@ class WebApi(Api):
 
         return series
 
+    def get_all_vintage_series(self, series_name: str) -&gt; List[Series]:
+        try:
+            response = self.session.series.fetch_all_vintage_series(series_name)
+        except SessionHttpException as ex:
+            if ex.status_code == 404:
+                raise ValueError(&#34;Series not found: &#34; + series_name) from ex
+            raise ex
+
+        return list(map(lambda x: _create_series(x, series_name), response))
+
     def get_observation_history(
         self, serie_name: str, times: Sequence[datetime]
     ) -&gt; List[SeriesObservationHistory]:
@@ -682,7 +706,10 @@ class WebApi(Api):
     # Search
 
     def entity_search_multi_filter(
-        self, *filters: &#34;SearchFilter&#34;, include_discontinued: bool = False
+        self,
+        *filters: &#34;SearchFilter&#34;,
+        include_discontinued: bool = False,
+        no_metadata: bool = False
     ) -&gt; SearchResult:
         def convert_filter_to_web_filter(_filter: &#34;SearchFilter&#34;) -&gt; &#34;WebSearchFilter&#34;:
             return {
@@ -699,6 +726,7 @@ class WebApi(Api):
         request: &#34;SearchRequest&#34; = {
             &#34;filters&#34;: web_filters,
             &#34;includeDiscontinued&#34;: include_discontinued,
+            &#34;noMetadata&#34;: no_metadata,
         }
 
         response = self.__session.search.post_entities(request)
@@ -838,6 +866,26 @@ def session(self) -&gt; &#34;Session&#34;:
 </dl>
 <h3>Methods</h3>
 <dl>
+<dt id="macrobond_financial.web.web_api.WebApi.get_all_vintage_series"><code class="name flex">
+<span>def <span class="ident">get_all_vintage_series</span></span>(<span>self, series_name: str) ‑> List[<a title="macrobond_financial.common.types.series.Series" href="../common/types/series.html#macrobond_financial.common.types.series.Series">Series</a>]</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_all_vintage_series(self, series_name: str) -&gt; List[Series]:
+    try:
+        response = self.session.series.fetch_all_vintage_series(series_name)
+    except SessionHttpException as ex:
+        if ex.status_code == 404:
+            raise ValueError(&#34;Series not found: &#34; + series_name) from ex
+        raise ex
+
+    return list(map(lambda x: _create_series(x, series_name), response))</code></pre>
+</details>
+</dd>
 <dt id="macrobond_financial.web.web_api.WebApi.get_observation_history"><code class="name flex">
 <span>def <span class="ident">get_observation_history</span></span>(<span>self, serie_name: str, times: Sequence[datetime.datetime]) ‑> List[<a title="macrobond_financial.common.types.series_observation_history.SeriesObservationHistory" href="../common/types/series_observation_history.html#macrobond_financial.common.types.series_observation_history.SeriesObservationHistory">SeriesObservationHistory</a>]</span>
 </code></dt>
@@ -911,6 +959,7 @@ def session(self) -&gt; &#34;Session&#34;:
 <li>
 <h4><code><a title="macrobond_financial.web.web_api.WebApi" href="#macrobond_financial.web.web_api.WebApi">WebApi</a></code></h4>
 <ul class="">
+<li><code><a title="macrobond_financial.web.web_api.WebApi.get_all_vintage_series" href="#macrobond_financial.web.web_api.WebApi.get_all_vintage_series">get_all_vintage_series</a></code></li>
 <li><code><a title="macrobond_financial.web.web_api.WebApi.get_observation_history" href="#macrobond_financial.web.web_api.WebApi.get_observation_history">get_observation_history</a></code></li>
 <li><code><a title="macrobond_financial.web.web_api.WebApi.session" href="#macrobond_financial.web.web_api.WebApi.session">session</a></code></li>
 </ul>

@@ -188,11 +188,11 @@ class Api(ABC):
         `List[Series]`
         &#34;&#34;&#34;
 
-    # TODO: @mb-to We should add a method get_all_vintage_series that takes _one_ series name.
+    @abstractmethod
+    def get_all_vintage_series(self, series_name: str) -&gt; List[Series]:
+        ...
 
     # Search
-
-    # TODO: @mb-to We should consider to add noMetaData as a parameter, even if is used only in Web
 
     def entity_search(
         self,
@@ -203,6 +203,7 @@ class Api(ABC):
         must_have_attributes: Union[Sequence[str], str] = None,
         must_not_have_attributes: Union[Sequence[str], str] = None,
         include_discontinued: bool = False,
+        no_metadata: bool = False,
     ) -&gt; SearchResult:
         &#34;&#34;&#34;
         Search for time series and other entitites.
@@ -241,11 +242,12 @@ class Api(ABC):
                 must_not_have_attributes=must_not_have_attributes,
             ),
             include_discontinued=include_discontinued,
+            no_metadata=no_metadata,
         )
 
     @abstractmethod
     def entity_search_multi_filter(
-        self, *filters: SearchFilter, include_discontinued: bool = False
+        self, *filters: SearchFilter, include_discontinued: bool = False, no_metadata: bool = False
     ) -&gt; SearchResult:
         &#34;&#34;&#34;
         Search for time series and other entitites.
@@ -557,11 +559,11 @@ class Api(ABC):
         `List[Series]`
         &#34;&#34;&#34;
 
-    # TODO: @mb-to We should add a method get_all_vintage_series that takes _one_ series name.
+    @abstractmethod
+    def get_all_vintage_series(self, series_name: str) -&gt; List[Series]:
+        ...
 
     # Search
-
-    # TODO: @mb-to We should consider to add noMetaData as a parameter, even if is used only in Web
 
     def entity_search(
         self,
@@ -572,6 +574,7 @@ class Api(ABC):
         must_have_attributes: Union[Sequence[str], str] = None,
         must_not_have_attributes: Union[Sequence[str], str] = None,
         include_discontinued: bool = False,
+        no_metadata: bool = False,
     ) -&gt; SearchResult:
         &#34;&#34;&#34;
         Search for time series and other entitites.
@@ -610,11 +613,12 @@ class Api(ABC):
                 must_not_have_attributes=must_not_have_attributes,
             ),
             include_discontinued=include_discontinued,
+            no_metadata=no_metadata,
         )
 
     @abstractmethod
     def entity_search_multi_filter(
-        self, *filters: SearchFilter, include_discontinued: bool = False
+        self, *filters: SearchFilter, include_discontinued: bool = False, no_metadata: bool = False
     ) -&gt; SearchResult:
         &#34;&#34;&#34;
         Search for time series and other entitites.
@@ -790,7 +794,7 @@ API calls. The default value is "True".</p></div>
 <h3>Methods</h3>
 <dl>
 <dt id="macrobond_financial.common.api.Api.entity_search"><code class="name flex">
-<span>def <span class="ident">entity_search</span></span>(<span>self, text: str = None, entity_types: Union[str, Sequence[str]] = None, must_have_values: Dict[str, object] = None, must_not_have_values: Dict[str, object] = None, must_have_attributes: Union[str, Sequence[str]] = None, must_not_have_attributes: Union[str, Sequence[str]] = None, include_discontinued: bool = False) ‑> <a title="macrobond_financial.common.types.search_result.SearchResult" href="types/search_result.html#macrobond_financial.common.types.search_result.SearchResult">SearchResult</a></span>
+<span>def <span class="ident">entity_search</span></span>(<span>self, text: str = None, entity_types: Union[str, Sequence[str]] = None, must_have_values: Dict[str, object] = None, must_not_have_values: Dict[str, object] = None, must_have_attributes: Union[str, Sequence[str]] = None, must_not_have_attributes: Union[str, Sequence[str]] = None, include_discontinued: bool = False, no_metadata: bool = False) ‑> <a title="macrobond_financial.common.types.search_result.SearchResult" href="types/search_result.html#macrobond_financial.common.types.search_result.SearchResult">SearchResult</a></span>
 </code></dt>
 <dd>
 <div class="desc"><p>Search for time series and other entitites.</p>
@@ -829,6 +833,7 @@ The value can be a single value or a sequence of values.</dd>
     must_have_attributes: Union[Sequence[str], str] = None,
     must_not_have_attributes: Union[Sequence[str], str] = None,
     include_discontinued: bool = False,
+    no_metadata: bool = False,
 ) -&gt; SearchResult:
     &#34;&#34;&#34;
     Search for time series and other entitites.
@@ -867,11 +872,12 @@ The value can be a single value or a sequence of values.</dd>
             must_not_have_attributes=must_not_have_attributes,
         ),
         include_discontinued=include_discontinued,
+        no_metadata=no_metadata,
     )</code></pre>
 </details>
 </dd>
 <dt id="macrobond_financial.common.api.Api.entity_search_multi_filter"><code class="name flex">
-<span>def <span class="ident">entity_search_multi_filter</span></span>(<span>self, *filters: <a title="macrobond_financial.common.types.search_filter.SearchFilter" href="types/search_filter.html#macrobond_financial.common.types.search_filter.SearchFilter">SearchFilter</a>, include_discontinued: bool = False) ‑> <a title="macrobond_financial.common.types.search_result.SearchResult" href="types/search_result.html#macrobond_financial.common.types.search_result.SearchResult">SearchResult</a></span>
+<span>def <span class="ident">entity_search_multi_filter</span></span>(<span>self, *filters: <a title="macrobond_financial.common.types.search_filter.SearchFilter" href="types/search_filter.html#macrobond_financial.common.types.search_filter.SearchFilter">SearchFilter</a>, include_discontinued: bool = False, no_metadata: bool = False) ‑> <a title="macrobond_financial.common.types.search_result.SearchResult" href="types/search_result.html#macrobond_financial.common.types.search_result.SearchResult">SearchResult</a></span>
 </code></dt>
 <dd>
 <div class="desc"><p>Search for time series and other entitites.
@@ -893,7 +899,7 @@ used as a condition in the subsequent filter linked by the entity type.</p>
 </summary>
 <pre><code class="python">@abstractmethod
 def entity_search_multi_filter(
-    self, *filters: SearchFilter, include_discontinued: bool = False
+    self, *filters: SearchFilter, include_discontinued: bool = False, no_metadata: bool = False
 ) -&gt; SearchResult:
     &#34;&#34;&#34;
     Search for time series and other entitites.
@@ -912,6 +918,20 @@ def entity_search_multi_filter(
     -------
     `macrobond_financial.common.types.search_result.SearchResult`
     &#34;&#34;&#34;</code></pre>
+</details>
+</dd>
+<dt id="macrobond_financial.common.api.Api.get_all_vintage_series"><code class="name flex">
+<span>def <span class="ident">get_all_vintage_series</span></span>(<span>self, series_name: str) ‑> List[<a title="macrobond_financial.common.types.series.Series" href="types/series.html#macrobond_financial.common.types.series.Series">Series</a>]</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@abstractmethod
+def get_all_vintage_series(self, series_name: str) -&gt; List[Series]:
+    ...</code></pre>
 </details>
 </dd>
 <dt id="macrobond_financial.common.api.Api.get_entities"><code class="name flex">
@@ -1454,6 +1474,7 @@ def metadata_list_values(self, name: str) -&gt; MetadataValueInformation:
 <ul class="">
 <li><code><a title="macrobond_financial.common.api.Api.entity_search" href="#macrobond_financial.common.api.Api.entity_search">entity_search</a></code></li>
 <li><code><a title="macrobond_financial.common.api.Api.entity_search_multi_filter" href="#macrobond_financial.common.api.Api.entity_search_multi_filter">entity_search_multi_filter</a></code></li>
+<li><code><a title="macrobond_financial.common.api.Api.get_all_vintage_series" href="#macrobond_financial.common.api.Api.get_all_vintage_series">get_all_vintage_series</a></code></li>
 <li><code><a title="macrobond_financial.common.api.Api.get_entities" href="#macrobond_financial.common.api.Api.get_entities">get_entities</a></code></li>
 <li><code><a title="macrobond_financial.common.api.Api.get_nth_release" href="#macrobond_financial.common.api.Api.get_nth_release">get_nth_release</a></code></li>
 <li><code><a title="macrobond_financial.common.api.Api.get_one_entity" href="#macrobond_financial.common.api.Api.get_one_entity">get_one_entity</a></code></li>
