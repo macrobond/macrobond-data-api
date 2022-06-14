@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-from typing import TYPE_CHECKING
 from .search_result import SearchResult
 from .start_or_end_point import StartOrEndPoint
 from .series_entry import SeriesEntry
@@ -37,3 +36,5 @@ from .series_observation_history import (
     SeriesObservationHistory,
     SeriesObservationHistoryColumns,
 )
+
+from .revision_info import RevisionInfo, RevisionInfoDict

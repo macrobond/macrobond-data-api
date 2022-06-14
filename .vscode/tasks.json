@@ -94,10 +94,10 @@
             }
         },
         {
-            "label": "add key to keyring",
+            "label": "save credential to keyring",
             "type": "shell",
             "command": "python",
-            "args": ["macrobond_financial\\util\\set_api_keys.py"],
+            "args": ["macrobond_financial\\util\\save_credential_to_keyring.py"],
             "problemMatcher": [],
             "windows":{
                 "command": "py"

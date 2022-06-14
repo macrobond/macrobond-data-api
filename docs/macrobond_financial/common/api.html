@@ -28,7 +28,7 @@
 </summary>
 <pre><code class="python"># -*- coding: utf-8 -*-
 
-from typing import Sequence, Union, Tuple, Dict
+from typing import List, Sequence, Union, Tuple, Dict
 from abc import ABC, abstractmethod
 
 from datetime import datetime
@@ -41,20 +41,14 @@ from .types import (
     MetadataValueInformation,
     MetadataAttributeInformation,
     MetadataValueInformationItem,
+    RevisionInfo,
+    VintageSeries,
+    Series,
+    Entity,
+    UnifiedSeries,
 )
 
 from .enums import SeriesFrequency, SeriesWeekdays, CalendarMergeMode
-
-from .api_return_types import (
-    GetRevisionInfoReturn,
-    GetVintageSeriesReturn,
-    GetNthReleaseReturn,
-    GetOneEntityReturn,
-    GetOneSeriesReturn,
-    GetEntitiesReturn,
-    GetSeriesReturn,
-    GetUnifiedSeriesReturn,
-)
 
 
 class Api(ABC):
@@ -103,7 +97,7 @@ class Api(ABC):
 
     @abstractmethod
     def metadata_get_attribute_information(
-        self, *name: str
+        self, *names: str
     ) -&gt; Sequence[MetadataAttributeInformation]:
         &#34;&#34;&#34;
         Get information about metadata attributes.
@@ -112,7 +106,7 @@ class Api(ABC):
     @abstractmethod
     def metadata_get_value_information(
         self, *name_val: Tuple[str, str]
-    ) -&gt; Tuple[MetadataValueInformationItem, ...]:
+    ) -&gt; List[MetadataValueInformationItem]:
         &#34;&#34;&#34;
         Get information about metadata values.
 
@@ -123,7 +117,7 @@ class Api(ABC):
 
         Returns
         -------
-        `Tuple[MetadataValueInformationItem]`
+        `List[MetadataValueInformationItem]`
         &#34;&#34;&#34;
 
     # revision
@@ -131,7 +125,7 @@ class Api(ABC):
     @abstractmethod
     def get_revision_info(
         self, *series_names: str, raise_error: bool = None
-    ) -&gt; GetRevisionInfoReturn:
+    ) -&gt; List[RevisionInfo]:
         &#34;&#34;&#34;
         Get information about if revision history is available for a series
         and a list of revision timestamps.
@@ -147,24 +141,22 @@ class Api(ABC):
 
         Returns
         -------
-        `macrobond_financial.common.api_return_types.get_revision_info_return.GetRevisionInfoReturn`
+        `List[RevisionInfo]`
         &#34;&#34;&#34;
-
-    # TODO: @mb-to Wouldn&#39;t it be better if you could specify several names (such as Union[Sequence[str], str])? This is possible in the WebAPI and is more efficient.
 
     @abstractmethod
     def get_vintage_series(
-        self, serie_name: str, time: datetime, raise_error: bool = None
-    ) -&gt; GetVintageSeriesReturn:
+        self, time: datetime, *series_names: str, raise_error: bool = None
+    ) -&gt; List[VintageSeries]:
         &#34;&#34;&#34;
         Fetch a vintage series.
 
         Parameters
         ----------
-        series_name : str
-            A series name.
         time : datetime
             The time of the vintage to return.
+        series_name : str
+            One or more names of series.
         raise_error : bool
             If True, accessing the resulting series raises a GetEntitiesError.
             If False you should inspect the is_error property of the result instead.
@@ -172,24 +164,22 @@ class Api(ABC):
 
         Returns
         -------
-        `macrobond_financial.common.api_return_types.get_vintage_series_return.GetVintageSeriesReturn`
+        `List[VintageSeries]`
         &#34;&#34;&#34;
-
-    # TODO: @mb-to Wouldn&#39;t it be better if you could specify several names (such as Union[Sequence[str], str])? This is possible in the WebAPI and is more efficient.
 
     @abstractmethod
     def get_nth_release(
-        self, serie_name: str, nth: int, raise_error: bool = None
-    ) -&gt; GetNthReleaseReturn:
+        self, nth: int, *series_names: str, raise_error: bool = None
+    ) -&gt; List[Series]:
         &#34;&#34;&#34;
         Fetcha series where each value is the nth change of the value.
 
         Parameters
         ----------
-        series_name : str
-            A series name.
         time : nth
             The nth change of each value.
+        series_names : str
+            One or more names of series.
         raise_error : bool
             If True, accessing the resulting series raises a GetEntitiesError.
             If False you should inspect the is_error property of the result instead.
@@ -197,7 +187,7 @@ class Api(ABC):
 
         Returns
         -------
-        `macrobond_financial.common.api_return_types.get_nth_release_return.GetNthReleaseReturn`
+        `List[Series]`
         &#34;&#34;&#34;
 
     # TODO: @mb-to We should add a method get_all_vintage_series that takes _one_ series name.
@@ -241,7 +231,7 @@ class Api(ABC):
 
         Returns
         -------
-        `macrobond_financial.common.types.search_result.SearchResult`
+        `SearchResult`
         &#34;&#34;&#34;
         return self.entity_search_multi_filter(
             SearchFilter(
@@ -280,9 +270,7 @@ class Api(ABC):
     # Series
 
     @abstractmethod
-    def get_one_series(
-        self, series_name: str, raise_error: bool = None
-    ) -&gt; GetOneSeriesReturn:
+    def get_one_series(self, series_name: str, raise_error: bool = None) -&gt; Series:
         &#34;&#34;&#34;
         Download one series.
 
@@ -300,13 +288,11 @@ class Api(ABC):
 
         Returns
         -------
-        `macrobond_financial.common.api_return_types.get_one_series_return.GetOneSeriesReturn`
+        `Series`
         &#34;&#34;&#34;
 
     @abstractmethod
-    def get_series(
-        self, *series_names: str, raise_error: bool = None
-    ) -&gt; GetSeriesReturn:
+    def get_series(self, *series_names: str, raise_error: bool = None) -&gt; List[Series]:
         &#34;&#34;&#34;
         Download one or more series.
 
@@ -325,13 +311,11 @@ class Api(ABC):
 
         Returns
         -------
-        `macrobond_financial.common.api_return_types.get_series_return.GetSeriesReturn`
+        `List[Series]`
         &#34;&#34;&#34;
 
     @abstractmethod
-    def get_one_entity(
-        self, entity_name: str, raise_error: bool = None
-    ) -&gt; GetOneEntityReturn:
+    def get_one_entity(self, entity_name: str, raise_error: bool = None) -&gt; Entity:
         &#34;&#34;&#34;
         Download one entity.
 
@@ -349,13 +333,13 @@ class Api(ABC):
 
         Returns
         -------
-        `macrobond_financial.common.api_return_types.get_one_entity_return.GetOneEntityReturn`
+        `Entity`
         &#34;&#34;&#34;
 
     @abstractmethod
     def get_entities(
         self, *entity_names: str, raise_error: bool = None
-    ) -&gt; GetEntitiesReturn:
+    ) -&gt; List[Entity]:
         &#34;&#34;&#34;
         Download one or more entities.
 
@@ -374,7 +358,7 @@ class Api(ABC):
 
         Returns
         -------
-        `macrobond_financial.common.api_return_types.get_entities_return.GetEntitiesReturn`
+        `List[Entity]`
         &#34;&#34;&#34;
 
     @abstractmethod
@@ -388,7 +372,7 @@ class Api(ABC):
         start_point: StartOrEndPoint = None,
         end_point: StartOrEndPoint = None,
         raise_error: bool = None
-    ) -&gt; GetUnifiedSeriesReturn:
+    ) -&gt; UnifiedSeries:
         &#34;&#34;&#34;
         Get one or more series and convert them to a common frequency and calendar.
 
@@ -418,7 +402,7 @@ class Api(ABC):
 
         Returns
         -------
-        `macrobond_financial.common.api_return_types.get_unified_series_return.GetUnifiedSeriesReturn`
+        `UnifiedSeries`
         &#34;&#34;&#34;</code></pre>
 </details>
 </section>
@@ -486,7 +470,7 @@ class Api(ABC):
 
     @abstractmethod
     def metadata_get_attribute_information(
-        self, *name: str
+        self, *names: str
     ) -&gt; Sequence[MetadataAttributeInformation]:
         &#34;&#34;&#34;
         Get information about metadata attributes.
@@ -495,7 +479,7 @@ class Api(ABC):
     @abstractmethod
     def metadata_get_value_information(
         self, *name_val: Tuple[str, str]
-    ) -&gt; Tuple[MetadataValueInformationItem, ...]:
+    ) -&gt; List[MetadataValueInformationItem]:
         &#34;&#34;&#34;
         Get information about metadata values.
 
@@ -506,7 +490,7 @@ class Api(ABC):
 
         Returns
         -------
-        `Tuple[MetadataValueInformationItem]`
+        `List[MetadataValueInformationItem]`
         &#34;&#34;&#34;
 
     # revision
@@ -514,7 +498,7 @@ class Api(ABC):
     @abstractmethod
     def get_revision_info(
         self, *series_names: str, raise_error: bool = None
-    ) -&gt; GetRevisionInfoReturn:
+    ) -&gt; List[RevisionInfo]:
         &#34;&#34;&#34;
         Get information about if revision history is available for a series
         and a list of revision timestamps.
@@ -530,24 +514,22 @@ class Api(ABC):
 
         Returns
         -------
-        `macrobond_financial.common.api_return_types.get_revision_info_return.GetRevisionInfoReturn`
+        `List[RevisionInfo]`
         &#34;&#34;&#34;
-
-    # TODO: @mb-to Wouldn&#39;t it be better if you could specify several names (such as Union[Sequence[str], str])? This is possible in the WebAPI and is more efficient.
 
     @abstractmethod
     def get_vintage_series(
-        self, serie_name: str, time: datetime, raise_error: bool = None
-    ) -&gt; GetVintageSeriesReturn:
+        self, time: datetime, *series_names: str, raise_error: bool = None
+    ) -&gt; List[VintageSeries]:
         &#34;&#34;&#34;
         Fetch a vintage series.
 
         Parameters
         ----------
-        series_name : str
-            A series name.
         time : datetime
             The time of the vintage to return.
+        series_name : str
+            One or more names of series.
         raise_error : bool
             If True, accessing the resulting series raises a GetEntitiesError.
             If False you should inspect the is_error property of the result instead.
@@ -555,24 +537,22 @@ class Api(ABC):
 
         Returns
         -------
-        `macrobond_financial.common.api_return_types.get_vintage_series_return.GetVintageSeriesReturn`
+        `List[VintageSeries]`
         &#34;&#34;&#34;
-
-    # TODO: @mb-to Wouldn&#39;t it be better if you could specify several names (such as Union[Sequence[str], str])? This is possible in the WebAPI and is more efficient.
 
     @abstractmethod
     def get_nth_release(
-        self, serie_name: str, nth: int, raise_error: bool = None
-    ) -&gt; GetNthReleaseReturn:
+        self, nth: int, *series_names: str, raise_error: bool = None
+    ) -&gt; List[Series]:
         &#34;&#34;&#34;
         Fetcha series where each value is the nth change of the value.
 
         Parameters
         ----------
-        series_name : str
-            A series name.
         time : nth
             The nth change of each value.
+        series_names : str
+            One or more names of series.
         raise_error : bool
             If True, accessing the resulting series raises a GetEntitiesError.
             If False you should inspect the is_error property of the result instead.
@@ -580,7 +560,7 @@ class Api(ABC):
 
         Returns
         -------
-        `macrobond_financial.common.api_return_types.get_nth_release_return.GetNthReleaseReturn`
+        `List[Series]`
         &#34;&#34;&#34;
 
     # TODO: @mb-to We should add a method get_all_vintage_series that takes _one_ series name.
@@ -624,7 +604,7 @@ class Api(ABC):
 
         Returns
         -------
-        `macrobond_financial.common.types.search_result.SearchResult`
+        `SearchResult`
         &#34;&#34;&#34;
         return self.entity_search_multi_filter(
             SearchFilter(
@@ -663,9 +643,7 @@ class Api(ABC):
     # Series
 
     @abstractmethod
-    def get_one_series(
-        self, series_name: str, raise_error: bool = None
-    ) -&gt; GetOneSeriesReturn:
+    def get_one_series(self, series_name: str, raise_error: bool = None) -&gt; Series:
         &#34;&#34;&#34;
         Download one series.
 
@@ -683,13 +661,11 @@ class Api(ABC):
 
         Returns
         -------
-        `macrobond_financial.common.api_return_types.get_one_series_return.GetOneSeriesReturn`
+        `Series`
         &#34;&#34;&#34;
 
     @abstractmethod
-    def get_series(
-        self, *series_names: str, raise_error: bool = None
-    ) -&gt; GetSeriesReturn:
+    def get_series(self, *series_names: str, raise_error: bool = None) -&gt; List[Series]:
         &#34;&#34;&#34;
         Download one or more series.
 
@@ -708,13 +684,11 @@ class Api(ABC):
 
         Returns
         -------
-        `macrobond_financial.common.api_return_types.get_series_return.GetSeriesReturn`
+        `List[Series]`
         &#34;&#34;&#34;
 
     @abstractmethod
-    def get_one_entity(
-        self, entity_name: str, raise_error: bool = None
-    ) -&gt; GetOneEntityReturn:
+    def get_one_entity(self, entity_name: str, raise_error: bool = None) -&gt; Entity:
         &#34;&#34;&#34;
         Download one entity.
 
@@ -732,13 +706,13 @@ class Api(ABC):
 
         Returns
         -------
-        `macrobond_financial.common.api_return_types.get_one_entity_return.GetOneEntityReturn`
+        `Entity`
         &#34;&#34;&#34;
 
     @abstractmethod
     def get_entities(
         self, *entity_names: str, raise_error: bool = None
-    ) -&gt; GetEntitiesReturn:
+    ) -&gt; List[Entity]:
         &#34;&#34;&#34;
         Download one or more entities.
 
@@ -757,7 +731,7 @@ class Api(ABC):
 
         Returns
         -------
-        `macrobond_financial.common.api_return_types.get_entities_return.GetEntitiesReturn`
+        `List[Entity]`
         &#34;&#34;&#34;
 
     @abstractmethod
@@ -771,7 +745,7 @@ class Api(ABC):
         start_point: StartOrEndPoint = None,
         end_point: StartOrEndPoint = None,
         raise_error: bool = None
-    ) -&gt; GetUnifiedSeriesReturn:
+    ) -&gt; UnifiedSeries:
         &#34;&#34;&#34;
         Get one or more series and convert them to a common frequency and calendar.
 
@@ -801,7 +775,7 @@ class Api(ABC):
 
         Returns
         -------
-        `macrobond_financial.common.api_return_types.get_unified_series_return.GetUnifiedSeriesReturn`
+        `UnifiedSeries`
         &#34;&#34;&#34;</code></pre>
 </details>
 <h3>Ancestors</h3>
@@ -849,7 +823,7 @@ The value can be a single value or a sequence of values.</dd>
 <dd>Set this value to True in order to include discontinued entities in the search.</dd>
 </dl>
 <h2 id="returns">Returns</h2>
-<p><code><a title="macrobond_financial.common.types.search_result.SearchResult" href="types/search_result.html#macrobond_financial.common.types.search_result.SearchResult">SearchResult</a></code></p></div>
+<p><code>SearchResult</code></p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -889,7 +863,7 @@ The value can be a single value or a sequence of values.</dd>
 
     Returns
     -------
-    `macrobond_financial.common.types.search_result.SearchResult`
+    `SearchResult`
     &#34;&#34;&#34;
     return self.entity_search_multi_filter(
         SearchFilter(
@@ -949,7 +923,7 @@ def entity_search_multi_filter(
 </details>
 </dd>
 <dt id="macrobond_financial.common.api.Api.get_entities"><code class="name flex">
-<span>def <span class="ident">get_entities</span></span>(<span>self, *entity_names: str, raise_error: bool = None) ‑> <a title="macrobond_financial.common.api_return_types.get_entities_return.GetEntitiesReturn" href="api_return_types/get_entities_return.html#macrobond_financial.common.api_return_types.get_entities_return.GetEntitiesReturn">GetEntitiesReturn</a></span>
+<span>def <span class="ident">get_entities</span></span>(<span>self, *entity_names: str, raise_error: bool = None) ‑> List[<a title="macrobond_financial.common.types.entity.Entity" href="types/entity.html#macrobond_financial.common.types.entity.Entity">Entity</a>]</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Download one or more entities.</p>
@@ -968,7 +942,7 @@ If False you should inspect the is_error property of the result instead.
 If None, it will use the global value <code><a title="macrobond_financial.common.api.Api.raise_error" href="#macrobond_financial.common.api.Api.raise_error">Api.raise_error</a></code></dd>
 </dl>
 <h2 id="returns">Returns</h2>
-<p><code><a title="macrobond_financial.common.api_return_types.get_entities_return.GetEntitiesReturn" href="api_return_types/get_entities_return.html#macrobond_financial.common.api_return_types.get_entities_return.GetEntitiesReturn">GetEntitiesReturn</a></code></p></div>
+<p><code>List[Entity]</code></p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -976,7 +950,7 @@ If None, it will use the global value <code><a title="macrobond_financial.common
 <pre><code class="python">@abstractmethod
 def get_entities(
     self, *entity_names: str, raise_error: bool = None
-) -&gt; GetEntitiesReturn:
+) -&gt; List[Entity]:
     &#34;&#34;&#34;
     Download one or more entities.
 
@@ -995,45 +969,45 @@ def get_entities(
 
     Returns
     -------
-    `macrobond_financial.common.api_return_types.get_entities_return.GetEntitiesReturn`
+    `List[Entity]`
     &#34;&#34;&#34;</code></pre>
 </details>
 </dd>
 <dt id="macrobond_financial.common.api.Api.get_nth_release"><code class="name flex">
-<span>def <span class="ident">get_nth_release</span></span>(<span>self, serie_name: str, nth: int, raise_error: bool = None) ‑> <a title="macrobond_financial.common.api_return_types.get_nth_release_return.GetNthReleaseReturn" href="api_return_types/get_nth_release_return.html#macrobond_financial.common.api_return_types.get_nth_release_return.GetNthReleaseReturn">GetNthReleaseReturn</a></span>
+<span>def <span class="ident">get_nth_release</span></span>(<span>self, nth: int, *series_names: str, raise_error: bool = None) ‑> List[<a title="macrobond_financial.common.types.series.Series" href="types/series.html#macrobond_financial.common.types.series.Series">Series</a>]</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Fetcha series where each value is the nth change of the value.</p>
 <h2 id="parameters">Parameters</h2>
 <dl>
-<dt><strong><code>series_name</code></strong> :&ensp;<code>str</code></dt>
-<dd>A series name.</dd>
 <dt><strong><code>time</code></strong> :&ensp;<code>nth</code></dt>
 <dd>The nth change of each value.</dd>
+<dt><strong><code>series_names</code></strong> :&ensp;<code>str</code></dt>
+<dd>One or more names of series.</dd>
 <dt><strong><code>raise_error</code></strong> :&ensp;<code>bool</code></dt>
 <dd>If True, accessing the resulting series raises a GetEntitiesError.
 If False you should inspect the is_error property of the result instead.
 If None, it will use the global value <code><a title="macrobond_financial.common.api.Api.raise_error" href="#macrobond_financial.common.api.Api.raise_error">Api.raise_error</a></code></dd>
 </dl>
 <h2 id="returns">Returns</h2>
-<p><code><a title="macrobond_financial.common.api_return_types.get_nth_release_return.GetNthReleaseReturn" href="api_return_types/get_nth_release_return.html#macrobond_financial.common.api_return_types.get_nth_release_return.GetNthReleaseReturn">GetNthReleaseReturn</a></code></p></div>
+<p><code>List[Series]</code></p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@abstractmethod
 def get_nth_release(
-    self, serie_name: str, nth: int, raise_error: bool = None
-) -&gt; GetNthReleaseReturn:
+    self, nth: int, *series_names: str, raise_error: bool = None
+) -&gt; List[Series]:
     &#34;&#34;&#34;
     Fetcha series where each value is the nth change of the value.
 
     Parameters
     ----------
-    series_name : str
-        A series name.
     time : nth
         The nth change of each value.
+    series_names : str
+        One or more names of series.
     raise_error : bool
         If True, accessing the resulting series raises a GetEntitiesError.
         If False you should inspect the is_error property of the result instead.
@@ -1041,12 +1015,12 @@ def get_nth_release(
 
     Returns
     -------
-    `macrobond_financial.common.api_return_types.get_nth_release_return.GetNthReleaseReturn`
+    `List[Series]`
     &#34;&#34;&#34;</code></pre>
 </details>
 </dd>
 <dt id="macrobond_financial.common.api.Api.get_one_entity"><code class="name flex">
-<span>def <span class="ident">get_one_entity</span></span>(<span>self, entity_name: str, raise_error: bool = None) ‑> <a title="macrobond_financial.common.api_return_types.get_one_entity_return.GetOneEntityReturn" href="api_return_types/get_one_entity_return.html#macrobond_financial.common.api_return_types.get_one_entity_return.GetOneEntityReturn">GetOneEntityReturn</a></span>
+<span>def <span class="ident">get_one_entity</span></span>(<span>self, entity_name: str, raise_error: bool = None) ‑> <a title="macrobond_financial.common.types.entity.Entity" href="types/entity.html#macrobond_financial.common.types.entity.Entity">Entity</a></span>
 </code></dt>
 <dd>
 <div class="desc"><p>Download one entity.</p>
@@ -1064,15 +1038,13 @@ If False you should inspect the is_error property of the result instead.
 If None, it will use the global value <code><a title="macrobond_financial.common.api.Api.raise_error" href="#macrobond_financial.common.api.Api.raise_error">Api.raise_error</a></code></dd>
 </dl>
 <h2 id="returns">Returns</h2>
-<p><code><a title="macrobond_financial.common.api_return_types.get_one_entity_return.GetOneEntityReturn" href="api_return_types/get_one_entity_return.html#macrobond_financial.common.api_return_types.get_one_entity_return.GetOneEntityReturn">GetOneEntityReturn</a></code></p></div>
+<p><code>Entity</code></p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@abstractmethod
-def get_one_entity(
-    self, entity_name: str, raise_error: bool = None
-) -&gt; GetOneEntityReturn:
+def get_one_entity(self, entity_name: str, raise_error: bool = None) -&gt; Entity:
     &#34;&#34;&#34;
     Download one entity.
 
@@ -1090,12 +1062,12 @@ def get_one_entity(
 
     Returns
     -------
-    `macrobond_financial.common.api_return_types.get_one_entity_return.GetOneEntityReturn`
+    `Entity`
     &#34;&#34;&#34;</code></pre>
 </details>
 </dd>
 <dt id="macrobond_financial.common.api.Api.get_one_series"><code class="name flex">
-<span>def <span class="ident">get_one_series</span></span>(<span>self, series_name: str, raise_error: bool = None) ‑> <a title="macrobond_financial.common.api_return_types.get_one_series_return.GetOneSeriesReturn" href="api_return_types/get_one_series_return.html#macrobond_financial.common.api_return_types.get_one_series_return.GetOneSeriesReturn">GetOneSeriesReturn</a></span>
+<span>def <span class="ident">get_one_series</span></span>(<span>self, series_name: str, raise_error: bool = None) ‑> <a title="macrobond_financial.common.types.series.Series" href="types/series.html#macrobond_financial.common.types.series.Series">Series</a></span>
 </code></dt>
 <dd>
 <div class="desc"><p>Download one series.</p>
@@ -1113,15 +1085,13 @@ If False you should inspect the is_error property of the result instead.
 If None, it will use the global value <code><a title="macrobond_financial.common.api.Api.raise_error" href="#macrobond_financial.common.api.Api.raise_error">Api.raise_error</a></code></dd>
 </dl>
 <h2 id="returns">Returns</h2>
-<p><code><a title="macrobond_financial.common.api_return_types.get_one_series_return.GetOneSeriesReturn" href="api_return_types/get_one_series_return.html#macrobond_financial.common.api_return_types.get_one_series_return.GetOneSeriesReturn">GetOneSeriesReturn</a></code></p></div>
+<p><code>Series</code></p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@abstractmethod
-def get_one_series(
-    self, series_name: str, raise_error: bool = None
-) -&gt; GetOneSeriesReturn:
+def get_one_series(self, series_name: str, raise_error: bool = None) -&gt; Series:
     &#34;&#34;&#34;
     Download one series.
 
@@ -1139,12 +1109,12 @@ def get_one_series(
 
     Returns
     -------
-    `macrobond_financial.common.api_return_types.get_one_series_return.GetOneSeriesReturn`
+    `Series`
     &#34;&#34;&#34;</code></pre>
 </details>
 </dd>
 <dt id="macrobond_financial.common.api.Api.get_revision_info"><code class="name flex">
-<span>def <span class="ident">get_revision_info</span></span>(<span>self, *series_names: str, raise_error: bool = None) ‑> <a title="macrobond_financial.common.api_return_types.get_revision_info_return.GetRevisionInfoReturn" href="api_return_types/get_revision_info_return.html#macrobond_financial.common.api_return_types.get_revision_info_return.GetRevisionInfoReturn">GetRevisionInfoReturn</a></span>
+<span>def <span class="ident">get_revision_info</span></span>(<span>self, *series_names: str, raise_error: bool = None) ‑> List[<a title="macrobond_financial.common.types.revision_info.RevisionInfo" href="types/revision_info.html#macrobond_financial.common.types.revision_info.RevisionInfo">RevisionInfo</a>]</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Get information about if revision history is available for a series
@@ -1159,7 +1129,7 @@ If False you should inspect the is_error property of the result instead.
 If None, it will use the global value <code><a title="macrobond_financial.common.api.Api.raise_error" href="#macrobond_financial.common.api.Api.raise_error">Api.raise_error</a></code></dd>
 </dl>
 <h2 id="returns">Returns</h2>
-<p><code><a title="macrobond_financial.common.api_return_types.get_revision_info_return.GetRevisionInfoReturn" href="api_return_types/get_revision_info_return.html#macrobond_financial.common.api_return_types.get_revision_info_return.GetRevisionInfoReturn">GetRevisionInfoReturn</a></code></p></div>
+<p><code>List[RevisionInfo]</code></p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -1167,7 +1137,7 @@ If None, it will use the global value <code><a title="macrobond_financial.common
 <pre><code class="python">@abstractmethod
 def get_revision_info(
     self, *series_names: str, raise_error: bool = None
-) -&gt; GetRevisionInfoReturn:
+) -&gt; List[RevisionInfo]:
     &#34;&#34;&#34;
     Get information about if revision history is available for a series
     and a list of revision timestamps.
@@ -1183,12 +1153,12 @@ def get_revision_info(
 
     Returns
     -------
-    `macrobond_financial.common.api_return_types.get_revision_info_return.GetRevisionInfoReturn`
+    `List[RevisionInfo]`
     &#34;&#34;&#34;</code></pre>
 </details>
 </dd>
 <dt id="macrobond_financial.common.api.Api.get_series"><code class="name flex">
-<span>def <span class="ident">get_series</span></span>(<span>self, *series_names: str, raise_error: bool = None) ‑> <a title="macrobond_financial.common.api_return_types.get_series_return.GetSeriesReturn" href="api_return_types/get_series_return.html#macrobond_financial.common.api_return_types.get_series_return.GetSeriesReturn">GetSeriesReturn</a></span>
+<span>def <span class="ident">get_series</span></span>(<span>self, *series_names: str, raise_error: bool = None) ‑> List[<a title="macrobond_financial.common.types.series.Series" href="types/series.html#macrobond_financial.common.types.series.Series">Series</a>]</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Download one or more series.</p>
@@ -1207,15 +1177,13 @@ If False you should inspect the is_error property of the result instead.
 If None, it will use the global value <code><a title="macrobond_financial.common.api.Api.raise_error" href="#macrobond_financial.common.api.Api.raise_error">Api.raise_error</a></code></dd>
 </dl>
 <h2 id="returns">Returns</h2>
-<p><code><a title="macrobond_financial.common.api_return_types.get_series_return.GetSeriesReturn" href="api_return_types/get_series_return.html#macrobond_financial.common.api_return_types.get_series_return.GetSeriesReturn">GetSeriesReturn</a></code></p></div>
+<p><code>List[Series]</code></p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@abstractmethod
-def get_series(
-    self, *series_names: str, raise_error: bool = None
-) -&gt; GetSeriesReturn:
+def get_series(self, *series_names: str, raise_error: bool = None) -&gt; List[Series]:
     &#34;&#34;&#34;
     Download one or more series.
 
@@ -1234,12 +1202,12 @@ def get_series(
 
     Returns
     -------
-    `macrobond_financial.common.api_return_types.get_series_return.GetSeriesReturn`
+    `List[Series]`
     &#34;&#34;&#34;</code></pre>
 </details>
 </dd>
 <dt id="macrobond_financial.common.api.Api.get_unified_series"><code class="name flex">
-<span>def <span class="ident">get_unified_series</span></span>(<span>self, *series_entries: Union[<a title="macrobond_financial.common.types.series_entry.SeriesEntry" href="types/series_entry.html#macrobond_financial.common.types.series_entry.SeriesEntry">SeriesEntry</a>, str], frequency=SeriesFrequency.HIGHEST, weekdays=SeriesWeekdays.MONDAY_TO_FRIDAY, calendar_merge_mode=CalendarMergeMode.AVAILABLE_IN_ANY, currency='', start_point: <a title="macrobond_financial.common.types.start_or_end_point.StartOrEndPoint" href="types/start_or_end_point.html#macrobond_financial.common.types.start_or_end_point.StartOrEndPoint">StartOrEndPoint</a> = None, end_point: <a title="macrobond_financial.common.types.start_or_end_point.StartOrEndPoint" href="types/start_or_end_point.html#macrobond_financial.common.types.start_or_end_point.StartOrEndPoint">StartOrEndPoint</a> = None, raise_error: bool = None) ‑> <a title="macrobond_financial.common.api_return_types.get_unified_series_return.GetUnifiedSeriesReturn" href="api_return_types/get_unified_series_return.html#macrobond_financial.common.api_return_types.get_unified_series_return.GetUnifiedSeriesReturn">GetUnifiedSeriesReturn</a></span>
+<span>def <span class="ident">get_unified_series</span></span>(<span>self, *series_entries: Union[<a title="macrobond_financial.common.types.series_entry.SeriesEntry" href="types/series_entry.html#macrobond_financial.common.types.series_entry.SeriesEntry">SeriesEntry</a>, str], frequency=SeriesFrequency.HIGHEST, weekdays=SeriesWeekdays.MONDAY_TO_FRIDAY, calendar_merge_mode=CalendarMergeMode.AVAILABLE_IN_ANY, currency='', start_point: <a title="macrobond_financial.common.types.start_or_end_point.StartOrEndPoint" href="types/start_or_end_point.html#macrobond_financial.common.types.start_or_end_point.StartOrEndPoint">StartOrEndPoint</a> = None, end_point: <a title="macrobond_financial.common.types.start_or_end_point.StartOrEndPoint" href="types/start_or_end_point.html#macrobond_financial.common.types.start_or_end_point.StartOrEndPoint">StartOrEndPoint</a> = None, raise_error: bool = None) ‑> <a title="macrobond_financial.common.types.unified_series.UnifiedSeries" href="types/unified_series.html#macrobond_financial.common.types.unified_series.UnifiedSeries">UnifiedSeries</a></span>
 </code></dt>
 <dd>
 <div class="desc"><p>Get one or more series and convert them to a common frequency and calendar.</p>
@@ -1268,7 +1236,7 @@ If False you should inspect the is_error property of the result instead.
 If None, it will use the global value <code><a title="macrobond_financial.common.api.Api.raise_error" href="#macrobond_financial.common.api.Api.raise_error">Api.raise_error</a></code></dd>
 </dl>
 <h2 id="returns">Returns</h2>
-<p><code><a title="macrobond_financial.common.api_return_types.get_unified_series_return.GetUnifiedSeriesReturn" href="api_return_types/get_unified_series_return.html#macrobond_financial.common.api_return_types.get_unified_series_return.GetUnifiedSeriesReturn">GetUnifiedSeriesReturn</a></code></p></div>
+<p><code>UnifiedSeries</code></p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -1284,7 +1252,7 @@ def get_unified_series(
     start_point: StartOrEndPoint = None,
     end_point: StartOrEndPoint = None,
     raise_error: bool = None
-) -&gt; GetUnifiedSeriesReturn:
+) -&gt; UnifiedSeries:
     &#34;&#34;&#34;
     Get one or more series and convert them to a common frequency and calendar.
 
@@ -1314,45 +1282,45 @@ def get_unified_series(
 
     Returns
     -------
-    `macrobond_financial.common.api_return_types.get_unified_series_return.GetUnifiedSeriesReturn`
+    `UnifiedSeries`
     &#34;&#34;&#34;</code></pre>
 </details>
 </dd>
 <dt id="macrobond_financial.common.api.Api.get_vintage_series"><code class="name flex">
-<span>def <span class="ident">get_vintage_series</span></span>(<span>self, serie_name: str, time: datetime.datetime, raise_error: bool = None) ‑> <a title="macrobond_financial.common.api_return_types.get_vintage_series_return.GetVintageSeriesReturn" href="api_return_types/get_vintage_series_return.html#macrobond_financial.common.api_return_types.get_vintage_series_return.GetVintageSeriesReturn">GetVintageSeriesReturn</a></span>
+<span>def <span class="ident">get_vintage_series</span></span>(<span>self, time: datetime.datetime, *series_names: str, raise_error: bool = None) ‑> List[<a title="macrobond_financial.common.types.vintage_series.VintageSeries" href="types/vintage_series.html#macrobond_financial.common.types.vintage_series.VintageSeries">VintageSeries</a>]</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Fetch a vintage series.</p>
 <h2 id="parameters">Parameters</h2>
 <dl>
-<dt><strong><code>series_name</code></strong> :&ensp;<code>str</code></dt>
-<dd>A series name.</dd>
 <dt><strong><code>time</code></strong> :&ensp;<code>datetime</code></dt>
 <dd>The time of the vintage to return.</dd>
+<dt><strong><code>series_name</code></strong> :&ensp;<code>str</code></dt>
+<dd>One or more names of series.</dd>
 <dt><strong><code>raise_error</code></strong> :&ensp;<code>bool</code></dt>
 <dd>If True, accessing the resulting series raises a GetEntitiesError.
 If False you should inspect the is_error property of the result instead.
 If None, it will use the global value <code><a title="macrobond_financial.common.api.Api.raise_error" href="#macrobond_financial.common.api.Api.raise_error">Api.raise_error</a></code></dd>
 </dl>
 <h2 id="returns">Returns</h2>
-<p><code><a title="macrobond_financial.common.api_return_types.get_vintage_series_return.GetVintageSeriesReturn" href="api_return_types/get_vintage_series_return.html#macrobond_financial.common.api_return_types.get_vintage_series_return.GetVintageSeriesReturn">GetVintageSeriesReturn</a></code></p></div>
+<p><code>List[VintageSeries]</code></p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@abstractmethod
 def get_vintage_series(
-    self, serie_name: str, time: datetime, raise_error: bool = None
-) -&gt; GetVintageSeriesReturn:
+    self, time: datetime, *series_names: str, raise_error: bool = None
+) -&gt; List[VintageSeries]:
     &#34;&#34;&#34;
     Fetch a vintage series.
 
     Parameters
     ----------
-    series_name : str
-        A series name.
     time : datetime
         The time of the vintage to return.
+    series_name : str
+        One or more names of series.
     raise_error : bool
         If True, accessing the resulting series raises a GetEntitiesError.
         If False you should inspect the is_error property of the result instead.
@@ -1360,12 +1328,12 @@ def get_vintage_series(
 
     Returns
     -------
-    `macrobond_financial.common.api_return_types.get_vintage_series_return.GetVintageSeriesReturn`
+    `List[VintageSeries]`
     &#34;&#34;&#34;</code></pre>
 </details>
 </dd>
 <dt id="macrobond_financial.common.api.Api.metadata_get_attribute_information"><code class="name flex">
-<span>def <span class="ident">metadata_get_attribute_information</span></span>(<span>self, *name: str) ‑> Sequence[<a title="macrobond_financial.common.types.metadata_attribute_information.MetadataAttributeInformation" href="types/metadata_attribute_information.html#macrobond_financial.common.types.metadata_attribute_information.MetadataAttributeInformation">MetadataAttributeInformation</a>]</span>
+<span>def <span class="ident">metadata_get_attribute_information</span></span>(<span>self, *names: str) ‑> Sequence[<a title="macrobond_financial.common.types.metadata_attribute_information.MetadataAttributeInformation" href="types/metadata_attribute_information.html#macrobond_financial.common.types.metadata_attribute_information.MetadataAttributeInformation">MetadataAttributeInformation</a>]</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Get information about metadata attributes.</p></div>
@@ -1375,7 +1343,7 @@ def get_vintage_series(
 </summary>
 <pre><code class="python">@abstractmethod
 def metadata_get_attribute_information(
-    self, *name: str
+    self, *names: str
 ) -&gt; Sequence[MetadataAttributeInformation]:
     &#34;&#34;&#34;
     Get information about metadata attributes.
@@ -1383,7 +1351,7 @@ def metadata_get_attribute_information(
 </details>
 </dd>
 <dt id="macrobond_financial.common.api.Api.metadata_get_value_information"><code class="name flex">
-<span>def <span class="ident">metadata_get_value_information</span></span>(<span>self, *name_val: Tuple[str, str]) ‑> Tuple[<a title="macrobond_financial.common.types.metadata_value_information.MetadataValueInformationItem" href="types/metadata_value_information.html#macrobond_financial.common.types.metadata_value_information.MetadataValueInformationItem">MetadataValueInformationItem</a>, ...]</span>
+<span>def <span class="ident">metadata_get_value_information</span></span>(<span>self, *name_val: Tuple[str, str]) ‑> List[<a title="macrobond_financial.common.types.metadata_value_information.MetadataValueInformationItem" href="types/metadata_value_information.html#macrobond_financial.common.types.metadata_value_information.MetadataValueInformationItem">MetadataValueInformationItem</a>]</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Get information about metadata values.</p>
@@ -1393,7 +1361,7 @@ def metadata_get_attribute_information(
 <dd>The attribute name and a value.</dd>
 </dl>
 <h2 id="returns">Returns</h2>
-<p><code>Tuple[MetadataValueInformationItem]</code></p></div>
+<p><code>List[MetadataValueInformationItem]</code></p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -1401,7 +1369,7 @@ def metadata_get_attribute_information(
 <pre><code class="python">@abstractmethod
 def metadata_get_value_information(
     self, *name_val: Tuple[str, str]
-) -&gt; Tuple[MetadataValueInformationItem, ...]:
+) -&gt; List[MetadataValueInformationItem]:
     &#34;&#34;&#34;
     Get information about metadata values.
 
@@ -1412,7 +1380,7 @@ def metadata_get_value_information(
 
     Returns
     -------
-    `Tuple[MetadataValueInformationItem]`
+    `List[MetadataValueInformationItem]`
     &#34;&#34;&#34;</code></pre>
 </details>
 </dd>

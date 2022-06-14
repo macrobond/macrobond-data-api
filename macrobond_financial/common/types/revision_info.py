@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from datetime import datetime
-from typing import List, Tuple, TYPE_CHECKING, overload, Optional, cast
-from abc import ABC, abstractmethod
+from typing import Tuple, TYPE_CHECKING, overload, Optional, cast
 
 from typing_extensions import TypedDict
 
@@ -62,33 +61,4 @@ class RevisionInfo:
         pandas = _get_pandas()
         args = args[1:]
         kwargs["data"] = self.to_dict()
-        return pandas.DataFrame(*args, **kwargs)
-
-
-class GetRevisionInfoReturn(ABC):
-    @abstractmethod
-    def object(self) -> List[RevisionInfo]:
-        ...  # pragma: no cover
-
-    def dict(self) -> List[RevisionInfoDict]:
-        return list(map(lambda x: x.to_dict(), self.object()))
-
-    @overload
-    def data_frame(self) -> "DataFrame":
-        ...
-
-    @overload
-    def data_frame(
-        self,
-        index: "pandas_typing.Axes" = None,
-        columns: "pandas_typing.Axes" = None,
-        dtype: "pandas_typing.Dtype" = None,
-        copy: bool = False,
-    ) -> "DataFrame":
-        ...
-
-    def data_frame(self, *args, **kwargs) -> "DataFrame":
-        pandas = _get_pandas()
-        args = args[1:]
-        kwargs["data"] = self.dict()
         return pandas.DataFrame(*args, **kwargs)

@@ -31,19 +31,20 @@
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:  # pragma: no cover
+    from requests import Response  # type: ignore
     try:
-        from requests import Response  # type: ignore
+        ...
     except ImportError:
         ...
 
 
 class SessionHttpException(Exception):
     @property
-    def status_code(self):
+    def status_code(self) -&gt; int:
         return self.__response.status_code
 
     @property
-    def response(self):
+    def response(self) -&gt; &#34;Response&#34;:
         return self.__response
 
     def __init__(self, response: &#34;Response&#34;) -&gt; None:
@@ -79,11 +80,11 @@ class SessionHttpException(Exception):
 </summary>
 <pre><code class="python">class SessionHttpException(Exception):
     @property
-    def status_code(self):
+    def status_code(self) -&gt; int:
         return self.__response.status_code
 
     @property
-    def response(self):
+    def response(self) -&gt; &#34;Response&#34;:
         return self.__response
 
     def __init__(self, response: &#34;Response&#34;) -&gt; None:
@@ -104,7 +105,7 @@ class SessionHttpException(Exception):
 </ul>
 <h3>Instance variables</h3>
 <dl>
-<dt id="macrobond_financial.web.web_types.session_http_exception.SessionHttpException.response"><code class="name">var <span class="ident">response</span></code></dt>
+<dt id="macrobond_financial.web.web_types.session_http_exception.SessionHttpException.response"><code class="name">var <span class="ident">response</span> : Response</code></dt>
 <dd>
 <div class="desc"></div>
 <details class="source">
@@ -112,11 +113,11 @@ class SessionHttpException(Exception):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@property
-def response(self):
+def response(self) -&gt; &#34;Response&#34;:
     return self.__response</code></pre>
 </details>
 </dd>
-<dt id="macrobond_financial.web.web_types.session_http_exception.SessionHttpException.status_code"><code class="name">var <span class="ident">status_code</span></code></dt>
+<dt id="macrobond_financial.web.web_types.session_http_exception.SessionHttpException.status_code"><code class="name">var <span class="ident">status_code</span> : int</code></dt>
 <dd>
 <div class="desc"></div>
 <details class="source">
@@ -124,7 +125,7 @@ def response(self):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@property
-def status_code(self):
+def status_code(self) -&gt; int:
     return self.__response.status_code</code></pre>
 </details>
 </dd>

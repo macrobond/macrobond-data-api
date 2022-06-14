@@ -1,7 +1,17 @@
 # -*- coding: utf-8 -*-
 
-from datetime import datetime
-from typing import TYPE_CHECKING, List, Sequence, Union, Tuple
+from datetime import datetime, timezone
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    Dict,
+    List,
+    Optional,
+    Sequence,
+    Union,
+    Tuple,
+    cast,
+)
 
 from macrobond_financial.common import Api
 from macrobond_financial.common.types import SearchResult, SeriesEntry
@@ -16,36 +26,20 @@ from macrobond_financial.common.types import (
     MetadataValueInformation,
     MetadataValueInformationItem,
     MetadataAttributeInformation,
-)
-
-from ._api_return_typs import (
-    _GetRevisionInfoReturn,
-    _GetVintageSeriesReturn,
-    _GetNthReleaseReturn,
-    _GetOneSeriesReturn,
-    _GetSeriesReturn,
-    _GetOneEntityReturn,
-    _GetEntitiesReturn,
-    _GetUnifiedSeriesReturn,
-    _GetObservationHistoryReturn,
+    RevisionInfo,
+    GetEntitiesError,
+    VintageSeries,
+    Series,
+    Entity,
+    SeriesObservationHistory,
+    UnifiedSeries,
+    UnifiedSerie,
 )
 
 from .session import SessionHttpException
 
 if TYPE_CHECKING:  # pragma: no cover
     from .session import Session
-
-    from macrobond_financial.common.api_return_types import (
-        GetRevisionInfoReturn,
-        GetVintageSeriesReturn,
-        GetObservationHistoryReturn,
-        GetNthReleaseReturn,
-        GetOneSeriesReturn,
-        GetSeriesReturn,
-        GetOneEntityReturn,
-        GetEntitiesReturn,
-        GetUnifiedSeriesReturn,
-    )
 
     from macrobond_financial.common.types import SearchFilter, StartOrEndPoint
 
@@ -54,12 +48,69 @@ if TYPE_CHECKING:  # pragma: no cover
         SearchRequest,
         UnifiedSeriesRequest,
         UnifiedSeriesEntry,
+        SeriesWithRevisionsInfoResponse,
+        VintageSeriesResponse,
     )
+
+    from .web_types import SeriesResponse, EntityResponse
 
 
 __pdoc__ = {
     "WebApi.__init__": False,
 }
+
+
+def _str_to_datetime_z(datetime_str: str) -> datetime:
+    return datetime.strptime(datetime_str, "%Y-%m-%dT%H:%M:%SZ").replace(
+        tzinfo=timezone.utc
+    )
+
+
+def _optional_str_to_datetime_z(datetime_str: Optional[str]) -> Optional[datetime]:
+    return _str_to_datetime_z(datetime_str) if datetime_str else None
+
+
+def _str_to_datetime(datetime_str: str) -> datetime:
+    return datetime.strptime(datetime_str, "%Y-%m-%dT%H:%M:%S").replace(
+        tzinfo=timezone.utc
+    )
+
+
+def _optional_str_to_datetime(datetime_str: Optional[str]) -> Optional[datetime]:
+    return _str_to_datetime(datetime_str) if datetime_str else None
+
+
+def _create_entity(response: "EntityResponse", name: str) -> Entity:
+    error_text = response.get("errorText")
+
+    if error_text:
+        return Entity(name, error_text, None)
+
+    return Entity(name, None, cast(Dict[str, Any], response["metadata"]))
+
+
+def _create_series(response: "SeriesResponse", name: str) -> Series:
+    error_text = response.get("errorText")
+
+    if error_text:
+        return Series(name, error_text, None, None, None)
+
+    dates = tuple(
+        map(
+            lambda s: datetime.strptime(s, "%Y-%m-%dT%H:%M:%S").replace(
+                tzinfo=timezone.utc
+            ),
+            cast(List[str], response["dates"]),
+        )
+    )
+    values = tuple(
+        map(
+            lambda x: float(x) if x else None,
+            cast(List[Optional[float]], response["values"]),
+        )
+    )
+    # values = cast(Tuple[Optional[float]], response["values"])
+    return Series(name, "", cast(Dict[str, Any], response["metadata"]), values, dates)
 
 
 class WebApi(Api):
@@ -107,7 +158,7 @@ class WebApi(Api):
 
     def metadata_get_value_information(
         self, *name_val: Tuple[str, str]
-    ) -> Tuple[MetadataValueInformationItem, ...]:
+    ) -> List[MetadataValueInformationItem]:
         ret: List[MetadataValueInformationItem] = []
         try:
             for info in self.session.metadata.get_value_information(*name_val):
@@ -123,46 +174,145 @@ class WebApi(Api):
             if ex.status_code == 404:
                 raise ValueError(ex.response.json()["detail"]) from ex
             raise ex
-        return tuple(ret)
+        return ret
 
     # revision
 
     def get_revision_info(
         self, *series_names: str, raise_error: bool = None
-    ) -> "GetRevisionInfoReturn":
-        return _GetRevisionInfoReturn(
-            self.__session,
-            series_names,
+    ) -> List[RevisionInfo]:
+        def to_obj(name: str, serie: "SeriesWithRevisionsInfoResponse"):
+            error_text = serie.get("errorText")
+            if error_text:
+                return RevisionInfo(
+                    name,
+                    error_text,
+                    False,
+                    False,
+                    None,
+                    None,
+                    tuple(),
+                )
+
+            time_stamp_of_first_revision = _optional_str_to_datetime_z(
+                serie.get("timeStampOfFirstRevision")
+            )
+
+            time_stamp_of_last_revision = _optional_str_to_datetime_z(
+                serie.get("timeStampOfLastRevision")
+            )
+
+            vintage_time_stamps = tuple(
+                map(
+                    _str_to_datetime_z,
+                    serie["vintageTimeStamps"],
+                )
+            )
+
+            return RevisionInfo(
+                name,
+                "",
+                serie["storesRevisions"],
+                serie["hasRevisions"],
+                time_stamp_of_first_revision,
+                time_stamp_of_last_revision,
+                vintage_time_stamps,
+            )
+
+        response = self.session.series.get_revision_info(*series_names)
+
+        GetEntitiesError.raise_if(
             self.raise_error if raise_error is None else raise_error,
+            map(lambda x, y: (x, y.get("errorText")), series_names, response),
         )
 
+        return list(map(to_obj, series_names, response))
+
     def get_vintage_series(
-        self, serie_name: str, time: datetime, raise_error: bool = None
-    ) -> "GetVintageSeriesReturn":
-        return _GetVintageSeriesReturn(
-            self.__session,
-            serie_name,
-            time,
-            self.raise_error if raise_error is None else raise_error,
+        self, time: datetime, *series_names: str, raise_error: bool = None
+    ) -> List[VintageSeries]:
+        def to_obj(
+            response: "VintageSeriesResponse", series_name: str
+        ) -> VintageSeries:
+            error_message = response.get("errorText")
+            if error_message:
+                return VintageSeries(series_name, error_message, None, None, None)
+
+            metadata = cast(Dict[str, Any], response["metadata"])
+
+            revision_time_stamp = cast(str, metadata.get("RevisionTimeStamp"))
+            if not revision_time_stamp or time != _str_to_datetime_z(
+                revision_time_stamp
+            ):
+                raise ValueError("Invalid time")
+
+            values: Tuple[Optional[float], ...] = tuple(
+                map(
+                    lambda x: float(x) if x else None,
+                    cast(List[Optional[float]], response["values"]),
+                )
+            )
+
+            dates = tuple(map(_str_to_datetime, cast(List[str], response["dates"])))
+
+            return VintageSeries(series_name, None, metadata, values, dates)
+
+        response = self.session.series.fetch_vintage_series(
+            time, *series_names, get_times_of_change=False
         )
+
+        series = list(map(to_obj, response, series_names))
+
+        GetEntitiesError.raise_if(
+            self.raise_error if raise_error is None else raise_error,
+            map(
+                lambda x, y: (x, y.error_message if y.is_error else None),
+                series_names,
+                series,
+            ),
+        )
+
+        return series
+
+    def get_nth_release(
+        self, nth: int, *series_names: str, raise_error: bool = None
+    ) -> List[Series]:
+        response = self.session.series.fetch_nth_release_series(nth, *series_names)
+
+        series = list(map(_create_series, response, series_names))
+
+        GetEntitiesError.raise_if(
+            self.raise_error if raise_error is None else raise_error,
+            map(
+                lambda x, y: (x, y.error_message if y.is_error else None),
+                series_names,
+                series,
+            ),
+        )
+
+        return series
 
     def get_observation_history(
         self, serie_name: str, times: Sequence[datetime]
-    ) -> "GetObservationHistoryReturn":
-        return _GetObservationHistoryReturn(
-            self.__session,
-            serie_name,
-            times,
-        )
+    ) -> List[SeriesObservationHistory]:
+        try:
+            response = self.session.series.fetch_observation_history(
+                serie_name, list(times)
+            )
+        except SessionHttpException as ex:
+            if ex.status_code == 404:
+                raise Exception(ex.response.json()["detail"]) from ex
+            raise ex
 
-    def get_nth_release(
-        self, serie_name: str, nth: int, raise_error: bool = None
-    ) -> "GetNthReleaseReturn":
-        return _GetNthReleaseReturn(
-            self.__session,
-            serie_name,
-            nth,
-            self.raise_error if raise_error is None else raise_error,
+        return list(
+            map(
+                lambda x: SeriesObservationHistory(
+                    _str_to_datetime(x["observationDate"]),
+                    tuple(map(lambda v: float(v) if v else None, x["values"])),
+                    tuple(map(_optional_str_to_datetime_z, x["timeStamps"])),
+                ),
+                response,
+            )
         )
 
     # Search
@@ -195,41 +345,39 @@ class WebApi(Api):
 
     # Series
 
-    def get_one_series(
-        self, series_name: str, raise_error: bool = None
-    ) -> "GetOneSeriesReturn":
-        return _GetOneSeriesReturn(
-            self.__session,
-            series_name,
-            self.raise_error if raise_error is None else raise_error,
-        )
+    def get_one_series(self, series_name: str, raise_error: bool = None) -> Series:
+        return self.get_series(series_name, raise_error=raise_error)[0]
 
-    def get_series(
-        self, *series_names: str, raise_error: bool = None
-    ) -> "GetSeriesReturn":
-        return _GetSeriesReturn(
-            self.__session,
-            series_names,
+    def get_series(self, *series_names: str, raise_error: bool = None) -> List[Series]:
+        response = self.session.series.fetch_series(*series_names)
+        series = list(map(_create_series, response, series_names))
+        GetEntitiesError.raise_if(
             self.raise_error if raise_error is None else raise_error,
+            map(
+                lambda x, y: (x, y.error_message if y.is_error else None),
+                series_names,
+                series,
+            ),
         )
+        return series
 
-    def get_one_entity(
-        self, entity_name: str, raise_error: bool = None
-    ) -> "GetOneEntityReturn":
-        return _GetOneEntityReturn(
-            self.__session,
-            entity_name,
-            self.raise_error if raise_error is None else raise_error,
-        )
+    def get_one_entity(self, entity_name: str, raise_error: bool = None) -> Entity:
+        return self.get_entities(entity_name, raise_error=raise_error)[0]
 
     def get_entities(
         self, *entity_names: str, raise_error: bool = None
-    ) -> "GetEntitiesReturn":
-        return _GetEntitiesReturn(
-            self.__session,
-            entity_names,
+    ) -> List[Entity]:
+        response = self.session.series.fetch_entities(*entity_names)
+        entitys = list(map(_create_entity, response, entity_names))
+        GetEntitiesError.raise_if(
             self.raise_error if raise_error is None else raise_error,
+            map(
+                lambda x, y: (x, y.error_message if y.is_error else None),
+                entity_names,
+                entitys,
+            ),
         )
+        return entitys
 
     def get_unified_series(
         self,
@@ -241,7 +389,7 @@ class WebApi(Api):
         start_point: "StartOrEndPoint" = None,
         end_point: "StartOrEndPoint" = None,
         raise_error: bool = None
-    ) -> "GetUnifiedSeriesReturn":
+    ) -> UnifiedSeries:
         def convert_to_unified_series_entry(
             entry_or_name: Union[SeriesEntry, str]
         ) -> "UnifiedSeriesEntry":
@@ -274,8 +422,36 @@ class WebApi(Api):
             request["endPoint"] = end_point.time
             request["endDateMode"] = end_point.mode
 
-        return _GetUnifiedSeriesReturn(
-            self.__session,
-            request,
-            self.raise_error if raise_error is None else raise_error,
-        )
+        response = self.session.series.fetch_unified_series(request)
+
+        str_dates = response.get("dates")
+        if str_dates:
+            dates = tuple(map(_str_to_datetime, str_dates))
+        else:
+            dates = tuple()
+
+        series: List[UnifiedSerie] = []
+        for i, one_series in enumerate(response["series"]):
+            name = request["seriesEntries"][i]["name"]
+            error_text = one_series.get("errorText")
+
+            if error_text:
+                series.append(UnifiedSerie(name, error_text, {}, tuple()))
+            else:
+                values = tuple(
+                    map(
+                        lambda x: float(x) if x else None,
+                        cast(List[Optional[float]], one_series["values"]),
+                    )
+                )
+                metadata = cast(Dict[str, Any], one_series["metadata"])
+                series.append(UnifiedSerie(name, "", metadata, values))
+
+        ret = UnifiedSeries(dates, tuple(series))
+
+        errors = ret.get_errors()
+        raise_error = self.raise_error if raise_error is None else raise_error
+        if raise_error and len(errors) != 0:
+            raise GetEntitiesError(errors)
+
+        return ret

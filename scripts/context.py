@@ -5,12 +5,12 @@ import sys
 from typing import Callable, List, Optional
 
 
-def error_print(text: str):
+def error_print(text: str) -> None:
     sys.stderr.write(text)
     sys.stderr.flush()
 
 
-def warning_print(text: str):
+def warning_print(text: str) -> None:
     print("Warning: " + text)
 
 

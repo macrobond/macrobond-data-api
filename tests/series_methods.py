@@ -38,8 +38,8 @@ def comper_unified_dict(
 
 class Common(TestCase):
     def test_get_one_series(self) -> None:
-        web = self.web_api.get_one_series("usgdp").object()
-        com = self.com_api.get_one_series("usgdp").object()
+        web = self.web_api.get_one_series("usgdp")
+        com = self.com_api.get_one_series("usgdp")
 
         # intersection = [
         #     value for value in web.metadata.keys()
@@ -63,8 +63,8 @@ class Common(TestCase):
         self.assertSequenceEqual(web.dates, com.dates, "dates")
 
     def test_get_one_entity(self) -> None:
-        web = self.web_api.get_one_entity("usgdp").object()
-        com = self.com_api.get_one_entity("usgdp").object()
+        web = self.web_api.get_one_entity("usgdp")
+        com = self.com_api.get_one_entity("usgdp")
 
         self.assertEqual(web.name, com.name, "name")
         self.assertEqual(web.primary_name, com.primary_name, "primary_name")
@@ -76,8 +76,8 @@ class Common(TestCase):
         self.assertEqual(web.__repr__(), com.__repr__(), "__repr__")
 
     def test_get_one_entity_metadata_as_data_frame(self) -> None:
-        web = self.web_api.get_one_entity("usgdp").metadata_as_data_frame()
-        com = self.com_api.get_one_entity("usgdp").metadata_as_data_frame()
+        web = self.web_api.get_one_entity("usgdp").get_metadata_as_data_frame()
+        com = self.com_api.get_one_entity("usgdp").get_metadata_as_data_frame()
 
         self.assertSequenceEqual(web.columns, com.columns)
 
@@ -94,12 +94,12 @@ class Common(TestCase):
         web = self.web_api.get_unified_series(
             "usgdp",
             "uscpi",
-        ).object()
+        )
 
         com = self.com_api.get_unified_series(
             "usgdp",
             "uscpi",
-        ).object()
+        )
 
         for serie in web:
             serie.metadata = {}
@@ -111,10 +111,10 @@ class Common(TestCase):
 
         web = self.web_api.get_unified_series(
             "usgdp", "uscpi", "noseries!", raise_error=False
-        ).object()
+        )
         com = self.com_api.get_unified_series(
             "usgdp", "uscpi", "noseries!", raise_error=False
-        ).object()
+        )
 
         for serie in web:
             serie.metadata = {}
@@ -128,21 +128,21 @@ class Common(TestCase):
         web = self.web_api.get_unified_series(
             "usgdp",
             "uscpi",
-        ).dict()
+        ).to_dict()
 
         com = self.com_api.get_unified_series(
             "usgdp",
             "uscpi",
-        ).dict()
+        ).to_dict()
 
         comper_unified_dict(self, web, com)
 
         web = self.web_api.get_unified_series(
             "usgdp", "uscpi", "noseries!", raise_error=False
-        ).dict()
+        ).to_dict()
         com = self.com_api.get_unified_series(
             "usgdp", "uscpi", "noseries!", raise_error=False
-        ).dict()
+        ).to_dict()
 
         comper_unified_dict(self, web, com)
 
@@ -195,9 +195,6 @@ class Web(TestCase):
     def test_get_unified_series(self) -> None:
         get_unified_series(self, self.web_api)
 
-    def test_get_unified_series_use_twice(self) -> None:
-        get_unified_series_use_twice(self.web_api)
-
     def test_get_unified_series_no_series(self) -> None:
         get_unified_series_no_series(self, self.web_api)
 
@@ -218,15 +215,12 @@ class Com(TestCase):
     def test_get_unified_series(self) -> None:
         get_unified_series(self, self.com_api)
 
-    def test_get_unified_series_use_twice(self) -> None:
-        get_unified_series_use_twice(self.com_api)
-
     def test_get_unified_series_no_series(self) -> None:
         get_unified_series_no_series(self, self.com_api)
 
 
 def get_one_series(test: TestCase, api: Api) -> None:
-    series = api.get_one_series("usgdp").object()
+    series = api.get_one_series("usgdp")
     test.assertFalse(series.is_error, "is_error")
 
     test.assertNotEqual(len(series.values), 0, "values")
@@ -239,14 +233,14 @@ def get_one_series(test: TestCase, api: Api) -> None:
 
     test.assertEqual(float, type(series.values[0]))
 
-    series = api.get_one_series("noseries!", raise_error=False).object()
+    series = api.get_one_series("noseries!", raise_error=False)
     test.assertTrue(series.is_error, "is_error")
     test.assertEqual(series.error_message, "Not found", "error_message")
 
     # test raise_get_entities_error=True
 
     with test.assertRaises(GetEntitiesError) as context:
-        api.get_one_series("noseries!").object()
+        api.get_one_series("noseries!")
 
     test.assertEqual(
         "failed to retrieve:\n\tnoseries! error_message: Not found",
@@ -260,20 +254,20 @@ def get_one_series(test: TestCase, api: Api) -> None:
 
     # values_and_dates_as_data_frame
 
-    data_frame = api.get_one_series("usgdp").values_and_dates_as_data_frame()
+    data_frame = api.get_one_series("usgdp").get_values_and_dates_as_data_frame()
     test.assertNotEqual(len(data_frame.index), 0)
 
     # values_and_dates_as_data_frame Error
 
     data_frame = api.get_one_series(
         "noseries!", raise_error=False
-    ).values_and_dates_as_data_frame()
+    ).get_values_and_dates_as_data_frame()
 
     test.assertEqual(len(data_frame.index), 1)
 
     # dict
 
-    dict_series = api.get_one_series("usgdp", raise_error=False).dict()
+    dict_series = api.get_one_series("usgdp", raise_error=False).to_dict()
 
     test.assertEqual(dict_series["Name"], "usgdp")
     # test.assertNotEqual(len(dict_series["Values"]), 0)
@@ -281,7 +275,7 @@ def get_one_series(test: TestCase, api: Api) -> None:
 
     # error dict
 
-    dict_series = api.get_one_series("noseries!", raise_error=False).dict()
+    dict_series = api.get_one_series("noseries!", raise_error=False).to_dict()
 
     test.assertDictEqual(
         dict_series, {"Name": "noseries!", "ErrorMessage": "Not found"}
@@ -289,9 +283,7 @@ def get_one_series(test: TestCase, api: Api) -> None:
 
 
 def get_series(test: TestCase, api: Api) -> None:
-    series = api.get_series(
-        "usgdp", "uscpi", "noseries!", raise_error=False
-    ).list_of_objects()
+    series = api.get_series("usgdp", "uscpi", "noseries!", raise_error=False)
 
     # test.assertEqual(series[0].name, 'usgdp', 'name')
     test.assertEqual(series[0].primary_name, "usnaac0169", "primary_name")
@@ -312,28 +304,23 @@ def get_series(test: TestCase, api: Api) -> None:
     # test raise_get_entities_error=True
 
     with test.assertRaises(GetEntitiesError) as context:
-        api.get_series("usgdp", "noseries!").list_of_dicts()
+        api.get_series("usgdp", "noseries!")
 
     test.assertEqual(
         "failed to retrieve:\n\tnoseries! error_message: Not found",
         context.exception.message,
     )
 
-    # test data_frame()
-
-    data_frame = api.get_series("usgdp", "uscpi").data_frame()
-    test.assertEqual(len(data_frame.index), 2)
-
 
 def get_one_entity(test: TestCase, api: Api) -> None:
-    entitie = api.get_one_entity("usgdp").object()
+    entitie = api.get_one_entity("usgdp")
     # test.assertEqual(entitie.name, 'usgdp', 'name')
     test.assertEqual(entitie.primary_name, "usnaac0169", "primary_name")
     test.assertFalse(entitie.is_error, "is_error")
     test.assertEqual(entitie.error_message, "", "error_message")
     test.assertIsNotNone(entitie.metadata, "metadata")
 
-    entitie = api.get_one_entity("noseries!", raise_error=False).object()
+    entitie = api.get_one_entity("noseries!", raise_error=False)
     # test.assertEqual(entitie.name, 'noseries!', 'name')
     test.assertTrue(entitie.is_error, "is_error")
     test.assertEqual(entitie.error_message, "Not found", "error_message")
@@ -341,7 +328,7 @@ def get_one_entity(test: TestCase, api: Api) -> None:
     # test raise_get_entities_error=True
 
     with test.assertRaises(GetEntitiesError) as context:
-        api.get_one_entity("noseries!").dict()
+        api.get_one_entity("noseries!").to_dict()
 
     test.assertEqual(
         "failed to retrieve:\n\tnoseries! error_message: Not found",
@@ -355,14 +342,14 @@ def get_one_entity(test: TestCase, api: Api) -> None:
 
     # dict
 
-    dict_series = api.get_one_entity("usgdp", raise_error=False).dict()
+    dict_series = api.get_one_entity("usgdp", raise_error=False).to_dict()
 
     test.assertEqual(dict_series["Name"], "usgdp")
     test.assertEqual(dict_series["metadata.Class"], "stock")
 
     # error dict
 
-    dict_series = api.get_one_entity("noseries!", raise_error=False).dict()
+    dict_series = api.get_one_entity("noseries!", raise_error=False).to_dict()
 
     test.assertDictEqual(
         dict_series, {"Name": "noseries!", "ErrorMessage": "Not found"}
@@ -370,9 +357,7 @@ def get_one_entity(test: TestCase, api: Api) -> None:
 
 
 def get_entities(test: TestCase, api: Api) -> None:
-    series = api.get_entities(
-        "usgdp", "uscpi", "noseries!", raise_error=False
-    ).list_of_objects()
+    series = api.get_entities("usgdp", "uscpi", "noseries!", raise_error=False)
 
     # test.assertEqual(series[0].name, 'usgdp', 'name')
     test.assertEqual(series[0].primary_name, "usnaac0169", "primary_name")
@@ -392,17 +377,12 @@ def get_entities(test: TestCase, api: Api) -> None:
     # test raise_get_entities_error=True
 
     with test.assertRaises(GetEntitiesError) as context:
-        api.get_entities("usgdp", "noseries!").list_of_dicts()
+        api.get_entities("usgdp", "noseries!")
 
     test.assertEqual(
         "failed to retrieve:\n\tnoseries! error_message: Not found",
         context.exception.message,
     )
-
-    # test data_frame()
-
-    data_frame = api.get_entities("usgdp", "uscpi").data_frame()
-    test.assertEqual(len(data_frame.index), 2)
 
 
 def get_unified_series(test: TestCase, api: Api) -> None:
@@ -418,7 +398,7 @@ def get_unified_series(test: TestCase, api: Api) -> None:
         start_point=StartOrEndPoint.point_in_time(1989, 2, 1),
         end_point=StartOrEndPoint.point_in_time(datetime(2000, 2, 1)),
         raise_error=False,
-    ).object()
+    )
 
     test.assertEqual(
         str(unified), "UnifiedSeries of 5 series", "__str__() or str(series)"
@@ -447,7 +427,7 @@ def get_unified_series(test: TestCase, api: Api) -> None:
     test.assertEqual(unified[4].error_message, "noseries! : Not found", "error_message")
     test.assertEqual(len(unified[4].values), 0, "len(unified[4].values)")
 
-    data_frame = api.get_unified_series(
+    api.get_unified_series(
         "cyinea0001",
         "cypric0014",
         "cytour0076",
@@ -466,24 +446,12 @@ def get_unified_series(test: TestCase, api: Api) -> None:
         ]
     )
 
-    ...
-
-
-def get_unified_series_use_twice(api: Api) -> None:
-    unified_return = api.get_unified_series(
-        SeriesEntry("usgdp"),
-        SeriesEntry("uscpi"),
-    )
-
-    unified_return.object()
-    unified_return.object()
-
 
 def get_unified_series_no_series(test: TestCase, api: Api) -> None:
     unified = api.get_unified_series(
         "noseries!",
         raise_error=False,
-    ).object()
+    )
 
     test.assertEqual(unified.dates, tuple())
     test.assertEqual(len(unified.series), 1)
@@ -495,22 +463,14 @@ def get_unified_series_no_series(test: TestCase, api: Api) -> None:
 
     unified = api.get_unified_series(
         raise_error=False,
-    ).object()
+    )
 
     test.assertEqual(unified.dates, tuple())
     test.assertEqual(len(unified.series), 0)
     test.assertEqual(len(unified), 0)
 
     with test.assertRaises(GetEntitiesError) as context:
-        unified = api.get_unified_series("noseries!").object()
-
-    test.assertEqual(
-        "failed to retrieve:\n\tnoseries! error_message: noseries! : Not found",
-        context.exception.message,
-    )
-
-    with test.assertRaises(GetEntitiesError) as context:
-        api.get_unified_series("noseries!").dict()
+        unified = api.get_unified_series("noseries!")
 
     test.assertEqual(
         "failed to retrieve:\n\tnoseries! error_message: noseries! : Not found",

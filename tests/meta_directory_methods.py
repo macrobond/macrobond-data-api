@@ -21,24 +21,24 @@ if TYPE_CHECKING:
 
 
 class Web(TestCase):
-    def test_get_attribute_information(self):
+    def test_get_attribute_information(self) -> None:
         get_attribute_information(self, self.web_api)
 
-    def test_list_values(self):
+    def test_list_values(self) -> None:
         list_values(self, self.web_api)
 
-    def test_get_value_information(self):
+    def test_get_value_information(self) -> None:
         get_value_information(self, self.web_api)
 
 
 class Com(TestCase):
-    def test_get_attribute_information(self):
+    def test_get_attribute_information(self) -> None:
         get_attribute_information(self, self.com_api)
 
-    def test_list_values(self):
+    def test_list_values(self) -> None:
         list_values(self, self.com_api)
 
-    def test_get_value_information(self):
+    def test_get_value_information(self) -> None:
         get_value_information(self, self.com_api)
 
 

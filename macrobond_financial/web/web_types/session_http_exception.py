@@ -3,19 +3,20 @@
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:  # pragma: no cover
+    from requests import Response  # type: ignore
     try:
-        from requests import Response  # type: ignore
+        ...
     except ImportError:
         ...
 
 
 class SessionHttpException(Exception):
     @property
-    def status_code(self):
+    def status_code(self) -> int:
         return self.__response.status_code
 
     @property
-    def response(self):
+    def response(self) -> "Response":
         return self.__response
 
     def __init__(self, response: "Response") -> None:

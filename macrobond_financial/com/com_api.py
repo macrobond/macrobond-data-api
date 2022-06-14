@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
-from typing import List, Sequence, Tuple, Union, TYPE_CHECKING, cast
+from math import isnan
+from typing import Any, Dict, List, Sequence, Tuple, Union, TYPE_CHECKING, cast
 
 from datetime import datetime
 
@@ -18,45 +19,62 @@ from macrobond_financial.common.types import (
     MetadataValueInformation,
     MetadataValueInformationItem,
     MetadataAttributeInformation,
+    RevisionInfo,
+    GetEntitiesError,
+    VintageSeries,
+    Series,
+    Entity,
+    UnifiedSerie,
+    UnifiedSeries,
 )
-
-from ._api_return_types import (
-    _GetRevisionInfoReturn,
-    _GetVintageSeriesReturn,
-    _GetNthReleaseReturn,
-    _GetOneSeriesReturn,
-    _GetSeriesReturn,
-    _GetOneEntityReturn,
-    _GetEntitiesReturn,
-    _GetUnifiedSeriesReturn,
-    _fill_metadata_from_entity,
-)
-
 
 if TYPE_CHECKING:  # pragma: no cover
     from macrobond_financial.com.com_types import Connection
-
-    from macrobond_financial.common.api_return_types import (
-        GetRevisionInfoReturn,
-        GetVintageSeriesReturn,
-        # GetObservationHistoryReturn,
-        GetNthReleaseReturn,
-        GetOneSeriesReturn,
-        GetSeriesReturn,
-        GetOneEntityReturn,
-        GetEntitiesReturn,
-        GetUnifiedSeriesReturn,
-    )
 
     from macrobond_financial.common.enums import MetadataAttributeType
 
     from macrobond_financial.common.types import SearchFilter, StartOrEndPoint
 
-    from .com_types import Connection, SearchQuery, Database
+    from .com_types import Connection, SearchQuery, Database, SeriesWithRevisions
+
+    from .com_types import Series as ComSeries, Entity as ComEntity
 
 __pdoc__ = {
     "ComApi.__init__": False,
 }
+
+
+def _fill_metadata_from_entity(com_entity: "ComEntity") -> Dict[str, Any]:
+    ret = {}
+    metadata = com_entity.Metadata
+
+    for names_and_description in metadata.ListNames():
+        name = names_and_description[0]
+        values = metadata.GetValues(name)
+        ret[name] = values[0] if len(values) == 1 else list(values)
+
+    if "FullDescription" not in ret:
+        ret["FullDescription"] = com_entity.Title
+
+    return ret
+
+
+def _create_entity(com_entity: "ComEntity", name: str) -> Entity:
+    if com_entity.IsError:
+        return Entity(name, com_entity.ErrorMessage, None)
+    return Entity(name, None, _fill_metadata_from_entity(com_entity))
+
+
+def _create_series(com_series: "ComSeries", name: str) -> Series:
+    if com_series.IsError:
+        return Series(name, com_series.ErrorMessage, None, None, None)
+    return Series(
+        name,
+        None,
+        _fill_metadata_from_entity(com_series),
+        com_series.Values,
+        com_series.DatesAtStartOfPeriod,
+    )
 
 
 class ComApi(Api):
@@ -91,7 +109,7 @@ class ComApi(Api):
         )
 
     def metadata_get_attribute_information(
-        self, *name: str
+        self, *names: str
     ) -> Sequence[MetadataAttributeInformation]:
         def get_metadata_attribute_information(name: str):
             info = self.database.GetMetadataInformation(name)
@@ -106,11 +124,11 @@ class ComApi(Api):
                 info.IsDatabaseEntity,
             )
 
-        return tuple(map(get_metadata_attribute_information, name))
+        return tuple(map(get_metadata_attribute_information, names))
 
     def metadata_get_value_information(
         self, *name_val: Tuple[str, str]
-    ) -> Tuple[MetadataValueInformationItem, ...]:
+    ) -> List[MetadataValueInformationItem]:
         def is_error_with_text(ex: Exception, text: str) -> bool:
             return (
                 len(ex.args) >= 3
@@ -146,38 +164,168 @@ class ComApi(Api):
                     name, value_info.Value, value_info.Description, value_info.Comment
                 )
             )
-        return tuple(ret)
+        return ret
 
     # revision
 
     def get_revision_info(
         self, *series_names: str, raise_error: bool = None
-    ) -> "GetRevisionInfoReturn":
-        return _GetRevisionInfoReturn(
-            self.__connection.Database,
-            series_names,
+    ) -> List[RevisionInfo]:
+        def to_obj(name: str, serie: "SeriesWithRevisions"):
+            if serie.IsError:
+                return RevisionInfo(
+                    name,
+                    serie.ErrorMessage,
+                    False,
+                    False,
+                    None,
+                    None,
+                    tuple(),
+                )
+
+            vintage_time_stamps = tuple(serie.GetVintageDates())
+
+            time_stamp_of_first_revision = (
+                vintage_time_stamps[0] if serie.HasRevisions else None
+            )
+            time_stamp_of_last_revision = (
+                vintage_time_stamps[-1] if serie.HasRevisions else None
+            )
+
+            return RevisionInfo(
+                name,
+                "",
+                serie.StoresRevisions,
+                serie.HasRevisions,
+                time_stamp_of_first_revision,
+                time_stamp_of_last_revision,
+                vintage_time_stamps,
+            )
+
+        series = self.database.FetchSeriesWithRevisions(series_names)
+
+        GetEntitiesError.raise_if(
             self.raise_error if raise_error is None else raise_error,
+            map(
+                lambda x, y: (x, y.ErrorMessage if y.IsError else None),
+                series_names,
+                series,
+            ),
         )
+
+        return list(map(to_obj, series_names, series))
 
     def get_vintage_series(
-        self, serie_name: str, time: datetime, raise_error: bool = None
-    ) -> "GetVintageSeriesReturn":
-        return _GetVintageSeriesReturn(
-            self.__connection.Database,
-            serie_name,
-            time,
+        self, time: datetime, *series_names: str, raise_error: bool = None
+    ) -> List[VintageSeries]:
+        def to_obj(series_name: str) -> VintageSeries:
+            series_with_revisions = self.database.FetchOneSeriesWithRevisions(
+                series_name
+            )
+
+            if series_with_revisions.IsError:
+                return VintageSeries(
+                    series_name,
+                    series_with_revisions.ErrorMessage,
+                    None,
+                    None,
+                    None,
+                )
+
+            try:
+                series = series_with_revisions.GetVintage(time)
+            except OSError as os_error:
+                if os_error.errno == 22 and os_error.strerror == "Invalid argument":
+                    raise ValueError("Invalid time") from os_error
+                raise os_error
+
+            if series.IsError:
+                return VintageSeries(
+                    series_name,
+                    series.ErrorMessage,
+                    None,
+                    None,
+                    None,
+                )
+
+            values = tuple(
+                filter(lambda x: x is not None and not isnan(x), series.Values)
+            )
+
+            dates = series.DatesAtStartOfPeriod[: len(values)]
+
+            return VintageSeries(
+                series_name,
+                "",
+                _fill_metadata_from_entity(series),
+                values,
+                dates,
+            )
+
+        series = list(map(to_obj, series_names))
+
+        GetEntitiesError.raise_if(
             self.raise_error if raise_error is None else raise_error,
+            map(
+                lambda x, y: (x, y.error_message if y.is_error else None),
+                series_names,
+                series,
+            ),
         )
 
+        return series
+
     def get_nth_release(
-        self, serie_name: str, nth: int, raise_error: bool = None
-    ) -> "GetNthReleaseReturn":
-        return _GetNthReleaseReturn(
-            self.__connection.Database,
-            serie_name,
-            nth,
+        self, nth: int, *series_names: str, raise_error: bool = None
+    ) -> List[Series]:
+        def to_obj(series_name: str) -> Series:
+            series_with_revisions = self.database.FetchOneSeriesWithRevisions(
+                series_name
+            )
+
+            if series_with_revisions.IsError:
+                return Series(
+                    series_name,
+                    series_with_revisions.ErrorMessage,
+                    None,
+                    None,
+                    None,
+                )
+
+            series = series_with_revisions.GetNthRelease(nth)
+            if series.IsError:
+                return Series(
+                    series_name,
+                    series.ErrorMessage,
+                    None,
+                    None,
+                    None,
+                )
+
+            values = tuple(
+                map(lambda x: None if isnan(x) else x, series.Values)  # type: ignore
+            )
+
+            return Series(
+                series_name,
+                None,
+                _fill_metadata_from_entity(series),
+                values,
+                series.DatesAtStartOfPeriod,
+            )
+
+        series = list(map(to_obj, series_names))
+
+        GetEntitiesError.raise_if(
             self.raise_error if raise_error is None else raise_error,
+            map(
+                lambda x, y: (x, y.error_message if y.is_error else None),
+                series_names,
+                series,
+            ),
         )
+
+        return series
 
     # Search
 
@@ -217,43 +365,41 @@ class ComApi(Api):
         entities = tuple(list(map(_fill_metadata_from_entity, result.Entities)))
         return SearchResult(entities, result.IsTruncated)
 
-    # Search
+    # Series
 
-    def get_one_series(
-        self, series_name: str, raise_error: bool = None
-    ) -> "GetOneSeriesReturn":
-        return _GetOneSeriesReturn(
-            self.__connection.Database,
-            series_name,
-            self.raise_error if raise_error is None else raise_error,
-        )
+    def get_one_series(self, series_name: str, raise_error: bool = None) -> Series:
+        return self.get_series(series_name, raise_error=raise_error)[0]
 
-    def get_series(
-        self, *series_names: str, raise_error: bool = None
-    ) -> "GetSeriesReturn":
-        return _GetSeriesReturn(
-            self.__connection.Database,
-            series_names,
+    def get_series(self, *series_names: str, raise_error: bool = None) -> List[Series]:
+        com_series = self.database.FetchSeries(series_names)
+        series = list(map(_create_series, com_series, series_names))
+        GetEntitiesError.raise_if(
             self.raise_error if raise_error is None else raise_error,
+            map(
+                lambda x, y: (x, y.error_message if y.is_error else None),
+                series_names,
+                series,
+            ),
         )
+        return series
 
-    def get_one_entity(
-        self, entity_name: str, raise_error: bool = None
-    ) -> "GetOneEntityReturn":
-        return _GetOneEntityReturn(
-            self.__connection.Database,
-            entity_name,
-            self.raise_error if raise_error is None else raise_error,
-        )
+    def get_one_entity(self, entity_name: str, raise_error: bool = None) -> Entity:
+        return self.get_entities(entity_name, raise_error=raise_error)[0]
 
     def get_entities(
         self, *entity_names: str, raise_error: bool = None
-    ) -> "GetEntitiesReturn":
-        return _GetEntitiesReturn(
-            self.__connection.Database,
-            entity_names,
+    ) -> List[Entity]:
+        com_entitys = self.database.FetchEntities(entity_names)
+        entitys = list(map(_create_entity, com_entitys, entity_names))
+        GetEntitiesError.raise_if(
             self.raise_error if raise_error is None else raise_error,
+            map(
+                lambda x, y: (x, y.error_message if y.is_error else None),
+                entity_names,
+                entitys,
+            ),
         )
+        return entitys
 
     def get_unified_series(
         self,
@@ -265,7 +411,7 @@ class ComApi(Api):
         start_point: "StartOrEndPoint" = None,
         end_point: "StartOrEndPoint" = None,
         raise_error: bool = None
-    ) -> "GetUnifiedSeriesReturn":
+    ) -> UnifiedSeries:
         request = self.__connection.Database.CreateUnifiedSeriesRequest()
         for entry_or_name in series_entries:
             if isinstance(entry_or_name, str):
@@ -302,8 +448,49 @@ class ComApi(Api):
             request.EndDate = end_point.time
             request.EndDateMode = end_point.mode
 
-        return _GetUnifiedSeriesReturn(
-            self.__connection.Database,
-            request,
-            self.raise_error if raise_error is None else raise_error,
-        )
+        com_series = self.database.FetchSeries(request)
+
+        first = next(filter(lambda x: not x.IsError, com_series), None)
+        dates = first.DatesAtStartOfPeriod if first else tuple()
+
+        series: List[UnifiedSerie] = []
+
+        for i, com_one_series in enumerate(com_series):
+            name = request.AddedSeries[i].Name
+            if com_one_series.IsError:
+                series.append(
+                    UnifiedSerie(name, com_one_series.ErrorMessage, {}, tuple())
+                )
+            else:
+                metadata: Dict[str, Any] = {}
+                com_metadata = com_one_series.Metadata
+                for names_and_description in com_metadata.ListNames():
+                    metadata_name = names_and_description[0]
+                    values = com_metadata.GetValues(metadata_name)
+                    if len(values) == 1:
+                        metadata[metadata_name] = values[0]
+                    else:
+                        metadata[metadata_name] = list(values)
+
+                series.append(
+                    UnifiedSerie(
+                        name,
+                        "",
+                        metadata,
+                        tuple(
+                            map(
+                                lambda x: None if x is not None and isnan(x) else x,
+                                com_one_series.Values,
+                            )
+                        ),
+                    )
+                )
+
+        ret = UnifiedSeries(dates, tuple(series))
+
+        errors = ret.get_errors()
+        raise_error = self.raise_error if raise_error is None else raise_error
+        if raise_error and len(errors) != 0:
+            raise GetEntitiesError(errors)
+
+        return ret

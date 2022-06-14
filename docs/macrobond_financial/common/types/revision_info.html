@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.10.0" />
-<title>macrobond_financial.common.api_return_types.get_revision_info_return API documentation</title>
+<title>macrobond_financial.common.types.revision_info API documentation</title>
 <meta name="description" content="" />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
@@ -19,7 +19,7 @@
 <main>
 <article id="content">
 <header>
-<h1 class="title">Module <code>macrobond_financial.common.api_return_types.get_revision_info_return</code></h1>
+<h1 class="title">Module <code>macrobond_financial.common.types.revision_info</code></h1>
 </header>
 <section id="section-intro">
 <details class="source">
@@ -29,8 +29,7 @@
 <pre><code class="python"># -*- coding: utf-8 -*-
 
 from datetime import datetime
-from typing import List, Tuple, TYPE_CHECKING, overload, Optional, cast
-from abc import ABC, abstractmethod
+from typing import Tuple, TYPE_CHECKING, overload, Optional, cast
 
 from typing_extensions import TypedDict
 
@@ -90,35 +89,6 @@ class RevisionInfo:
         pandas = _get_pandas()
         args = args[1:]
         kwargs[&#34;data&#34;] = self.to_dict()
-        return pandas.DataFrame(*args, **kwargs)
-
-
-class GetRevisionInfoReturn(ABC):
-    @abstractmethod
-    def object(self) -&gt; List[RevisionInfo]:
-        ...  # pragma: no cover
-
-    def dict(self) -&gt; List[RevisionInfoDict]:
-        return list(map(lambda x: x.to_dict(), self.object()))
-
-    @overload
-    def data_frame(self) -&gt; &#34;DataFrame&#34;:
-        ...
-
-    @overload
-    def data_frame(
-        self,
-        index: &#34;pandas_typing.Axes&#34; = None,
-        columns: &#34;pandas_typing.Axes&#34; = None,
-        dtype: &#34;pandas_typing.Dtype&#34; = None,
-        copy: bool = False,
-    ) -&gt; &#34;DataFrame&#34;:
-        ...
-
-    def data_frame(self, *args, **kwargs) -&gt; &#34;DataFrame&#34;:
-        pandas = _get_pandas()
-        args = args[1:]
-        kwargs[&#34;data&#34;] = self.dict()
         return pandas.DataFrame(*args, **kwargs)</code></pre>
 </details>
 </section>
@@ -131,101 +101,7 @@ class GetRevisionInfoReturn(ABC):
 <section>
 <h2 class="section-title" id="header-classes">Classes</h2>
 <dl>
-<dt id="macrobond_financial.common.api_return_types.get_revision_info_return.GetRevisionInfoReturn"><code class="flex name class">
-<span>class <span class="ident">GetRevisionInfoReturn</span></span>
-</code></dt>
-<dd>
-<div class="desc"><p>Helper class that provides a standard way to create an ABC using
-inheritance.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">class GetRevisionInfoReturn(ABC):
-    @abstractmethod
-    def object(self) -&gt; List[RevisionInfo]:
-        ...  # pragma: no cover
-
-    def dict(self) -&gt; List[RevisionInfoDict]:
-        return list(map(lambda x: x.to_dict(), self.object()))
-
-    @overload
-    def data_frame(self) -&gt; &#34;DataFrame&#34;:
-        ...
-
-    @overload
-    def data_frame(
-        self,
-        index: &#34;pandas_typing.Axes&#34; = None,
-        columns: &#34;pandas_typing.Axes&#34; = None,
-        dtype: &#34;pandas_typing.Dtype&#34; = None,
-        copy: bool = False,
-    ) -&gt; &#34;DataFrame&#34;:
-        ...
-
-    def data_frame(self, *args, **kwargs) -&gt; &#34;DataFrame&#34;:
-        pandas = _get_pandas()
-        args = args[1:]
-        kwargs[&#34;data&#34;] = self.dict()
-        return pandas.DataFrame(*args, **kwargs)</code></pre>
-</details>
-<h3>Ancestors</h3>
-<ul class="hlist">
-<li>abc.ABC</li>
-</ul>
-<h3>Subclasses</h3>
-<ul class="hlist">
-<li>macrobond_financial.com._api_return_types._get_revision_info_return._GetRevisionInfoReturn</li>
-<li>macrobond_financial.web._api_return_typs._get_revision_info_return._GetRevisionInfoReturn</li>
-</ul>
-<h3>Methods</h3>
-<dl>
-<dt id="macrobond_financial.common.api_return_types.get_revision_info_return.GetRevisionInfoReturn.data_frame"><code class="name flex">
-<span>def <span class="ident">data_frame</span></span>(<span>self, *args, **kwargs) ‑> DataFrame</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def data_frame(self, *args, **kwargs) -&gt; &#34;DataFrame&#34;:
-    pandas = _get_pandas()
-    args = args[1:]
-    kwargs[&#34;data&#34;] = self.dict()
-    return pandas.DataFrame(*args, **kwargs)</code></pre>
-</details>
-</dd>
-<dt id="macrobond_financial.common.api_return_types.get_revision_info_return.GetRevisionInfoReturn.dict"><code class="name flex">
-<span>def <span class="ident">dict</span></span>(<span>self) ‑> List[<a title="macrobond_financial.common.api_return_types.get_revision_info_return.RevisionInfoDict" href="#macrobond_financial.common.api_return_types.get_revision_info_return.RevisionInfoDict">RevisionInfoDict</a>]</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def dict(self) -&gt; List[RevisionInfoDict]:
-    return list(map(lambda x: x.to_dict(), self.object()))</code></pre>
-</details>
-</dd>
-<dt id="macrobond_financial.common.api_return_types.get_revision_info_return.GetRevisionInfoReturn.object"><code class="name flex">
-<span>def <span class="ident">object</span></span>(<span>self) ‑> List[<a title="macrobond_financial.common.api_return_types.get_revision_info_return.RevisionInfo" href="#macrobond_financial.common.api_return_types.get_revision_info_return.RevisionInfo">RevisionInfo</a>]</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@abstractmethod
-def object(self) -&gt; List[RevisionInfo]:
-    ...  # pragma: no cover</code></pre>
-</details>
-</dd>
-</dl>
-</dd>
-<dt id="macrobond_financial.common.api_return_types.get_revision_info_return.RevisionInfo"><code class="flex name class">
+<dt id="macrobond_financial.common.types.revision_info.RevisionInfo"><code class="flex name class">
 <span>class <span class="ident">RevisionInfo</span></span>
 <span>(</span><span>name: str, error_message: str, stores_revisions: bool, has_revisions: bool, time_stamp_of_first_revision: Optional[datetime.datetime], time_stamp_of_last_revision: Optional[datetime.datetime], vintage_time_stamps: Tuple[datetime.datetime, ...])</span>
 </code></dt>
@@ -279,7 +155,7 @@ def object(self) -&gt; List[RevisionInfo]:
 </details>
 <h3>Methods</h3>
 <dl>
-<dt id="macrobond_financial.common.api_return_types.get_revision_info_return.RevisionInfo.data_frame"><code class="name flex">
+<dt id="macrobond_financial.common.types.revision_info.RevisionInfo.data_frame"><code class="name flex">
 <span>def <span class="ident">data_frame</span></span>(<span>self, *args, **kwargs) ‑> DataFrame</span>
 </code></dt>
 <dd>
@@ -295,8 +171,8 @@ def object(self) -&gt; List[RevisionInfo]:
     return pandas.DataFrame(*args, **kwargs)</code></pre>
 </details>
 </dd>
-<dt id="macrobond_financial.common.api_return_types.get_revision_info_return.RevisionInfo.to_dict"><code class="name flex">
-<span>def <span class="ident">to_dict</span></span>(<span>self) ‑> <a title="macrobond_financial.common.api_return_types.get_revision_info_return.RevisionInfoDict" href="#macrobond_financial.common.api_return_types.get_revision_info_return.RevisionInfoDict">RevisionInfoDict</a></span>
+<dt id="macrobond_financial.common.types.revision_info.RevisionInfo.to_dict"><code class="name flex">
+<span>def <span class="ident">to_dict</span></span>(<span>self) ‑> <a title="macrobond_financial.common.types.revision_info.RevisionInfoDict" href="#macrobond_financial.common.types.revision_info.RevisionInfoDict">RevisionInfoDict</a></span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -310,7 +186,7 @@ def object(self) -&gt; List[RevisionInfo]:
 </dd>
 </dl>
 </dd>
-<dt id="macrobond_financial.common.api_return_types.get_revision_info_return.RevisionInfoDict"><code class="flex name class">
+<dt id="macrobond_financial.common.types.revision_info.RevisionInfoDict"><code class="flex name class">
 <span>class <span class="ident">RevisionInfoDict</span></span>
 <span>(</span><span>*args, **kwargs)</span>
 </code></dt>
@@ -345,31 +221,31 @@ dict(one=1, two=2)</p></div>
 </ul>
 <h3>Class variables</h3>
 <dl>
-<dt id="macrobond_financial.common.api_return_types.get_revision_info_return.RevisionInfoDict.error_message"><code class="name">var <span class="ident">error_message</span> : str</code></dt>
+<dt id="macrobond_financial.common.types.revision_info.RevisionInfoDict.error_message"><code class="name">var <span class="ident">error_message</span> : str</code></dt>
 <dd>
 <div class="desc"></div>
 </dd>
-<dt id="macrobond_financial.common.api_return_types.get_revision_info_return.RevisionInfoDict.has_revisions"><code class="name">var <span class="ident">has_revisions</span> : bool</code></dt>
+<dt id="macrobond_financial.common.types.revision_info.RevisionInfoDict.has_revisions"><code class="name">var <span class="ident">has_revisions</span> : bool</code></dt>
 <dd>
 <div class="desc"></div>
 </dd>
-<dt id="macrobond_financial.common.api_return_types.get_revision_info_return.RevisionInfoDict.name"><code class="name">var <span class="ident">name</span> : str</code></dt>
+<dt id="macrobond_financial.common.types.revision_info.RevisionInfoDict.name"><code class="name">var <span class="ident">name</span> : str</code></dt>
 <dd>
 <div class="desc"></div>
 </dd>
-<dt id="macrobond_financial.common.api_return_types.get_revision_info_return.RevisionInfoDict.stores_revisions"><code class="name">var <span class="ident">stores_revisions</span> : bool</code></dt>
+<dt id="macrobond_financial.common.types.revision_info.RevisionInfoDict.stores_revisions"><code class="name">var <span class="ident">stores_revisions</span> : bool</code></dt>
 <dd>
 <div class="desc"></div>
 </dd>
-<dt id="macrobond_financial.common.api_return_types.get_revision_info_return.RevisionInfoDict.time_stamp_of_first_revision"><code class="name">var <span class="ident">time_stamp_of_first_revision</span> : Optional[datetime.datetime]</code></dt>
+<dt id="macrobond_financial.common.types.revision_info.RevisionInfoDict.time_stamp_of_first_revision"><code class="name">var <span class="ident">time_stamp_of_first_revision</span> : Optional[datetime.datetime]</code></dt>
 <dd>
 <div class="desc"></div>
 </dd>
-<dt id="macrobond_financial.common.api_return_types.get_revision_info_return.RevisionInfoDict.time_stamp_of_last_revision"><code class="name">var <span class="ident">time_stamp_of_last_revision</span> : Optional[datetime.datetime]</code></dt>
+<dt id="macrobond_financial.common.types.revision_info.RevisionInfoDict.time_stamp_of_last_revision"><code class="name">var <span class="ident">time_stamp_of_last_revision</span> : Optional[datetime.datetime]</code></dt>
 <dd>
 <div class="desc"></div>
 </dd>
-<dt id="macrobond_financial.common.api_return_types.get_revision_info_return.RevisionInfoDict.vintage_time_stamps"><code class="name">var <span class="ident">vintage_time_stamps</span> : Tuple[datetime.datetime, ...]</code></dt>
+<dt id="macrobond_financial.common.types.revision_info.RevisionInfoDict.vintage_time_stamps"><code class="name">var <span class="ident">vintage_time_stamps</span> : Tuple[datetime.datetime, ...]</code></dt>
 <dd>
 <div class="desc"></div>
 </dd>
@@ -386,36 +262,28 @@ dict(one=1, two=2)</p></div>
 <ul id="index">
 <li><h3>Super-module</h3>
 <ul>
-<li><code><a title="macrobond_financial.common.api_return_types" href="index.html">macrobond_financial.common.api_return_types</a></code></li>
+<li><code><a title="macrobond_financial.common.types" href="index.html">macrobond_financial.common.types</a></code></li>
 </ul>
 </li>
 <li><h3><a href="#header-classes">Classes</a></h3>
 <ul>
 <li>
-<h4><code><a title="macrobond_financial.common.api_return_types.get_revision_info_return.GetRevisionInfoReturn" href="#macrobond_financial.common.api_return_types.get_revision_info_return.GetRevisionInfoReturn">GetRevisionInfoReturn</a></code></h4>
+<h4><code><a title="macrobond_financial.common.types.revision_info.RevisionInfo" href="#macrobond_financial.common.types.revision_info.RevisionInfo">RevisionInfo</a></code></h4>
 <ul class="">
-<li><code><a title="macrobond_financial.common.api_return_types.get_revision_info_return.GetRevisionInfoReturn.data_frame" href="#macrobond_financial.common.api_return_types.get_revision_info_return.GetRevisionInfoReturn.data_frame">data_frame</a></code></li>
-<li><code><a title="macrobond_financial.common.api_return_types.get_revision_info_return.GetRevisionInfoReturn.dict" href="#macrobond_financial.common.api_return_types.get_revision_info_return.GetRevisionInfoReturn.dict">dict</a></code></li>
-<li><code><a title="macrobond_financial.common.api_return_types.get_revision_info_return.GetRevisionInfoReturn.object" href="#macrobond_financial.common.api_return_types.get_revision_info_return.GetRevisionInfoReturn.object">object</a></code></li>
+<li><code><a title="macrobond_financial.common.types.revision_info.RevisionInfo.data_frame" href="#macrobond_financial.common.types.revision_info.RevisionInfo.data_frame">data_frame</a></code></li>
+<li><code><a title="macrobond_financial.common.types.revision_info.RevisionInfo.to_dict" href="#macrobond_financial.common.types.revision_info.RevisionInfo.to_dict">to_dict</a></code></li>
 </ul>
 </li>
 <li>
-<h4><code><a title="macrobond_financial.common.api_return_types.get_revision_info_return.RevisionInfo" href="#macrobond_financial.common.api_return_types.get_revision_info_return.RevisionInfo">RevisionInfo</a></code></h4>
+<h4><code><a title="macrobond_financial.common.types.revision_info.RevisionInfoDict" href="#macrobond_financial.common.types.revision_info.RevisionInfoDict">RevisionInfoDict</a></code></h4>
 <ul class="">
-<li><code><a title="macrobond_financial.common.api_return_types.get_revision_info_return.RevisionInfo.data_frame" href="#macrobond_financial.common.api_return_types.get_revision_info_return.RevisionInfo.data_frame">data_frame</a></code></li>
-<li><code><a title="macrobond_financial.common.api_return_types.get_revision_info_return.RevisionInfo.to_dict" href="#macrobond_financial.common.api_return_types.get_revision_info_return.RevisionInfo.to_dict">to_dict</a></code></li>
-</ul>
-</li>
-<li>
-<h4><code><a title="macrobond_financial.common.api_return_types.get_revision_info_return.RevisionInfoDict" href="#macrobond_financial.common.api_return_types.get_revision_info_return.RevisionInfoDict">RevisionInfoDict</a></code></h4>
-<ul class="">
-<li><code><a title="macrobond_financial.common.api_return_types.get_revision_info_return.RevisionInfoDict.error_message" href="#macrobond_financial.common.api_return_types.get_revision_info_return.RevisionInfoDict.error_message">error_message</a></code></li>
-<li><code><a title="macrobond_financial.common.api_return_types.get_revision_info_return.RevisionInfoDict.has_revisions" href="#macrobond_financial.common.api_return_types.get_revision_info_return.RevisionInfoDict.has_revisions">has_revisions</a></code></li>
-<li><code><a title="macrobond_financial.common.api_return_types.get_revision_info_return.RevisionInfoDict.name" href="#macrobond_financial.common.api_return_types.get_revision_info_return.RevisionInfoDict.name">name</a></code></li>
-<li><code><a title="macrobond_financial.common.api_return_types.get_revision_info_return.RevisionInfoDict.stores_revisions" href="#macrobond_financial.common.api_return_types.get_revision_info_return.RevisionInfoDict.stores_revisions">stores_revisions</a></code></li>
-<li><code><a title="macrobond_financial.common.api_return_types.get_revision_info_return.RevisionInfoDict.time_stamp_of_first_revision" href="#macrobond_financial.common.api_return_types.get_revision_info_return.RevisionInfoDict.time_stamp_of_first_revision">time_stamp_of_first_revision</a></code></li>
-<li><code><a title="macrobond_financial.common.api_return_types.get_revision_info_return.RevisionInfoDict.time_stamp_of_last_revision" href="#macrobond_financial.common.api_return_types.get_revision_info_return.RevisionInfoDict.time_stamp_of_last_revision">time_stamp_of_last_revision</a></code></li>
-<li><code><a title="macrobond_financial.common.api_return_types.get_revision_info_return.RevisionInfoDict.vintage_time_stamps" href="#macrobond_financial.common.api_return_types.get_revision_info_return.RevisionInfoDict.vintage_time_stamps">vintage_time_stamps</a></code></li>
+<li><code><a title="macrobond_financial.common.types.revision_info.RevisionInfoDict.error_message" href="#macrobond_financial.common.types.revision_info.RevisionInfoDict.error_message">error_message</a></code></li>
+<li><code><a title="macrobond_financial.common.types.revision_info.RevisionInfoDict.has_revisions" href="#macrobond_financial.common.types.revision_info.RevisionInfoDict.has_revisions">has_revisions</a></code></li>
+<li><code><a title="macrobond_financial.common.types.revision_info.RevisionInfoDict.name" href="#macrobond_financial.common.types.revision_info.RevisionInfoDict.name">name</a></code></li>
+<li><code><a title="macrobond_financial.common.types.revision_info.RevisionInfoDict.stores_revisions" href="#macrobond_financial.common.types.revision_info.RevisionInfoDict.stores_revisions">stores_revisions</a></code></li>
+<li><code><a title="macrobond_financial.common.types.revision_info.RevisionInfoDict.time_stamp_of_first_revision" href="#macrobond_financial.common.types.revision_info.RevisionInfoDict.time_stamp_of_first_revision">time_stamp_of_first_revision</a></code></li>
+<li><code><a title="macrobond_financial.common.types.revision_info.RevisionInfoDict.time_stamp_of_last_revision" href="#macrobond_financial.common.types.revision_info.RevisionInfoDict.time_stamp_of_last_revision">time_stamp_of_last_revision</a></code></li>
+<li><code><a title="macrobond_financial.common.types.revision_info.RevisionInfoDict.vintage_time_stamps" href="#macrobond_financial.common.types.revision_info.RevisionInfoDict.vintage_time_stamps">vintage_time_stamps</a></code></li>
 </ul>
 </li>
 </ul>

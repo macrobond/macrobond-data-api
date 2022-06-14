@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from typing import Sequence, Union, Tuple, Dict
+from typing import List, Sequence, Union, Tuple, Dict
 from abc import ABC, abstractmethod
 
 from datetime import datetime
@@ -13,20 +13,14 @@ from .types import (
     MetadataValueInformation,
     MetadataAttributeInformation,
     MetadataValueInformationItem,
+    RevisionInfo,
+    VintageSeries,
+    Series,
+    Entity,
+    UnifiedSeries,
 )
 
 from .enums import SeriesFrequency, SeriesWeekdays, CalendarMergeMode
-
-from .api_return_types import (
-    GetRevisionInfoReturn,
-    GetVintageSeriesReturn,
-    GetNthReleaseReturn,
-    GetOneEntityReturn,
-    GetOneSeriesReturn,
-    GetEntitiesReturn,
-    GetSeriesReturn,
-    GetUnifiedSeriesReturn,
-)
 
 
 class Api(ABC):
@@ -75,7 +69,7 @@ class Api(ABC):
 
     @abstractmethod
     def metadata_get_attribute_information(
-        self, *name: str
+        self, *names: str
     ) -> Sequence[MetadataAttributeInformation]:
         """
         Get information about metadata attributes.
@@ -84,7 +78,7 @@ class Api(ABC):
     @abstractmethod
     def metadata_get_value_information(
         self, *name_val: Tuple[str, str]
-    ) -> Tuple[MetadataValueInformationItem, ...]:
+    ) -> List[MetadataValueInformationItem]:
         """
         Get information about metadata values.
 
@@ -95,7 +89,7 @@ class Api(ABC):
 
         Returns
         -------
-        `Tuple[MetadataValueInformationItem]`
+        `List[MetadataValueInformationItem]`
         """
 
     # revision
@@ -103,7 +97,7 @@ class Api(ABC):
     @abstractmethod
     def get_revision_info(
         self, *series_names: str, raise_error: bool = None
-    ) -> GetRevisionInfoReturn:
+    ) -> List[RevisionInfo]:
         """
         Get information about if revision history is available for a series
         and a list of revision timestamps.
@@ -119,24 +113,22 @@ class Api(ABC):
 
         Returns
         -------
-        `macrobond_financial.common.api_return_types.get_revision_info_return.GetRevisionInfoReturn`
+        `List[RevisionInfo]`
         """
-
-    # TODO: @mb-to Wouldn't it be better if you could specify several names (such as Union[Sequence[str], str])? This is possible in the WebAPI and is more efficient.
 
     @abstractmethod
     def get_vintage_series(
-        self, serie_name: str, time: datetime, raise_error: bool = None
-    ) -> GetVintageSeriesReturn:
+        self, time: datetime, *series_names: str, raise_error: bool = None
+    ) -> List[VintageSeries]:
         """
         Fetch a vintage series.
 
         Parameters
         ----------
-        series_name : str
-            A series name.
         time : datetime
             The time of the vintage to return.
+        series_name : str
+            One or more names of series.
         raise_error : bool
             If True, accessing the resulting series raises a GetEntitiesError.
             If False you should inspect the is_error property of the result instead.
@@ -144,24 +136,22 @@ class Api(ABC):
 
         Returns
         -------
-        `macrobond_financial.common.api_return_types.get_vintage_series_return.GetVintageSeriesReturn`
+        `List[VintageSeries]`
         """
-
-    # TODO: @mb-to Wouldn't it be better if you could specify several names (such as Union[Sequence[str], str])? This is possible in the WebAPI and is more efficient.
 
     @abstractmethod
     def get_nth_release(
-        self, serie_name: str, nth: int, raise_error: bool = None
-    ) -> GetNthReleaseReturn:
+        self, nth: int, *series_names: str, raise_error: bool = None
+    ) -> List[Series]:
         """
         Fetcha series where each value is the nth change of the value.
 
         Parameters
         ----------
-        series_name : str
-            A series name.
         time : nth
             The nth change of each value.
+        series_names : str
+            One or more names of series.
         raise_error : bool
             If True, accessing the resulting series raises a GetEntitiesError.
             If False you should inspect the is_error property of the result instead.
@@ -169,7 +159,7 @@ class Api(ABC):
 
         Returns
         -------
-        `macrobond_financial.common.api_return_types.get_nth_release_return.GetNthReleaseReturn`
+        `List[Series]`
         """
 
     # TODO: @mb-to We should add a method get_all_vintage_series that takes _one_ series name.
@@ -213,7 +203,7 @@ class Api(ABC):
 
         Returns
         -------
-        `macrobond_financial.common.types.search_result.SearchResult`
+        `SearchResult`
         """
         return self.entity_search_multi_filter(
             SearchFilter(
@@ -252,9 +242,7 @@ class Api(ABC):
     # Series
 
     @abstractmethod
-    def get_one_series(
-        self, series_name: str, raise_error: bool = None
-    ) -> GetOneSeriesReturn:
+    def get_one_series(self, series_name: str, raise_error: bool = None) -> Series:
         """
         Download one series.
 
@@ -272,13 +260,11 @@ class Api(ABC):
 
         Returns
         -------
-        `macrobond_financial.common.api_return_types.get_one_series_return.GetOneSeriesReturn`
+        `Series`
         """
 
     @abstractmethod
-    def get_series(
-        self, *series_names: str, raise_error: bool = None
-    ) -> GetSeriesReturn:
+    def get_series(self, *series_names: str, raise_error: bool = None) -> List[Series]:
         """
         Download one or more series.
 
@@ -297,13 +283,11 @@ class Api(ABC):
 
         Returns
         -------
-        `macrobond_financial.common.api_return_types.get_series_return.GetSeriesReturn`
+        `List[Series]`
         """
 
     @abstractmethod
-    def get_one_entity(
-        self, entity_name: str, raise_error: bool = None
-    ) -> GetOneEntityReturn:
+    def get_one_entity(self, entity_name: str, raise_error: bool = None) -> Entity:
         """
         Download one entity.
 
@@ -321,13 +305,13 @@ class Api(ABC):
 
         Returns
         -------
-        `macrobond_financial.common.api_return_types.get_one_entity_return.GetOneEntityReturn`
+        `Entity`
         """
 
     @abstractmethod
     def get_entities(
         self, *entity_names: str, raise_error: bool = None
-    ) -> GetEntitiesReturn:
+    ) -> List[Entity]:
         """
         Download one or more entities.
 
@@ -346,7 +330,7 @@ class Api(ABC):
 
         Returns
         -------
-        `macrobond_financial.common.api_return_types.get_entities_return.GetEntitiesReturn`
+        `List[Entity]`
         """
 
     @abstractmethod
@@ -360,7 +344,7 @@ class Api(ABC):
         start_point: StartOrEndPoint = None,
         end_point: StartOrEndPoint = None,
         raise_error: bool = None
-    ) -> GetUnifiedSeriesReturn:
+    ) -> UnifiedSeries:
         """
         Get one or more series and convert them to a common frequency and calendar.
 
@@ -390,5 +374,5 @@ class Api(ABC):
 
         Returns
         -------
-        `macrobond_financial.common.api_return_types.get_unified_series_return.GetUnifiedSeriesReturn`
+        `UnifiedSeries`
         """

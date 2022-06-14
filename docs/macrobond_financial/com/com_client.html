@@ -43,6 +43,12 @@ try:
 except ImportError as ex:
     _win32com_import_error = ex
 
+_pywintypes_import_error: Optional[ImportError] = None
+try:
+    from pywintypes import com_error
+except ImportError as ex:
+    _pywintypes_import_error = ex
+
 
 class ComClient(Client[&#34;ComApi&#34;]):
     &#34;&#34;&#34;
@@ -65,11 +71,24 @@ class ComClient(Client[&#34;ComApi&#34;]):
         super().__init__()
         if _win32com_import_error:
             raise _win32com_import_error
+        if _pywintypes_import_error:
+            raise _pywintypes_import_error
         self.__api: Optional[&#34;ComApi&#34;] = None
 
     def open(self) -&gt; &#34;ComApi&#34;:
         if self.__api is None:
-            connection: &#34;Connection&#34; = _client.Dispatch(&#34;Macrobond.Connection&#34;)
+            try:
+                connection: &#34;Connection&#34; = _client.Dispatch(&#34;Macrobond.Connection&#34;)
+            except com_error as com_ex:
+
+                # raise ValueError(
+                #        &#34;Unknown attribute value: &#34; + name + &#34;,&#34; + val
+                #    ) from ex
+
+                if com_ex.args[1] == &#34;Invalid class string&#34;:
+                    # TODO: @mb-jp add extra error good here
+                    ...
+                raise com_ex
             self.__api = ComApi(connection)
         return self.__api
 
@@ -132,11 +151,24 @@ class ComClient(Client[&#34;ComApi&#34;]):
         super().__init__()
         if _win32com_import_error:
             raise _win32com_import_error
+        if _pywintypes_import_error:
+            raise _pywintypes_import_error
         self.__api: Optional[&#34;ComApi&#34;] = None
 
     def open(self) -&gt; &#34;ComApi&#34;:
         if self.__api is None:
-            connection: &#34;Connection&#34; = _client.Dispatch(&#34;Macrobond.Connection&#34;)
+            try:
+                connection: &#34;Connection&#34; = _client.Dispatch(&#34;Macrobond.Connection&#34;)
+            except com_error as com_ex:
+
+                # raise ValueError(
+                #        &#34;Unknown attribute value: &#34; + name + &#34;,&#34; + val
+                #    ) from ex
+
+                if com_ex.args[1] == &#34;Invalid class string&#34;:
+                    # TODO: @mb-jp add extra error good here
+                    ...
+                raise com_ex
             self.__api = ComApi(connection)
         return self.__api
 
@@ -191,7 +223,18 @@ so it is usually not a good idea to open and close them for each request</p></di
 </summary>
 <pre><code class="python">def open(self) -&gt; &#34;ComApi&#34;:
     if self.__api is None:
-        connection: &#34;Connection&#34; = _client.Dispatch(&#34;Macrobond.Connection&#34;)
+        try:
+            connection: &#34;Connection&#34; = _client.Dispatch(&#34;Macrobond.Connection&#34;)
+        except com_error as com_ex:
+
+            # raise ValueError(
+            #        &#34;Unknown attribute value: &#34; + name + &#34;,&#34; + val
+            #    ) from ex
+
+            if com_ex.args[1] == &#34;Invalid class string&#34;:
+                # TODO: @mb-jp add extra error good here
+                ...
+            raise com_ex
         self.__api = ComApi(connection)
     return self.__api</code></pre>
 </details>

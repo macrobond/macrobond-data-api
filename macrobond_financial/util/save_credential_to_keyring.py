@@ -9,30 +9,35 @@ import keyring
 from macrobond_financial.web.web_client import DEFAULT_SERVICE_NAME
 
 
-KEYRING_NAME = keyring.get_keyring().__class__.__name__
+def save_credential_to_keyring() -> None:
+    KEYRING_NAME = keyring.get_keyring().__class__.__name__
 
-print("Saving secret to " + KEYRING_NAME + "\n")
+    print("Saving secret to " + KEYRING_NAME + "\n")
 
-service_name = input(
-    "Please enter the service name or just enter to save to default name ("
-    + DEFAULT_SERVICE_NAME
-    + "): "
-)
-if service_name == "":
-    service_name = DEFAULT_SERVICE_NAME
-
-if keyring.get_credential(service_name, ""):
-    print(
-        "Multiple keys Error\n"
-        + "Possible reasons for the error:\n"
-        + "\tService name already exists\n"
-        + "\tService name prefix with with a user name exists\n",
-        file=sys.stderr,
+    service_name = input(
+        "Please enter the service name or just enter to save to default name ("
+        + DEFAULT_SERVICE_NAME
+        + "): "
     )
-    sys.exit(1)
+    if service_name == "":
+        service_name = DEFAULT_SERVICE_NAME
 
-client_id = input("Please enter the client id: ")
+    if keyring.get_credential(service_name, ""):
+        print(
+            "Multiple keys Error\n"
+            + "Possible reasons for the error:\n"
+            + "\tService name already exists\n"
+            + "\tService name prefix with with a user name exists\n",
+            file=sys.stderr,
+        )
+        sys.exit(1)
 
-client_secret = getpass("Please enter the client secret: ")
+    client_id = input("Please enter the client id: ")
 
-keyring.set_password(service_name, client_id, client_secret)
+    client_secret = getpass("Please enter the client secret: ")
+
+    keyring.set_password(service_name, client_id, client_secret)
+
+
+if __name__ == "__main__":
+    save_credential_to_keyring()

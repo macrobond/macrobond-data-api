@@ -2,9 +2,14 @@
 
 from context import Context
 
+# https://mypy.readthedocs.io/en/stable/command_line.html
+
+
+# TODO: @mb-jp use --strict
+
 
 def mypy(context: Context) -> None:
-    context.python_run("mypy", ". --show-error-codes")
+    context.python_run("mypy", ". --show-error-codes --python-version 3.7")
 
 
 if __name__ == "__main__":
