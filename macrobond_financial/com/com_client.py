@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 
-from typing import TYPE_CHECKING, Optional
+import sys
+
+from typing import TYPE_CHECKING, List, Optional
 
 from macrobond_financial.common import Client
 
@@ -17,9 +19,14 @@ except ImportError as ex:
 
 _pywintypes_import_error: Optional[ImportError] = None
 try:
-    from pywintypes import com_error
+    from pywintypes import com_error  # type: ignore
 except ImportError as ex:
     _pywintypes_import_error = ex
+
+try:
+    from winreg import OpenKey, QueryValueEx, HKEY_CLASSES_ROOT, HKEY_CURRENT_USER  # type: ignore
+except ImportError:
+    ...
 
 
 class ComClient(Client["ComApi"]):
@@ -51,16 +58,50 @@ class ComClient(Client["ComApi"]):
         if self.__api is None:
             try:
                 connection: "Connection" = _client.Dispatch("Macrobond.Connection")
-            except com_error as com_ex:
+            except com_error:
 
-                # raise ValueError(
-                #        "Unknown attribute value: " + name + "," + val
-                #    ) from ex
+                hints: List[str] = list()
 
-                if com_ex.args[1] == "Invalid class string":
-                    # TODO: @mb-jp add extra error good here
-                    ...
-                raise com_ex
+                sub_key = "CLSID\\{F22A9A5C-E6F2-4FA8-8D1B-E928AB5DDF9B}\\InprocServer32"
+                try:
+                    with OpenKey(
+                        HKEY_CLASSES_ROOT,
+                        sub_key,
+                    ) as regkey:
+                        QueryValueEx(regkey, "Assembly")
+                except OSError:
+                    hints.append(
+                        (
+                            'Could not find the registration key "HKEY_CLASSES_ROOT\\'
+                            + sub_key
+                            + '\\Assembly",\nThis indicates that Macrobond is not installed.'
+                        )
+                    )
+
+                sub_key = "Software\\Macrobond Financial\\Communication\\Connector"
+                try:
+                    with OpenKey(HKEY_CURRENT_USER, sub_key) as regkey:
+                        QueryValueEx(regkey, "UserName")
+                except OSError:
+                    hints.append(
+                        (
+                            'Could not find the registration key "HKEY_CURRENT_USER\\'
+                            + sub_key
+                            + '\\UserName",\nThis indicates that Macrobond is not logged in.'
+                        )
+                    )
+
+                if len(hints) != 0:
+                    print("\n\nERROR in ComClient.open()", file=sys.stderr)
+
+                for hint in hints:
+                    print("\n" + hint, file=sys.stderr)
+
+                if len(hints) != 0:
+                    print("", file=sys.stderr)
+
+                raise
+
             self.__api = ComApi(connection)
         return self.__api
 
