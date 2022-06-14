@@ -36,9 +36,7 @@ from typing_extensions import Literal
 from .series import Series, SeriesColumnsLiterals
 
 
-VintageSeriesColumns = List[
-    Literal[SeriesColumnsLiterals, &#34;VintageTimeStamp&#34;, &#34;TimesOfChange&#34;]
-]
+VintageSeriesColumns = List[Literal[SeriesColumnsLiterals, &#34;VintageTimeStamp&#34;, &#34;TimesOfChange&#34;]]
 
 
 class VintageSeries(Series):

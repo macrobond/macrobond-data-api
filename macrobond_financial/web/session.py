@@ -83,9 +83,7 @@ class Session:
 
         scopes_str_list = list(map(lambda s: s.value, scopes))
         if test_auth2_session is None:
-            self.__auth2_session = OAuth2Session(
-                client_id, client_secret, scope=scopes_str_list
-            )
+            self.__auth2_session = OAuth2Session(client_id, client_secret, scope=scopes_str_list)
         else:
             self.__auth2_session = test_auth2_session
 
@@ -116,24 +114,18 @@ class Session:
 
     def post(self, url: str, params: dict = None, json: object = None) -> "Response":
         def http():
-            return self.auth2_session.post(
-                url=self.api_url + url, params=params, json=json
-            )
+            return self.auth2_session.post(url=self.api_url + url, params=params, json=json)
 
         return self.__if_status_code_401_fetch_token_and_retry(http)
 
-    def post_or_raise(
-        self, url: str, params: dict = None, json: object = None
-    ) -> "Response":
+    def post_or_raise(self, url: str, params: dict = None, json: object = None) -> "Response":
         response = self.post(url, params, json)
         if response.status_code != 200:
             raise SessionHttpException(response)
         return response
 
     def discovery(self, url: str) -> str:
-        response = self.auth2_session.request(
-            "get", url + ".well-known/openid-configuration", True
-        )
+        response = self.auth2_session.request("get", url + ".well-known/openid-configuration", True)
         if response.status_code != 200:
             raise Exception("discovery Exception, status code is not 200")
 

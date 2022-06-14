@@ -109,12 +109,8 @@ class Common(TestCase):
 
         self.assertEqual(web, com)
 
-        web = self.web_api.get_unified_series(
-            "usgdp", "uscpi", "noseries!", raise_error=False
-        )
-        com = self.com_api.get_unified_series(
-            "usgdp", "uscpi", "noseries!", raise_error=False
-        )
+        web = self.web_api.get_unified_series("usgdp", "uscpi", "noseries!", raise_error=False)
+        com = self.com_api.get_unified_series("usgdp", "uscpi", "noseries!", raise_error=False)
 
         for serie in web:
             serie.metadata = {}
@@ -277,9 +273,7 @@ def get_one_series(test: TestCase, api: Api) -> None:
 
     dict_series = api.get_one_series("noseries!", raise_error=False).to_dict()
 
-    test.assertDictEqual(
-        dict_series, {"Name": "noseries!", "ErrorMessage": "Not found"}
-    )
+    test.assertDictEqual(dict_series, {"Name": "noseries!", "ErrorMessage": "Not found"})
 
 
 def get_series(test: TestCase, api: Api) -> None:
@@ -351,9 +345,7 @@ def get_one_entity(test: TestCase, api: Api) -> None:
 
     dict_series = api.get_one_entity("noseries!", raise_error=False).to_dict()
 
-    test.assertDictEqual(
-        dict_series, {"Name": "noseries!", "ErrorMessage": "Not found"}
-    )
+    test.assertDictEqual(dict_series, {"Name": "noseries!", "ErrorMessage": "Not found"})
 
 
 def get_entities(test: TestCase, api: Api) -> None:
@@ -400,9 +392,7 @@ def get_unified_series(test: TestCase, api: Api) -> None:
         raise_error=False,
     )
 
-    test.assertEqual(
-        str(unified), "UnifiedSeries of 5 series", "__str__() or str(series)"
-    )
+    test.assertEqual(str(unified), "UnifiedSeries of 5 series", "__str__() or str(series)")
 
     test.assertEqual(unified.__repr__(), "UnifiedSeries of 5 series", "__repr__")
 

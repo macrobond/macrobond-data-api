@@ -37,9 +37,7 @@ if TYPE_CHECKING:  # pragma: no cover
     from pandas import DataFrame, _typing as pandas_typing  # type: ignore
 
 
-EntityColumnsLiterals = Literal[
-    &#34;ErrorMessage&#34;, &#34;Name&#34;, &#34;PrimName&#34;, &#34;FullDescription&#34;, &#34;EntityType&#34;
-]
+EntityColumnsLiterals = Literal[&#34;ErrorMessage&#34;, &#34;Name&#34;, &#34;PrimName&#34;, &#34;FullDescription&#34;, &#34;EntityType&#34;]
 
 EntityColumns = List[EntityColumnsLiterals]
 
@@ -122,9 +120,7 @@ class Entity:
 
     def get_metadata_as_data_frame(self) -&gt; &#34;DataFrame&#34;:
         pandas = _get_pandas()
-        return pandas.DataFrame.from_dict(
-            self.metadata, orient=&#34;index&#34;, columns=[&#34;Attributes&#34;]
-        )
+        return pandas.DataFrame.from_dict(self.metadata, orient=&#34;index&#34;, columns=[&#34;Attributes&#34;])
 
     def __str__(self):
         if self.is_error:
@@ -250,9 +246,7 @@ class Entity:
 
     def get_metadata_as_data_frame(self) -&gt; &#34;DataFrame&#34;:
         pandas = _get_pandas()
-        return pandas.DataFrame.from_dict(
-            self.metadata, orient=&#34;index&#34;, columns=[&#34;Attributes&#34;]
-        )
+        return pandas.DataFrame.from_dict(self.metadata, orient=&#34;index&#34;, columns=[&#34;Attributes&#34;])
 
     def __str__(self):
         if self.is_error:
@@ -376,9 +370,7 @@ def title(self) -&gt; str:
 </summary>
 <pre><code class="python">def get_metadata_as_data_frame(self) -&gt; &#34;DataFrame&#34;:
     pandas = _get_pandas()
-    return pandas.DataFrame.from_dict(
-        self.metadata, orient=&#34;index&#34;, columns=[&#34;Attributes&#34;]
-    )</code></pre>
+    return pandas.DataFrame.from_dict(self.metadata, orient=&#34;index&#34;, columns=[&#34;Attributes&#34;])</code></pre>
 </details>
 </dd>
 <dt id="macrobond_financial.common.types.entity.Entity.to_dict"><code class="name flex">

@@ -8,9 +8,7 @@ from typing_extensions import Literal
 from .series import Series, SeriesColumnsLiterals
 
 
-VintageSeriesColumns = List[
-    Literal[SeriesColumnsLiterals, "VintageTimeStamp", "TimesOfChange"]
-]
+VintageSeriesColumns = List[Literal[SeriesColumnsLiterals, "VintageTimeStamp", "TimesOfChange"]]
 
 
 class VintageSeries(Series):

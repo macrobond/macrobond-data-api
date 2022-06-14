@@ -63,9 +63,7 @@ class SeriesMethods:
 
             403 Forbidden. Not authorized.
         """
-        response = self.__session.get_or_raise(
-            "v1/series/fetchseries", params={"n": series_names}
-        )
+        response = self.__session.get_or_raise("v1/series/fetchseries", params={"n": series_names})
         return cast(List["SeriesResponse"], response.json())
 
     # Post /fetchseries
@@ -93,9 +91,7 @@ class SeriesMethods:
         return cast(List["SeriesResponse"], response.json())
 
     # Get /v1/series/getrevisioninfo
-    def get_revision_info(
-        self, *series_names: str
-    ) -> List["SeriesWithRevisionsInfoResponse"]:
+    def get_revision_info(self, *series_names: str) -> List["SeriesWithRevisionsInfoResponse"]:
         """
         Get information about if a record of updates is stored
         for one or more series and the dates of changes.
@@ -116,10 +112,7 @@ class SeriesMethods:
 
     # Get /v1/series/fetchvintageseries
     def fetch_vintage_series(
-        self,
-        time_of_vintage: datetime,
-        *series_names: str,
-        get_times_of_change: bool = None
+        self, time_of_vintage: datetime, *series_names: str, get_times_of_change: bool = None
     ) -> List["VintageSeriesResponse"]:
         """
         Fetch one or more vintage series.
@@ -139,9 +132,7 @@ class SeriesMethods:
         if get_times_of_change:
             params["getTimesOfChange"] = "true" if get_times_of_change else "false"
 
-        response = self.__session.get_or_raise(
-            "v1/series/fetchvintageseries", params=params
-        )
+        response = self.__session.get_or_raise("v1/series/fetchvintageseries", params=params)
         return cast(List["VintageSeriesResponse"], response.json())
 
     # Get /v1/series/fetchallvintageseries
@@ -198,9 +189,7 @@ class SeriesMethods:
         if get_times_of_change:
             params["getTimesOfChange"] = "true" if get_times_of_change else "false"
 
-        response = self.__session.get_or_raise(
-            "v1/series/fetchnthreleaseseries", params=params
-        )
+        response = self.__session.get_or_raise("v1/series/fetchnthreleaseseries", params=params)
         return cast(List["SeriesWithTimesOfChangeResponse"], response.json())
 
     # Get /v1/series/fetchobservationhistory
@@ -234,9 +223,7 @@ class SeriesMethods:
         return cast(List["SeriesObservationHistoryResponse"], response.json())
 
     # Get /v1/series/getsubscriptionlist
-    def get_subscription_list(
-        self, if_modified_since: datetime = None
-    ) -> "FeedEntitiesResponse":
+    def get_subscription_list(self, if_modified_since: datetime = None) -> "FeedEntitiesResponse":
         """
         Get a list of entities in the subscription list and timestamps when they were last changed.
         You can specify a timestamp to see what has changed since then. For this the
@@ -258,15 +245,11 @@ class SeriesMethods:
         if if_modified_since:
             params["ifModifiedSince"] = if_modified_since.isoformat()
 
-        response = self.__session.get_or_raise(
-            "v1/series/getsubscriptionlist", params=params
-        )
+        response = self.__session.get_or_raise("v1/series/getsubscriptionlist", params=params)
         return cast("FeedEntitiesResponse", response.json())
 
     # Get /v1/series/entityinfofordisplay
-    def entity_info_for_display(
-        self, *entitie_names: str
-    ) -> "EntityInfoForDisplayResponse":
+    def entity_info_for_display(self, *entitie_names: str) -> "EntityInfoForDisplayResponse":
         """
         Get formatted information about a time series intended to be displayed to the user
 
@@ -287,9 +270,7 @@ class SeriesMethods:
         return cast("EntityInfoForDisplayResponse", response.json())
 
     # Post /v1/series/fetchunifiedseries
-    def fetch_unified_series(
-        self, request: "UnifiedSeriesRequest"
-    ) -> "UnifiedSeriesResponse":
+    def fetch_unified_series(self, request: "UnifiedSeriesRequest") -> "UnifiedSeriesResponse":
         """
         Fetch one or more series and convert them to a common frequency,
         calendar and optionally a common currency.
@@ -307,7 +288,5 @@ class SeriesMethods:
 
             403 Forbidden. Not authorized.
         """
-        response = self.__session.post_or_raise(
-            "v1/series/fetchunifiedseries", json=request
-        )
+        response = self.__session.post_or_raise("v1/series/fetchunifiedseries", json=request)
         return cast("UnifiedSeriesResponse", response.json())

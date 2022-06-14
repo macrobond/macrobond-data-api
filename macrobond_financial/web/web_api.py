@@ -61,9 +61,7 @@ __pdoc__ = {
 
 
 def _str_to_datetime_z(datetime_str: str) -> datetime:
-    return datetime.strptime(datetime_str, "%Y-%m-%dT%H:%M:%SZ").replace(
-        tzinfo=timezone.utc
-    )
+    return datetime.strptime(datetime_str, "%Y-%m-%dT%H:%M:%SZ").replace(tzinfo=timezone.utc)
 
 
 def _optional_str_to_datetime_z(datetime_str: Optional[str]) -> Optional[datetime]:
@@ -71,9 +69,7 @@ def _optional_str_to_datetime_z(datetime_str: Optional[str]) -> Optional[datetim
 
 
 def _str_to_datetime(datetime_str: str) -> datetime:
-    return datetime.strptime(datetime_str, "%Y-%m-%dT%H:%M:%S").replace(
-        tzinfo=timezone.utc
-    )
+    return datetime.strptime(datetime_str, "%Y-%m-%dT%H:%M:%S").replace(tzinfo=timezone.utc)
 
 
 def _optional_str_to_datetime(datetime_str: Optional[str]) -> Optional[datetime]:
@@ -97,9 +93,7 @@ def _create_series(response: "SeriesResponse", name: str) -> Series:
 
     dates = tuple(
         map(
-            lambda s: datetime.strptime(s, "%Y-%m-%dT%H:%M:%S").replace(
-                tzinfo=timezone.utc
-            ),
+            lambda s: datetime.strptime(s, "%Y-%m-%dT%H:%M:%S").replace(tzinfo=timezone.utc),
             cast(List[str], response["dates"]),
         )
     )
@@ -178,9 +172,7 @@ class WebApi(Api):
 
     # revision
 
-    def get_revision_info(
-        self, *series_names: str, raise_error: bool = None
-    ) -> List[RevisionInfo]:
+    def get_revision_info(self, *series_names: str, raise_error: bool = None) -> List[RevisionInfo]:
         def to_obj(name: str, serie: "SeriesWithRevisionsInfoResponse"):
             error_text = serie.get("errorText")
             if error_text:
@@ -231,9 +223,7 @@ class WebApi(Api):
     def get_vintage_series(
         self, time: datetime, *series_names: str, raise_error: bool = None
     ) -> List[VintageSeries]:
-        def to_obj(
-            response: "VintageSeriesResponse", series_name: str
-        ) -> VintageSeries:
+        def to_obj(response: "VintageSeriesResponse", series_name: str) -> VintageSeries:
             error_message = response.get("errorText")
             if error_message:
                 return VintageSeries(series_name, error_message, None, None, None)
@@ -241,9 +231,7 @@ class WebApi(Api):
             metadata = cast(Dict[str, Any], response["metadata"])
 
             revision_time_stamp = cast(str, metadata.get("RevisionTimeStamp"))
-            if not revision_time_stamp or time != _str_to_datetime_z(
-                revision_time_stamp
-            ):
+            if not revision_time_stamp or time != _str_to_datetime_z(revision_time_stamp):
                 raise ValueError("Invalid time")
 
             values: Tuple[Optional[float], ...] = tuple(
@@ -296,9 +284,7 @@ class WebApi(Api):
         self, serie_name: str, times: Sequence[datetime]
     ) -> List[SeriesObservationHistory]:
         try:
-            response = self.session.series.fetch_observation_history(
-                serie_name, list(times)
-            )
+            response = self.session.series.fetch_observation_history(serie_name, list(times))
         except SessionHttpException as ex:
             if ex.status_code == 404:
                 raise Exception(ex.response.json()["detail"]) from ex
@@ -339,9 +325,7 @@ class WebApi(Api):
 
         response = self.__session.search.post_entities(request)
 
-        return SearchResult(
-            tuple(response["results"]), response.get("isTruncated") is True
-        )
+        return SearchResult(tuple(response["results"]), response.get("isTruncated") is True)
 
     # Series
 
@@ -364,9 +348,7 @@ class WebApi(Api):
     def get_one_entity(self, entity_name: str, raise_error: bool = None) -> Entity:
         return self.get_entities(entity_name, raise_error=raise_error)[0]
 
-    def get_entities(
-        self, *entity_names: str, raise_error: bool = None
-    ) -> List[Entity]:
+    def get_entities(self, *entity_names: str, raise_error: bool = None) -> List[Entity]:
         response = self.session.series.fetch_entities(*entity_names)
         entitys = list(map(_create_entity, response, entity_names))
         GetEntitiesError.raise_if(

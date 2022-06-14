@@ -37,9 +37,7 @@ from .._get_pandas import _get_pandas
 if TYPE_CHECKING:  # pragma: no cover
     from pandas import DataFrame, _typing as pandas_typing  # type: ignore
 
-SeriesObservationHistoryColumnsLiterals = Literal[
-    &#34;ObservationDate&#34;, &#34;Values&#34;, &#34;TimeStamps&#34;
-]
+SeriesObservationHistoryColumnsLiterals = Literal[&#34;ObservationDate&#34;, &#34;Values&#34;, &#34;TimeStamps&#34;]
 
 SeriesObservationHistoryColumns = List[SeriesObservationHistoryColumnsLiterals]
 

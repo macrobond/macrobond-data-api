@@ -111,9 +111,7 @@ class Session:
 
         scopes_str_list = list(map(lambda s: s.value, scopes))
         if test_auth2_session is None:
-            self.__auth2_session = OAuth2Session(
-                client_id, client_secret, scope=scopes_str_list
-            )
+            self.__auth2_session = OAuth2Session(client_id, client_secret, scope=scopes_str_list)
         else:
             self.__auth2_session = test_auth2_session
 
@@ -144,24 +142,18 @@ class Session:
 
     def post(self, url: str, params: dict = None, json: object = None) -&gt; &#34;Response&#34;:
         def http():
-            return self.auth2_session.post(
-                url=self.api_url + url, params=params, json=json
-            )
+            return self.auth2_session.post(url=self.api_url + url, params=params, json=json)
 
         return self.__if_status_code_401_fetch_token_and_retry(http)
 
-    def post_or_raise(
-        self, url: str, params: dict = None, json: object = None
-    ) -&gt; &#34;Response&#34;:
+    def post_or_raise(self, url: str, params: dict = None, json: object = None) -&gt; &#34;Response&#34;:
         response = self.post(url, params, json)
         if response.status_code != 200:
             raise SessionHttpException(response)
         return response
 
     def discovery(self, url: str) -&gt; str:
-        response = self.auth2_session.request(
-            &#34;get&#34;, url + &#34;.well-known/openid-configuration&#34;, True
-        )
+        response = self.auth2_session.request(&#34;get&#34;, url + &#34;.well-known/openid-configuration&#34;, True)
         if response.status_code != 200:
             raise Exception(&#34;discovery Exception, status code is not 200&#34;)
 
@@ -265,9 +257,7 @@ class Session:
 
         scopes_str_list = list(map(lambda s: s.value, scopes))
         if test_auth2_session is None:
-            self.__auth2_session = OAuth2Session(
-                client_id, client_secret, scope=scopes_str_list
-            )
+            self.__auth2_session = OAuth2Session(client_id, client_secret, scope=scopes_str_list)
         else:
             self.__auth2_session = test_auth2_session
 
@@ -298,24 +288,18 @@ class Session:
 
     def post(self, url: str, params: dict = None, json: object = None) -&gt; &#34;Response&#34;:
         def http():
-            return self.auth2_session.post(
-                url=self.api_url + url, params=params, json=json
-            )
+            return self.auth2_session.post(url=self.api_url + url, params=params, json=json)
 
         return self.__if_status_code_401_fetch_token_and_retry(http)
 
-    def post_or_raise(
-        self, url: str, params: dict = None, json: object = None
-    ) -&gt; &#34;Response&#34;:
+    def post_or_raise(self, url: str, params: dict = None, json: object = None) -&gt; &#34;Response&#34;:
         response = self.post(url, params, json)
         if response.status_code != 200:
             raise SessionHttpException(response)
         return response
 
     def discovery(self, url: str) -&gt; str:
-        response = self.auth2_session.request(
-            &#34;get&#34;, url + &#34;.well-known/openid-configuration&#34;, True
-        )
+        response = self.auth2_session.request(&#34;get&#34;, url + &#34;.well-known/openid-configuration&#34;, True)
         if response.status_code != 200:
             raise Exception(&#34;discovery Exception, status code is not 200&#34;)
 
@@ -470,9 +454,7 @@ def token_endpoint(self):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def discovery(self, url: str) -&gt; str:
-    response = self.auth2_session.request(
-        &#34;get&#34;, url + &#34;.well-known/openid-configuration&#34;, True
-    )
+    response = self.auth2_session.request(&#34;get&#34;, url + &#34;.well-known/openid-configuration&#34;, True)
     if response.status_code != 200:
         raise Exception(&#34;discovery Exception, status code is not 200&#34;)
 
@@ -549,9 +531,7 @@ def token_endpoint(self):
 </summary>
 <pre><code class="python">def post(self, url: str, params: dict = None, json: object = None) -&gt; &#34;Response&#34;:
     def http():
-        return self.auth2_session.post(
-            url=self.api_url + url, params=params, json=json
-        )
+        return self.auth2_session.post(url=self.api_url + url, params=params, json=json)
 
     return self.__if_status_code_401_fetch_token_and_retry(http)</code></pre>
 </details>
@@ -565,9 +545,7 @@ def token_endpoint(self):
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def post_or_raise(
-    self, url: str, params: dict = None, json: object = None
-) -&gt; &#34;Response&#34;:
+<pre><code class="python">def post_or_raise(self, url: str, params: dict = None, json: object = None) -&gt; &#34;Response&#34;:
     response = self.post(url, params, json)
     if response.status_code != 200:
         raise SessionHttpException(response)

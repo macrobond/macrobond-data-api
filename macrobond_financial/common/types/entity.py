@@ -9,9 +9,7 @@ if TYPE_CHECKING:  # pragma: no cover
     from pandas import DataFrame, _typing as pandas_typing  # type: ignore
 
 
-EntityColumnsLiterals = Literal[
-    "ErrorMessage", "Name", "PrimName", "FullDescription", "EntityType"
-]
+EntityColumnsLiterals = Literal["ErrorMessage", "Name", "PrimName", "FullDescription", "EntityType"]
 
 EntityColumns = List[EntityColumnsLiterals]
 
@@ -94,9 +92,7 @@ class Entity:
 
     def get_metadata_as_data_frame(self) -> "DataFrame":
         pandas = _get_pandas()
-        return pandas.DataFrame.from_dict(
-            self.metadata, orient="index", columns=["Attributes"]
-        )
+        return pandas.DataFrame.from_dict(self.metadata, orient="index", columns=["Attributes"])
 
     def __str__(self):
         if self.is_error:

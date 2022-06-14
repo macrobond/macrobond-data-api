@@ -12,9 +12,8 @@ class SearchResult(Sequence[Dict[str, Any]]):
     """
     The result of a entity search operation.
     """
-    def __init__(
-        self, entities: Tuple[Dict[str, Any], ...], is_truncated: bool
-    ) -> None:
+
+    def __init__(self, entities: Tuple[Dict[str, Any], ...], is_truncated: bool) -> None:
         self.entities = entities
         """
         A sequence of the metadata of the entities found.
@@ -25,9 +24,7 @@ class SearchResult(Sequence[Dict[str, Any]]):
         """
 
     def __str__(self):
-        return (
-            f"SearchResult of {len(self)} entities, is is_truncated {self.is_truncated}"
-        )
+        return f"SearchResult of {len(self)} entities, is is_truncated {self.is_truncated}"
 
     def __repr__(self):
         return str(self)

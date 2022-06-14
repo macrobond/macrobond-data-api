@@ -110,9 +110,7 @@ class MetadataAttributeInformation:
     def data_frame(
         self,
         index: "pandas_typing.Axes" = None,
-        columns: Union[
-            MetadataAttributeInformationColumns, "pandas_typing.Axes"
-        ] = None,
+        columns: Union[MetadataAttributeInformationColumns, "pandas_typing.Axes"] = None,
         dtype: "pandas_typing.Dtype" = None,
         copy: bool = False,
     ) -> "DataFrame":

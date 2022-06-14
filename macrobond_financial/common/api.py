@@ -95,9 +95,7 @@ class Api(ABC):
     # revision
 
     @abstractmethod
-    def get_revision_info(
-        self, *series_names: str, raise_error: bool = None
-    ) -> List[RevisionInfo]:
+    def get_revision_info(self, *series_names: str, raise_error: bool = None) -> List[RevisionInfo]:
         """
         Get information about if revision history is available for a series
         and a list of revision timestamps.
@@ -309,9 +307,7 @@ class Api(ABC):
         """
 
     @abstractmethod
-    def get_entities(
-        self, *entity_names: str, raise_error: bool = None
-    ) -> List[Entity]:
+    def get_entities(self, *entity_names: str, raise_error: bool = None) -> List[Entity]:
         """
         Download one or more entities.
 

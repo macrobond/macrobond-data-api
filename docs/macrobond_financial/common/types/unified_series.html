@@ -125,9 +125,7 @@ class UnifiedSeries(Sequence[UnifiedSerie]):
         }
 
     def get_errors(self) -&gt; Dict[str, str]:
-        return {
-            e.name: e.error_message for e in filter(lambda x: x.is_error, self.series)
-        }
+        return {e.name: e.error_message for e in filter(lambda x: x.is_error, self.series)}
 
     @overload
     def data_frame(self) -&gt; &#34;DataFrame&#34;:
@@ -319,9 +317,7 @@ def is_error(self) -&gt; bool:
         }
 
     def get_errors(self) -&gt; Dict[str, str]:
-        return {
-            e.name: e.error_message for e in filter(lambda x: x.is_error, self.series)
-        }
+        return {e.name: e.error_message for e in filter(lambda x: x.is_error, self.series)}
 
     @overload
     def data_frame(self) -&gt; &#34;DataFrame&#34;:
@@ -426,9 +422,7 @@ def is_error(self) -&gt; bool:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def get_errors(self) -&gt; Dict[str, str]:
-    return {
-        e.name: e.error_message for e in filter(lambda x: x.is_error, self.series)
-    }</code></pre>
+    return {e.name: e.error_message for e in filter(lambda x: x.is_error, self.series)}</code></pre>
 </details>
 </dd>
 <dt id="macrobond_financial.common.types.unified_series.UnifiedSeries.to_dict"><code class="name flex">

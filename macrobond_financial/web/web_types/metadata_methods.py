@@ -69,9 +69,7 @@ class MetadataMethods:
         return cast("MetadataValueInformationResponse", response.json())
 
     # Get /v1/metadata/listattributevalues
-    def list_attribute_values(
-        self, attribute_name: str
-    ) -> "MetadataValueInformationResponse":
+    def list_attribute_values(self, attribute_name: str) -> "MetadataValueInformationResponse":
         """
         List all metadata attribute values.
         The attribute must have the property canListValues.

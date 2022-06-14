@@ -33,9 +33,7 @@ class Database:
     def FetchOneEntity(self, entity_name: str) -> Entity:
         """Download an entity, such as a Release."""
 
-    def FetchEntities(
-        self, entity_names: Union[str, Tuple[str, ...]]
-    ) -> Tuple[Entity, ...]:
+    def FetchEntities(self, entity_names: Union[str, Tuple[str, ...]]) -> Tuple[Entity, ...]:
         """
         Download one or more entities from the database.
         The parameter can be a string or a list of entity names. The result is a vector

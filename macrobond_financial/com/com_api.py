@@ -100,9 +100,7 @@ class ComApi(Api):
             name,
             tuple(
                 map(
-                    lambda x: MetadataValueInformationItem(
-                        name, x.Value, x.Description, x.Comment
-                    ),
+                    lambda x: MetadataValueInformationItem(name, x.Value, x.Description, x.Comment),
                     values,
                 )
             ),
@@ -130,11 +128,7 @@ class ComApi(Api):
         self, *name_val: Tuple[str, str]
     ) -> List[MetadataValueInformationItem]:
         def is_error_with_text(ex: Exception, text: str) -> bool:
-            return (
-                len(ex.args) >= 3
-                and len(ex.args[2]) >= 3
-                and ex.args[2][2].startswith(text)
-            )
+            return len(ex.args) >= 3 and len(ex.args[2]) >= 3 and ex.args[2][2].startswith(text)
 
         ret: List[MetadataValueInformationItem] = []
         for i in name_val:
@@ -154,9 +148,7 @@ class ComApi(Api):
                 if is_error_with_text(
                     ex, "The attribute '" + name + "' does not have a value called "
                 ):
-                    raise ValueError(
-                        "Unknown attribute value: " + name + "," + val
-                    ) from ex
+                    raise ValueError("Unknown attribute value: " + name + "," + val) from ex
                 raise ex
 
             ret.append(
@@ -168,9 +160,7 @@ class ComApi(Api):
 
     # revision
 
-    def get_revision_info(
-        self, *series_names: str, raise_error: bool = None
-    ) -> List[RevisionInfo]:
+    def get_revision_info(self, *series_names: str, raise_error: bool = None) -> List[RevisionInfo]:
         def to_obj(name: str, serie: "SeriesWithRevisions"):
             if serie.IsError:
                 return RevisionInfo(
@@ -185,12 +175,8 @@ class ComApi(Api):
 
             vintage_time_stamps = tuple(serie.GetVintageDates())
 
-            time_stamp_of_first_revision = (
-                vintage_time_stamps[0] if serie.HasRevisions else None
-            )
-            time_stamp_of_last_revision = (
-                vintage_time_stamps[-1] if serie.HasRevisions else None
-            )
+            time_stamp_of_first_revision = vintage_time_stamps[0] if serie.HasRevisions else None
+            time_stamp_of_last_revision = vintage_time_stamps[-1] if serie.HasRevisions else None
 
             return RevisionInfo(
                 name,
@@ -219,9 +205,7 @@ class ComApi(Api):
         self, time: datetime, *series_names: str, raise_error: bool = None
     ) -> List[VintageSeries]:
         def to_obj(series_name: str) -> VintageSeries:
-            series_with_revisions = self.database.FetchOneSeriesWithRevisions(
-                series_name
-            )
+            series_with_revisions = self.database.FetchOneSeriesWithRevisions(series_name)
 
             if series_with_revisions.IsError:
                 return VintageSeries(
@@ -248,9 +232,7 @@ class ComApi(Api):
                     None,
                 )
 
-            values = tuple(
-                filter(lambda x: x is not None and not isnan(x), series.Values)
-            )
+            values = tuple(filter(lambda x: x is not None and not isnan(x), series.Values))
 
             dates = series.DatesAtStartOfPeriod[: len(values)]
 
@@ -279,9 +261,7 @@ class ComApi(Api):
         self, nth: int, *series_names: str, raise_error: bool = None
     ) -> List[Series]:
         def to_obj(series_name: str) -> Series:
-            series_with_revisions = self.database.FetchOneSeriesWithRevisions(
-                series_name
-            )
+            series_with_revisions = self.database.FetchOneSeriesWithRevisions(series_name)
 
             if series_with_revisions.IsError:
                 return Series(
@@ -302,9 +282,7 @@ class ComApi(Api):
                     None,
                 )
 
-            values = tuple(
-                map(lambda x: None if isnan(x) else x, series.Values)  # type: ignore
-            )
+            values = tuple(map(lambda x: None if isnan(x) else x, series.Values))  # type: ignore
 
             return Series(
                 series_name,
@@ -346,9 +324,7 @@ class ComApi(Api):
                 query.AddAttributeValueFilter(key, _filter.must_have_values[key])
 
             for key in _filter.must_not_have_values:
-                query.AddAttributeValueFilter(
-                    key, _filter.must_not_have_values[key], False
-                )
+                query.AddAttributeValueFilter(key, _filter.must_not_have_values[key], False)
 
             for attribute in _filter.must_have_attributes:
                 query.AddAttributeFilter(attribute)
@@ -386,9 +362,7 @@ class ComApi(Api):
     def get_one_entity(self, entity_name: str, raise_error: bool = None) -> Entity:
         return self.get_entities(entity_name, raise_error=raise_error)[0]
 
-    def get_entities(
-        self, *entity_names: str, raise_error: bool = None
-    ) -> List[Entity]:
+    def get_entities(self, *entity_names: str, raise_error: bool = None) -> List[Entity]:
         com_entitys = self.database.FetchEntities(entity_names)
         entitys = list(map(_create_entity, com_entitys, entity_names))
         GetEntitiesError.raise_if(
@@ -424,13 +398,9 @@ class ComApi(Api):
 
             series_expression.ToLowerFrequencyMethod = entrie.to_lowerfrequency_method
 
-            series_expression.ToHigherFrequencyMethod = (
-                entry_or_name.to_higherfrequency_method
-            )
+            series_expression.ToHigherFrequencyMethod = entry_or_name.to_higherfrequency_method
 
-            series_expression.PartialPeriodsMethod = (
-                entry_or_name.partial_periods_method
-            )
+            series_expression.PartialPeriodsMethod = entry_or_name.partial_periods_method
 
         request.Frequency = frequency
 
@@ -458,9 +428,7 @@ class ComApi(Api):
         for i, com_one_series in enumerate(com_series):
             name = request.AddedSeries[i].Name
             if com_one_series.IsError:
-                series.append(
-                    UnifiedSerie(name, com_one_series.ErrorMessage, {}, tuple())
-                )
+                series.append(UnifiedSerie(name, com_one_series.ErrorMessage, {}, tuple()))
             else:
                 metadata: Dict[str, Any] = {}
                 com_metadata = com_one_series.Metadata

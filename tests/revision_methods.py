@@ -26,12 +26,8 @@ class Common(TestCase):
         self.assertEqual(web.has_revisions, com.has_revisions)
         self.assertEqual(web.stores_revisions, com.stores_revisions)
 
-        self.assertEqual(
-            web.time_stamp_of_first_revision, com.time_stamp_of_first_revision
-        )
-        self.assertEqual(
-            web.time_stamp_of_last_revision, com.time_stamp_of_last_revision
-        )
+        self.assertEqual(web.time_stamp_of_first_revision, com.time_stamp_of_first_revision)
+        self.assertEqual(web.time_stamp_of_last_revision, com.time_stamp_of_last_revision)
         self.assertSequenceEqual(web.vintage_time_stamps, com.vintage_time_stamps)
 
     def test_get_revision_info_object_error(self) -> None:
@@ -44,12 +40,8 @@ class Common(TestCase):
         self.assertEqual(web.has_revisions, com.has_revisions)
         self.assertEqual(web.stores_revisions, com.stores_revisions)
 
-        self.assertEqual(
-            web.time_stamp_of_first_revision, com.time_stamp_of_first_revision
-        )
-        self.assertEqual(
-            web.time_stamp_of_last_revision, com.time_stamp_of_last_revision
-        )
+        self.assertEqual(web.time_stamp_of_first_revision, com.time_stamp_of_first_revision)
+        self.assertEqual(web.time_stamp_of_last_revision, com.time_stamp_of_last_revision)
         self.assertSequenceEqual(web.vintage_time_stamps, com.vintage_time_stamps)
 
     def test_get_revision_info_dict(self) -> None:
@@ -59,12 +51,8 @@ class Common(TestCase):
         self.assertDictEqual(web, com)
 
     def test_get_revision_info_dict_error(self) -> None:
-        web = self.web_api.get_revision_info("noseries!", raise_error=False)[
-            0
-        ].to_dict()
-        com = self.com_api.get_revision_info("noseries!", raise_error=False)[
-            0
-        ].to_dict()
+        web = self.web_api.get_revision_info("noseries!", raise_error=False)[0].to_dict()
+        com = self.com_api.get_revision_info("noseries!", raise_error=False)[0].to_dict()
 
         self.assertDictEqual(web, com)
 
@@ -91,16 +79,14 @@ class Common(TestCase):
         self.assertEqual(web.__repr__(), com.__repr__(), "__repr__")
         self.assertSequenceEqual(web.values, com.values, "values")
         self.assertSequenceEqual(web.dates, com.dates, "dates")
-        self.assertEqual(
-            web.revision_time_stamp, com.revision_time_stamp, "revision_time_stamp"
-        )
+        self.assertEqual(web.revision_time_stamp, com.revision_time_stamp, "revision_time_stamp")
 
-        web = self.web_api.get_vintage_series(
-            datetime(2021, 4, 1), "noseries!", raise_error=False
-        )[0]
-        com = self.com_api.get_vintage_series(
-            datetime(2021, 4, 1), "noseries!", raise_error=False
-        )[0]
+        web = self.web_api.get_vintage_series(datetime(2021, 4, 1), "noseries!", raise_error=False)[
+            0
+        ]
+        com = self.com_api.get_vintage_series(datetime(2021, 4, 1), "noseries!", raise_error=False)[
+            0
+        ]
 
         self.assertEqual(web.name, com.name, "name")
         self.assertEqual(web.error_message, com.error_message, "error_message")
@@ -115,12 +101,8 @@ class Common(TestCase):
 
         time_stamp_of_last_revision = cast(datetime, info.time_stamp_of_last_revision)
 
-        web = self.web_api.get_vintage_series(time_stamp_of_last_revision, "gbgdp")[
-            0
-        ].to_dict()
-        com = self.com_api.get_vintage_series(time_stamp_of_last_revision, "gbgdp")[
-            0
-        ].to_dict()
+        web = self.web_api.get_vintage_series(time_stamp_of_last_revision, "gbgdp")[0].to_dict()
+        com = self.com_api.get_vintage_series(time_stamp_of_last_revision, "gbgdp")[0].to_dict()
 
         def remove_metadata(obj: Any) -> Any:
             return dict(filter(lambda e: not e[0].startswith("metadata"), obj.items()))
@@ -130,12 +112,12 @@ class Common(TestCase):
 
         self.assertDictEqual(web, com)
 
-        web = self.web_api.get_vintage_series(
-            datetime(2021, 4, 1), "noseries!", raise_error=False
-        )[0].to_dict()
-        com = self.com_api.get_vintage_series(
-            datetime(2021, 4, 1), "noseries!", raise_error=False
-        )[0].to_dict()
+        web = self.web_api.get_vintage_series(datetime(2021, 4, 1), "noseries!", raise_error=False)[
+            0
+        ].to_dict()
+        com = self.com_api.get_vintage_series(datetime(2021, 4, 1), "noseries!", raise_error=False)[
+            0
+        ].to_dict()
         self.assertDictEqual(web, com)
 
     def test_get_vintage_series_data_frame(self) -> None:
@@ -143,20 +125,14 @@ class Common(TestCase):
 
         time_stamp_of_last_revision = cast(datetime, info.time_stamp_of_last_revision)
 
-        web = self.web_api.get_vintage_series(time_stamp_of_last_revision, "gbgdp")[
-            0
-        ].data_frame()
-        com = self.com_api.get_vintage_series(time_stamp_of_last_revision, "gbgdp")[
-            0
-        ].data_frame()
+        web = self.web_api.get_vintage_series(time_stamp_of_last_revision, "gbgdp")[0].data_frame()
+        com = self.com_api.get_vintage_series(time_stamp_of_last_revision, "gbgdp")[0].data_frame()
 
         self.assertEqual(len(web.columns), len(web.columns))
 
         def remove_metadata(data_frame):
             col = data_frame.columns
-            ret = data_frame[
-                [col for col in data_frame if not col.startswith("metadata.")]
-            ]
+            ret = data_frame[[col for col in data_frame if not col.startswith("metadata.")]]
             self.assertGreater(len(data_frame.columns), len(ret.columns))
             return ret
 
@@ -240,9 +216,7 @@ class Common(TestCase):
                 [
                     col
                     for col in data_frame
-                    if not col.startswith("metadata.")
-                    and col != "Values"
-                    and col != "Dates"
+                    if not col.startswith("metadata.") and col != "Values" and col != "Dates"
                 ]
             ]
             self.assertGreater(len(data_frame.columns), len(ret.columns))
@@ -287,9 +261,9 @@ class Web(TestCase):
         def get_datetime(
             year, month=None, day=None, hour=0, minute=0, second=0, microsecond=0
         ) -> datetime:
-            return datetime(
-                year, month, day, hour, minute, second, microsecond
-            ).replace(tzinfo=timezone.utc)
+            return datetime(year, month, day, hour, minute, second, microsecond).replace(
+                tzinfo=timezone.utc
+            )
 
         actual = api.get_observation_history(
             "usgdp",

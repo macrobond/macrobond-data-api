@@ -27,9 +27,7 @@ class GetEntitiesError(Exception):
         if isinstance(entities, list):
             self.entities = entities
         elif isinstance(entities, dict):
-            self.entities = list(
-                map(EntitieErrorInfo, entities.keys(), entities.values())
-            )
+            self.entities = list(map(EntitieErrorInfo, entities.keys(), entities.values()))
         else:
             self.entities = [EntitieErrorInfo(entities, cast(str, error_message))]
 

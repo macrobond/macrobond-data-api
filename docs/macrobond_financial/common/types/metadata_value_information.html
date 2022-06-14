@@ -48,9 +48,7 @@ if TYPE_CHECKING:  # pragma: no cover
     from pandas import DataFrame, _typing as pandas_typing  # type: ignore
 
 
-MetadataValueInformationColumns = List[
-    Literal[&#34;attribute_name&#34;, &#34;value&#34;, &#34;description&#34;, &#34;comment&#34;]
-]
+MetadataValueInformationColumns = List[Literal[&#34;attribute_name&#34;, &#34;value&#34;, &#34;description&#34;, &#34;comment&#34;]]
 
 
 class TypedDictMetadataValueInformation(TypedDict):

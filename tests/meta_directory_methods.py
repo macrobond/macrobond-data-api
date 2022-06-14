@@ -96,9 +96,7 @@ def list_values(test: TestCase, api: Api) -> None:
         value = api.metadata_list_values("RateType")
 
         actual = next(filter(lambda x: x.value == "mole", value))
-        expected = MetadataValueInformationItem(
-            "RateType", "mole", "Mortgage Lending Rates", None
-        )
+        expected = MetadataValueInformationItem("RateType", "mole", "Mortgage Lending Rates", None)
 
         test.assertEqual(actual, expected)
 
@@ -139,21 +137,13 @@ def list_values(test: TestCase, api: Api) -> None:
 def get_value_information(test: TestCase, api: Api) -> None:
 
     actual = api.metadata_get_value_information(("RateType", "mole"))
-    expected = [
-        MetadataValueInformationItem("RateType", "mole", "Mortgage Lending Rates", None)
-    ]
+    expected = [MetadataValueInformationItem("RateType", "mole", "Mortgage Lending Rates", None)]
     test.assertSequenceEqual(actual, expected)
 
-    actual = api.metadata_get_value_information(
-        ("RateType", "mole"), ("RateType", "fori")
-    )
+    actual = api.metadata_get_value_information(("RateType", "mole"), ("RateType", "fori"))
     expected = [
-        MetadataValueInformationItem(
-            "RateType", "mole", "Mortgage Lending Rates", None
-        ),
-        MetadataValueInformationItem(
-            "RateType", "fori", "Foreign Institution Investments", None
-        ),
+        MetadataValueInformationItem("RateType", "mole", "Mortgage Lending Rates", None),
+        MetadataValueInformationItem("RateType", "fori", "Foreign Institution Investments", None),
     ]
 
     # erros
@@ -173,9 +163,7 @@ def get_value_information(test: TestCase, api: Api) -> None:
     )
 
     with test.assertRaises(ValueError) as context:
-        api.metadata_get_value_information(
-            ("RateType", "mole"), ("RateType", "bad val")
-        )
+        api.metadata_get_value_information(("RateType", "mole"), ("RateType", "bad val"))
     test.assertEqual(
         "Unknown attribute value: RateType,bad val",
         str(context.exception),

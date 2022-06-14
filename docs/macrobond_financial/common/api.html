@@ -123,9 +123,7 @@ class Api(ABC):
     # revision
 
     @abstractmethod
-    def get_revision_info(
-        self, *series_names: str, raise_error: bool = None
-    ) -&gt; List[RevisionInfo]:
+    def get_revision_info(self, *series_names: str, raise_error: bool = None) -&gt; List[RevisionInfo]:
         &#34;&#34;&#34;
         Get information about if revision history is available for a series
         and a list of revision timestamps.
@@ -337,9 +335,7 @@ class Api(ABC):
         &#34;&#34;&#34;
 
     @abstractmethod
-    def get_entities(
-        self, *entity_names: str, raise_error: bool = None
-    ) -&gt; List[Entity]:
+    def get_entities(self, *entity_names: str, raise_error: bool = None) -&gt; List[Entity]:
         &#34;&#34;&#34;
         Download one or more entities.
 
@@ -496,9 +492,7 @@ class Api(ABC):
     # revision
 
     @abstractmethod
-    def get_revision_info(
-        self, *series_names: str, raise_error: bool = None
-    ) -&gt; List[RevisionInfo]:
+    def get_revision_info(self, *series_names: str, raise_error: bool = None) -&gt; List[RevisionInfo]:
         &#34;&#34;&#34;
         Get information about if revision history is available for a series
         and a list of revision timestamps.
@@ -710,9 +704,7 @@ class Api(ABC):
         &#34;&#34;&#34;
 
     @abstractmethod
-    def get_entities(
-        self, *entity_names: str, raise_error: bool = None
-    ) -&gt; List[Entity]:
+    def get_entities(self, *entity_names: str, raise_error: bool = None) -&gt; List[Entity]:
         &#34;&#34;&#34;
         Download one or more entities.
 
@@ -948,9 +940,7 @@ If None, it will use the global value <code><a title="macrobond_financial.common
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@abstractmethod
-def get_entities(
-    self, *entity_names: str, raise_error: bool = None
-) -&gt; List[Entity]:
+def get_entities(self, *entity_names: str, raise_error: bool = None) -&gt; List[Entity]:
     &#34;&#34;&#34;
     Download one or more entities.
 
@@ -1135,9 +1125,7 @@ If None, it will use the global value <code><a title="macrobond_financial.common
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@abstractmethod
-def get_revision_info(
-    self, *series_names: str, raise_error: bool = None
-) -&gt; List[RevisionInfo]:
+def get_revision_info(self, *series_names: str, raise_error: bool = None) -&gt; List[RevisionInfo]:
     &#34;&#34;&#34;
     Get information about if revision history is available for a series
     and a list of revision timestamps.

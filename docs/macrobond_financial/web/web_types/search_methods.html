@@ -154,9 +154,7 @@ class SearchMethods:
 
             404 At least one attribute was not found.
         &#34;&#34;&#34;
-        response = self.__session.post_or_raise(
-            &#34;v1/search/entitiesfordisplay&#34;, json=request
-        )
+        response = self.__session.post_or_raise(&#34;v1/search/entitiesfordisplay&#34;, json=request)
         return cast(&#34;SearchForDisplayResponse&#34;, response.json())</code></pre>
 </details>
 </section>
@@ -292,9 +290,7 @@ class SearchMethods:
 
             404 At least one attribute was not found.
         &#34;&#34;&#34;
-        response = self.__session.post_or_raise(
-            &#34;v1/search/entitiesfordisplay&#34;, json=request
-        )
+        response = self.__session.post_or_raise(&#34;v1/search/entitiesfordisplay&#34;, json=request)
         return cast(&#34;SearchForDisplayResponse&#34;, response.json())</code></pre>
 </details>
 <h3>Methods</h3>
@@ -336,9 +332,7 @@ selected metadata formatted for presentation purposes.</p>
 
         404 At least one attribute was not found.
     &#34;&#34;&#34;
-    response = self.__session.post_or_raise(
-        &#34;v1/search/entitiesfordisplay&#34;, json=request
-    )
+    response = self.__session.post_or_raise(&#34;v1/search/entitiesfordisplay&#34;, json=request)
     return cast(&#34;SearchForDisplayResponse&#34;, response.json())</code></pre>
 </details>
 </dd>

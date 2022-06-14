@@ -23,9 +23,7 @@ class SeriesTreeMethods:
 
     def get_nodes(
         self, path: str = None, filter_path: str = None
-    ) -> List[
-        Union["SeriesTreeNodeLeaf", "SeriesTreeNodeBranchRef", "SeriesTreeNodeBranch"]
-    ]:
+    ) -> List[Union["SeriesTreeNodeLeaf", "SeriesTreeNodeBranchRef", "SeriesTreeNodeBranch"]]:
         """
         Get the nodes of a branch of the series database tree.
 

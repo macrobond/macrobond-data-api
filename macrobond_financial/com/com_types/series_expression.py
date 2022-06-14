@@ -34,9 +34,7 @@ class SeriesExpression:
         """Get the method to converting to lower frequency."""
 
     @ToLowerFrequencyMethod.setter
-    def ToLowerFrequencyMethod(
-        self, new_missing_value_method: SeriesToLowerFrequencyMethod
-    ):
+    def ToLowerFrequencyMethod(self, new_missing_value_method: SeriesToLowerFrequencyMethod):
         """Set the method to converting to lower frequency."""
 
     @property
@@ -44,9 +42,7 @@ class SeriesExpression:
         """Get the method to converting to higher frequency."""
 
     @ToHigherFrequencyMethod.setter
-    def ToHigherFrequencyMethod(
-        self, new_missing_value_method: SeriesToHigherFrequencyMethod
-    ):
+    def ToHigherFrequencyMethod(self, new_missing_value_method: SeriesToHigherFrequencyMethod):
         """Set the method to converting to higher frequency."""
 
     @property
@@ -54,7 +50,5 @@ class SeriesExpression:
         """Get the method to use for converting partial periods to lower frequency."""
 
     @PartialPeriodsMethod.setter
-    def PartialPeriodsMethod(
-        self, new_missing_value_method: SeriesPartialPeriodsMethod
-    ):
+    def PartialPeriodsMethod(self, new_missing_value_method: SeriesPartialPeriodsMethod):
         """Set the method to use for converting partial periods to lower frequency."""

@@ -20,9 +20,7 @@ if TYPE_CHECKING:  # pragma: no cover
     from pandas import DataFrame, _typing as pandas_typing  # type: ignore
 
 
-MetadataValueInformationColumns = List[
-    Literal["attribute_name", "value", "description", "comment"]
-]
+MetadataValueInformationColumns = List[Literal["attribute_name", "value", "description", "comment"]]
 
 
 class TypedDictMetadataValueInformation(TypedDict):

@@ -40,9 +40,8 @@ class SearchResult(Sequence[Dict[str, Any]]):
     &#34;&#34;&#34;
     The result of a entity search operation.
     &#34;&#34;&#34;
-    def __init__(
-        self, entities: Tuple[Dict[str, Any], ...], is_truncated: bool
-    ) -&gt; None:
+
+    def __init__(self, entities: Tuple[Dict[str, Any], ...], is_truncated: bool) -&gt; None:
         self.entities = entities
         &#34;&#34;&#34;
         A sequence of the metadata of the entities found.
@@ -53,9 +52,7 @@ class SearchResult(Sequence[Dict[str, Any]]):
         &#34;&#34;&#34;
 
     def __str__(self):
-        return (
-            f&#34;SearchResult of {len(self)} entities, is is_truncated {self.is_truncated}&#34;
-        )
+        return f&#34;SearchResult of {len(self)} entities, is is_truncated {self.is_truncated}&#34;
 
     def __repr__(self):
         return str(self)
@@ -121,9 +118,8 @@ class SearchResult(Sequence[Dict[str, Any]]):
     &#34;&#34;&#34;
     The result of a entity search operation.
     &#34;&#34;&#34;
-    def __init__(
-        self, entities: Tuple[Dict[str, Any], ...], is_truncated: bool
-    ) -&gt; None:
+
+    def __init__(self, entities: Tuple[Dict[str, Any], ...], is_truncated: bool) -&gt; None:
         self.entities = entities
         &#34;&#34;&#34;
         A sequence of the metadata of the entities found.
@@ -134,9 +130,7 @@ class SearchResult(Sequence[Dict[str, Any]]):
         &#34;&#34;&#34;
 
     def __str__(self):
-        return (
-            f&#34;SearchResult of {len(self)} entities, is is_truncated {self.is_truncated}&#34;
-        )
+        return f&#34;SearchResult of {len(self)} entities, is is_truncated {self.is_truncated}&#34;
 
     def __repr__(self):
         return str(self)

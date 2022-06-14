@@ -61,9 +61,7 @@ class Database:
     def FetchOneEntity(self, entity_name: str) -&gt; Entity:
         &#34;&#34;&#34;Download an entity, such as a Release.&#34;&#34;&#34;
 
-    def FetchEntities(
-        self, entity_names: Union[str, Tuple[str, ...]]
-    ) -&gt; Tuple[Entity, ...]:
+    def FetchEntities(self, entity_names: Union[str, Tuple[str, ...]]) -&gt; Tuple[Entity, ...]:
         &#34;&#34;&#34;
         Download one or more entities from the database.
         The parameter can be a string or a list of entity names. The result is a vector
@@ -231,9 +229,7 @@ class Database:
     def FetchOneEntity(self, entity_name: str) -&gt; Entity:
         &#34;&#34;&#34;Download an entity, such as a Release.&#34;&#34;&#34;
 
-    def FetchEntities(
-        self, entity_names: Union[str, Tuple[str, ...]]
-    ) -&gt; Tuple[Entity, ...]:
+    def FetchEntities(self, entity_names: Union[str, Tuple[str, ...]]) -&gt; Tuple[Entity, ...]:
         &#34;&#34;&#34;
         Download one or more entities from the database.
         The parameter can be a string or a list of entity names. The result is a vector
@@ -568,9 +564,7 @@ of entities in the same order as requested.</p></div>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def FetchEntities(
-    self, entity_names: Union[str, Tuple[str, ...]]
-) -&gt; Tuple[Entity, ...]:
+<pre><code class="python">def FetchEntities(self, entity_names: Union[str, Tuple[str, ...]]) -&gt; Tuple[Entity, ...]:
     &#34;&#34;&#34;
     Download one or more entities from the database.
     The parameter can be a string or a list of entity names. The result is a vector

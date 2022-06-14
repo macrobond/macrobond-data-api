@@ -50,36 +50,28 @@ class StartOrEndPoint:
         return StartOrEndPoint(str(observations), mode)
 
     @staticmethod
-    def relative_to_years(
-        years: int, mode: CalendarDateMode = None
-    ) -> "StartOrEndPoint":
+    def relative_to_years(years: int, mode: CalendarDateMode = None) -> "StartOrEndPoint":
         """
         Create a start or endpoint as a number of years relative the end of the intervall.
         """
         return StartOrEndPoint(str(years) + "y", mode)
 
     @staticmethod
-    def relative_to_quarters(
-        quarters: int, mode: CalendarDateMode = None
-    ) -> "StartOrEndPoint":
+    def relative_to_quarters(quarters: int, mode: CalendarDateMode = None) -> "StartOrEndPoint":
         """
         Create a start or endpoint as a number of quarters relative the end of the intervall.
         """
         return StartOrEndPoint(str(quarters) + "q", mode)
 
     @staticmethod
-    def relative_to_months(
-        months: int, mode: CalendarDateMode = None
-    ) -> "StartOrEndPoint":
+    def relative_to_months(months: int, mode: CalendarDateMode = None) -> "StartOrEndPoint":
         """
         Create a start or endpoint as a number of months relative the end of the intervall.
         """
         return StartOrEndPoint(str(months) + "m", mode)
 
     @staticmethod
-    def relative_to_weeks(
-        weeks: int, mode: CalendarDateMode = None
-    ) -> "StartOrEndPoint":
+    def relative_to_weeks(weeks: int, mode: CalendarDateMode = None) -> "StartOrEndPoint":
         """
         Create a start or endpoint as a number of weeks relative the end of the intervall.
         """

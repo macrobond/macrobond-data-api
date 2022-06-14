@@ -97,9 +97,7 @@ class UnifiedSeries(Sequence[UnifiedSerie]):
         }
 
     def get_errors(self) -> Dict[str, str]:
-        return {
-            e.name: e.error_message for e in filter(lambda x: x.is_error, self.series)
-        }
+        return {e.name: e.error_message for e in filter(lambda x: x.is_error, self.series)}
 
     @overload
     def data_frame(self) -> "DataFrame":

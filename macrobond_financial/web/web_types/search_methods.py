@@ -126,7 +126,5 @@ class SearchMethods:
 
             404 At least one attribute was not found.
         """
-        response = self.__session.post_or_raise(
-            "v1/search/entitiesfordisplay", json=request
-        )
+        response = self.__session.post_or_raise("v1/search/entitiesfordisplay", json=request)
         return cast("SearchForDisplayResponse", response.json())
