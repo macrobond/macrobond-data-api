@@ -14,7 +14,7 @@ SeriesColumnsLiterals = Literal[EntityColumnsLiterals, "Values", "Dates"]
 SeriesColumns = List[SeriesColumnsLiterals]
 
 if TYPE_CHECKING:  # pragma: no cover
-    from pandas import DataFrame  # type: ignore
+    from pandas import Series as PdSeries  # type: ignore
 
 
 class Series(Entity):
@@ -50,25 +50,10 @@ class Series(Entity):
         self._add_metadata(ret)
         return ret
 
-    def get_values_and_dates_as_data_frame(self, *args, **kwargs) -> "DataFrame":
+    def values_to_pd_series(self, name: str = None) -> "PdSeries":
         pandas = _get_pandas()
-
-        if self.is_error:
-            error_series = {
-                "Name": self.name,
-                "ErrorMessage": self.error_message,
-            }
-            kwargs["data"] = [error_series]
-        else:
-            series = {
-                "Values": self.values,
-                "Dates": self.dates,
-            }
-
-            kwargs["data"] = series
-
-        args = args[1:]
-        return pandas.DataFrame(*args, **kwargs)
+        name = name if name else self.name
+        return pandas.Series(self.values, self.dates, name=name)
 
     def __eq__(self, other):
         return self is other or (

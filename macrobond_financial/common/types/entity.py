@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 
-from typing import Any, Dict, List, Union, Optional, TYPE_CHECKING, overload
+from typing import Any, Dict, List, Optional, TYPE_CHECKING
 from typing_extensions import Literal
 
 from .._get_pandas import _get_pandas
 
 if TYPE_CHECKING:  # pragma: no cover
-    from pandas import DataFrame, _typing as pandas_typing  # type: ignore
+    from pandas import Series, DataFrame  # type: ignore
 
 
 EntityColumnsLiterals = Literal["ErrorMessage", "Name", "PrimName", "FullDescription", "EntityType"]
@@ -70,34 +70,19 @@ class Entity:
         self._add_metadata(ret)
         return ret
 
-    @overload
-    def data_frame(self) -> "DataFrame":
-        ...
-
-    @overload
-    def data_frame(
-        self,
-        index: "pandas_typing.Axes" = None,
-        columns: Union[EntityColumns, "pandas_typing.Axes"] = None,
-        dtype: "pandas_typing.Dtype" = None,
-        copy: bool = False,
-    ) -> "DataFrame":
-        ...
-
-    def data_frame(self, *args, **kwargs) -> "DataFrame":
+    def to_pd_data_frame(self) -> "DataFrame":
         pandas = _get_pandas()
-        args = args[1:]
-        kwargs["data"] = [self.to_dict()]
-        return pandas.DataFrame(*args, **kwargs)
+        return pandas.DataFrame([self.to_dict()])
 
-    def get_metadata_as_data_frame(self) -> "DataFrame":
+    def metadata_to_pd_series(self, name: str = None) -> "Series":
         pandas = _get_pandas()
-        return pandas.DataFrame.from_dict(self.metadata, orient="index", columns=["Attributes"])
+        name = name if name else self.name
+        return pandas.Series(self.metadata.values(), self.metadata.keys(), name=name)
 
     def __str__(self):
         if self.is_error:
-            return f"Entity with error, error message: {self.error_message}"
-        return f"{self.__class__.__name__}, PrimName: {self.primary_name}"
+            return f"{self.__class__.__name__} with error, error message: {self.error_message}"
+        return f"{self.__class__.__name__} PrimName: {self.primary_name}"
 
     def __repr__(self):
         return str(self)

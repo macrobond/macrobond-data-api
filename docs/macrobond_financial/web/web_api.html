@@ -35,7 +35,6 @@ from typing import (
     Dict,
     List,
     Optional,
-    Sequence,
     Union,
     Tuple,
     cast,
@@ -160,9 +159,7 @@ class WebApi(Api):
             ),
         )
 
-    def metadata_get_attribute_information(
-        self, *name: str
-    ) -&gt; Sequence[MetadataAttributeInformation]:
+    def metadata_get_attribute_information(self, *name: str) -&gt; List[MetadataAttributeInformation]:
         def get_metadata_attribute_information(info):
             return MetadataAttributeInformation(
                 info[&#34;name&#34;],
@@ -176,7 +173,7 @@ class WebApi(Api):
             )
 
         info = self.session.metadata.get_attribute_information(*name)
-        return tuple(map(get_metadata_attribute_information, info))
+        return list(map(get_metadata_attribute_information, info))
 
     def metadata_get_value_information(
         self, *name_val: Tuple[str, str]
@@ -319,7 +316,7 @@ class WebApi(Api):
         return list(map(lambda x: _create_series(x, series_name), response))
 
     def get_observation_history(
-        self, serie_name: str, times: Sequence[datetime]
+        self, serie_name: str, *times: datetime
     ) -&gt; List[SeriesObservationHistory]:
         try:
             response = self.session.series.fetch_observation_history(serie_name, list(times))
@@ -494,7 +491,28 @@ class WebApi(Api):
 <span>class <span class="ident">WebApi</span></span>
 </code></dt>
 <dd>
-<div class="desc"><p>Common API to interact with the Macrobond database.</p></div>
+<div class="desc"><p>Common API to interact with the Macrobond database.</p>
+<p>metadata methods:
+<code>metadata_list_values</code>
+<code>metadata_get_attribute_information</code>
+<code>metadata_get_value_information</code>
+<code>metadata_list_values</code></p>
+<p>revision methods:
+<code>get_revision_info</code>
+<code>get_vintage_series</code>
+<code>get_nth_release</code>
+<code>get_all_vintage_series</code>
+get_observation_history. Only available in wep api.</p>
+<p>Search methods:
+<code>entity_search</code>
+<code>entity_search_multi_filter</code></p>
+<p>Series
+methods:
+<code>get_one_series</code>
+<code>get_series</code>
+<code>get_one_entity</code>
+<code>get_entities</code>
+<code>get_unified_series</code></p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -524,9 +542,7 @@ class WebApi(Api):
             ),
         )
 
-    def metadata_get_attribute_information(
-        self, *name: str
-    ) -&gt; Sequence[MetadataAttributeInformation]:
+    def metadata_get_attribute_information(self, *name: str) -&gt; List[MetadataAttributeInformation]:
         def get_metadata_attribute_information(info):
             return MetadataAttributeInformation(
                 info[&#34;name&#34;],
@@ -540,7 +556,7 @@ class WebApi(Api):
             )
 
         info = self.session.metadata.get_attribute_information(*name)
-        return tuple(map(get_metadata_attribute_information, info))
+        return list(map(get_metadata_attribute_information, info))
 
     def metadata_get_value_information(
         self, *name_val: Tuple[str, str]
@@ -683,7 +699,7 @@ class WebApi(Api):
         return list(map(lambda x: _create_series(x, series_name), response))
 
     def get_observation_history(
-        self, serie_name: str, times: Sequence[datetime]
+        self, serie_name: str, *times: datetime
     ) -&gt; List[SeriesObservationHistory]:
         try:
             response = self.session.series.fetch_observation_history(serie_name, list(times))
@@ -887,7 +903,7 @@ def session(self) -&gt; &#34;Session&#34;:
 </details>
 </dd>
 <dt id="macrobond_financial.web.web_api.WebApi.get_observation_history"><code class="name flex">
-<span>def <span class="ident">get_observation_history</span></span>(<span>self, serie_name: str, times: Sequence[datetime.datetime]) ‑> List[<a title="macrobond_financial.common.types.series_observation_history.SeriesObservationHistory" href="../common/types/series_observation_history.html#macrobond_financial.common.types.series_observation_history.SeriesObservationHistory">SeriesObservationHistory</a>]</span>
+<span>def <span class="ident">get_observation_history</span></span>(<span>self, serie_name: str, *times: datetime.datetime) ‑> List[<a title="macrobond_financial.common.types.series_observation_history.SeriesObservationHistory" href="../common/types/series_observation_history.html#macrobond_financial.common.types.series_observation_history.SeriesObservationHistory">SeriesObservationHistory</a>]</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -896,7 +912,7 @@ def session(self) -&gt; &#34;Session&#34;:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def get_observation_history(
-    self, serie_name: str, times: Sequence[datetime]
+    self, serie_name: str, *times: datetime
 ) -&gt; List[SeriesObservationHistory]:
     try:
         response = self.session.series.fetch_observation_history(serie_name, list(times))

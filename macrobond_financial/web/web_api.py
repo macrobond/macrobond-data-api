@@ -7,7 +7,6 @@ from typing import (
     Dict,
     List,
     Optional,
-    Sequence,
     Union,
     Tuple,
     cast,
@@ -132,9 +131,7 @@ class WebApi(Api):
             ),
         )
 
-    def metadata_get_attribute_information(
-        self, *name: str
-    ) -> Sequence[MetadataAttributeInformation]:
+    def metadata_get_attribute_information(self, *name: str) -> List[MetadataAttributeInformation]:
         def get_metadata_attribute_information(info):
             return MetadataAttributeInformation(
                 info["name"],
@@ -148,7 +145,7 @@ class WebApi(Api):
             )
 
         info = self.session.metadata.get_attribute_information(*name)
-        return tuple(map(get_metadata_attribute_information, info))
+        return list(map(get_metadata_attribute_information, info))
 
     def metadata_get_value_information(
         self, *name_val: Tuple[str, str]
@@ -291,7 +288,7 @@ class WebApi(Api):
         return list(map(lambda x: _create_series(x, series_name), response))
 
     def get_observation_history(
-        self, serie_name: str, times: Sequence[datetime]
+        self, serie_name: str, *times: datetime
     ) -> List[SeriesObservationHistory]:
         try:
             response = self.session.series.fetch_observation_history(serie_name, list(times))

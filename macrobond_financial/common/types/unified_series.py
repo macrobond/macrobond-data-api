@@ -23,7 +23,7 @@ UnifiedSeriesColumnsLiterals = Literal["Dates", "Series"]
 UnifiedSeriesColumns = List[UnifiedSeriesColumnsLiterals]
 
 if TYPE_CHECKING:  # pragma: no cover
-    from pandas import DataFrame, _typing as pandas_typing  # type: ignore
+    from pandas import DataFrame  # type: ignore
 
 
 class UnifiedSeriesDict(TypedDict):
@@ -77,9 +77,6 @@ class UnifiedSerie:
         )
 
 
-# TODO: @mb-jp in inheritance list [UnifiedSerie] ?
-
-
 class UnifiedSeries(Sequence[UnifiedSerie]):
     @property
     def is_error(self) -> bool:
@@ -102,28 +99,13 @@ class UnifiedSeries(Sequence[UnifiedSerie]):
     def get_errors(self) -> Dict[str, str]:
         return {e.name: e.error_message for e in filter(lambda x: x.is_error, self.series)}
 
-    @overload
-    def data_frame(self) -> "DataFrame":
-        ...
-
-    @overload
-    def data_frame(
-        self,
-        index: "pandas_typing.Axes" = None,
-        columns: Union[UnifiedSeriesColumns, "pandas_typing.Axes"] = None,
-        dtype: "pandas_typing.Dtype" = None,
-        copy: bool = False,
-    ) -> "DataFrame":
-        ...
-
-    def data_frame(self, *args, **kwargs) -> "DataFrame":
+    def to_pd_data_frame(self) -> "DataFrame":
         pandas = _get_pandas()
-        args = args[1:]
-        kwargs["data"] = [self.to_dict()]
-        return pandas.DataFrame(*args, **kwargs)
+        return pandas.DataFrame(dict(map(lambda kv: (kv.name, kv.values), self.series)), self.dates)
 
     def __str__(self):
-        return f"UnifiedSeries of {len(self)} series"
+        names = ", ".join(map(lambda x: x.name, self.series))
+        return f"UnifiedSeries series: ({names})"
 
     def __repr__(self):
         return str(self)

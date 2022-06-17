@@ -54,31 +54,18 @@ class MetadataValueInformationItem:
         self.comment = comment
         """The comment of the metadata value"""
 
-    @overload
-    def data_frame(self) -> "DataFrame":
-        ...
-
-    @overload
-    def data_frame(
-        self,
-        index: "pandas_typing.Axes" = None,
-        columns: "pandas_typing.Axes" = None,
-        dtype: "pandas_typing.Dtype" = None,
-        copy: bool = False,
-    ) -> "DataFrame":
-        ...
-
-    def data_frame(self, *args, **kwargs) -> "DataFrame":
+    def to_pd_data_frame(self) -> "DataFrame":
         pandas = _get_pandas()
-        args = args[1:]
-        kwargs["data"] = self.to_dict()
-        return pandas.DataFrame(*args, **kwargs)
+        return pandas.DataFrame([self.to_dict()])
 
     def to_dict(self) -> TypedDictMetadataValueInformation:
         return cast(TypedDictMetadataValueInformation, vars(self))
 
     def __str__(self):
-        return str(self.value)
+        return (
+            f"MetadataValueInformationItem attribute_name: {self.attribute_name},"
+            + f" value: {self.value}"
+        )
 
     def __repr__(self):
         return str(self)
@@ -94,9 +81,6 @@ class MetadataValueInformationItem:
         )
 
 
-# TODO: @mb-jp in inheritance list [MetadataValueInformationItem] ?
-
-
 class MetadataValueInformation(Sequence[MetadataValueInformationItem]):
     def __init__(
         self,
@@ -108,33 +92,16 @@ class MetadataValueInformation(Sequence[MetadataValueInformationItem]):
 
         self.items = items
 
-    @overload
-    def data_frame(self) -> "DataFrame":
-        ...
-
-    @overload
-    def data_frame(
-        self,
-        index: "pandas_typing.Axes" = None,
-        columns: "pandas_typing.Axes" = None,
-        dtype: "pandas_typing.Dtype" = None,
-        copy: bool = False,
-    ) -> "DataFrame":
-        ...
-
-    def data_frame(self, *args, **kwargs) -> "DataFrame":
+    def to_pd_data_frame(self) -> "DataFrame":
         pandas = _get_pandas()
-        args = args[1:]
-        kwargs["data"] = self.to_dict()
-        return pandas.DataFrame(*args, **kwargs)
+        return pandas.DataFrame(self.to_dict())
 
     def to_dict(self) -> List[TypedDictMetadataValueInformation]:
         return list(map(lambda x: x.to_dict(), self.items))
 
     def __str__(self):
         return (
-            f"MetadataValueInformation of {len(self)} items"
-            + ", attribute_name: {self.attribute_name}"
+            f"MetadataValueInformation of {len(self)} items, attribute_name: {self.attribute_name}"
         )
 
     def __repr__(self):

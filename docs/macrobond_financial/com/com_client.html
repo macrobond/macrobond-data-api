@@ -199,7 +199,7 @@ class ComClient(Client[&#34;ComApi&#34;]):
     def open(self) -&gt; &#34;ComApi&#34;:
         if self.__api is None:
             try:
-                connection: &#34;Connection&#34; = _client.Dispatch(&#34;Macrobond.Connection__&#34;)
+                connection: &#34;Connection&#34; = _client.Dispatch(&#34;Macrobond.Connection&#34;)
             except com_error:
 
                 hints: List[str] = list()
@@ -299,7 +299,7 @@ so it is usually not a good idea to open and close them for each request</p></di
 <pre><code class="python">def open(self) -&gt; &#34;ComApi&#34;:
     if self.__api is None:
         try:
-            connection: &#34;Connection&#34; = _client.Dispatch(&#34;Macrobond.Connection__&#34;)
+            connection: &#34;Connection&#34; = _client.Dispatch(&#34;Macrobond.Connection&#34;)
         except com_error:
 
             hints: List[str] = list()

@@ -28,13 +28,13 @@
 </summary>
 <pre><code class="python"># -*- coding: utf-8 -*-
 
-from typing import Any, Dict, List, Union, Optional, TYPE_CHECKING, overload
+from typing import Any, Dict, List, Optional, TYPE_CHECKING
 from typing_extensions import Literal
 
 from .._get_pandas import _get_pandas
 
 if TYPE_CHECKING:  # pragma: no cover
-    from pandas import DataFrame, _typing as pandas_typing  # type: ignore
+    from pandas import Series, DataFrame  # type: ignore
 
 
 EntityColumnsLiterals = Literal[&#34;ErrorMessage&#34;, &#34;Name&#34;, &#34;PrimName&#34;, &#34;FullDescription&#34;, &#34;EntityType&#34;]
@@ -98,34 +98,19 @@ class Entity:
         self._add_metadata(ret)
         return ret
 
-    @overload
-    def data_frame(self) -&gt; &#34;DataFrame&#34;:
-        ...
-
-    @overload
-    def data_frame(
-        self,
-        index: &#34;pandas_typing.Axes&#34; = None,
-        columns: Union[EntityColumns, &#34;pandas_typing.Axes&#34;] = None,
-        dtype: &#34;pandas_typing.Dtype&#34; = None,
-        copy: bool = False,
-    ) -&gt; &#34;DataFrame&#34;:
-        ...
-
-    def data_frame(self, *args, **kwargs) -&gt; &#34;DataFrame&#34;:
+    def to_pd_data_frame(self) -&gt; &#34;DataFrame&#34;:
         pandas = _get_pandas()
-        args = args[1:]
-        kwargs[&#34;data&#34;] = [self.to_dict()]
-        return pandas.DataFrame(*args, **kwargs)
+        return pandas.DataFrame([self.to_dict()])
 
-    def get_metadata_as_data_frame(self) -&gt; &#34;DataFrame&#34;:
+    def metadata_to_pd_series(self, name: str = None) -&gt; &#34;Series&#34;:
         pandas = _get_pandas()
-        return pandas.DataFrame.from_dict(self.metadata, orient=&#34;index&#34;, columns=[&#34;Attributes&#34;])
+        name = name if name else self.name
+        return pandas.Series(self.metadata.values(), self.metadata.keys(), name=name)
 
     def __str__(self):
         if self.is_error:
-            return f&#34;Entity with error, error message: {self.error_message}&#34;
-        return f&#34;{self.__class__.__name__}, PrimName: {self.primary_name}&#34;
+            return f&#34;{self.__class__.__name__} with error, error message: {self.error_message}&#34;
+        return f&#34;{self.__class__.__name__} PrimName: {self.primary_name}&#34;
 
     def __repr__(self):
         return str(self)
@@ -224,34 +209,19 @@ class Entity:
         self._add_metadata(ret)
         return ret
 
-    @overload
-    def data_frame(self) -&gt; &#34;DataFrame&#34;:
-        ...
-
-    @overload
-    def data_frame(
-        self,
-        index: &#34;pandas_typing.Axes&#34; = None,
-        columns: Union[EntityColumns, &#34;pandas_typing.Axes&#34;] = None,
-        dtype: &#34;pandas_typing.Dtype&#34; = None,
-        copy: bool = False,
-    ) -&gt; &#34;DataFrame&#34;:
-        ...
-
-    def data_frame(self, *args, **kwargs) -&gt; &#34;DataFrame&#34;:
+    def to_pd_data_frame(self) -&gt; &#34;DataFrame&#34;:
         pandas = _get_pandas()
-        args = args[1:]
-        kwargs[&#34;data&#34;] = [self.to_dict()]
-        return pandas.DataFrame(*args, **kwargs)
+        return pandas.DataFrame([self.to_dict()])
 
-    def get_metadata_as_data_frame(self) -&gt; &#34;DataFrame&#34;:
+    def metadata_to_pd_series(self, name: str = None) -&gt; &#34;Series&#34;:
         pandas = _get_pandas()
-        return pandas.DataFrame.from_dict(self.metadata, orient=&#34;index&#34;, columns=[&#34;Attributes&#34;])
+        name = name if name else self.name
+        return pandas.Series(self.metadata.values(), self.metadata.keys(), name=name)
 
     def __str__(self):
         if self.is_error:
-            return f&#34;Entity with error, error message: {self.error_message}&#34;
-        return f&#34;{self.__class__.__name__}, PrimName: {self.primary_name}&#34;
+            return f&#34;{self.__class__.__name__} with error, error message: {self.error_message}&#34;
+        return f&#34;{self.__class__.__name__} PrimName: {self.primary_name}&#34;
 
     def __repr__(self):
         return str(self)
@@ -343,8 +313,8 @@ def title(self) -&gt; str:
 </dl>
 <h3>Methods</h3>
 <dl>
-<dt id="macrobond_financial.common.types.entity.Entity.data_frame"><code class="name flex">
-<span>def <span class="ident">data_frame</span></span>(<span>self, *args, **kwargs) ‑> DataFrame</span>
+<dt id="macrobond_financial.common.types.entity.Entity.metadata_to_pd_series"><code class="name flex">
+<span>def <span class="ident">metadata_to_pd_series</span></span>(<span>self, name: str = None) ‑> Series</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -352,25 +322,10 @@ def title(self) -&gt; str:
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def data_frame(self, *args, **kwargs) -&gt; &#34;DataFrame&#34;:
+<pre><code class="python">def metadata_to_pd_series(self, name: str = None) -&gt; &#34;Series&#34;:
     pandas = _get_pandas()
-    args = args[1:]
-    kwargs[&#34;data&#34;] = [self.to_dict()]
-    return pandas.DataFrame(*args, **kwargs)</code></pre>
-</details>
-</dd>
-<dt id="macrobond_financial.common.types.entity.Entity.get_metadata_as_data_frame"><code class="name flex">
-<span>def <span class="ident">get_metadata_as_data_frame</span></span>(<span>self) ‑> DataFrame</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def get_metadata_as_data_frame(self) -&gt; &#34;DataFrame&#34;:
-    pandas = _get_pandas()
-    return pandas.DataFrame.from_dict(self.metadata, orient=&#34;index&#34;, columns=[&#34;Attributes&#34;])</code></pre>
+    name = name if name else self.name
+    return pandas.Series(self.metadata.values(), self.metadata.keys(), name=name)</code></pre>
 </details>
 </dd>
 <dt id="macrobond_financial.common.types.entity.Entity.to_dict"><code class="name flex">
@@ -394,6 +349,20 @@ def title(self) -&gt; str:
     return ret</code></pre>
 </details>
 </dd>
+<dt id="macrobond_financial.common.types.entity.Entity.to_pd_data_frame"><code class="name flex">
+<span>def <span class="ident">to_pd_data_frame</span></span>(<span>self) ‑> DataFrame</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def to_pd_data_frame(self) -&gt; &#34;DataFrame&#34;:
+    pandas = _get_pandas()
+    return pandas.DataFrame([self.to_dict()])</code></pre>
+</details>
+</dd>
 </dl>
 </dd>
 </dl>
@@ -415,13 +384,13 @@ def title(self) -&gt; str:
 <li>
 <h4><code><a title="macrobond_financial.common.types.entity.Entity" href="#macrobond_financial.common.types.entity.Entity">Entity</a></code></h4>
 <ul class="">
-<li><code><a title="macrobond_financial.common.types.entity.Entity.data_frame" href="#macrobond_financial.common.types.entity.Entity.data_frame">data_frame</a></code></li>
 <li><code><a title="macrobond_financial.common.types.entity.Entity.entity_type" href="#macrobond_financial.common.types.entity.Entity.entity_type">entity_type</a></code></li>
-<li><code><a title="macrobond_financial.common.types.entity.Entity.get_metadata_as_data_frame" href="#macrobond_financial.common.types.entity.Entity.get_metadata_as_data_frame">get_metadata_as_data_frame</a></code></li>
 <li><code><a title="macrobond_financial.common.types.entity.Entity.is_error" href="#macrobond_financial.common.types.entity.Entity.is_error">is_error</a></code></li>
+<li><code><a title="macrobond_financial.common.types.entity.Entity.metadata_to_pd_series" href="#macrobond_financial.common.types.entity.Entity.metadata_to_pd_series">metadata_to_pd_series</a></code></li>
 <li><code><a title="macrobond_financial.common.types.entity.Entity.primary_name" href="#macrobond_financial.common.types.entity.Entity.primary_name">primary_name</a></code></li>
 <li><code><a title="macrobond_financial.common.types.entity.Entity.title" href="#macrobond_financial.common.types.entity.Entity.title">title</a></code></li>
 <li><code><a title="macrobond_financial.common.types.entity.Entity.to_dict" href="#macrobond_financial.common.types.entity.Entity.to_dict">to_dict</a></code></li>
+<li><code><a title="macrobond_financial.common.types.entity.Entity.to_pd_data_frame" href="#macrobond_financial.common.types.entity.Entity.to_pd_data_frame">to_pd_data_frame</a></code></li>
 </ul>
 </li>
 </ul>

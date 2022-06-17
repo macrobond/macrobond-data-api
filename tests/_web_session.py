@@ -49,8 +49,8 @@ class WebSession(TestCase):
         self.assertEqual(response.status_code, 200)
 
         mock.get.assert_called_with(url="/", params=None)
-
         mock.request.assert_called_with("get", "/.well-known/openid-configuration", True)
+        mock.fetch_token.assert_called_with("")
 
     def test_discovery_error_status_code(self) -> None:
 

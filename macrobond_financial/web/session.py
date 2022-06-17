@@ -3,7 +3,7 @@
 from typing import Callable, Optional, Any, TYPE_CHECKING
 
 from authlib.integrations.requests_client import OAuth2Session  # type: ignore
-
+from authlib.integrations.base_client.errors import InvalidTokenError  # type: ignore
 from .web_types import (
     MetadataMethods,
     SearchMethods,
@@ -146,7 +146,11 @@ class Session:
     def __if_status_code_401_fetch_token_and_retry(
         self, http: Callable[[], "Response"]
     ) -> "Response":
-        response = http()
+        try:
+            response = http()
+        except InvalidTokenError:
+            self.fetch_token()
+            return http()
         if response.status_code == 401:
             self.fetch_token()
             response = http()

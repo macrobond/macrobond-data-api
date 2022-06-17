@@ -5,10 +5,7 @@ from typing import Any, Dict, Sequence, Union, Tuple, overload, TYPE_CHECKING
 from .._get_pandas import _get_pandas
 
 if TYPE_CHECKING:  # pragma: no cover
-    from pandas import DataFrame, _typing as pandas_typing  # type: ignore
-
-
-# TODO: @mb-jp in inheritance dict [str, Any] ?
+    from pandas import DataFrame  # type: ignore
 
 
 class SearchResult(Sequence[Dict[str, Any]]):
@@ -27,7 +24,7 @@ class SearchResult(Sequence[Dict[str, Any]]):
         """
 
     def __str__(self):
-        return f"SearchResult of {len(self)} entities, is is_truncated {self.is_truncated}"
+        return f"SearchResult of {len(self)} entities, is_truncated: {self.is_truncated}"
 
     def __repr__(self):
         return str(self)
@@ -46,25 +43,16 @@ class SearchResult(Sequence[Dict[str, Any]]):
     def __len__(self) -> int:
         return len(self.entities)
 
-    @overload
-    def data_frame(self) -> "DataFrame":
-        ...
+    def to_dict(self) -> Tuple[Dict[str, Any], ...]:
+        return self.entities
 
-    @overload
-    def data_frame(
-        self,
-        index: "pandas_typing.Axes" = None,
-        columns: "pandas_typing.Axes" = None,
-        dtype: "pandas_typing.Dtype" = None,
-        copy: bool = False,
-    ) -> "DataFrame":
-        ...
+    # def to_pd_data_frame(self) -> "DataFrame":
+    #     pandas = _get_pandas()
+    #     return pandas.DataFrame(self.entities)
 
-    def data_frame(self, *args, **kwargs) -> "DataFrame":
+    def to_pd_data_frame(self) -> "DataFrame":
         """
         Return the result as a `DataFrame`.
         """
         pandas = _get_pandas()
-        args = args[1:]
-        kwargs["data"] = self.entities
-        return pandas.DataFrame(*args, **kwargs)
+        return pandas.DataFrame(self.entities)

@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 
 from datetime import datetime
-from typing import Any, Dict, List, Optional, TYPE_CHECKING, Tuple, Union, overload
+from typing import Any, Dict, List, Optional, TYPE_CHECKING, Tuple
 from typing_extensions import Literal
 
 from .._get_pandas import _get_pandas
 
 if TYPE_CHECKING:  # pragma: no cover
-    from pandas import DataFrame, _typing as pandas_typing  # type: ignore
+    from pandas import Series, DataFrame  # type: ignore
 
 SeriesObservationHistoryColumnsLiterals = Literal["ObservationDate", "Values", "TimeStamps"]
 
@@ -45,37 +45,17 @@ class SeriesObservationHistory:
             "TimeStamps": self.time_stamps,
         }
 
-    @overload
-    def data_frame(self) -> "DataFrame":
-        ...
-
-    @overload
-    def data_frame(
-        self,
-        index: "pandas_typing.Axes" = None,
-        columns: Union[SeriesObservationHistoryColumns, "pandas_typing.Axes"] = None,
-        dtype: "pandas_typing.Dtype" = None,
-        copy: bool = False,
-    ) -> "DataFrame":
-        ...
-
-    def data_frame(self, *args, **kwargs) -> "DataFrame":
+    def to_pd_data_frame(self) -> "DataFrame":
         pandas = _get_pandas()
-        args = args[1:]
-        kwargs["data"] = [self.to_dict()]
-        return pandas.DataFrame(*args, **kwargs)
+        return pandas.DataFrame({"values": self.values}, self.time_stamps)
 
-    def get_values_and_time_stamps_as_data_frame(self, *args, **kwargs) -> "DataFrame":
+    def to_pd_series(self, name: str = None) -> "Series":
         pandas = _get_pandas()
-        kwargs["data"] = {
-            "Values": self.values,
-            "Dates": self.time_stamps,
-        }
-        args = args[1:]
-        return pandas.DataFrame(*args, **kwargs)
+        name = name if name else str(self.observation_date)
+        return pandas.Series(self.values, self.time_stamps, name=name)
 
     def __str__(self):
-        return f"{self.__class__.__name__} {self.observation_date}"
+        return f"{self.__class__.__name__} observation_date: {self.observation_date}"
 
     def __repr__(self):
         return str(self)

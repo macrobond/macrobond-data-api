@@ -26,6 +26,37 @@ from .enums import SeriesFrequency, SeriesWeekdays, CalendarMergeMode
 class Api(ABC):
     """
     Common API to interact with the Macrobond database.
+
+
+    metadata methods:
+        `metadata_list_values`
+        `metadata_get_attribute_information`
+        `metadata_get_value_information`
+        `metadata_list_values`
+
+
+    revision methods:
+        `get_revision_info`
+        `get_vintage_series`
+        `get_nth_release`
+        `get_all_vintage_series`
+        get_observation_history. Only available in wep api.
+
+
+    Search methods:
+        `entity_search`
+        `entity_search_multi_filter`
+
+
+    Series  methods:
+        `get_one_series`
+        `get_series`
+        `get_one_entity`
+        `get_entities`
+        `get_unified_series`
+
+
+
     """
 
     def __init__(self) -> None:
@@ -68,9 +99,7 @@ class Api(ABC):
         """
 
     @abstractmethod
-    def metadata_get_attribute_information(
-        self, *names: str
-    ) -> Sequence[MetadataAttributeInformation]:
+    def metadata_get_attribute_information(self, *names: str) -> List[MetadataAttributeInformation]:
         """
         Get information about metadata attributes.
         """

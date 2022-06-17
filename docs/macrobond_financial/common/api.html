@@ -54,6 +54,37 @@ from .enums import SeriesFrequency, SeriesWeekdays, CalendarMergeMode
 class Api(ABC):
     &#34;&#34;&#34;
     Common API to interact with the Macrobond database.
+
+
+    metadata methods:
+        `metadata_list_values`
+        `metadata_get_attribute_information`
+        `metadata_get_value_information`
+        `metadata_list_values`
+
+
+    revision methods:
+        `get_revision_info`
+        `get_vintage_series`
+        `get_nth_release`
+        `get_all_vintage_series`
+        get_observation_history. Only available in wep api.
+
+
+    Search methods:
+        `entity_search`
+        `entity_search_multi_filter`
+
+
+    Series  methods:
+        `get_one_series`
+        `get_series`
+        `get_one_entity`
+        `get_entities`
+        `get_unified_series`
+
+
+
     &#34;&#34;&#34;
 
     def __init__(self) -&gt; None:
@@ -96,9 +127,7 @@ class Api(ABC):
         &#34;&#34;&#34;
 
     @abstractmethod
-    def metadata_get_attribute_information(
-        self, *names: str
-    ) -&gt; Sequence[MetadataAttributeInformation]:
+    def metadata_get_attribute_information(self, *names: str) -&gt; List[MetadataAttributeInformation]:
         &#34;&#34;&#34;
         Get information about metadata attributes.
         &#34;&#34;&#34;
@@ -417,7 +446,28 @@ class Api(ABC):
 <span>class <span class="ident">Api</span></span>
 </code></dt>
 <dd>
-<div class="desc"><p>Common API to interact with the Macrobond database.</p></div>
+<div class="desc"><p>Common API to interact with the Macrobond database.</p>
+<p>metadata methods:
+<code>metadata_list_values</code>
+<code>metadata_get_attribute_information</code>
+<code>metadata_get_value_information</code>
+<code>metadata_list_values</code></p>
+<p>revision methods:
+<code>get_revision_info</code>
+<code>get_vintage_series</code>
+<code>get_nth_release</code>
+<code>get_all_vintage_series</code>
+get_observation_history. Only available in wep api.</p>
+<p>Search methods:
+<code>entity_search</code>
+<code>entity_search_multi_filter</code></p>
+<p>Series
+methods:
+<code>get_one_series</code>
+<code>get_series</code>
+<code>get_one_entity</code>
+<code>get_entities</code>
+<code>get_unified_series</code></p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -425,6 +475,37 @@ class Api(ABC):
 <pre><code class="python">class Api(ABC):
     &#34;&#34;&#34;
     Common API to interact with the Macrobond database.
+
+
+    metadata methods:
+        `metadata_list_values`
+        `metadata_get_attribute_information`
+        `metadata_get_value_information`
+        `metadata_list_values`
+
+
+    revision methods:
+        `get_revision_info`
+        `get_vintage_series`
+        `get_nth_release`
+        `get_all_vintage_series`
+        get_observation_history. Only available in wep api.
+
+
+    Search methods:
+        `entity_search`
+        `entity_search_multi_filter`
+
+
+    Series  methods:
+        `get_one_series`
+        `get_series`
+        `get_one_entity`
+        `get_entities`
+        `get_unified_series`
+
+
+
     &#34;&#34;&#34;
 
     def __init__(self) -&gt; None:
@@ -467,9 +548,7 @@ class Api(ABC):
         &#34;&#34;&#34;
 
     @abstractmethod
-    def metadata_get_attribute_information(
-        self, *names: str
-    ) -&gt; Sequence[MetadataAttributeInformation]:
+    def metadata_get_attribute_information(self, *names: str) -&gt; List[MetadataAttributeInformation]:
         &#34;&#34;&#34;
         Get information about metadata attributes.
         &#34;&#34;&#34;
@@ -1341,7 +1420,7 @@ def get_vintage_series(
 </details>
 </dd>
 <dt id="macrobond_financial.common.api.Api.metadata_get_attribute_information"><code class="name flex">
-<span>def <span class="ident">metadata_get_attribute_information</span></span>(<span>self, *names: str) ‑> Sequence[<a title="macrobond_financial.common.types.metadata_attribute_information.MetadataAttributeInformation" href="types/metadata_attribute_information.html#macrobond_financial.common.types.metadata_attribute_information.MetadataAttributeInformation">MetadataAttributeInformation</a>]</span>
+<span>def <span class="ident">metadata_get_attribute_information</span></span>(<span>self, *names: str) ‑> List[<a title="macrobond_financial.common.types.metadata_attribute_information.MetadataAttributeInformation" href="types/metadata_attribute_information.html#macrobond_financial.common.types.metadata_attribute_information.MetadataAttributeInformation">MetadataAttributeInformation</a>]</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Get information about metadata attributes.</p></div>
@@ -1350,9 +1429,7 @@ def get_vintage_series(
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@abstractmethod
-def metadata_get_attribute_information(
-    self, *names: str
-) -&gt; Sequence[MetadataAttributeInformation]:
+def metadata_get_attribute_information(self, *names: str) -&gt; List[MetadataAttributeInformation]:
     &#34;&#34;&#34;
     Get information about metadata attributes.
     &#34;&#34;&#34;</code></pre>

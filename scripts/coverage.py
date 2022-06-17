@@ -22,7 +22,7 @@ def coverage_com(context: Context) -> None:
         "coverage",
         "erase",
         "run --include=macrobond_financial/com/com_api.py,"
-        + "macrobond_financial/com/_api_return_typs/** -m "
+        + "macrobond_financial/com/** -m "
         + UNITTEST_COMMAND,
         "html -d htmlcov_com",
         "report -m",
@@ -37,7 +37,7 @@ def coverage_web(context: Context) -> None:
         "coverage",
         "erase",
         "run --include=macrobond_financial/web/web_api.py,"
-        + "macrobond_financial/web/_api_return_typs/** -m "
+        + "macrobond_financial/web/** -m "
         + UNITTEST_COMMAND,
         "html -d htmlcov_web",
         "report -m",

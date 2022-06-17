@@ -4,104 +4,77 @@
         {
             "label": "set up dev environment",
             "type": "shell",
-            "command": "python",
-            "args": ["scripts\\set_up_dev_environment.py"],
+            "command": "py",
+            "args": [ "-3.7" , "scripts\\set_up_dev_environment.py"],
             "problemMatcher": [],
-            "windows":{
-                "command": "py"
-            }
         },
         {
             "label": "unittest",
             "type": "shell",
-            "command": "python",
-                "args": ["scripts\\unittest.py"],
-            "problemMatcher": [],
-            "windows":{
-                "command": "py"
-            }
+            "command": "py",
+                "args": ["-3.7" ,"scripts\\unittest.py"],
+            "problemMatcher": []
         },
         {
             "label": "pylint",
             "type": "shell",
-            "command": "python",
-            "args": ["scripts\\pylint.py"],
+            "command": "py",
+            "args": ["-3.7" ,"scripts\\pylint.py"],
             "problemMatcher": [],
             "presentation": {
                 "clear": true
-            },
-            "windows":{
-                "command": "py"
             }
         },
         {
             "label": "mypy",
             "type": "shell",
-            "command": "python",
-            "args": ["scripts\\mypy.py"],
+            "command": "py",
+            "args": ["-3.7" ,"scripts\\mypy.py"],
             "problemMatcher": [],
             "presentation": {
                 "clear": true
-            },
-            "windows":{
-                "command": "py"
             }
         },
         {
             "label": "pycodestyle",
             "type": "shell",
-            "command": "python",
-            "args": ["scripts\\pycodestyle.py"],
+            "command": "py",
+            "args": ["-3.7" ,"scripts\\pycodestyle.py"],
             "problemMatcher": [],
             "presentation": {
                 "clear": true
-            },
-            "windows":{
-                "command": "py"
             }
         },
         {
             "label": "pdoc3",
             "type": "shell",
-            "command": "python",
-            "args": ["scripts\\pdoc3.py"],
+            "command": "py",
+            "args": ["-3.7" ,"scripts\\pdoc3.py"],
             "problemMatcher": [],
             "presentation": {
                 "clear": true
-            },
-            "windows":{
-                "command": "py"
             }
         },
         {
             "label": "coverage",
             "type": "shell",
-            "command": "python",
-            "args": ["scripts\\coverage.py"],
-            "problemMatcher": [],
-            "windows":{
-                "command": "py"
-            }
+            "command": "py",
+            "args": ["-3.7" ,"scripts\\coverage.py"],
+            "problemMatcher": []
         },
         {
             "label": "build",
             "type": "shell",
-            "command": "python",
+            "command": "py",
             "args": ["scripts\\build.py"],
-            "problemMatcher": [],
-            "windows":{
-                "command": "py"
-            }
+            "problemMatcher": []
         },
         {
             "label": "save credential to keyring",
             "type": "shell",
-            "command": "python",
-            "args": ["macrobond_financial\\util\\save_credential_to_keyring.py"],
-            "problemMatcher": [],
-            "windows":{
-                "command": "py"
-            }
+            "command": "py",
+            "args": ["-3.7" ,"macrobond_financial\\util\\save_credential_to_keyring.py"],
+            "problemMatcher": []
         }
     ]
 }

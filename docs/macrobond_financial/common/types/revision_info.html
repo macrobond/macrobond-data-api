@@ -29,14 +29,14 @@
 <pre><code class="python"># -*- coding: utf-8 -*-
 
 from datetime import datetime
-from typing import Tuple, TYPE_CHECKING, overload, Optional, cast
+from typing import Tuple, TYPE_CHECKING, Optional, cast
 
 from typing_extensions import TypedDict
 
 from .._get_pandas import _get_pandas
 
 if TYPE_CHECKING:  # pragma: no cover
-    from pandas import DataFrame, _typing as pandas_typing  # type: ignore
+    from pandas import DataFrame  # type: ignore
 
 
 class RevisionInfoDict(TypedDict, total=False):
@@ -71,25 +71,15 @@ class RevisionInfo:
     def to_dict(self) -&gt; RevisionInfoDict:
         return cast(RevisionInfoDict, vars(self))
 
-    @overload
-    def data_frame(self) -&gt; &#34;DataFrame&#34;:
-        ...
-
-    @overload
-    def data_frame(
-        self,
-        index: &#34;pandas_typing.Axes&#34; = None,
-        columns: &#34;pandas_typing.Axes&#34; = None,
-        dtype: &#34;pandas_typing.Dtype&#34; = None,
-        copy: bool = False,
-    ) -&gt; &#34;DataFrame&#34;:
-        ...
-
-    def data_frame(self, *args, **kwargs) -&gt; &#34;DataFrame&#34;:
+    def to_pd_data_frame(self) -&gt; &#34;DataFrame&#34;:
         pandas = _get_pandas()
-        args = args[1:]
-        kwargs[&#34;data&#34;] = self.to_dict()
-        return pandas.DataFrame(*args, **kwargs)</code></pre>
+        return pandas.DataFrame(self.to_dict())
+
+    def __str__(self):
+        return f&#34;RevisionInfo name: {self.name}&#34;
+
+    def __repr__(self):
+        return str(self)</code></pre>
 </details>
 </section>
 <section>
@@ -133,44 +123,18 @@ class RevisionInfo:
     def to_dict(self) -&gt; RevisionInfoDict:
         return cast(RevisionInfoDict, vars(self))
 
-    @overload
-    def data_frame(self) -&gt; &#34;DataFrame&#34;:
-        ...
-
-    @overload
-    def data_frame(
-        self,
-        index: &#34;pandas_typing.Axes&#34; = None,
-        columns: &#34;pandas_typing.Axes&#34; = None,
-        dtype: &#34;pandas_typing.Dtype&#34; = None,
-        copy: bool = False,
-    ) -&gt; &#34;DataFrame&#34;:
-        ...
-
-    def data_frame(self, *args, **kwargs) -&gt; &#34;DataFrame&#34;:
+    def to_pd_data_frame(self) -&gt; &#34;DataFrame&#34;:
         pandas = _get_pandas()
-        args = args[1:]
-        kwargs[&#34;data&#34;] = self.to_dict()
-        return pandas.DataFrame(*args, **kwargs)</code></pre>
+        return pandas.DataFrame(self.to_dict())
+
+    def __str__(self):
+        return f&#34;RevisionInfo name: {self.name}&#34;
+
+    def __repr__(self):
+        return str(self)</code></pre>
 </details>
 <h3>Methods</h3>
 <dl>
-<dt id="macrobond_financial.common.types.revision_info.RevisionInfo.data_frame"><code class="name flex">
-<span>def <span class="ident">data_frame</span></span>(<span>self, *args, **kwargs) ‑> DataFrame</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def data_frame(self, *args, **kwargs) -&gt; &#34;DataFrame&#34;:
-    pandas = _get_pandas()
-    args = args[1:]
-    kwargs[&#34;data&#34;] = self.to_dict()
-    return pandas.DataFrame(*args, **kwargs)</code></pre>
-</details>
-</dd>
 <dt id="macrobond_financial.common.types.revision_info.RevisionInfo.to_dict"><code class="name flex">
 <span>def <span class="ident">to_dict</span></span>(<span>self) ‑> <a title="macrobond_financial.common.types.revision_info.RevisionInfoDict" href="#macrobond_financial.common.types.revision_info.RevisionInfoDict">RevisionInfoDict</a></span>
 </code></dt>
@@ -182,6 +146,20 @@ class RevisionInfo:
 </summary>
 <pre><code class="python">def to_dict(self) -&gt; RevisionInfoDict:
     return cast(RevisionInfoDict, vars(self))</code></pre>
+</details>
+</dd>
+<dt id="macrobond_financial.common.types.revision_info.RevisionInfo.to_pd_data_frame"><code class="name flex">
+<span>def <span class="ident">to_pd_data_frame</span></span>(<span>self) ‑> DataFrame</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def to_pd_data_frame(self) -&gt; &#34;DataFrame&#34;:
+    pandas = _get_pandas()
+    return pandas.DataFrame(self.to_dict())</code></pre>
 </details>
 </dd>
 </dl>
@@ -270,8 +248,8 @@ dict(one=1, two=2)</p></div>
 <li>
 <h4><code><a title="macrobond_financial.common.types.revision_info.RevisionInfo" href="#macrobond_financial.common.types.revision_info.RevisionInfo">RevisionInfo</a></code></h4>
 <ul class="">
-<li><code><a title="macrobond_financial.common.types.revision_info.RevisionInfo.data_frame" href="#macrobond_financial.common.types.revision_info.RevisionInfo.data_frame">data_frame</a></code></li>
 <li><code><a title="macrobond_financial.common.types.revision_info.RevisionInfo.to_dict" href="#macrobond_financial.common.types.revision_info.RevisionInfo.to_dict">to_dict</a></code></li>
+<li><code><a title="macrobond_financial.common.types.revision_info.RevisionInfo.to_pd_data_frame" href="#macrobond_financial.common.types.revision_info.RevisionInfo.to_pd_data_frame">to_pd_data_frame</a></code></li>
 </ul>
 </li>
 <li>

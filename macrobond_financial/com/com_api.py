@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from math import isnan
-from typing import Any, Dict, List, Sequence, Tuple, Union, TYPE_CHECKING, cast
+from typing import Any, Dict, List, Tuple, Union, TYPE_CHECKING, cast
 
 from datetime import datetime
 
@@ -106,9 +106,7 @@ class ComApi(Api):
             ),
         )
 
-    def metadata_get_attribute_information(
-        self, *names: str
-    ) -> Sequence[MetadataAttributeInformation]:
+    def metadata_get_attribute_information(self, *names: str) -> List[MetadataAttributeInformation]:
         def get_metadata_attribute_information(name: str):
             info = self.database.GetMetadataInformation(name)
             return MetadataAttributeInformation(
@@ -122,7 +120,7 @@ class ComApi(Api):
                 info.IsDatabaseEntity,
             )
 
-        return tuple(map(get_metadata_attribute_information, names))
+        return list(map(get_metadata_attribute_information, names))
 
     def metadata_get_value_information(
         self, *name_val: Tuple[str, str]
