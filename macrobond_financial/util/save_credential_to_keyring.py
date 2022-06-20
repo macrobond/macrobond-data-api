@@ -4,7 +4,6 @@
 
 from getpass import getpass
 
-import sys
 import keyring
 from macrobond_financial.web.web_client import DEFAULT_SERVICE_NAME
 
@@ -22,15 +21,10 @@ def save_credential_to_keyring() -> None:
     if service_name == "":
         service_name = DEFAULT_SERVICE_NAME
 
-    if keyring.get_credential(service_name, ""):
-        print(
-            "Multiple keys Error\n"
-            + "Possible reasons for the error:\n"
-            + "\tService name already exists\n"
-            + "\tService name prefix with with a user name exists\n",
-            file=sys.stderr,
-        )
-        sys.exit(1)
+    old_credential = keyring.get_credential(service_name, "")
+    while old_credential:
+        keyring.delete_password(service_name, old_credential.username)
+        old_credential = keyring.get_credential(service_name, "")
 
     client_id = input("Please enter the client id: ")
 
