@@ -25,35 +25,35 @@ from .enums import SeriesFrequency, SeriesWeekdays, CalendarMergeMode
 
 class Api(ABC):
     """
-    Common API to interact with the Macrobond database.
+    Common API to interact with the Macrobond database.  
+    These methods are implemented for both the Web API and Desktop COM API.
 
 
-    metadata methods:
-        `metadata_list_values`
-        `metadata_get_attribute_information`
-        `metadata_get_value_information`
+    Metadata methods:  
+    `macrobond_financial.common.api.Api.metadata_list_values`  
+    `macrobond_financial.common.api.Api.metadata_get_attribute_information`  
+    `macrobond_financial.common.api.Api.metadata_get_value_information`  
 
 
-    revision methods:
-        `get_revision_info`
-        `get_vintage_series`
-        `get_nth_release`
-        `get_all_vintage_series`
-        get_observation_history. Only available in wep api.
+    Revision methods:  
+        `macrobond_financial.common.api.Api.get_revision_info`  
+        `macrobond_financial.common.api.Api.get_vintage_series`  
+        `macrobond_financial.common.api.Api.get_nth_release`  
+        `macrobond_financial.common.api.Api.get_all_vintage_series`  
+        get_observation_history. Only available in wep api.  
 
 
-    Search methods:
-        `entity_search`
-        `entity_search_multi_filter`
+    Search methods:  
+        `macrobond_financial.common.api.Api.entity_search`  
+        `macrobond_financial.common.api.Api.entity_search_multi_filter`  
 
 
-    Series  methods:
-        `get_one_series`
-        `get_series`
-        `get_one_entity`
-        `get_entities`
-        `get_unified_series`
-
+    Series  methods:  
+        `macrobond_financial.common.api.Api.get_one_series`  
+        `macrobond_financial.common.api.Api.get_series`  
+        `macrobond_financial.common.api.Api.get_one_entity`  
+        `macrobond_financial.common.api.Api.get_entities`  
+        `macrobond_financial.common.api.Api.get_unified_series`  
 
 
     """
@@ -79,7 +79,7 @@ class Api(ABC):
 
         Returns
         -------
-        `MetadataValueInformation`
+        `macrobond_financial.common.types.metadata_value_information.MetadataValueInformation`
 
         Examples
         -------
@@ -109,7 +109,7 @@ class Api(ABC):
 
         Returns
         -------
-        `List[MetadataAttributeInformation]`
+        `List[macrobond_financial.common.types.metadata_attribute_information.MetadataAttributeInformation]`
         The result is in the same order as the attribute names in the request.
 
         Examples
