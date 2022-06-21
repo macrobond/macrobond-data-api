@@ -30,9 +30,9 @@ class Api(ABC):
 
 
     Metadata methods:  
-    `macrobond_financial.common.api.Api.metadata_list_values`  
-    `macrobond_financial.common.api.Api.metadata_get_attribute_information`  
-    `macrobond_financial.common.api.Api.metadata_get_value_information`  
+        `macrobond_financial.common.api.Api.metadata_list_values`  
+        `macrobond_financial.common.api.Api.metadata_get_attribute_information`  
+        `macrobond_financial.common.api.Api.metadata_get_value_information`  
 
 
     Revision methods:  
