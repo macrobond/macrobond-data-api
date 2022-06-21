@@ -64,7 +64,8 @@ class MetadataValueInformationItem:
     def __str__(self):
         return (
             f"MetadataValueInformationItem attribute_name: {self.attribute_name},"
-            + f" value: {self.value}"
+            + f" value: {self.value}, "
+            + f" description: {self.description}"
         )
 
     def __repr__(self):

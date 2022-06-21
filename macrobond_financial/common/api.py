@@ -32,7 +32,6 @@ class Api(ABC):
         `metadata_list_values`
         `metadata_get_attribute_information`
         `metadata_get_value_information`
-        `metadata_list_values`
 
 
     revision methods:
@@ -87,14 +86,14 @@ class Api(ABC):
         ```python
         with ComClient() as api: # or WebClient
 
+            # as objects
+            print(api.metadata_list_values("RateType"))
+
             # as dict
-            print(api.metadata_list_values('RateType').list_of_dicts())
+            print(api.metadata_list_values('RateType').to_dict())
 
             # as data_frame
-            print(api.metadata_list_values('RateType').data_frame())
-
-            # as objects
-            print(api.metadata_list_values('RateType').list_of_objects())
+            print(metadata_list_values("RateType").to_pd_data_frame())
         ```
         """
 
@@ -102,6 +101,31 @@ class Api(ABC):
     def metadata_get_attribute_information(self, *names: str) -> List[MetadataAttributeInformation]:
         """
         Get information about metadata attributes.
+
+        Parameters
+        ----------
+        *names : str
+            One or more names of metadata attributes.
+
+        Returns
+        -------
+        `List[MetadataAttributeInformation]`
+        The result is in the same order as the attribute names in the request.
+
+        Examples
+        -------
+        ```python
+        with ComClient() as api: # or WebClient
+
+            # as objects
+            print(api.metadata_get_attribute_information("Region", "Unit"))
+
+            # as dict
+            print(api.metadata_get_attribute_information("Region")[0].to_dict())
+
+            # as data_frame
+            print(api.metadata_get_attribute_information("Region")[0].to_pd_data_frame())
+        ```
         """
 
     @abstractmethod
