@@ -109,7 +109,7 @@ class Api(ABC):
 
         Returns
         -------
-        `List[macrobond_financial.common.types.metadata_attribute_information.MetadataAttributeInformation]`
+        `List[macrobond_financial.common.types.metadata_attribute_information.MetadataAttributeInformation]`  
         The result is in the same order as the attribute names in the request.
 
         Examples
@@ -142,7 +142,23 @@ class Api(ABC):
 
         Returns
         -------
-        `List[MetadataValueInformationItem]`
+        `List[macrobond_financial.common.types.metadata_value_information.MetadataValueInformationItem]`  
+        The result is in the same order as the attribute names in the request.
+
+        Examples
+        -------
+        ```python
+        with ComClient() as api: # or WebClient
+
+            # as objects
+            print(api.metadata_get_value_information(("RateType", "mole"), ("RateType","cobe")))
+
+            # as dict
+            print(api.metadata_get_value_information(("RateType", "mole"))[0].to_dict())
+
+            # as data_frame
+            print(api.metadata_get_value_information(("RateType", "mole"))[0].to_pd_data_frame())
+        ```
         """
 
     # revision

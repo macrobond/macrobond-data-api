@@ -55,10 +55,12 @@ class MetadataValueInformationItem:
         """The comment of the metadata value"""
 
     def to_pd_data_frame(self) -> "DataFrame":
+        """The information represented as a Pandas DataFrame"""
         pandas = _get_pandas()
         return pandas.DataFrame([self.to_dict()])
 
     def to_dict(self) -> TypedDictMetadataValueInformation:
+        """The information represented as a Pandas dictionary"""
         return cast(TypedDictMetadataValueInformation, vars(self))
 
     def __str__(self):
@@ -83,6 +85,10 @@ class MetadataValueInformationItem:
 
 
 class MetadataValueInformation(Sequence[MetadataValueInformationItem]):
+    """
+    The result of a call to `macrobond_financial.common.api.Api.metadata_get_value_information`  
+    Contains information about the requested metadata attribute values.
+    """
     def __init__(
         self,
         attribute_name: str,
@@ -94,10 +100,12 @@ class MetadataValueInformation(Sequence[MetadataValueInformationItem]):
         self.items = items
 
     def to_pd_data_frame(self) -> "DataFrame":
+        """The information represented as a Pandas DataFrame"""
         pandas = _get_pandas()
         return pandas.DataFrame(self.to_dict())
 
     def to_dict(self) -> List[TypedDictMetadataValueInformation]:
+        """The information represented as a dictionary"""
         return list(map(lambda x: x.to_dict(), self.items))
 
     def __str__(self):
