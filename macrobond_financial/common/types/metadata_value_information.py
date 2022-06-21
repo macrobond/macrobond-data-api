@@ -39,6 +39,9 @@ class TypedDictMetadataValueInformation(TypedDict):
 
 
 class MetadataValueInformationItem:
+    """
+    Contains information about one metadata attribute value.
+    """
     def __init__(
         self, attribute_name: str, value: Any, description: str, comment: Optional[str]
     ) -> None:
@@ -60,7 +63,7 @@ class MetadataValueInformationItem:
         return pandas.DataFrame([self.to_dict()])
 
     def to_dict(self) -> TypedDictMetadataValueInformation:
-        """The information represented as a Pandas dictionary"""
+        """The information represented as a dictionary"""
         return cast(TypedDictMetadataValueInformation, vars(self))
 
     def __str__(self):
@@ -86,7 +89,7 @@ class MetadataValueInformationItem:
 
 class MetadataValueInformation(Sequence[MetadataValueInformationItem]):
     """
-    The result of a call to `macrobond_financial.common.api.Api.metadata_get_value_information`  
+    The result of a call to `macrobond_financial.common.api.Api.metadata_get_value_information`.  
     Contains information about the requested metadata attribute values.
     """
     def __init__(
