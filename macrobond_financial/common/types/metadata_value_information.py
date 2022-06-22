@@ -22,8 +22,11 @@ if TYPE_CHECKING:  # pragma: no cover
 
 MetadataValueInformationColumns = List[Literal["attribute_name", "value", "description", "comment"]]
 
-
+# TODO: Perhaps this should be called TypedDictMetadataValueInformationItem?
 class TypedDictMetadataValueInformation(TypedDict):
+    """
+    Contains information about one metadata attribute value.
+    """
 
     attribute_name: str
     """The name of the metadata attribute"""
@@ -39,6 +42,9 @@ class TypedDictMetadataValueInformation(TypedDict):
 
 
 class MetadataValueInformationItem:
+    """
+    Contains information about one metadata attribute value.
+    """
     def __init__(
         self, attribute_name: str, value: Any, description: str, comment: Optional[str]
     ) -> None:
@@ -55,16 +61,19 @@ class MetadataValueInformationItem:
         """The comment of the metadata value"""
 
     def to_pd_data_frame(self) -> "DataFrame":
+        """The information represented as a Pandas DataFrame"""
         pandas = _get_pandas()
         return pandas.DataFrame([self.to_dict()])
 
     def to_dict(self) -> TypedDictMetadataValueInformation:
+        """The information represented as a dictionary"""
         return cast(TypedDictMetadataValueInformation, vars(self))
 
     def __repr__(self):
         return (
             f"MetadataValueInformationItem attribute_name: {self.attribute_name},"
-            + f" value: {self.value}"
+            + f" value: {self.value}, "
+            + f" description: {self.description}"
         )
 
     def __eq__(self, other):
@@ -79,6 +88,10 @@ class MetadataValueInformationItem:
 
 
 class MetadataValueInformation(Sequence[MetadataValueInformationItem]):
+    """
+    The result of a call to `macrobond_financial.common.api.Api.metadata_get_value_information`.  
+    Contains information about the requested metadata attribute values.
+    """
     def __init__(
         self,
         attribute_name: str,
@@ -90,10 +103,12 @@ class MetadataValueInformation(Sequence[MetadataValueInformationItem]):
         self.items = items
 
     def to_pd_data_frame(self) -> "DataFrame":
+        """The information represented as a Pandas DataFrame"""
         pandas = _get_pandas()
         return pandas.DataFrame(self.to_dict())
 
     def to_dict(self) -> List[TypedDictMetadataValueInformation]:
+        """The information represented as a dictionary"""
         return list(map(lambda x: x.to_dict(), self.items))
 
     def __repr__(self):

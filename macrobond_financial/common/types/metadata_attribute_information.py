@@ -26,6 +26,11 @@ MetadataAttributeInformationColumns = List[
 
 
 class TypedDictMetadataAttributeInformation(TypedDict):
+    """
+    The result of a call to `macrobond_financial.common.api.Api.metadata_get_attribute_information`.  
+    Contains information about the requested metadata attributes.
+    """
+    
     name: str
     """The name of the metadata attribute"""
 
@@ -57,7 +62,10 @@ class TypedDictMetadataAttributeInformation(TypedDict):
 
 
 class MetadataAttributeInformation:
-    """Information about a metadata attribute"""
+    """
+    The result of a call to `macrobond_financial.common.api.Api.metadata_get_attribute_information`.  
+    Contains information about the requested metadata attributes.
+    """
 
     def __init__(
         self,
@@ -88,7 +96,7 @@ class MetadataAttributeInformation:
         self.can_list_values = can_list_values
         """
         If True then the values of this type of
-        metadata can be listen using the ListAllValues function
+        metadata can be listed by calling `macrobond_financial.common.api.Api.metadata_list_values`
         """
 
         self.can_have_multiple_values = can_have_multiple_values
@@ -100,9 +108,11 @@ class MetadataAttributeInformation:
         """
 
     def to_dict(self) -> TypedDictMetadataAttributeInformation:
+        """The information represented as a dictionary"""
         return cast(TypedDictMetadataAttributeInformation, vars(self))
 
     def to_pd_data_frame(self) -> "DataFrame":
+        """The information represented as a Pandas DataFrame"""
         pandas = _get_pandas()
         return pandas.DataFrame([self.to_dict()])
 

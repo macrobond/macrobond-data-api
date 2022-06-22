@@ -56,6 +56,16 @@
             }
         },
         {
+            "label": "pdoc3 server",
+            "type": "shell",
+            "command": "py",
+            "args": ["-3.7" ,"scripts\\pdoc3server.py"],
+            "problemMatcher": [],
+            "presentation": {
+                "clear": true
+            }
+        },
+        {
             "label": "coverage",
             "type": "shell",
             "command": "py",
