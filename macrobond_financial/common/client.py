@@ -22,6 +22,11 @@ class Client(ABC, Generic[TypeVarApi]):
     def __exit__(self, exception_type, exception_value, traceback) -> None:
         self.close()  # pragma: no cover
 
+    @property
+    @abstractmethod
+    def is_open(self) -> bool:
+        ...
+
     @abstractmethod
     def open(self) -> TypeVarApi:
         ...  # pragma: no cover
@@ -29,3 +34,6 @@ class Client(ABC, Generic[TypeVarApi]):
     @abstractmethod
     def close(self) -> None:
         ...  # pragma: no cover
+
+    def __repr__(self):
+        return f"{self.__class__.__name__} is_open: {self.is_open}"

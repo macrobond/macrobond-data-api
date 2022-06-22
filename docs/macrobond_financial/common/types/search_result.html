@@ -28,7 +28,7 @@
 </summary>
 <pre><code class="python"># -*- coding: utf-8 -*-
 
-from typing import Any, Dict, Sequence, Union, Tuple, overload, TYPE_CHECKING
+from typing import Any, Dict, TYPE_CHECKING, List, Sequence
 
 from .._get_pandas import _get_pandas
 
@@ -36,54 +36,37 @@ if TYPE_CHECKING:  # pragma: no cover
     from pandas import DataFrame  # type: ignore
 
 
-class SearchResult(Sequence[Dict[str, Any]]):
+class SearchResult(List[Dict[str, Any]]):
     &#34;&#34;&#34;
     The result of a entity search operation.
     &#34;&#34;&#34;
 
-    def __init__(self, entities: Tuple[Dict[str, Any], ...], is_truncated: bool) -&gt; None:
-        self.entities = entities
-        &#34;&#34;&#34;
-        A sequence of the metadata of the entities found.
-        &#34;&#34;&#34;
+    def __init__(self, entities: Sequence[Dict[str, Any]], is_truncated: bool) -&gt; None:
+        super().__init__(entities)
         self.is_truncated = is_truncated
         &#34;&#34;&#34;
         Indicates whether the search result was too long and truncated.
         &#34;&#34;&#34;
 
-    def __str__(self):
-        return f&#34;SearchResult of {len(self)} entities, is_truncated: {self.is_truncated}&#34;
+    @property
+    def entities(self) -&gt; List[Dict[str, Any]]:
+        &#34;&#34;&#34;
+        A sequence of the metadata of the entities found.
+        &#34;&#34;&#34;
+        return list(self)
 
     def __repr__(self):
-        return str(self)
+        return f&#34;SearchResult of {len(self)} entities, is_truncated: {self.is_truncated}&#34;
 
-    @overload
-    def __getitem__(self, idx: int) -&gt; Dict[str, Any]:
-        ...
-
-    @overload
-    def __getitem__(self, _slice: slice) -&gt; Sequence[Dict[str, Any]]:
-        ...
-
-    def __getitem__(self, idx_or_slice: Union[int, slice]):
-        return self.entities.__getitem__(idx_or_slice)
-
-    def __len__(self) -&gt; int:
-        return len(self.entities)
-
-    def to_dict(self) -&gt; Tuple[Dict[str, Any], ...]:
-        return self.entities
-
-    # def to_pd_data_frame(self) -&gt; &#34;DataFrame&#34;:
-    #     pandas = _get_pandas()
-    #     return pandas.DataFrame(self.entities)
+    def to_dict(self) -&gt; List[Dict[str, Any]]:
+        return list(self)
 
     def to_pd_data_frame(self) -&gt; &#34;DataFrame&#34;:
         &#34;&#34;&#34;
         Return the result as a `DataFrame`.
         &#34;&#34;&#34;
         pandas = _get_pandas()
-        return pandas.DataFrame(self.entities)</code></pre>
+        return pandas.DataFrame(self)</code></pre>
 </details>
 </section>
 <section>
@@ -97,7 +80,7 @@ class SearchResult(Sequence[Dict[str, Any]]):
 <dl>
 <dt id="macrobond_financial.common.types.search_result.SearchResult"><code class="flex name class">
 <span>class <span class="ident">SearchResult</span></span>
-<span>(</span><span>entities: Tuple[Dict[str, Any], ...], is_truncated: bool)</span>
+<span>(</span><span>entities: Sequence[Dict[str, Any]], is_truncated: bool)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>The result of a entity search operation.</p></div>
@@ -105,70 +88,59 @@ class SearchResult(Sequence[Dict[str, Any]]):
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class SearchResult(Sequence[Dict[str, Any]]):
+<pre><code class="python">class SearchResult(List[Dict[str, Any]]):
     &#34;&#34;&#34;
     The result of a entity search operation.
     &#34;&#34;&#34;
 
-    def __init__(self, entities: Tuple[Dict[str, Any], ...], is_truncated: bool) -&gt; None:
-        self.entities = entities
-        &#34;&#34;&#34;
-        A sequence of the metadata of the entities found.
-        &#34;&#34;&#34;
+    def __init__(self, entities: Sequence[Dict[str, Any]], is_truncated: bool) -&gt; None:
+        super().__init__(entities)
         self.is_truncated = is_truncated
         &#34;&#34;&#34;
         Indicates whether the search result was too long and truncated.
         &#34;&#34;&#34;
 
-    def __str__(self):
-        return f&#34;SearchResult of {len(self)} entities, is_truncated: {self.is_truncated}&#34;
+    @property
+    def entities(self) -&gt; List[Dict[str, Any]]:
+        &#34;&#34;&#34;
+        A sequence of the metadata of the entities found.
+        &#34;&#34;&#34;
+        return list(self)
 
     def __repr__(self):
-        return str(self)
+        return f&#34;SearchResult of {len(self)} entities, is_truncated: {self.is_truncated}&#34;
 
-    @overload
-    def __getitem__(self, idx: int) -&gt; Dict[str, Any]:
-        ...
-
-    @overload
-    def __getitem__(self, _slice: slice) -&gt; Sequence[Dict[str, Any]]:
-        ...
-
-    def __getitem__(self, idx_or_slice: Union[int, slice]):
-        return self.entities.__getitem__(idx_or_slice)
-
-    def __len__(self) -&gt; int:
-        return len(self.entities)
-
-    def to_dict(self) -&gt; Tuple[Dict[str, Any], ...]:
-        return self.entities
-
-    # def to_pd_data_frame(self) -&gt; &#34;DataFrame&#34;:
-    #     pandas = _get_pandas()
-    #     return pandas.DataFrame(self.entities)
+    def to_dict(self) -&gt; List[Dict[str, Any]]:
+        return list(self)
 
     def to_pd_data_frame(self) -&gt; &#34;DataFrame&#34;:
         &#34;&#34;&#34;
         Return the result as a `DataFrame`.
         &#34;&#34;&#34;
         pandas = _get_pandas()
-        return pandas.DataFrame(self.entities)</code></pre>
+        return pandas.DataFrame(self)</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
-<li>collections.abc.Sequence</li>
-<li>collections.abc.Reversible</li>
-<li>collections.abc.Collection</li>
-<li>collections.abc.Sized</li>
-<li>collections.abc.Iterable</li>
-<li>collections.abc.Container</li>
+<li>builtins.list</li>
 <li>typing.Generic</li>
 </ul>
 <h3>Instance variables</h3>
 <dl>
-<dt id="macrobond_financial.common.types.search_result.SearchResult.entities"><code class="name">var <span class="ident">entities</span></code></dt>
+<dt id="macrobond_financial.common.types.search_result.SearchResult.entities"><code class="name">var <span class="ident">entities</span> : List[Dict[str, Any]]</code></dt>
 <dd>
 <div class="desc"><p>A sequence of the metadata of the entities found.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def entities(self) -&gt; List[Dict[str, Any]]:
+    &#34;&#34;&#34;
+    A sequence of the metadata of the entities found.
+    &#34;&#34;&#34;
+    return list(self)</code></pre>
+</details>
 </dd>
 <dt id="macrobond_financial.common.types.search_result.SearchResult.is_truncated"><code class="name">var <span class="ident">is_truncated</span></code></dt>
 <dd>
@@ -178,7 +150,7 @@ class SearchResult(Sequence[Dict[str, Any]]):
 <h3>Methods</h3>
 <dl>
 <dt id="macrobond_financial.common.types.search_result.SearchResult.to_dict"><code class="name flex">
-<span>def <span class="ident">to_dict</span></span>(<span>self) ‑> Tuple[Dict[str, Any], ...]</span>
+<span>def <span class="ident">to_dict</span></span>(<span>self) ‑> List[Dict[str, Any]]</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -186,8 +158,8 @@ class SearchResult(Sequence[Dict[str, Any]]):
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def to_dict(self) -&gt; Tuple[Dict[str, Any], ...]:
-    return self.entities</code></pre>
+<pre><code class="python">def to_dict(self) -&gt; List[Dict[str, Any]]:
+    return list(self)</code></pre>
 </details>
 </dd>
 <dt id="macrobond_financial.common.types.search_result.SearchResult.to_pd_data_frame"><code class="name flex">
@@ -204,7 +176,7 @@ class SearchResult(Sequence[Dict[str, Any]]):
     Return the result as a `DataFrame`.
     &#34;&#34;&#34;
     pandas = _get_pandas()
-    return pandas.DataFrame(self.entities)</code></pre>
+    return pandas.DataFrame(self)</code></pre>
 </details>
 </dd>
 </dl>

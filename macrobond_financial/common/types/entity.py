@@ -70,22 +70,15 @@ class Entity:
         self._add_metadata(ret)
         return ret
 
-    def to_pd_data_frame(self) -> "DataFrame":
-        pandas = _get_pandas()
-        return pandas.DataFrame([self.to_dict()])
-
     def metadata_to_pd_series(self, name: str = None) -> "Series":
         pandas = _get_pandas()
         name = name if name else self.name
         return pandas.Series(self.metadata.values(), self.metadata.keys(), name=name)
 
-    def __str__(self):
+    def __repr__(self):
         if self.is_error:
             return f"{self.__class__.__name__} with error, error message: {self.error_message}"
         return f"{self.__class__.__name__} PrimName: {self.primary_name}"
-
-    def __repr__(self):
-        return str(self)
 
     def __bool__(self):
         return not self.is_error

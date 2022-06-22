@@ -54,6 +54,10 @@ class ComClient(Client["ComApi"]):
             raise _pywintypes_import_error
         self.__api: Optional["ComApi"] = None
 
+    @property
+    def is_open(self) -> bool:
+        return bool(self.__api)
+
     def open(self) -> "ComApi":
         if self.__api is None:
             try:

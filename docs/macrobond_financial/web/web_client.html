@@ -116,6 +116,10 @@ class WebClient(Client[&#34;WebApi&#34;]):
             client_id, client_secret, *scopes, api_url=api_url, authorization_url=authorization_url
         )
 
+    @property
+    def is_open(self) -&gt; bool:
+        return bool(self.__api)
+
     def open(self) -&gt; &#34;WebApi&#34;:
         if self.__api is None:
             self.__session.fetch_token()
@@ -238,6 +242,10 @@ class WebClient(Client[&#34;WebApi&#34;]):
             client_id, client_secret, *scopes, api_url=api_url, authorization_url=authorization_url
         )
 
+    @property
+    def is_open(self) -&gt; bool:
+        return bool(self.__api)
+
     def open(self) -&gt; &#34;WebApi&#34;:
         if self.__api is None:
             self.__session.fetch_token()
@@ -253,6 +261,21 @@ class WebClient(Client[&#34;WebApi&#34;]):
 <li>abc.ABC</li>
 <li>typing.Generic</li>
 </ul>
+<h3>Instance variables</h3>
+<dl>
+<dt id="macrobond_financial.web.web_client.WebClient.is_open"><code class="name">var <span class="ident">is_open</span> : bool</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def is_open(self) -&gt; bool:
+    return bool(self.__api)</code></pre>
+</details>
+</dd>
+</dl>
 <h3>Methods</h3>
 <dl>
 <dt id="macrobond_financial.web.web_client.WebClient.close"><code class="name flex">
@@ -306,6 +329,7 @@ class WebClient(Client[&#34;WebApi&#34;]):
 <h4><code><a title="macrobond_financial.web.web_client.WebClient" href="#macrobond_financial.web.web_client.WebClient">WebClient</a></code></h4>
 <ul class="">
 <li><code><a title="macrobond_financial.web.web_client.WebClient.close" href="#macrobond_financial.web.web_client.WebClient.close">close</a></code></li>
+<li><code><a title="macrobond_financial.web.web_client.WebClient.is_open" href="#macrobond_financial.web.web_client.WebClient.is_open">is_open</a></code></li>
 <li><code><a title="macrobond_financial.web.web_client.WebClient.open" href="#macrobond_financial.web.web_client.WebClient.open">open</a></code></li>
 </ul>
 </li>

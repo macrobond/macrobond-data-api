@@ -54,11 +54,8 @@ class SeriesObservationHistory:
         name = name if name else str(self.observation_date)
         return pandas.Series(self.values, self.time_stamps, name=name)
 
-    def __str__(self):
-        return f"{self.__class__.__name__} observation_date: {self.observation_date}"
-
     def __repr__(self):
-        return str(self)
+        return f"{self.__class__.__name__} observation_date: {self.observation_date}"
 
     def __eq__(self, other):
         if not isinstance(other, SeriesObservationHistory):

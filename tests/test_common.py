@@ -3,7 +3,11 @@
 # pylint: disable=invalid-name missing-function-docstring , missing-class-docstring , missing-module-docstring
 
 from unittest import TestCase as UnittestTestCase  # type: ignore
-from typing import Optional
+from typing import Optional, Callable
+import warnings
+import io
+import sys
+
 
 import pandas  # type: ignore
 
@@ -23,6 +27,27 @@ class TestCase(UnittestTestCase):
         self.__com_api: Optional[ComApi] = None
         self.__web_client: Optional[WebClient] = None
         self.__web_api: Optional[WebApi] = None
+
+    def assertNoWarnings(self, mef: Callable):
+        captured_output_stdout = io.StringIO()
+        sys.stdout = captured_output_stdout
+
+        captured_output_stderr = io.StringIO()
+        sys.stderr = captured_output_stderr
+
+        with warnings.catch_warnings(record=True) as wlist:
+            warnings.simplefilter("always")
+            mef()
+            self.assertEqual(len(wlist), 0, "\n\n".join(map(str, wlist)))
+
+        sys.stdout = sys.__stdout__
+        sys.stderr = sys.__stderr__
+
+        stdout = captured_output_stdout.getvalue()
+        self.assertEqual(stdout, "", "captured_output_stdout")
+
+        stderr = captured_output_stderr.getvalue()
+        self.assertEqual(stderr, "", "captured_output_stderr")
 
     @property
     def web_client(self) -> WebClient:

@@ -39,11 +39,8 @@ class EntitieErrorInfo:
         self.name = name
         self.error_message = error_message
 
-    def __str__(self):
-        return f&#34;name: {self.name} error_message: {self.error_message}&#34;
-
     def __repr__(self):
-        return str(self)
+        return f&#34;name: {self.name} error_message: {self.error_message}&#34;
 
 
 class GetEntitiesError(Exception):
@@ -118,11 +115,8 @@ class GetEntitiesError(Exception):
         self.name = name
         self.error_message = error_message
 
-    def __str__(self):
-        return f&#34;name: {self.name} error_message: {self.error_message}&#34;
-
     def __repr__(self):
-        return str(self)</code></pre>
+        return f&#34;name: {self.name} error_message: {self.error_message}&#34;</code></pre>
 </details>
 </dd>
 <dt id="macrobond_financial.common.types.get_entitie_error.GetEntitiesError"><code class="flex name class">

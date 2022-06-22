@@ -18,6 +18,8 @@ from .types import (
     Series,
     Entity,
     UnifiedSeries,
+    GetAllVintageSeriesResult,
+    SeriesObservationHistory,
 )
 
 from .enums import SeriesFrequency, SeriesWeekdays, CalendarMergeMode
@@ -190,7 +192,13 @@ class Api(ABC):
         """
 
     @abstractmethod
-    def get_all_vintage_series(self, series_name: str) -> List[Series]:
+    def get_all_vintage_series(self, series_name: str) -> GetAllVintageSeriesResult:
+        ...
+
+    @abstractmethod
+    def get_observation_history(
+        self, serie_name: str, *times: datetime
+    ) -> List[SeriesObservationHistory]:
         ...
 
     # Search

@@ -7,8 +7,6 @@ from typing import (
     Sequence,
     Tuple,
     Optional,
-    Union,
-    overload,
     TYPE_CHECKING,
 )
 
@@ -77,59 +75,36 @@ class UnifiedSerie:
         )
 
 
-class UnifiedSeries(Sequence[UnifiedSerie]):
+class UnifiedSeries(List[UnifiedSerie]):
     @property
     def is_error(self) -> bool:
-        return any(self.series)
+        return any(self)
+
+    @property
+    def series(self) -> List[UnifiedSerie]:
+        return self
 
     def __init__(
         self,
+        series: Sequence[UnifiedSerie],
         dates: Tuple[datetime, ...],
-        series: Tuple[UnifiedSerie, ...],
     ) -> None:
+        super().__init__(series)
         self.dates = dates
-        self.series = series
 
     def to_dict(self) -> UnifiedSeriesDict:
         return {
             "Dates": self.dates,
-            "Series": tuple(map(lambda x: x.to_dict(), self.series)),
+            "Series": tuple(map(lambda x: x.to_dict(), self)),
         }
 
     def get_errors(self) -> Dict[str, str]:
-        return {e.name: e.error_message for e in filter(lambda x: x.is_error, self.series)}
+        return {e.name: e.error_message for e in filter(lambda x: x.is_error, self)}
 
     def to_pd_data_frame(self) -> "DataFrame":
         pandas = _get_pandas()
-        return pandas.DataFrame(dict(map(lambda kv: (kv.name, kv.values), self.series)), self.dates)
-
-    def __str__(self):
-        names = ", ".join(map(lambda x: x.name, self.series))
-        return f"UnifiedSeries series: ({names})"
+        return pandas.DataFrame(dict(map(lambda kv: (kv.name, kv.values), self)), self.dates)
 
     def __repr__(self):
-        return str(self)
-
-    @overload
-    def __getitem__(self, idx: int) -> UnifiedSerie:
-        ...
-
-    @overload
-    def __getitem__(self, _slice: slice) -> Sequence[UnifiedSerie]:
-        ...
-
-    def __getitem__(self, idx_or_slice: Union[int, slice]):
-        return self.series.__getitem__(idx_or_slice)
-
-    def __len__(self) -> int:
-        return len(self.series)
-
-    def __bool__(self):
-        return self.is_error
-
-    def __eq__(self, other):
-        return self is other or (
-            isinstance(other, UnifiedSeries)
-            and self.series == other.series
-            and self.dates == other.dates
-        )
+        names = ", ".join(map(lambda x: x.name, self))
+        return f"UnifiedSeries series: ({names})"

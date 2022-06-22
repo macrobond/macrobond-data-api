@@ -74,15 +74,15 @@ class Common(TestCase):
         web = self.web_api.entity_search_multi_filter(SearchFilter(text="usgdp"))
 
         self.assertEqual(
-            len(com.entities),
-            len(web.entities),
-            "len(com.entities) == len(web.entities)",
+            len(com),
+            len(web),
+            "len(com) == len(web)",
         )
 
-        self.assertNotEqual(len(com.entities), 0, "len(com.entities) != 0")
+        self.assertNotEqual(len(com), 0, "len(com) != 0")
 
-        com_first = com.entities[0]
-        web_first = web.entities[0]
+        com_first = com[0]
+        web_first = web[0]
 
         self.assertEqual(com_first.get("PrimName"), web_first.get("PrimName"), '.get("PrimName")')
 
@@ -119,8 +119,8 @@ class Web(TestCase):
     def test_search_no_metadata(self) -> None:
         search_result = self.api.entity_search(text="usgdp", no_metadata=True)
 
-        self.assertNotEqual(len(search_result.entities), 0, "len(search_result.entities) != 0")
-        first = search_result.entities[0]
+        self.assertNotEqual(len(search_result), 0, "len(search_result) != 0")
+        first = search_result[0]
 
         self.assertEqual(len(first), 1, "len(first)")
 
@@ -157,8 +157,8 @@ class Com(TestCase):
     def test_search_no_metadata(self) -> None:
         search_result = self.api.entity_search(text="usgdp", no_metadata=True)
 
-        self.assertNotEqual(len(search_result.entities), 0, "len(search_result.entities) != 0")
-        first = search_result.entities[0]
+        self.assertNotEqual(len(search_result), 0, "len(search_result) != 0")
+        first = search_result[0]
 
         self.assertNotEqual(len(first), 1, "len(first)")
 
@@ -166,8 +166,8 @@ class Com(TestCase):
 def search(test: TestCase, api: Api) -> None:
     search_result = api.entity_search(text="usgdp")
 
-    test.assertNotEqual(len(search_result.entities), 0, "len(search_result.entities) != 0")
-    first = search_result.entities[0]
+    test.assertNotEqual(len(search_result), 0, "len(search_result) != 0")
+    first = search_result[0]
 
     test.assertNotEqual(len(first), 0, "len(first)")
 
@@ -175,8 +175,8 @@ def search(test: TestCase, api: Api) -> None:
 def series_multi_filter(test: TestCase, api: Api) -> None:
     search_result = api.entity_search_multi_filter(SearchFilter(text="usgdp"))
 
-    test.assertNotEqual(len(search_result.entities), 0, "len(search_result.entities) != 0")
-    first = search_result.entities[0]
+    test.assertNotEqual(len(search_result), 0, "len(search_result) != 0")
+    first = search_result[0]
 
     test.assertNotEqual(len(first), 0, "len(first)")
 
@@ -184,9 +184,9 @@ def series_multi_filter(test: TestCase, api: Api) -> None:
 def series_multi_filter_must_have_attributes(test: TestCase, api: Api) -> None:
     search_result = api.entity_search_multi_filter(SearchFilter(must_have_attributes=["MoveBase"]))
 
-    test.assertNotEqual(len(search_result.entities), 0, "len(com.entities) != 0")
+    test.assertNotEqual(len(search_result), 0, "len(search_result) != 0")
 
-    for entitie in search_result.entities:
+    for entitie in search_result:
         if "MoveBase" not in entitie:
             test.fail("MoveBase not in " + str(entitie))
 
@@ -196,9 +196,9 @@ def series_multi_filter_must_not_have_attributes(test: TestCase, api: Api) -> No
         SearchFilter("abc", must_not_have_attributes=["MoveBase"])
     )
 
-    test.assertNotEqual(len(search_result.entities), 0, "len(com.entities) != 0")
+    test.assertNotEqual(len(search_result), 0, "len(com.entities) != 0")
 
-    for entitie in search_result.entities:
+    for entitie in search_result:
         if "MoveBase" in entitie:
             test.fail("MoveBase is in " + str(entitie))
 
@@ -208,9 +208,9 @@ def series_multi_filter_must_have_values(test: TestCase, api: Api) -> None:
         SearchFilter(must_have_values={"MoveBase": "pp100"})
     )
 
-    test.assertNotEqual(len(search_result.entities), 0, "len(com.entities) != 0")
+    test.assertNotEqual(len(search_result), 0, "len(com) != 0")
 
-    for entitie in search_result.entities:
+    for entitie in search_result:
         test.assertEqual(entitie.get("MoveBase"), "pp100", 'MoveBase != "pp100" ' + str(entitie))
 
 
@@ -219,9 +219,9 @@ def series_multi_filter_must_not_have_values(test: TestCase, api: Api) -> None:
         SearchFilter("abc", must_not_have_values={"MoveBase": "pp100"})
     )
 
-    test.assertNotEqual(len(search_result.entities), 0, "len(com.entities) != 0")
+    test.assertNotEqual(len(search_result), 0, "len(com.entities) != 0")
 
-    for entitie in search_result.entities:
+    for entitie in search_result:
         test.assertNotEqual(entitie.get("MoveBase"), "pp100", 'MoveBase != "pp100" ' + str(entitie))
 
 
@@ -254,7 +254,7 @@ def series_multi_filter_entity_types(test: TestCase, api: Api) -> None:
 
     test.assertNotEqual(len(security), 0, "len(security) != 0")
 
-    for entitie in security.entities:
+    for entitie in security:
         test.assertEqual(
             entitie.get("EntityType"),
             "Security",

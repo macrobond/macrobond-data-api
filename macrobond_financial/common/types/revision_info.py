@@ -47,8 +47,5 @@ class RevisionInfo:
         pandas = _get_pandas()
         return pandas.DataFrame(self.to_dict())
 
-    def __str__(self):
-        return f"RevisionInfo name: {self.name}"
-
     def __repr__(self):
-        return str(self)
+        return f"RevisionInfo name: {self.name}"

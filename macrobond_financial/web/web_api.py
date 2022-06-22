@@ -33,6 +33,7 @@ from macrobond_financial.common.types import (
     SeriesObservationHistory,
     UnifiedSeries,
     UnifiedSerie,
+    GetAllVintageSeriesResult,
 )
 
 from .session import SessionHttpException
@@ -277,7 +278,7 @@ class WebApi(Api):
 
         return series
 
-    def get_all_vintage_series(self, series_name: str) -> List[Series]:
+    def get_all_vintage_series(self, series_name: str) -> GetAllVintageSeriesResult:
         try:
             response = self.session.series.fetch_all_vintage_series(series_name)
         except SessionHttpException as ex:
@@ -285,7 +286,9 @@ class WebApi(Api):
                 raise ValueError("Series not found: " + series_name) from ex
             raise ex
 
-        return list(map(lambda x: _create_series(x, series_name), response))
+        return GetAllVintageSeriesResult(
+            list(map(lambda x: _create_series(x, series_name), response)), series_name
+        )
 
     def get_observation_history(
         self, serie_name: str, *times: datetime
@@ -336,7 +339,7 @@ class WebApi(Api):
 
         response = self.__session.search.post_entities(request)
 
-        return SearchResult(tuple(response["results"]), response.get("isTruncated") is True)
+        return SearchResult(response["results"], response.get("isTruncated") is True)
 
     # Series
 
@@ -440,7 +443,7 @@ class WebApi(Api):
                 metadata = cast(Dict[str, Any], one_series["metadata"])
                 series.append(UnifiedSerie(name, "", metadata, values))
 
-        ret = UnifiedSeries(dates, tuple(series))
+        ret = UnifiedSeries(series, dates)
 
         errors = ret.get_errors()
         raise_error = self.raise_error if raise_error is None else raise_error

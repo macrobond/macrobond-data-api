@@ -61,14 +61,11 @@ class MetadataValueInformationItem:
     def to_dict(self) -> TypedDictMetadataValueInformation:
         return cast(TypedDictMetadataValueInformation, vars(self))
 
-    def __str__(self):
+    def __repr__(self):
         return (
             f"MetadataValueInformationItem attribute_name: {self.attribute_name},"
             + f" value: {self.value}"
         )
-
-    def __repr__(self):
-        return str(self)
 
     def __eq__(self, other):
         if not isinstance(other, MetadataValueInformationItem):
@@ -99,13 +96,10 @@ class MetadataValueInformation(Sequence[MetadataValueInformationItem]):
     def to_dict(self) -> List[TypedDictMetadataValueInformation]:
         return list(map(lambda x: x.to_dict(), self.items))
 
-    def __str__(self):
+    def __repr__(self):
         return (
             f"MetadataValueInformation of {len(self)} items, attribute_name: {self.attribute_name}"
         )
-
-    def __repr__(self):
-        return str(self)
 
     @overload
     def __getitem__(self, idx: int) -> MetadataValueInformationItem:

@@ -106,11 +106,8 @@ class MetadataAttributeInformation:
         pandas = _get_pandas()
         return pandas.DataFrame([self.to_dict()])
 
-    def __str__(self):
-        return f"MetadataAttributeInformation name: {self.name}, description: {self.description}"
-
     def __repr__(self):
-        return str(self)
+        return f"MetadataAttributeInformation name: {self.name}, description: {self.description}"
 
     def __eq__(self, other):
         return self is other or (

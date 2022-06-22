@@ -61,6 +61,7 @@ from macrobond_financial.common.types import (
     SeriesObservationHistory,
     UnifiedSeries,
     UnifiedSerie,
+    GetAllVintageSeriesResult,
 )
 
 from .session import SessionHttpException
@@ -305,7 +306,7 @@ class WebApi(Api):
 
         return series
 
-    def get_all_vintage_series(self, series_name: str) -&gt; List[Series]:
+    def get_all_vintage_series(self, series_name: str) -&gt; GetAllVintageSeriesResult:
         try:
             response = self.session.series.fetch_all_vintage_series(series_name)
         except SessionHttpException as ex:
@@ -313,7 +314,9 @@ class WebApi(Api):
                 raise ValueError(&#34;Series not found: &#34; + series_name) from ex
             raise ex
 
-        return list(map(lambda x: _create_series(x, series_name), response))
+        return GetAllVintageSeriesResult(
+            list(map(lambda x: _create_series(x, series_name), response)), series_name
+        )
 
     def get_observation_history(
         self, serie_name: str, *times: datetime
@@ -364,7 +367,7 @@ class WebApi(Api):
 
         response = self.__session.search.post_entities(request)
 
-        return SearchResult(tuple(response[&#34;results&#34;]), response.get(&#34;isTruncated&#34;) is True)
+        return SearchResult(response[&#34;results&#34;], response.get(&#34;isTruncated&#34;) is True)
 
     # Series
 
@@ -468,7 +471,7 @@ class WebApi(Api):
                 metadata = cast(Dict[str, Any], one_series[&#34;metadata&#34;])
                 series.append(UnifiedSerie(name, &#34;&#34;, metadata, values))
 
-        ret = UnifiedSeries(dates, tuple(series))
+        ret = UnifiedSeries(series, dates)
 
         errors = ret.get_errors()
         raise_error = self.raise_error if raise_error is None else raise_error
@@ -688,7 +691,7 @@ methods:
 
         return series
 
-    def get_all_vintage_series(self, series_name: str) -&gt; List[Series]:
+    def get_all_vintage_series(self, series_name: str) -&gt; GetAllVintageSeriesResult:
         try:
             response = self.session.series.fetch_all_vintage_series(series_name)
         except SessionHttpException as ex:
@@ -696,7 +699,9 @@ methods:
                 raise ValueError(&#34;Series not found: &#34; + series_name) from ex
             raise ex
 
-        return list(map(lambda x: _create_series(x, series_name), response))
+        return GetAllVintageSeriesResult(
+            list(map(lambda x: _create_series(x, series_name), response)), series_name
+        )
 
     def get_observation_history(
         self, serie_name: str, *times: datetime
@@ -747,7 +752,7 @@ methods:
 
         response = self.__session.search.post_entities(request)
 
-        return SearchResult(tuple(response[&#34;results&#34;]), response.get(&#34;isTruncated&#34;) is True)
+        return SearchResult(response[&#34;results&#34;], response.get(&#34;isTruncated&#34;) is True)
 
     # Series
 
@@ -851,7 +856,7 @@ methods:
                 metadata = cast(Dict[str, Any], one_series[&#34;metadata&#34;])
                 series.append(UnifiedSerie(name, &#34;&#34;, metadata, values))
 
-        ret = UnifiedSeries(dates, tuple(series))
+        ret = UnifiedSeries(series, dates)
 
         errors = ret.get_errors()
         raise_error = self.raise_error if raise_error is None else raise_error
@@ -883,7 +888,7 @@ def session(self) -&gt; &#34;Session&#34;:
 <h3>Methods</h3>
 <dl>
 <dt id="macrobond_financial.web.web_api.WebApi.get_all_vintage_series"><code class="name flex">
-<span>def <span class="ident">get_all_vintage_series</span></span>(<span>self, series_name: str) ‑> List[<a title="macrobond_financial.common.types.series.Series" href="../common/types/series.html#macrobond_financial.common.types.series.Series">Series</a>]</span>
+<span>def <span class="ident">get_all_vintage_series</span></span>(<span>self, series_name: str) ‑> <a title="macrobond_financial.common.types.get_all_vintage_series_result.GetAllVintageSeriesResult" href="../common/types/get_all_vintage_series_result.html#macrobond_financial.common.types.get_all_vintage_series_result.GetAllVintageSeriesResult">GetAllVintageSeriesResult</a></span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -891,7 +896,7 @@ def session(self) -&gt; &#34;Session&#34;:
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def get_all_vintage_series(self, series_name: str) -&gt; List[Series]:
+<pre><code class="python">def get_all_vintage_series(self, series_name: str) -&gt; GetAllVintageSeriesResult:
     try:
         response = self.session.series.fetch_all_vintage_series(series_name)
     except SessionHttpException as ex:
@@ -899,7 +904,9 @@ def session(self) -&gt; &#34;Session&#34;:
             raise ValueError(&#34;Series not found: &#34; + series_name) from ex
         raise ex
 
-    return list(map(lambda x: _create_series(x, series_name), response))</code></pre>
+    return GetAllVintageSeriesResult(
+        list(map(lambda x: _create_series(x, series_name), response)), series_name
+    )</code></pre>
 </details>
 </dd>
 <dt id="macrobond_financial.web.web_api.WebApi.get_observation_history"><code class="name flex">
