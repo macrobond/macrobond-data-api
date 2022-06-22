@@ -26,6 +26,11 @@ MetadataAttributeInformationColumns = List[
 
 
 class TypedDictMetadataAttributeInformation(TypedDict):
+    """
+    The result of a call to `macrobond_financial.common.api.Api.metadata_get_attribute_information`.  
+    Contains information about the requested metadata attributes.
+    """
+    
     name: str
     """The name of the metadata attribute"""
 

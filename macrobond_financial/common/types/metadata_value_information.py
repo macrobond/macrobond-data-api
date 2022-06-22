@@ -22,8 +22,11 @@ if TYPE_CHECKING:  # pragma: no cover
 
 MetadataValueInformationColumns = List[Literal["attribute_name", "value", "description", "comment"]]
 
-
+# TODO: Perhaps this should be called TypedDictMetadataValueInformationItem?
 class TypedDictMetadataValueInformation(TypedDict):
+    """
+    Contains information about one metadata attribute value.
+    """
 
     attribute_name: str
     """The name of the metadata attribute"""
