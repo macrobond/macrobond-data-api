@@ -92,10 +92,12 @@ class MetadataValueInformationItem:
 
 
 class MetadataValueInformation(List[MetadataValueInformationItem]):
+    # fmt: off
     """
     The result of a call to `macrobond_financial.common.api.Api.metadata_get_value_information`.  
     Contains information about the requested metadata attribute values.
     """
+    # fmt: on
 
     attribute_name: str
 

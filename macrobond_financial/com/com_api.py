@@ -491,30 +491,31 @@ class ComApi(Api):
             name = request.AddedSeries[i].Name
             if com_one_series.IsError:
                 series.append(UnifiedSerie(name, com_one_series.ErrorMessage, {}, tuple()))
-            else:
-                metadata: Dict[str, Any] = {}
-                com_metadata = com_one_series.Metadata
-                for names_and_description in com_metadata.ListNames():
-                    metadata_name = names_and_description[0]
-                    values = com_metadata.GetValues(metadata_name)
-                    if len(values) == 1:
-                        metadata[metadata_name] = values[0]
-                    else:
-                        metadata[metadata_name] = list(values)
+                continue
 
-                series.append(
-                    UnifiedSerie(
-                        name,
-                        "",
-                        metadata,
-                        tuple(
-                            map(
-                                lambda x: None if x is not None and isnan(x) else x,
-                                com_one_series.Values,
-                            )
-                        ),
-                    )
+            metadata: Dict[str, Any] = {}
+            com_metadata = com_one_series.Metadata
+            for names_and_description in com_metadata.ListNames():
+                metadata_name = names_and_description[0]
+                values = com_metadata.GetValues(metadata_name)
+                if len(values) == 1:
+                    metadata[metadata_name] = values[0]
+                else:
+                    metadata[metadata_name] = list(values)
+
+            series.append(
+                UnifiedSerie(
+                    name,
+                    "",
+                    metadata,
+                    tuple(
+                        map(
+                            lambda x: None if x is not None and isnan(x) else x,
+                            com_one_series.Values,
+                        )
+                    ),
                 )
+            )
 
         ret = UnifiedSeries(series, dates)
 

@@ -26,6 +26,7 @@ from .enums import SeriesFrequency, SeriesWeekdays, CalendarMergeMode
 
 
 class Api(ABC):
+    # fmt: off
     """
     Common API to interact with the Macrobond database.  
     These methods are implemented for both the Web API and Desktop COM API.
@@ -59,6 +60,7 @@ class Api(ABC):
 
 
     """
+    # fmt: on
 
     def __init__(self) -> None:
         self.raise_error = True
@@ -101,6 +103,8 @@ class Api(ABC):
 
     @abstractmethod
     def metadata_get_attribute_information(self, *names: str) -> List[MetadataAttributeInformation]:
+        # pylint: disable=line-too-long
+        # fmt: off
         """
         Get information about metadata attributes.
 
@@ -129,11 +133,15 @@ class Api(ABC):
             print(api.metadata_get_attribute_information("Region")[0].to_pd_data_frame())
         ```
         """
+        # pylint: enable=line-too-long
+        # fmt: on
 
     @abstractmethod
     def metadata_get_value_information(
         self, *name_val: Tuple[str, str]
     ) -> List[MetadataValueInformationItem]:
+        # pylint: disable=line-too-long
+        # fmt: off
         """
         Get information about metadata values.
 
@@ -162,6 +170,8 @@ class Api(ABC):
             print(api.metadata_get_value_information(("RateType", "mole"))[0].to_pd_data_frame())
         ```
         """
+        # fmt: on
+        # pylint: enable=line-too-long
 
     # revision
 
@@ -420,6 +430,7 @@ class Api(ABC):
         end_point: StartOrEndPoint = None,
         raise_error: bool = None
     ) -> UnifiedSeries:
+        # pylint: disable=line-too-long
         """
         Get one or more series and convert them to a common frequency and calendar.
 
@@ -451,3 +462,4 @@ class Api(ABC):
         -------
         `UnifiedSeries`
         """
+        # pylint: enable=line-too-long

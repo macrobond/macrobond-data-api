@@ -29,10 +29,10 @@
         "--config=setup.cfg"
     ],
     "python.formatting.provider": "black",
-
     // https://black.readthedocs.io/en/stable/the_black_code_style/current_style.html#line-length
-    "python.formatting.blackArgs": ["--line-length", "100"],
-    "[python]": {
-        "editor.formatOnSave": false
-    },
+    "python.formatting.blackArgs": [
+        "--line-length",
+        "100"
+    ],
+    "diffEditor.ignoreTrimWhitespace": false,
 }

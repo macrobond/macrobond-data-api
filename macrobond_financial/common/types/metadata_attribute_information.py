@@ -26,10 +26,12 @@ MetadataAttributeInformationColumns = List[
 
 
 class TypedDictMetadataAttributeInformation(TypedDict):
+    # fmt: off
     """
     The result of a call to `macrobond_financial.common.api.Api.metadata_get_attribute_information`.  
     Contains information about the requested metadata attributes.
     """
+    # fmt: on
 
     name: str
     """The name of the metadata attribute"""
@@ -62,10 +64,12 @@ class TypedDictMetadataAttributeInformation(TypedDict):
 
 
 class MetadataAttributeInformation:
+    # fmt: off
     """
     The result of a call to `macrobond_financial.common.api.Api.metadata_get_attribute_information`.  
     Contains information about the requested metadata attributes.
     """
+    # fmt: on
 
     name: str
     description: str
