@@ -45,6 +45,10 @@ EntityColumns = List[EntityColumnsLiterals]
 class Entity:
     &#34;&#34;&#34;Interface for a database Macrobond entity.&#34;&#34;&#34;
 
+    name: str
+    error_message: str
+    metadata: Dict[str, Any]
+
     @property
     def is_error(self) -&gt; bool:
         return self.error_message != &#34;&#34;
@@ -80,8 +84,13 @@ class Entity:
         metadata: Optional[Dict[str, Any]],
     ) -&gt; None:
         self.name = name
+        &#34;&#34;&#34;name&#34;&#34;&#34;
+
         self.error_message = error_message if error_message else &#34;&#34;
-        self.metadata = metadata = metadata if metadata else {}
+        &#34;&#34;&#34;error_message&#34;&#34;&#34;
+
+        self.metadata = metadata if metadata else {}
+        &#34;&#34;&#34;metadata&#34;&#34;&#34;
 
     def _add_metadata(self, destination: Dict[str, Any]) -&gt; None:
         for key in self.metadata.keys():
@@ -149,6 +158,10 @@ class Entity:
 <pre><code class="python">class Entity:
     &#34;&#34;&#34;Interface for a database Macrobond entity.&#34;&#34;&#34;
 
+    name: str
+    error_message: str
+    metadata: Dict[str, Any]
+
     @property
     def is_error(self) -&gt; bool:
         return self.error_message != &#34;&#34;
@@ -184,8 +197,13 @@ class Entity:
         metadata: Optional[Dict[str, Any]],
     ) -&gt; None:
         self.name = name
+        &#34;&#34;&#34;name&#34;&#34;&#34;
+
         self.error_message = error_message if error_message else &#34;&#34;
-        self.metadata = metadata = metadata if metadata else {}
+        &#34;&#34;&#34;error_message&#34;&#34;&#34;
+
+        self.metadata = metadata if metadata else {}
+        &#34;&#34;&#34;metadata&#34;&#34;&#34;
 
     def _add_metadata(self, destination: Dict[str, Any]) -&gt; None:
         for key in self.metadata.keys():
@@ -252,6 +270,10 @@ def entity_type(self) -&gt; str:
     return entity_type</code></pre>
 </details>
 </dd>
+<dt id="macrobond_financial.common.types.entity.Entity.error_message"><code class="name">var <span class="ident">error_message</span> : str</code></dt>
+<dd>
+<div class="desc"><p>error_message</p></div>
+</dd>
 <dt id="macrobond_financial.common.types.entity.Entity.is_error"><code class="name">var <span class="ident">is_error</span> : bool</code></dt>
 <dd>
 <div class="desc"></div>
@@ -263,6 +285,14 @@ def entity_type(self) -&gt; str:
 def is_error(self) -&gt; bool:
     return self.error_message != &#34;&#34;</code></pre>
 </details>
+</dd>
+<dt id="macrobond_financial.common.types.entity.Entity.metadata"><code class="name">var <span class="ident">metadata</span> : Dict[str, Any]</code></dt>
+<dd>
+<div class="desc"><p>metadata</p></div>
+</dd>
+<dt id="macrobond_financial.common.types.entity.Entity.name"><code class="name">var <span class="ident">name</span> : str</code></dt>
+<dd>
+<div class="desc"><p>name</p></div>
 </dd>
 <dt id="macrobond_financial.common.types.entity.Entity.primary_name"><code class="name">var <span class="ident">primary_name</span> : str</code></dt>
 <dd>
@@ -357,8 +387,11 @@ def title(self) -&gt; str:
 <h4><code><a title="macrobond_financial.common.types.entity.Entity" href="#macrobond_financial.common.types.entity.Entity">Entity</a></code></h4>
 <ul class="">
 <li><code><a title="macrobond_financial.common.types.entity.Entity.entity_type" href="#macrobond_financial.common.types.entity.Entity.entity_type">entity_type</a></code></li>
+<li><code><a title="macrobond_financial.common.types.entity.Entity.error_message" href="#macrobond_financial.common.types.entity.Entity.error_message">error_message</a></code></li>
 <li><code><a title="macrobond_financial.common.types.entity.Entity.is_error" href="#macrobond_financial.common.types.entity.Entity.is_error">is_error</a></code></li>
+<li><code><a title="macrobond_financial.common.types.entity.Entity.metadata" href="#macrobond_financial.common.types.entity.Entity.metadata">metadata</a></code></li>
 <li><code><a title="macrobond_financial.common.types.entity.Entity.metadata_to_pd_series" href="#macrobond_financial.common.types.entity.Entity.metadata_to_pd_series">metadata_to_pd_series</a></code></li>
+<li><code><a title="macrobond_financial.common.types.entity.Entity.name" href="#macrobond_financial.common.types.entity.Entity.name">name</a></code></li>
 <li><code><a title="macrobond_financial.common.types.entity.Entity.primary_name" href="#macrobond_financial.common.types.entity.Entity.primary_name">primary_name</a></code></li>
 <li><code><a title="macrobond_financial.common.types.entity.Entity.title" href="#macrobond_financial.common.types.entity.Entity.title">title</a></code></li>
 <li><code><a title="macrobond_financial.common.types.entity.Entity.to_dict" href="#macrobond_financial.common.types.entity.Entity.to_dict">to_dict</a></code></li>

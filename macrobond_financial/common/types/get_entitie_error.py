@@ -7,26 +7,40 @@ __pdoc__ = {
 
 
 class EntitieErrorInfo:
+
+    name: str
+    error_message: str
+
     def __init__(self, name: str, error_message: str):
         self.name = name
+        """name"""
+
         self.error_message = error_message
+        """error_message"""
 
     def __repr__(self):
         return f"name: {self.name} error_message: {self.error_message}"
 
 
 class GetEntitiesError(Exception):
+
+    entities: List[EntitieErrorInfo]
+    message: str
+
     def __init__(
         self,
         entities: Union[List[EntitieErrorInfo], str, Dict[str, str]],
         error_message: str = None,
     ):
-        if isinstance(entities, list):
-            self.entities = entities
-        elif isinstance(entities, dict):
-            self.entities = list(map(EntitieErrorInfo, entities.keys(), entities.values()))
-        else:
-            self.entities = [EntitieErrorInfo(entities, cast(str, error_message))]
+        def get_entities() -> List[EntitieErrorInfo]:
+            if isinstance(entities, list):
+                return entities
+            if isinstance(entities, dict):
+                return list(map(EntitieErrorInfo, entities.keys(), entities.values()))
+            return [EntitieErrorInfo(entities, cast(str, error_message))]
+
+        self.entities = get_entities()
+        """entities"""
 
         self.message = "failed to retrieve:\n" + (
             "\n".join(
@@ -36,6 +50,8 @@ class GetEntitiesError(Exception):
                 )
             )
         )
+        """message"""
+
         super().__init__(self.message)
 
     @classmethod

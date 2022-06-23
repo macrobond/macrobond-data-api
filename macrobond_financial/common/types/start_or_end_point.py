@@ -34,11 +34,8 @@ class StartOrEndPoint:
         self.time = time
         self.mode = CalendarDateMode.DATA_IN_ANY_SERIES if mode is None else mode
 
-    def __str__(self):
-        return self.time + " mode:" + str(self.mode)
-
     def __repr__(self):
-        return str(self)
+        return self.time + " mode:" + str(self.mode)
 
     @staticmethod
     def relative_to_observations(

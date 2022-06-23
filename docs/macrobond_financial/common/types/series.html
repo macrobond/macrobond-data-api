@@ -48,6 +48,9 @@ if TYPE_CHECKING:  # pragma: no cover
 class Series(Entity):
     &#34;&#34;&#34;Interface for a Macrobond time series.&#34;&#34;&#34;
 
+    values: Tuple[Optional[float], ...]
+    dates: Tuple[datetime, ...]
+
     def __init__(
         self,
         name: str,
@@ -57,9 +60,15 @@ class Series(Entity):
         dates: Optional[Tuple[datetime, ...]],
     ) -&gt; None:
         super().__init__(name, error_message, metadata)
+
+        self.values = ...  # type: ignore
+        &#34;&#34;&#34;values&#34;&#34;&#34;
+        self.dates = ...  # type: ignore
+        &#34;&#34;&#34;dates&#34;&#34;&#34;
+
         if values is None:
-            self.values: Tuple[Optional[float], ...] = tuple()
-            self.dates: Tuple[datetime, ...] = tuple()
+            self.values = tuple()
+            self.dates = tuple()
         else:
             self.values = values
             self.dates = cast(Tuple[datetime, ...], dates)
@@ -113,6 +122,9 @@ class Series(Entity):
 <pre><code class="python">class Series(Entity):
     &#34;&#34;&#34;Interface for a Macrobond time series.&#34;&#34;&#34;
 
+    values: Tuple[Optional[float], ...]
+    dates: Tuple[datetime, ...]
+
     def __init__(
         self,
         name: str,
@@ -122,9 +134,15 @@ class Series(Entity):
         dates: Optional[Tuple[datetime, ...]],
     ) -&gt; None:
         super().__init__(name, error_message, metadata)
+
+        self.values = ...  # type: ignore
+        &#34;&#34;&#34;values&#34;&#34;&#34;
+        self.dates = ...  # type: ignore
+        &#34;&#34;&#34;dates&#34;&#34;&#34;
+
         if values is None:
-            self.values: Tuple[Optional[float], ...] = tuple()
-            self.dates: Tuple[datetime, ...] = tuple()
+            self.values = tuple()
+            self.dates = tuple()
         else:
             self.values = values
             self.dates = cast(Tuple[datetime, ...], dates)
@@ -163,6 +181,17 @@ class Series(Entity):
 <ul class="hlist">
 <li><a title="macrobond_financial.common.types.vintage_series.VintageSeries" href="vintage_series.html#macrobond_financial.common.types.vintage_series.VintageSeries">VintageSeries</a></li>
 </ul>
+<h3>Instance variables</h3>
+<dl>
+<dt id="macrobond_financial.common.types.series.Series.dates"><code class="name">var <span class="ident">dates</span> : Tuple[datetime.datetime, ...]</code></dt>
+<dd>
+<div class="desc"><p>dates</p></div>
+</dd>
+<dt id="macrobond_financial.common.types.series.Series.values"><code class="name">var <span class="ident">values</span> : Tuple[Optional[float], ...]</code></dt>
+<dd>
+<div class="desc"><p>values</p></div>
+</dd>
+</dl>
 <h3>Methods</h3>
 <dl>
 <dt id="macrobond_financial.common.types.series.Series.to_dict"><code class="name flex">
@@ -210,6 +239,9 @@ class Series(Entity):
 <li><code><b><a title="macrobond_financial.common.types.entity.Entity" href="entity.html#macrobond_financial.common.types.entity.Entity">Entity</a></b></code>:
 <ul class="hlist">
 <li><code><a title="macrobond_financial.common.types.entity.Entity.entity_type" href="entity.html#macrobond_financial.common.types.entity.Entity.entity_type">entity_type</a></code></li>
+<li><code><a title="macrobond_financial.common.types.entity.Entity.error_message" href="entity.html#macrobond_financial.common.types.entity.Entity.error_message">error_message</a></code></li>
+<li><code><a title="macrobond_financial.common.types.entity.Entity.metadata" href="entity.html#macrobond_financial.common.types.entity.Entity.metadata">metadata</a></code></li>
+<li><code><a title="macrobond_financial.common.types.entity.Entity.name" href="entity.html#macrobond_financial.common.types.entity.Entity.name">name</a></code></li>
 <li><code><a title="macrobond_financial.common.types.entity.Entity.primary_name" href="entity.html#macrobond_financial.common.types.entity.Entity.primary_name">primary_name</a></code></li>
 <li><code><a title="macrobond_financial.common.types.entity.Entity.title" href="entity.html#macrobond_financial.common.types.entity.Entity.title">title</a></code></li>
 </ul>
@@ -235,7 +267,9 @@ class Series(Entity):
 <li>
 <h4><code><a title="macrobond_financial.common.types.series.Series" href="#macrobond_financial.common.types.series.Series">Series</a></code></h4>
 <ul class="">
+<li><code><a title="macrobond_financial.common.types.series.Series.dates" href="#macrobond_financial.common.types.series.Series.dates">dates</a></code></li>
 <li><code><a title="macrobond_financial.common.types.series.Series.to_dict" href="#macrobond_financial.common.types.series.Series.to_dict">to_dict</a></code></li>
+<li><code><a title="macrobond_financial.common.types.series.Series.values" href="#macrobond_financial.common.types.series.Series.values">values</a></code></li>
 <li><code><a title="macrobond_financial.common.types.series.Series.values_to_pd_series" href="#macrobond_financial.common.types.series.Series.values_to_pd_series">values_to_pd_series</a></code></li>
 </ul>
 </li>

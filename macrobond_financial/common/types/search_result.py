@@ -13,6 +13,8 @@ class SearchResult(List[Dict[str, Any]]):
     The result of a entity search operation.
     """
 
+    is_truncated: bool
+
     def __init__(self, entities: Sequence[Dict[str, Any]], is_truncated: bool) -> None:
         super().__init__(entities)
         self.is_truncated = is_truncated

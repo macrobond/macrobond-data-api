@@ -32,6 +32,11 @@ class UnifiedSeriesDict(TypedDict):
 class UnifiedSerie:
     """Interface for a Macrobond time series."""
 
+    name: str
+    error_message: str
+    metadata: Dict[str, Any]
+    values: Tuple[Optional[float], ...]
+
     @property
     def is_error(self) -> bool:
         return self.error_message != ""
@@ -44,9 +49,16 @@ class UnifiedSerie:
         values: Tuple[Optional[float], ...],
     ) -> None:
         self.name = name
+        """name"""
+
         self.error_message = error_message
+        """error_message"""
+
         self.metadata = metadata
+        """metadata"""
+
         self.values = values
+        """values"""
 
     def to_dict(self) -> Dict[str, Any]:
         if self.is_error:
@@ -76,6 +88,9 @@ class UnifiedSerie:
 
 
 class UnifiedSeries(List[UnifiedSerie]):
+
+    dates: Tuple[datetime, ...]
+
     @property
     def is_error(self) -> bool:
         return any(self)
@@ -91,6 +106,7 @@ class UnifiedSeries(List[UnifiedSerie]):
     ) -> None:
         super().__init__(series)
         self.dates = dates
+        """dates"""
 
     def to_dict(self) -> UnifiedSeriesDict:
         return {

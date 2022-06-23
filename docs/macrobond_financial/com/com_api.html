@@ -145,13 +145,13 @@ class ComApi(Api):
         values = info.ListAllValues()
 
         return MetadataValueInformation(
-            name,
-            tuple(
+            list(
                 map(
                     lambda x: MetadataValueInformationItem(name, x.Value, x.Description, x.Comment),
                     values,
                 )
             ),
+            name,
         )
 
     def metadata_get_attribute_information(self, *names: str) -&gt; List[MetadataAttributeInformation]:
@@ -567,28 +567,31 @@ class ComApi(Api):
 <span>class <span class="ident">ComApi</span></span>
 </code></dt>
 <dd>
-<div class="desc"><p>Common API to interact with the Macrobond database.</p>
-<p>metadata methods:
-<code>metadata_list_values</code>
-<code>metadata_get_attribute_information</code>
-<code>metadata_get_value_information</code>
-<code>metadata_list_values</code></p>
-<p>revision methods:
-<code>get_revision_info</code>
-<code>get_vintage_series</code>
-<code>get_nth_release</code>
-<code>get_all_vintage_series</code>
-get_observation_history. Only available in wep api.</p>
-<p>Search methods:
-<code>entity_search</code>
-<code>entity_search_multi_filter</code></p>
+<div class="desc"><p>Common API to interact with the Macrobond database.<br>
+These methods are implemented for both the Web API and Desktop COM API.</p>
+<p>Metadata methods:<br>
+<code><a title="macrobond_financial.common.api.Api.metadata_list_values" href="../common/api.html#macrobond_financial.common.api.Api.metadata_list_values">Api.metadata_list_values()</a></code><br>
+<code><a title="macrobond_financial.common.api.Api.metadata_get_attribute_information" href="../common/api.html#macrobond_financial.common.api.Api.metadata_get_attribute_information">Api.metadata_get_attribute_information()</a></code><br>
+<code><a title="macrobond_financial.common.api.Api.metadata_get_value_information" href="../common/api.html#macrobond_financial.common.api.Api.metadata_get_value_information">Api.metadata_get_value_information()</a></code>
+</p>
+<p>Revision methods:<br>
+<code><a title="macrobond_financial.common.api.Api.get_revision_info" href="../common/api.html#macrobond_financial.common.api.Api.get_revision_info">Api.get_revision_info()</a></code><br>
+<code><a title="macrobond_financial.common.api.Api.get_vintage_series" href="../common/api.html#macrobond_financial.common.api.Api.get_vintage_series">Api.get_vintage_series()</a></code><br>
+<code><a title="macrobond_financial.common.api.Api.get_nth_release" href="../common/api.html#macrobond_financial.common.api.Api.get_nth_release">Api.get_nth_release()</a></code><br>
+<code><a title="macrobond_financial.common.api.Api.get_all_vintage_series" href="../common/api.html#macrobond_financial.common.api.Api.get_all_vintage_series">Api.get_all_vintage_series()</a></code><br>
+get_observation_history. Only available in wep api.
+</p>
+<p>Search methods:<br>
+<code><a title="macrobond_financial.common.api.Api.entity_search" href="../common/api.html#macrobond_financial.common.api.Api.entity_search">Api.entity_search()</a></code><br>
+<code><a title="macrobond_financial.common.api.Api.entity_search_multi_filter" href="../common/api.html#macrobond_financial.common.api.Api.entity_search_multi_filter">Api.entity_search_multi_filter()</a></code>
+</p>
 <p>Series
-methods:
-<code>get_one_series</code>
-<code>get_series</code>
-<code>get_one_entity</code>
-<code>get_entities</code>
-<code>get_unified_series</code></p></div>
+methods:<br>
+<code><a title="macrobond_financial.common.api.Api.get_one_series" href="../common/api.html#macrobond_financial.common.api.Api.get_one_series">Api.get_one_series()</a></code><br>
+<code><a title="macrobond_financial.common.api.Api.get_series" href="../common/api.html#macrobond_financial.common.api.Api.get_series">Api.get_series()</a></code><br>
+<code><a title="macrobond_financial.common.api.Api.get_one_entity" href="../common/api.html#macrobond_financial.common.api.Api.get_one_entity">Api.get_one_entity()</a></code><br>
+<code><a title="macrobond_financial.common.api.Api.get_entities" href="../common/api.html#macrobond_financial.common.api.Api.get_entities">Api.get_entities()</a></code><br>
+<code><a title="macrobond_financial.common.api.Api.get_unified_series" href="../common/api.html#macrobond_financial.common.api.Api.get_unified_series">Api.get_unified_series()</a></code></p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -613,13 +616,13 @@ methods:
         values = info.ListAllValues()
 
         return MetadataValueInformation(
-            name,
-            tuple(
+            list(
                 map(
                     lambda x: MetadataValueInformationItem(name, x.Value, x.Description, x.Comment),
                     values,
                 )
             ),
+            name,
         )
 
     def metadata_get_attribute_information(self, *names: str) -&gt; List[MetadataAttributeInformation]:

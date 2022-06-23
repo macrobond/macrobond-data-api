@@ -6,9 +6,6 @@ from typing import (
     List,
     TYPE_CHECKING,
     Sequence,
-    Tuple,
-    Union,
-    overload,
     cast,
 )
 from typing_extensions import TypedDict, Literal
@@ -21,6 +18,7 @@ if TYPE_CHECKING:  # pragma: no cover
 
 
 MetadataValueInformationColumns = List[Literal["attribute_name", "value", "description", "comment"]]
+
 
 # TODO: Perhaps this should be called TypedDictMetadataValueInformationItem?
 class TypedDictMetadataValueInformation(TypedDict):
@@ -45,6 +43,12 @@ class MetadataValueInformationItem:
     """
     Contains information about one metadata attribute value.
     """
+
+    attribute_name: str
+    value: Any
+    description: str
+    comment: Optional[str]
+
     def __init__(
         self, attribute_name: str, value: Any, description: str, comment: Optional[str]
     ) -> None:
@@ -87,20 +91,28 @@ class MetadataValueInformationItem:
         )
 
 
-class MetadataValueInformation(Sequence[MetadataValueInformationItem]):
+class MetadataValueInformation(List[MetadataValueInformationItem]):
     """
     The result of a call to `macrobond_financial.common.api.Api.metadata_get_value_information`.  
     Contains information about the requested metadata attribute values.
     """
+
+    attribute_name: str
+
+    @property
+    def entities(self) -> List[MetadataValueInformationItem]:
+        """entities"""
+        return list(self)
+
     def __init__(
         self,
+        items: Sequence[MetadataValueInformationItem],
         attribute_name: str,
-        items: Tuple[MetadataValueInformationItem, ...],
     ) -> None:
+        super().__init__(items)
+
         self.attribute_name = attribute_name
         """The name of the metadata attribute"""
-
-        self.items = items
 
     def to_pd_data_frame(self) -> "DataFrame":
         """The information represented as a Pandas DataFrame"""
@@ -109,23 +121,9 @@ class MetadataValueInformation(Sequence[MetadataValueInformationItem]):
 
     def to_dict(self) -> List[TypedDictMetadataValueInformation]:
         """The information represented as a dictionary"""
-        return list(map(lambda x: x.to_dict(), self.items))
+        return list(map(lambda x: x.to_dict(), self))
 
     def __repr__(self):
         return (
             f"MetadataValueInformation of {len(self)} items, attribute_name: {self.attribute_name}"
         )
-
-    @overload
-    def __getitem__(self, idx: int) -> MetadataValueInformationItem:
-        ...
-
-    @overload
-    def __getitem__(self, _slice: slice) -> Sequence[MetadataValueInformationItem]:
-        ...
-
-    def __getitem__(self, idx_or_slice: Union[int, slice]):
-        return self.items.__getitem__(idx_or_slice)
-
-    def __len__(self) -> int:
-        return len(self.items)

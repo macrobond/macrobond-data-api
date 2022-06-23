@@ -54,6 +54,11 @@ MetadataAttributeInformationColumns = List[
 
 
 class TypedDictMetadataAttributeInformation(TypedDict):
+    &#34;&#34;&#34;
+    The result of a call to `macrobond_financial.common.api.Api.metadata_get_attribute_information`.  
+    Contains information about the requested metadata attributes.
+    &#34;&#34;&#34;
+
     name: str
     &#34;&#34;&#34;The name of the metadata attribute&#34;&#34;&#34;
 
@@ -85,7 +90,19 @@ class TypedDictMetadataAttributeInformation(TypedDict):
 
 
 class MetadataAttributeInformation:
-    &#34;&#34;&#34;Information about a metadata attribute&#34;&#34;&#34;
+    &#34;&#34;&#34;
+    The result of a call to `macrobond_financial.common.api.Api.metadata_get_attribute_information`.  
+    Contains information about the requested metadata attributes.
+    &#34;&#34;&#34;
+
+    name: str
+    description: str
+    comment: Optional[str]
+    value_type: &#34;MetadataAttributeType&#34;
+    uses_value_list: bool
+    can_list_values: bool
+    can_have_multiple_values: bool
+    is_database_entity: bool
 
     def __init__(
         self,
@@ -116,7 +133,7 @@ class MetadataAttributeInformation:
         self.can_list_values = can_list_values
         &#34;&#34;&#34;
         If True then the values of this type of
-        metadata can be listen using the ListAllValues function
+        metadata can be listed by calling `macrobond_financial.common.api.Api.metadata_list_values`
         &#34;&#34;&#34;
 
         self.can_have_multiple_values = can_have_multiple_values
@@ -128,9 +145,11 @@ class MetadataAttributeInformation:
         &#34;&#34;&#34;
 
     def to_dict(self) -&gt; TypedDictMetadataAttributeInformation:
+        &#34;&#34;&#34;The information represented as a dictionary&#34;&#34;&#34;
         return cast(TypedDictMetadataAttributeInformation, vars(self))
 
     def to_pd_data_frame(self) -&gt; &#34;DataFrame&#34;:
+        &#34;&#34;&#34;The information represented as a Pandas DataFrame&#34;&#34;&#34;
         pandas = _get_pandas()
         return pandas.DataFrame([self.to_dict()])
 
@@ -177,13 +196,26 @@ class MetadataAttributeInformation:
 <span>(</span><span>name: str, description: str, comment: Optional[str], value_type: MetadataAttributeType, uses_value_list: bool, can_list_values: bool, can_have_multiple_values: bool, is_database_entity: bool)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Information about a metadata attribute</p></div>
+<div class="desc"><p>The result of a call to <code><a title="macrobond_financial.common.api.Api.metadata_get_attribute_information" href="../api.html#macrobond_financial.common.api.Api.metadata_get_attribute_information">Api.metadata_get_attribute_information()</a></code>.<br>
+Contains information about the requested metadata attributes.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class MetadataAttributeInformation:
-    &#34;&#34;&#34;Information about a metadata attribute&#34;&#34;&#34;
+    &#34;&#34;&#34;
+    The result of a call to `macrobond_financial.common.api.Api.metadata_get_attribute_information`.  
+    Contains information about the requested metadata attributes.
+    &#34;&#34;&#34;
+
+    name: str
+    description: str
+    comment: Optional[str]
+    value_type: &#34;MetadataAttributeType&#34;
+    uses_value_list: bool
+    can_list_values: bool
+    can_have_multiple_values: bool
+    is_database_entity: bool
 
     def __init__(
         self,
@@ -214,7 +246,7 @@ class MetadataAttributeInformation:
         self.can_list_values = can_list_values
         &#34;&#34;&#34;
         If True then the values of this type of
-        metadata can be listen using the ListAllValues function
+        metadata can be listed by calling `macrobond_financial.common.api.Api.metadata_list_values`
         &#34;&#34;&#34;
 
         self.can_have_multiple_values = can_have_multiple_values
@@ -226,9 +258,11 @@ class MetadataAttributeInformation:
         &#34;&#34;&#34;
 
     def to_dict(self) -&gt; TypedDictMetadataAttributeInformation:
+        &#34;&#34;&#34;The information represented as a dictionary&#34;&#34;&#34;
         return cast(TypedDictMetadataAttributeInformation, vars(self))
 
     def to_pd_data_frame(self) -&gt; &#34;DataFrame&#34;:
+        &#34;&#34;&#34;The information represented as a Pandas DataFrame&#34;&#34;&#34;
         pandas = _get_pandas()
         return pandas.DataFrame([self.to_dict()])
 
@@ -262,36 +296,36 @@ class MetadataAttributeInformation:
 </details>
 <h3>Instance variables</h3>
 <dl>
-<dt id="macrobond_financial.common.types.metadata_attribute_information.MetadataAttributeInformation.can_have_multiple_values"><code class="name">var <span class="ident">can_have_multiple_values</span></code></dt>
+<dt id="macrobond_financial.common.types.metadata_attribute_information.MetadataAttributeInformation.can_have_multiple_values"><code class="name">var <span class="ident">can_have_multiple_values</span> : bool</code></dt>
 <dd>
 <div class="desc"><p>If True then this type of metadata can have multiple values in a metadata collection</p></div>
 </dd>
-<dt id="macrobond_financial.common.types.metadata_attribute_information.MetadataAttributeInformation.can_list_values"><code class="name">var <span class="ident">can_list_values</span></code></dt>
+<dt id="macrobond_financial.common.types.metadata_attribute_information.MetadataAttributeInformation.can_list_values"><code class="name">var <span class="ident">can_list_values</span> : bool</code></dt>
 <dd>
 <div class="desc"><p>If True then the values of this type of
-metadata can be listen using the ListAllValues function</p></div>
+metadata can be listed by calling <code><a title="macrobond_financial.common.api.Api.metadata_list_values" href="../api.html#macrobond_financial.common.api.Api.metadata_list_values">Api.metadata_list_values()</a></code></p></div>
 </dd>
-<dt id="macrobond_financial.common.types.metadata_attribute_information.MetadataAttributeInformation.comment"><code class="name">var <span class="ident">comment</span></code></dt>
+<dt id="macrobond_financial.common.types.metadata_attribute_information.MetadataAttributeInformation.comment"><code class="name">var <span class="ident">comment</span> : Optional[str]</code></dt>
 <dd>
 <div class="desc"><p>The comment of the metadata attribute</p></div>
 </dd>
-<dt id="macrobond_financial.common.types.metadata_attribute_information.MetadataAttributeInformation.description"><code class="name">var <span class="ident">description</span></code></dt>
+<dt id="macrobond_financial.common.types.metadata_attribute_information.MetadataAttributeInformation.description"><code class="name">var <span class="ident">description</span> : str</code></dt>
 <dd>
 <div class="desc"><p>The description of the metadata attribute</p></div>
 </dd>
-<dt id="macrobond_financial.common.types.metadata_attribute_information.MetadataAttributeInformation.is_database_entity"><code class="name">var <span class="ident">is_database_entity</span></code></dt>
+<dt id="macrobond_financial.common.types.metadata_attribute_information.MetadataAttributeInformation.is_database_entity"><code class="name">var <span class="ident">is_database_entity</span> : bool</code></dt>
 <dd>
 <div class="desc"><p>If True then this type of metadata is an entity that can be retrieved from the database</p></div>
 </dd>
-<dt id="macrobond_financial.common.types.metadata_attribute_information.MetadataAttributeInformation.name"><code class="name">var <span class="ident">name</span></code></dt>
+<dt id="macrobond_financial.common.types.metadata_attribute_information.MetadataAttributeInformation.name"><code class="name">var <span class="ident">name</span> : str</code></dt>
 <dd>
 <div class="desc"><p>The name of the metadata attribute</p></div>
 </dd>
-<dt id="macrobond_financial.common.types.metadata_attribute_information.MetadataAttributeInformation.uses_value_list"><code class="name">var <span class="ident">uses_value_list</span></code></dt>
+<dt id="macrobond_financial.common.types.metadata_attribute_information.MetadataAttributeInformation.uses_value_list"><code class="name">var <span class="ident">uses_value_list</span> : bool</code></dt>
 <dd>
 <div class="desc"><p>If True, the metadata attribute uses a list of values</p></div>
 </dd>
-<dt id="macrobond_financial.common.types.metadata_attribute_information.MetadataAttributeInformation.value_type"><code class="name">var <span class="ident">value_type</span></code></dt>
+<dt id="macrobond_financial.common.types.metadata_attribute_information.MetadataAttributeInformation.value_type"><code class="name">var <span class="ident">value_type</span> : MetadataAttributeType</code></dt>
 <dd>
 <div class="desc"><p>The value type of the metadata attribute</p></div>
 </dd>
@@ -302,12 +336,13 @@ metadata can be listen using the ListAllValues function</p></div>
 <span>def <span class="ident">to_dict</span></span>(<span>self) ‑> <a title="macrobond_financial.common.types.metadata_attribute_information.TypedDictMetadataAttributeInformation" href="#macrobond_financial.common.types.metadata_attribute_information.TypedDictMetadataAttributeInformation">TypedDictMetadataAttributeInformation</a></span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>The information represented as a dictionary</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def to_dict(self) -&gt; TypedDictMetadataAttributeInformation:
+    &#34;&#34;&#34;The information represented as a dictionary&#34;&#34;&#34;
     return cast(TypedDictMetadataAttributeInformation, vars(self))</code></pre>
 </details>
 </dd>
@@ -315,12 +350,13 @@ metadata can be listen using the ListAllValues function</p></div>
 <span>def <span class="ident">to_pd_data_frame</span></span>(<span>self) ‑> DataFrame</span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>The information represented as a Pandas DataFrame</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def to_pd_data_frame(self) -&gt; &#34;DataFrame&#34;:
+    &#34;&#34;&#34;The information represented as a Pandas DataFrame&#34;&#34;&#34;
     pandas = _get_pandas()
     return pandas.DataFrame([self.to_dict()])</code></pre>
 </details>
@@ -332,22 +368,18 @@ metadata can be listen using the ListAllValues function</p></div>
 <span>(</span><span>*args, **kwargs)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>dict() -&gt; new empty dictionary
-dict(mapping) -&gt; new dictionary initialized from a mapping object's
-(key, value) pairs
-dict(iterable) -&gt; new dictionary initialized as if via:
-d = {}
-for k, v in iterable:
-d[k] = v
-dict(**kwargs) -&gt; new dictionary initialized with the name=value pairs
-in the keyword argument list.
-For example:
-dict(one=1, two=2)</p></div>
+<div class="desc"><p>The result of a call to <code><a title="macrobond_financial.common.api.Api.metadata_get_attribute_information" href="../api.html#macrobond_financial.common.api.Api.metadata_get_attribute_information">Api.metadata_get_attribute_information()</a></code>.<br>
+Contains information about the requested metadata attributes.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class TypedDictMetadataAttributeInformation(TypedDict):
+    &#34;&#34;&#34;
+    The result of a call to `macrobond_financial.common.api.Api.metadata_get_attribute_information`.  
+    Contains information about the requested metadata attributes.
+    &#34;&#34;&#34;
+
     name: str
     &#34;&#34;&#34;The name of the metadata attribute&#34;&#34;&#34;
 

@@ -60,6 +60,11 @@ class UnifiedSeriesDict(TypedDict):
 class UnifiedSerie:
     &#34;&#34;&#34;Interface for a Macrobond time series.&#34;&#34;&#34;
 
+    name: str
+    error_message: str
+    metadata: Dict[str, Any]
+    values: Tuple[Optional[float], ...]
+
     @property
     def is_error(self) -&gt; bool:
         return self.error_message != &#34;&#34;
@@ -72,9 +77,16 @@ class UnifiedSerie:
         values: Tuple[Optional[float], ...],
     ) -&gt; None:
         self.name = name
+        &#34;&#34;&#34;name&#34;&#34;&#34;
+
         self.error_message = error_message
+        &#34;&#34;&#34;error_message&#34;&#34;&#34;
+
         self.metadata = metadata
+        &#34;&#34;&#34;metadata&#34;&#34;&#34;
+
         self.values = values
+        &#34;&#34;&#34;values&#34;&#34;&#34;
 
     def to_dict(self) -&gt; Dict[str, Any]:
         if self.is_error:
@@ -104,6 +116,9 @@ class UnifiedSerie:
 
 
 class UnifiedSeries(List[UnifiedSerie]):
+
+    dates: Tuple[datetime, ...]
+
     @property
     def is_error(self) -&gt; bool:
         return any(self)
@@ -119,6 +134,7 @@ class UnifiedSeries(List[UnifiedSerie]):
     ) -&gt; None:
         super().__init__(series)
         self.dates = dates
+        &#34;&#34;&#34;dates&#34;&#34;&#34;
 
     def to_dict(self) -&gt; UnifiedSeriesDict:
         return {
@@ -160,6 +176,11 @@ class UnifiedSeries(List[UnifiedSerie]):
 <pre><code class="python">class UnifiedSerie:
     &#34;&#34;&#34;Interface for a Macrobond time series.&#34;&#34;&#34;
 
+    name: str
+    error_message: str
+    metadata: Dict[str, Any]
+    values: Tuple[Optional[float], ...]
+
     @property
     def is_error(self) -&gt; bool:
         return self.error_message != &#34;&#34;
@@ -172,9 +193,16 @@ class UnifiedSeries(List[UnifiedSerie]):
         values: Tuple[Optional[float], ...],
     ) -&gt; None:
         self.name = name
+        &#34;&#34;&#34;name&#34;&#34;&#34;
+
         self.error_message = error_message
+        &#34;&#34;&#34;error_message&#34;&#34;&#34;
+
         self.metadata = metadata
+        &#34;&#34;&#34;metadata&#34;&#34;&#34;
+
         self.values = values
+        &#34;&#34;&#34;values&#34;&#34;&#34;
 
     def to_dict(self) -&gt; Dict[str, Any]:
         if self.is_error:
@@ -204,6 +232,10 @@ class UnifiedSeries(List[UnifiedSerie]):
 </details>
 <h3>Instance variables</h3>
 <dl>
+<dt id="macrobond_financial.common.types.unified_series.UnifiedSerie.error_message"><code class="name">var <span class="ident">error_message</span> : str</code></dt>
+<dd>
+<div class="desc"><p>error_message</p></div>
+</dd>
 <dt id="macrobond_financial.common.types.unified_series.UnifiedSerie.is_error"><code class="name">var <span class="ident">is_error</span> : bool</code></dt>
 <dd>
 <div class="desc"></div>
@@ -215,6 +247,18 @@ class UnifiedSeries(List[UnifiedSerie]):
 def is_error(self) -&gt; bool:
     return self.error_message != &#34;&#34;</code></pre>
 </details>
+</dd>
+<dt id="macrobond_financial.common.types.unified_series.UnifiedSerie.metadata"><code class="name">var <span class="ident">metadata</span> : Dict[str, Any]</code></dt>
+<dd>
+<div class="desc"><p>metadata</p></div>
+</dd>
+<dt id="macrobond_financial.common.types.unified_series.UnifiedSerie.name"><code class="name">var <span class="ident">name</span> : str</code></dt>
+<dd>
+<div class="desc"><p>name</p></div>
+</dd>
+<dt id="macrobond_financial.common.types.unified_series.UnifiedSerie.values"><code class="name">var <span class="ident">values</span> : Tuple[Optional[float], ...]</code></dt>
+<dd>
+<div class="desc"><p>values</p></div>
 </dd>
 </dl>
 <h3>Methods</h3>
@@ -258,6 +302,9 @@ The argument must be an iterable if specified.</p></div>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class UnifiedSeries(List[UnifiedSerie]):
+
+    dates: Tuple[datetime, ...]
+
     @property
     def is_error(self) -&gt; bool:
         return any(self)
@@ -273,6 +320,7 @@ The argument must be an iterable if specified.</p></div>
     ) -&gt; None:
         super().__init__(series)
         self.dates = dates
+        &#34;&#34;&#34;dates&#34;&#34;&#34;
 
     def to_dict(self) -&gt; UnifiedSeriesDict:
         return {
@@ -298,6 +346,10 @@ The argument must be an iterable if specified.</p></div>
 </ul>
 <h3>Instance variables</h3>
 <dl>
+<dt id="macrobond_financial.common.types.unified_series.UnifiedSeries.dates"><code class="name">var <span class="ident">dates</span> : Tuple[datetime.datetime, ...]</code></dt>
+<dd>
+<div class="desc"><p>dates</p></div>
+</dd>
 <dt id="macrobond_financial.common.types.unified_series.UnifiedSeries.is_error"><code class="name">var <span class="ident">is_error</span> : bool</code></dt>
 <dd>
 <div class="desc"></div>
@@ -428,14 +480,19 @@ dict(one=1, two=2)</p></div>
 <ul>
 <li>
 <h4><code><a title="macrobond_financial.common.types.unified_series.UnifiedSerie" href="#macrobond_financial.common.types.unified_series.UnifiedSerie">UnifiedSerie</a></code></h4>
-<ul class="">
+<ul class="two-column">
+<li><code><a title="macrobond_financial.common.types.unified_series.UnifiedSerie.error_message" href="#macrobond_financial.common.types.unified_series.UnifiedSerie.error_message">error_message</a></code></li>
 <li><code><a title="macrobond_financial.common.types.unified_series.UnifiedSerie.is_error" href="#macrobond_financial.common.types.unified_series.UnifiedSerie.is_error">is_error</a></code></li>
+<li><code><a title="macrobond_financial.common.types.unified_series.UnifiedSerie.metadata" href="#macrobond_financial.common.types.unified_series.UnifiedSerie.metadata">metadata</a></code></li>
+<li><code><a title="macrobond_financial.common.types.unified_series.UnifiedSerie.name" href="#macrobond_financial.common.types.unified_series.UnifiedSerie.name">name</a></code></li>
 <li><code><a title="macrobond_financial.common.types.unified_series.UnifiedSerie.to_dict" href="#macrobond_financial.common.types.unified_series.UnifiedSerie.to_dict">to_dict</a></code></li>
+<li><code><a title="macrobond_financial.common.types.unified_series.UnifiedSerie.values" href="#macrobond_financial.common.types.unified_series.UnifiedSerie.values">values</a></code></li>
 </ul>
 </li>
 <li>
 <h4><code><a title="macrobond_financial.common.types.unified_series.UnifiedSeries" href="#macrobond_financial.common.types.unified_series.UnifiedSeries">UnifiedSeries</a></code></h4>
-<ul class="">
+<ul class="two-column">
+<li><code><a title="macrobond_financial.common.types.unified_series.UnifiedSeries.dates" href="#macrobond_financial.common.types.unified_series.UnifiedSeries.dates">dates</a></code></li>
 <li><code><a title="macrobond_financial.common.types.unified_series.UnifiedSeries.get_errors" href="#macrobond_financial.common.types.unified_series.UnifiedSeries.get_errors">get_errors</a></code></li>
 <li><code><a title="macrobond_financial.common.types.unified_series.UnifiedSeries.is_error" href="#macrobond_financial.common.types.unified_series.UnifiedSeries.is_error">is_error</a></code></li>
 <li><code><a title="macrobond_financial.common.types.unified_series.UnifiedSeries.series" href="#macrobond_financial.common.types.unified_series.UnifiedSeries.series">series</a></code></li>

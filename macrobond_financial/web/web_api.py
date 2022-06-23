@@ -121,8 +121,7 @@ class WebApi(Api):
     def metadata_list_values(self, name: str) -> MetadataValueInformation:
         values = self.session.metadata.list_attribute_values(name)
         return MetadataValueInformation(
-            name,
-            tuple(
+            list(
                 map(
                     lambda x: MetadataValueInformationItem(
                         name, x["value"], x["description"], x.get("comment")
@@ -130,6 +129,7 @@ class WebApi(Api):
                     values,
                 )
             ),
+            name,
         )
 
     def metadata_get_attribute_information(self, *name: str) -> List[MetadataAttributeInformation]:

@@ -17,6 +17,10 @@ EntityColumns = List[EntityColumnsLiterals]
 class Entity:
     """Interface for a database Macrobond entity."""
 
+    name: str
+    error_message: str
+    metadata: Dict[str, Any]
+
     @property
     def is_error(self) -> bool:
         return self.error_message != ""
@@ -52,8 +56,13 @@ class Entity:
         metadata: Optional[Dict[str, Any]],
     ) -> None:
         self.name = name
+        """name"""
+
         self.error_message = error_message if error_message else ""
-        self.metadata = metadata = metadata if metadata else {}
+        """error_message"""
+
+        self.metadata = metadata if metadata else {}
+        """metadata"""
 
     def _add_metadata(self, destination: Dict[str, Any]) -> None:
         for key in self.metadata.keys():

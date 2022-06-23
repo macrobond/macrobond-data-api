@@ -41,6 +41,8 @@ class SearchResult(List[Dict[str, Any]]):
     The result of a entity search operation.
     &#34;&#34;&#34;
 
+    is_truncated: bool
+
     def __init__(self, entities: Sequence[Dict[str, Any]], is_truncated: bool) -&gt; None:
         super().__init__(entities)
         self.is_truncated = is_truncated
@@ -93,6 +95,8 @@ class SearchResult(List[Dict[str, Any]]):
     The result of a entity search operation.
     &#34;&#34;&#34;
 
+    is_truncated: bool
+
     def __init__(self, entities: Sequence[Dict[str, Any]], is_truncated: bool) -&gt; None:
         super().__init__(entities)
         self.is_truncated = is_truncated
@@ -142,7 +146,7 @@ def entities(self) -&gt; List[Dict[str, Any]]:
     return list(self)</code></pre>
 </details>
 </dd>
-<dt id="macrobond_financial.common.types.search_result.SearchResult.is_truncated"><code class="name">var <span class="ident">is_truncated</span></code></dt>
+<dt id="macrobond_financial.common.types.search_result.SearchResult.is_truncated"><code class="name">var <span class="ident">is_truncated</span> : bool</code></dt>
 <dd>
 <div class="desc"><p>Indicates whether the search result was too long and truncated.</p></div>
 </dd>

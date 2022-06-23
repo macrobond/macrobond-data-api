@@ -12,6 +12,8 @@ if TYPE_CHECKING:  # pragma: no cover
 
 
 class GetAllVintageSeriesResult(List[Series]):
+    series_name: str
+
     def __init__(
         self,
         series: Sequence[Series],
@@ -19,6 +21,7 @@ class GetAllVintageSeriesResult(List[Series]):
     ) -> None:
         super().__init__(series)
         self.series_name = series_name
+        """series_name"""
 
     @property
     def series(self) -> List[Series]:

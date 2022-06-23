@@ -20,6 +20,9 @@ if TYPE_CHECKING:  # pragma: no cover
 class Series(Entity):
     """Interface for a Macrobond time series."""
 
+    values: Tuple[Optional[float], ...]
+    dates: Tuple[datetime, ...]
+
     def __init__(
         self,
         name: str,
@@ -29,9 +32,15 @@ class Series(Entity):
         dates: Optional[Tuple[datetime, ...]],
     ) -> None:
         super().__init__(name, error_message, metadata)
+
+        self.values = ...  # type: ignore
+        """values"""
+        self.dates = ...  # type: ignore
+        """dates"""
+
         if values is None:
-            self.values: Tuple[Optional[float], ...] = tuple()
-            self.dates: Tuple[datetime, ...] = tuple()
+            self.values = tuple()
+            self.dates = tuple()
         else:
             self.values = values
             self.dates = cast(Tuple[datetime, ...], dates)

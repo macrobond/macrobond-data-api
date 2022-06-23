@@ -45,6 +45,10 @@ SeriesObservationHistoryColumns = List[SeriesObservationHistoryColumnsLiterals]
 class SeriesObservationHistory:
     &#34;&#34;&#34;The history of changes of an observation&#34;&#34;&#34;
 
+    observation_date: datetime
+    values: Tuple[Optional[float], ...]
+    time_stamps: Tuple[Optional[datetime], ...]
+
     def __init__(
         self,
         observation_date: datetime,
@@ -118,6 +122,10 @@ class SeriesObservationHistory:
 <pre><code class="python">class SeriesObservationHistory:
     &#34;&#34;&#34;The history of changes of an observation&#34;&#34;&#34;
 
+    observation_date: datetime
+    values: Tuple[Optional[float], ...]
+    time_stamps: Tuple[Optional[datetime], ...]
+
     def __init__(
         self,
         observation_date: datetime,
@@ -170,16 +178,16 @@ class SeriesObservationHistory:
 </details>
 <h3>Instance variables</h3>
 <dl>
-<dt id="macrobond_financial.common.types.series_observation_history.SeriesObservationHistory.observation_date"><code class="name">var <span class="ident">observation_date</span></code></dt>
+<dt id="macrobond_financial.common.types.series_observation_history.SeriesObservationHistory.observation_date"><code class="name">var <span class="ident">observation_date</span> : datetime.datetime</code></dt>
 <dd>
 <div class="desc"><p>The date of the observation</p></div>
 </dd>
-<dt id="macrobond_financial.common.types.series_observation_history.SeriesObservationHistory.time_stamps"><code class="name">var <span class="ident">time_stamps</span></code></dt>
+<dt id="macrobond_financial.common.types.series_observation_history.SeriesObservationHistory.time_stamps"><code class="name">var <span class="ident">time_stamps</span> : Tuple[Optional[datetime.datetime], ...]</code></dt>
 <dd>
 <div class="desc"><p>A tuple of timestamps of when the historical values were recorded.
 The first timestamp may be null if the time of the original is unknown.</p></div>
 </dd>
-<dt id="macrobond_financial.common.types.series_observation_history.SeriesObservationHistory.values"><code class="name">var <span class="ident">values</span></code></dt>
+<dt id="macrobond_financial.common.types.series_observation_history.SeriesObservationHistory.values"><code class="name">var <span class="ident">values</span> : Tuple[Optional[float], ...]</code></dt>
 <dd>
 <div class="desc"><p>The historical values of the observation or an empty tuple if
 there are no recorded values for the specified date.</p></div>

@@ -30,7 +30,7 @@ class TypedDictMetadataAttributeInformation(TypedDict):
     The result of a call to `macrobond_financial.common.api.Api.metadata_get_attribute_information`.  
     Contains information about the requested metadata attributes.
     """
-    
+
     name: str
     """The name of the metadata attribute"""
 
@@ -66,6 +66,15 @@ class MetadataAttributeInformation:
     The result of a call to `macrobond_financial.common.api.Api.metadata_get_attribute_information`.  
     Contains information about the requested metadata attributes.
     """
+
+    name: str
+    description: str
+    comment: Optional[str]
+    value_type: "MetadataAttributeType"
+    uses_value_list: bool
+    can_list_values: bool
+    can_have_multiple_values: bool
+    is_database_entity: bool
 
     def __init__(
         self,

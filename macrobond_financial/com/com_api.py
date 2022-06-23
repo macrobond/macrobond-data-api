@@ -117,13 +117,13 @@ class ComApi(Api):
         values = info.ListAllValues()
 
         return MetadataValueInformation(
-            name,
-            tuple(
+            list(
                 map(
                     lambda x: MetadataValueInformationItem(name, x.Value, x.Description, x.Comment),
                     values,
                 )
             ),
+            name,
         )
 
     def metadata_get_attribute_information(self, *names: str) -> List[MetadataAttributeInformation]:

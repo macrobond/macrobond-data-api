@@ -35,26 +35,40 @@ __pdoc__ = {
 
 
 class EntitieErrorInfo:
+
+    name: str
+    error_message: str
+
     def __init__(self, name: str, error_message: str):
         self.name = name
+        &#34;&#34;&#34;name&#34;&#34;&#34;
+
         self.error_message = error_message
+        &#34;&#34;&#34;error_message&#34;&#34;&#34;
 
     def __repr__(self):
         return f&#34;name: {self.name} error_message: {self.error_message}&#34;
 
 
 class GetEntitiesError(Exception):
+
+    entities: List[EntitieErrorInfo]
+    message: str
+
     def __init__(
         self,
         entities: Union[List[EntitieErrorInfo], str, Dict[str, str]],
         error_message: str = None,
     ):
-        if isinstance(entities, list):
-            self.entities = entities
-        elif isinstance(entities, dict):
-            self.entities = list(map(EntitieErrorInfo, entities.keys(), entities.values()))
-        else:
-            self.entities = [EntitieErrorInfo(entities, cast(str, error_message))]
+        def get_entities() -&gt; List[EntitieErrorInfo]:
+            if isinstance(entities, list):
+                return entities
+            if isinstance(entities, dict):
+                return list(map(EntitieErrorInfo, entities.keys(), entities.values()))
+            return [EntitieErrorInfo(entities, cast(str, error_message))]
+
+        self.entities = get_entities()
+        &#34;&#34;&#34;entities&#34;&#34;&#34;
 
         self.message = &#34;failed to retrieve:\n&#34; + (
             &#34;\n&#34;.join(
@@ -64,6 +78,8 @@ class GetEntitiesError(Exception):
                 )
             )
         )
+        &#34;&#34;&#34;message&#34;&#34;&#34;
+
         super().__init__(self.message)
 
     @classmethod
@@ -111,13 +127,31 @@ class GetEntitiesError(Exception):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class EntitieErrorInfo:
+
+    name: str
+    error_message: str
+
     def __init__(self, name: str, error_message: str):
         self.name = name
+        &#34;&#34;&#34;name&#34;&#34;&#34;
+
         self.error_message = error_message
+        &#34;&#34;&#34;error_message&#34;&#34;&#34;
 
     def __repr__(self):
         return f&#34;name: {self.name} error_message: {self.error_message}&#34;</code></pre>
 </details>
+<h3>Instance variables</h3>
+<dl>
+<dt id="macrobond_financial.common.types.get_entitie_error.EntitieErrorInfo.error_message"><code class="name">var <span class="ident">error_message</span> : str</code></dt>
+<dd>
+<div class="desc"><p>error_message</p></div>
+</dd>
+<dt id="macrobond_financial.common.types.get_entitie_error.EntitieErrorInfo.name"><code class="name">var <span class="ident">name</span> : str</code></dt>
+<dd>
+<div class="desc"><p>name</p></div>
+</dd>
+</dl>
 </dd>
 <dt id="macrobond_financial.common.types.get_entitie_error.GetEntitiesError"><code class="flex name class">
 <span>class <span class="ident">GetEntitiesError</span></span>
@@ -129,17 +163,24 @@ class GetEntitiesError(Exception):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class GetEntitiesError(Exception):
+
+    entities: List[EntitieErrorInfo]
+    message: str
+
     def __init__(
         self,
         entities: Union[List[EntitieErrorInfo], str, Dict[str, str]],
         error_message: str = None,
     ):
-        if isinstance(entities, list):
-            self.entities = entities
-        elif isinstance(entities, dict):
-            self.entities = list(map(EntitieErrorInfo, entities.keys(), entities.values()))
-        else:
-            self.entities = [EntitieErrorInfo(entities, cast(str, error_message))]
+        def get_entities() -&gt; List[EntitieErrorInfo]:
+            if isinstance(entities, list):
+                return entities
+            if isinstance(entities, dict):
+                return list(map(EntitieErrorInfo, entities.keys(), entities.values()))
+            return [EntitieErrorInfo(entities, cast(str, error_message))]
+
+        self.entities = get_entities()
+        &#34;&#34;&#34;entities&#34;&#34;&#34;
 
         self.message = &#34;failed to retrieve:\n&#34; + (
             &#34;\n&#34;.join(
@@ -149,6 +190,8 @@ class GetEntitiesError(Exception):
                 )
             )
         )
+        &#34;&#34;&#34;message&#34;&#34;&#34;
+
         super().__init__(self.message)
 
     @classmethod
@@ -219,6 +262,17 @@ def raise_if(
 </details>
 </dd>
 </dl>
+<h3>Instance variables</h3>
+<dl>
+<dt id="macrobond_financial.common.types.get_entitie_error.GetEntitiesError.entities"><code class="name">var <span class="ident">entities</span> : List[<a title="macrobond_financial.common.types.get_entitie_error.EntitieErrorInfo" href="#macrobond_financial.common.types.get_entitie_error.EntitieErrorInfo">EntitieErrorInfo</a>]</code></dt>
+<dd>
+<div class="desc"><p>entities</p></div>
+</dd>
+<dt id="macrobond_financial.common.types.get_entitie_error.GetEntitiesError.message"><code class="name">var <span class="ident">message</span> : str</code></dt>
+<dd>
+<div class="desc"><p>message</p></div>
+</dd>
+</dl>
 </dd>
 </dl>
 </section>
@@ -238,10 +292,16 @@ def raise_if(
 <ul>
 <li>
 <h4><code><a title="macrobond_financial.common.types.get_entitie_error.EntitieErrorInfo" href="#macrobond_financial.common.types.get_entitie_error.EntitieErrorInfo">EntitieErrorInfo</a></code></h4>
+<ul class="">
+<li><code><a title="macrobond_financial.common.types.get_entitie_error.EntitieErrorInfo.error_message" href="#macrobond_financial.common.types.get_entitie_error.EntitieErrorInfo.error_message">error_message</a></code></li>
+<li><code><a title="macrobond_financial.common.types.get_entitie_error.EntitieErrorInfo.name" href="#macrobond_financial.common.types.get_entitie_error.EntitieErrorInfo.name">name</a></code></li>
+</ul>
 </li>
 <li>
 <h4><code><a title="macrobond_financial.common.types.get_entitie_error.GetEntitiesError" href="#macrobond_financial.common.types.get_entitie_error.GetEntitiesError">GetEntitiesError</a></code></h4>
 <ul class="">
+<li><code><a title="macrobond_financial.common.types.get_entitie_error.GetEntitiesError.entities" href="#macrobond_financial.common.types.get_entitie_error.GetEntitiesError.entities">entities</a></code></li>
+<li><code><a title="macrobond_financial.common.types.get_entitie_error.GetEntitiesError.message" href="#macrobond_financial.common.types.get_entitie_error.GetEntitiesError.message">message</a></code></li>
 <li><code><a title="macrobond_financial.common.types.get_entitie_error.GetEntitiesError.raise_if" href="#macrobond_financial.common.types.get_entitie_error.GetEntitiesError.raise_if">raise_if</a></code></li>
 </ul>
 </li>

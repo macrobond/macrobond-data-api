@@ -34,9 +34,6 @@ from typing import (
     List,
     TYPE_CHECKING,
     Sequence,
-    Tuple,
-    Union,
-    overload,
     cast,
 )
 from typing_extensions import TypedDict, Literal
@@ -51,7 +48,11 @@ if TYPE_CHECKING:  # pragma: no cover
 MetadataValueInformationColumns = List[Literal[&#34;attribute_name&#34;, &#34;value&#34;, &#34;description&#34;, &#34;comment&#34;]]
 
 
+# TODO: Perhaps this should be called TypedDictMetadataValueInformationItem?
 class TypedDictMetadataValueInformation(TypedDict):
+    &#34;&#34;&#34;
+    Contains information about one metadata attribute value.
+    &#34;&#34;&#34;
 
     attribute_name: str
     &#34;&#34;&#34;The name of the metadata attribute&#34;&#34;&#34;
@@ -67,6 +68,15 @@ class TypedDictMetadataValueInformation(TypedDict):
 
 
 class MetadataValueInformationItem:
+    &#34;&#34;&#34;
+    Contains information about one metadata attribute value.
+    &#34;&#34;&#34;
+
+    attribute_name: str
+    value: Any
+    description: str
+    comment: Optional[str]
+
     def __init__(
         self, attribute_name: str, value: Any, description: str, comment: Optional[str]
     ) -&gt; None:
@@ -83,16 +93,19 @@ class MetadataValueInformationItem:
         &#34;&#34;&#34;The comment of the metadata value&#34;&#34;&#34;
 
     def to_pd_data_frame(self) -&gt; &#34;DataFrame&#34;:
+        &#34;&#34;&#34;The information represented as a Pandas DataFrame&#34;&#34;&#34;
         pandas = _get_pandas()
         return pandas.DataFrame([self.to_dict()])
 
     def to_dict(self) -&gt; TypedDictMetadataValueInformation:
+        &#34;&#34;&#34;The information represented as a dictionary&#34;&#34;&#34;
         return cast(TypedDictMetadataValueInformation, vars(self))
 
     def __repr__(self):
         return (
             f&#34;MetadataValueInformationItem attribute_name: {self.attribute_name},&#34;
-            + f&#34; value: {self.value}&#34;
+            + f&#34; value: {self.value}, &#34;
+            + f&#34; description: {self.description}&#34;
         )
 
     def __eq__(self, other):
@@ -106,42 +119,42 @@ class MetadataValueInformationItem:
         )
 
 
-class MetadataValueInformation(Sequence[MetadataValueInformationItem]):
+class MetadataValueInformation(List[MetadataValueInformationItem]):
+    &#34;&#34;&#34;
+    The result of a call to `macrobond_financial.common.api.Api.metadata_get_value_information`.  
+    Contains information about the requested metadata attribute values.
+    &#34;&#34;&#34;
+
+    attribute_name: str
+
+    @property
+    def entities(self) -&gt; List[MetadataValueInformationItem]:
+        &#34;&#34;&#34;entities&#34;&#34;&#34;
+        return list(self)
+
     def __init__(
         self,
+        items: Sequence[MetadataValueInformationItem],
         attribute_name: str,
-        items: Tuple[MetadataValueInformationItem, ...],
     ) -&gt; None:
+        super().__init__(items)
+
         self.attribute_name = attribute_name
         &#34;&#34;&#34;The name of the metadata attribute&#34;&#34;&#34;
 
-        self.items = items
-
     def to_pd_data_frame(self) -&gt; &#34;DataFrame&#34;:
+        &#34;&#34;&#34;The information represented as a Pandas DataFrame&#34;&#34;&#34;
         pandas = _get_pandas()
         return pandas.DataFrame(self.to_dict())
 
     def to_dict(self) -&gt; List[TypedDictMetadataValueInformation]:
-        return list(map(lambda x: x.to_dict(), self.items))
+        &#34;&#34;&#34;The information represented as a dictionary&#34;&#34;&#34;
+        return list(map(lambda x: x.to_dict(), self))
 
     def __repr__(self):
         return (
             f&#34;MetadataValueInformation of {len(self)} items, attribute_name: {self.attribute_name}&#34;
-        )
-
-    @overload
-    def __getitem__(self, idx: int) -&gt; MetadataValueInformationItem:
-        ...
-
-    @overload
-    def __getitem__(self, _slice: slice) -&gt; Sequence[MetadataValueInformationItem]:
-        ...
-
-    def __getitem__(self, idx_or_slice: Union[int, slice]):
-        return self.items.__getitem__(idx_or_slice)
-
-    def __len__(self) -&gt; int:
-        return len(self.items)</code></pre>
+        )</code></pre>
 </details>
 </section>
 <section>
@@ -155,68 +168,75 @@ class MetadataValueInformation(Sequence[MetadataValueInformationItem]):
 <dl>
 <dt id="macrobond_financial.common.types.metadata_value_information.MetadataValueInformation"><code class="flex name class">
 <span>class <span class="ident">MetadataValueInformation</span></span>
-<span>(</span><span>attribute_name: str, items: Tuple[<a title="macrobond_financial.common.types.metadata_value_information.MetadataValueInformationItem" href="#macrobond_financial.common.types.metadata_value_information.MetadataValueInformationItem">MetadataValueInformationItem</a>, ...])</span>
+<span>(</span><span>items: Sequence[<a title="macrobond_financial.common.types.metadata_value_information.MetadataValueInformationItem" href="#macrobond_financial.common.types.metadata_value_information.MetadataValueInformationItem">MetadataValueInformationItem</a>], attribute_name: str)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>All the operations on a read-only sequence.</p>
-<p>Concrete subclasses must override <strong>new</strong> or <strong>init</strong>,
-<strong>getitem</strong>, and <strong>len</strong>.</p></div>
+<div class="desc"><p>The result of a call to <code><a title="macrobond_financial.common.api.Api.metadata_get_value_information" href="../api.html#macrobond_financial.common.api.Api.metadata_get_value_information">Api.metadata_get_value_information()</a></code>.<br>
+Contains information about the requested metadata attribute values.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class MetadataValueInformation(Sequence[MetadataValueInformationItem]):
+<pre><code class="python">class MetadataValueInformation(List[MetadataValueInformationItem]):
+    &#34;&#34;&#34;
+    The result of a call to `macrobond_financial.common.api.Api.metadata_get_value_information`.  
+    Contains information about the requested metadata attribute values.
+    &#34;&#34;&#34;
+
+    attribute_name: str
+
+    @property
+    def entities(self) -&gt; List[MetadataValueInformationItem]:
+        &#34;&#34;&#34;entities&#34;&#34;&#34;
+        return list(self)
+
     def __init__(
         self,
+        items: Sequence[MetadataValueInformationItem],
         attribute_name: str,
-        items: Tuple[MetadataValueInformationItem, ...],
     ) -&gt; None:
+        super().__init__(items)
+
         self.attribute_name = attribute_name
         &#34;&#34;&#34;The name of the metadata attribute&#34;&#34;&#34;
 
-        self.items = items
-
     def to_pd_data_frame(self) -&gt; &#34;DataFrame&#34;:
+        &#34;&#34;&#34;The information represented as a Pandas DataFrame&#34;&#34;&#34;
         pandas = _get_pandas()
         return pandas.DataFrame(self.to_dict())
 
     def to_dict(self) -&gt; List[TypedDictMetadataValueInformation]:
-        return list(map(lambda x: x.to_dict(), self.items))
+        &#34;&#34;&#34;The information represented as a dictionary&#34;&#34;&#34;
+        return list(map(lambda x: x.to_dict(), self))
 
     def __repr__(self):
         return (
             f&#34;MetadataValueInformation of {len(self)} items, attribute_name: {self.attribute_name}&#34;
-        )
-
-    @overload
-    def __getitem__(self, idx: int) -&gt; MetadataValueInformationItem:
-        ...
-
-    @overload
-    def __getitem__(self, _slice: slice) -&gt; Sequence[MetadataValueInformationItem]:
-        ...
-
-    def __getitem__(self, idx_or_slice: Union[int, slice]):
-        return self.items.__getitem__(idx_or_slice)
-
-    def __len__(self) -&gt; int:
-        return len(self.items)</code></pre>
+        )</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
-<li>collections.abc.Sequence</li>
-<li>collections.abc.Reversible</li>
-<li>collections.abc.Collection</li>
-<li>collections.abc.Sized</li>
-<li>collections.abc.Iterable</li>
-<li>collections.abc.Container</li>
+<li>builtins.list</li>
 <li>typing.Generic</li>
 </ul>
 <h3>Instance variables</h3>
 <dl>
-<dt id="macrobond_financial.common.types.metadata_value_information.MetadataValueInformation.attribute_name"><code class="name">var <span class="ident">attribute_name</span></code></dt>
+<dt id="macrobond_financial.common.types.metadata_value_information.MetadataValueInformation.attribute_name"><code class="name">var <span class="ident">attribute_name</span> : str</code></dt>
 <dd>
 <div class="desc"><p>The name of the metadata attribute</p></div>
+</dd>
+<dt id="macrobond_financial.common.types.metadata_value_information.MetadataValueInformation.entities"><code class="name">var <span class="ident">entities</span> : List[<a title="macrobond_financial.common.types.metadata_value_information.MetadataValueInformationItem" href="#macrobond_financial.common.types.metadata_value_information.MetadataValueInformationItem">MetadataValueInformationItem</a>]</code></dt>
+<dd>
+<div class="desc"><p>entities</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def entities(self) -&gt; List[MetadataValueInformationItem]:
+    &#34;&#34;&#34;entities&#34;&#34;&#34;
+    return list(self)</code></pre>
+</details>
 </dd>
 </dl>
 <h3>Methods</h3>
@@ -225,25 +245,27 @@ class MetadataValueInformation(Sequence[MetadataValueInformationItem]):
 <span>def <span class="ident">to_dict</span></span>(<span>self) ‑> List[<a title="macrobond_financial.common.types.metadata_value_information.TypedDictMetadataValueInformation" href="#macrobond_financial.common.types.metadata_value_information.TypedDictMetadataValueInformation">TypedDictMetadataValueInformation</a>]</span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>The information represented as a dictionary</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def to_dict(self) -&gt; List[TypedDictMetadataValueInformation]:
-    return list(map(lambda x: x.to_dict(), self.items))</code></pre>
+    &#34;&#34;&#34;The information represented as a dictionary&#34;&#34;&#34;
+    return list(map(lambda x: x.to_dict(), self))</code></pre>
 </details>
 </dd>
 <dt id="macrobond_financial.common.types.metadata_value_information.MetadataValueInformation.to_pd_data_frame"><code class="name flex">
 <span>def <span class="ident">to_pd_data_frame</span></span>(<span>self) ‑> DataFrame</span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>The information represented as a Pandas DataFrame</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def to_pd_data_frame(self) -&gt; &#34;DataFrame&#34;:
+    &#34;&#34;&#34;The information represented as a Pandas DataFrame&#34;&#34;&#34;
     pandas = _get_pandas()
     return pandas.DataFrame(self.to_dict())</code></pre>
 </details>
@@ -255,12 +277,21 @@ class MetadataValueInformation(Sequence[MetadataValueInformationItem]):
 <span>(</span><span>attribute_name: str, value: Any, description: str, comment: Optional[str])</span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>Contains information about one metadata attribute value.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class MetadataValueInformationItem:
+    &#34;&#34;&#34;
+    Contains information about one metadata attribute value.
+    &#34;&#34;&#34;
+
+    attribute_name: str
+    value: Any
+    description: str
+    comment: Optional[str]
+
     def __init__(
         self, attribute_name: str, value: Any, description: str, comment: Optional[str]
     ) -&gt; None:
@@ -277,16 +308,19 @@ class MetadataValueInformation(Sequence[MetadataValueInformationItem]):
         &#34;&#34;&#34;The comment of the metadata value&#34;&#34;&#34;
 
     def to_pd_data_frame(self) -&gt; &#34;DataFrame&#34;:
+        &#34;&#34;&#34;The information represented as a Pandas DataFrame&#34;&#34;&#34;
         pandas = _get_pandas()
         return pandas.DataFrame([self.to_dict()])
 
     def to_dict(self) -&gt; TypedDictMetadataValueInformation:
+        &#34;&#34;&#34;The information represented as a dictionary&#34;&#34;&#34;
         return cast(TypedDictMetadataValueInformation, vars(self))
 
     def __repr__(self):
         return (
             f&#34;MetadataValueInformationItem attribute_name: {self.attribute_name},&#34;
-            + f&#34; value: {self.value}&#34;
+            + f&#34; value: {self.value}, &#34;
+            + f&#34; description: {self.description}&#34;
         )
 
     def __eq__(self, other):
@@ -301,19 +335,19 @@ class MetadataValueInformation(Sequence[MetadataValueInformationItem]):
 </details>
 <h3>Instance variables</h3>
 <dl>
-<dt id="macrobond_financial.common.types.metadata_value_information.MetadataValueInformationItem.attribute_name"><code class="name">var <span class="ident">attribute_name</span></code></dt>
+<dt id="macrobond_financial.common.types.metadata_value_information.MetadataValueInformationItem.attribute_name"><code class="name">var <span class="ident">attribute_name</span> : str</code></dt>
 <dd>
 <div class="desc"><p>The name of the metadata attribute</p></div>
 </dd>
-<dt id="macrobond_financial.common.types.metadata_value_information.MetadataValueInformationItem.comment"><code class="name">var <span class="ident">comment</span></code></dt>
+<dt id="macrobond_financial.common.types.metadata_value_information.MetadataValueInformationItem.comment"><code class="name">var <span class="ident">comment</span> : Optional[str]</code></dt>
 <dd>
 <div class="desc"><p>The comment of the metadata value</p></div>
 </dd>
-<dt id="macrobond_financial.common.types.metadata_value_information.MetadataValueInformationItem.description"><code class="name">var <span class="ident">description</span></code></dt>
+<dt id="macrobond_financial.common.types.metadata_value_information.MetadataValueInformationItem.description"><code class="name">var <span class="ident">description</span> : str</code></dt>
 <dd>
 <div class="desc"><p>The description of the metadata value</p></div>
 </dd>
-<dt id="macrobond_financial.common.types.metadata_value_information.MetadataValueInformationItem.value"><code class="name">var <span class="ident">value</span></code></dt>
+<dt id="macrobond_financial.common.types.metadata_value_information.MetadataValueInformationItem.value"><code class="name">var <span class="ident">value</span> : Any</code></dt>
 <dd>
 <div class="desc"><p>The value</p></div>
 </dd>
@@ -324,12 +358,13 @@ class MetadataValueInformation(Sequence[MetadataValueInformationItem]):
 <span>def <span class="ident">to_dict</span></span>(<span>self) ‑> <a title="macrobond_financial.common.types.metadata_value_information.TypedDictMetadataValueInformation" href="#macrobond_financial.common.types.metadata_value_information.TypedDictMetadataValueInformation">TypedDictMetadataValueInformation</a></span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>The information represented as a dictionary</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def to_dict(self) -&gt; TypedDictMetadataValueInformation:
+    &#34;&#34;&#34;The information represented as a dictionary&#34;&#34;&#34;
     return cast(TypedDictMetadataValueInformation, vars(self))</code></pre>
 </details>
 </dd>
@@ -337,12 +372,13 @@ class MetadataValueInformation(Sequence[MetadataValueInformationItem]):
 <span>def <span class="ident">to_pd_data_frame</span></span>(<span>self) ‑> DataFrame</span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>The information represented as a Pandas DataFrame</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def to_pd_data_frame(self) -&gt; &#34;DataFrame&#34;:
+    &#34;&#34;&#34;The information represented as a Pandas DataFrame&#34;&#34;&#34;
     pandas = _get_pandas()
     return pandas.DataFrame([self.to_dict()])</code></pre>
 </details>
@@ -354,22 +390,15 @@ class MetadataValueInformation(Sequence[MetadataValueInformationItem]):
 <span>(</span><span>*args, **kwargs)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>dict() -&gt; new empty dictionary
-dict(mapping) -&gt; new dictionary initialized from a mapping object's
-(key, value) pairs
-dict(iterable) -&gt; new dictionary initialized as if via:
-d = {}
-for k, v in iterable:
-d[k] = v
-dict(**kwargs) -&gt; new dictionary initialized with the name=value pairs
-in the keyword argument list.
-For example:
-dict(one=1, two=2)</p></div>
+<div class="desc"><p>Contains information about one metadata attribute value.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class TypedDictMetadataValueInformation(TypedDict):
+    &#34;&#34;&#34;
+    Contains information about one metadata attribute value.
+    &#34;&#34;&#34;
 
     attribute_name: str
     &#34;&#34;&#34;The name of the metadata attribute&#34;&#34;&#34;
@@ -427,6 +456,7 @@ dict(one=1, two=2)</p></div>
 <h4><code><a title="macrobond_financial.common.types.metadata_value_information.MetadataValueInformation" href="#macrobond_financial.common.types.metadata_value_information.MetadataValueInformation">MetadataValueInformation</a></code></h4>
 <ul class="">
 <li><code><a title="macrobond_financial.common.types.metadata_value_information.MetadataValueInformation.attribute_name" href="#macrobond_financial.common.types.metadata_value_information.MetadataValueInformation.attribute_name">attribute_name</a></code></li>
+<li><code><a title="macrobond_financial.common.types.metadata_value_information.MetadataValueInformation.entities" href="#macrobond_financial.common.types.metadata_value_information.MetadataValueInformation.entities">entities</a></code></li>
 <li><code><a title="macrobond_financial.common.types.metadata_value_information.MetadataValueInformation.to_dict" href="#macrobond_financial.common.types.metadata_value_information.MetadataValueInformation.to_dict">to_dict</a></code></li>
 <li><code><a title="macrobond_financial.common.types.metadata_value_information.MetadataValueInformation.to_pd_data_frame" href="#macrobond_financial.common.types.metadata_value_information.MetadataValueInformation.to_pd_data_frame">to_pd_data_frame</a></code></li>
 </ul>

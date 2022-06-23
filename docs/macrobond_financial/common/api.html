@@ -55,36 +55,35 @@ from .enums import SeriesFrequency, SeriesWeekdays, CalendarMergeMode
 
 class Api(ABC):
     &#34;&#34;&#34;
-    Common API to interact with the Macrobond database.
+    Common API to interact with the Macrobond database.  
+    These methods are implemented for both the Web API and Desktop COM API.
 
 
-    metadata methods:
-        `metadata_list_values`
-        `metadata_get_attribute_information`
-        `metadata_get_value_information`
-        `metadata_list_values`
+    Metadata methods:  
+        `macrobond_financial.common.api.Api.metadata_list_values`  
+        `macrobond_financial.common.api.Api.metadata_get_attribute_information`  
+        `macrobond_financial.common.api.Api.metadata_get_value_information`  
 
 
-    revision methods:
-        `get_revision_info`
-        `get_vintage_series`
-        `get_nth_release`
-        `get_all_vintage_series`
-        get_observation_history. Only available in wep api.
+    Revision methods:  
+        `macrobond_financial.common.api.Api.get_revision_info`  
+        `macrobond_financial.common.api.Api.get_vintage_series`  
+        `macrobond_financial.common.api.Api.get_nth_release`  
+        `macrobond_financial.common.api.Api.get_all_vintage_series`  
+        get_observation_history. Only available in wep api.  
 
 
-    Search methods:
-        `entity_search`
-        `entity_search_multi_filter`
+    Search methods:  
+        `macrobond_financial.common.api.Api.entity_search`  
+        `macrobond_financial.common.api.Api.entity_search_multi_filter`  
 
 
-    Series  methods:
-        `get_one_series`
-        `get_series`
-        `get_one_entity`
-        `get_entities`
-        `get_unified_series`
-
+    Series  methods:  
+        `macrobond_financial.common.api.Api.get_one_series`  
+        `macrobond_financial.common.api.Api.get_series`  
+        `macrobond_financial.common.api.Api.get_one_entity`  
+        `macrobond_financial.common.api.Api.get_entities`  
+        `macrobond_financial.common.api.Api.get_unified_series`  
 
 
     &#34;&#34;&#34;
@@ -110,21 +109,21 @@ class Api(ABC):
 
         Returns
         -------
-        `MetadataValueInformation`
+        `macrobond_financial.common.types.metadata_value_information.MetadataValueInformation`
 
         Examples
         -------
         ```python
         with ComClient() as api: # or WebClient
 
+            # as objects
+            print(api.metadata_list_values(&#34;RateType&#34;))
+
             # as dict
-            print(api.metadata_list_values(&#39;RateType&#39;).list_of_dicts())
+            print(api.metadata_list_values(&#39;RateType&#39;).to_dict())
 
             # as data_frame
-            print(api.metadata_list_values(&#39;RateType&#39;).data_frame())
-
-            # as objects
-            print(api.metadata_list_values(&#39;RateType&#39;).list_of_objects())
+            print(metadata_list_values(&#34;RateType&#34;).to_pd_data_frame())
         ```
         &#34;&#34;&#34;
 
@@ -132,6 +131,31 @@ class Api(ABC):
     def metadata_get_attribute_information(self, *names: str) -&gt; List[MetadataAttributeInformation]:
         &#34;&#34;&#34;
         Get information about metadata attributes.
+
+        Parameters
+        ----------
+        *names : str
+            One or more names of metadata attributes.
+
+        Returns
+        -------
+        `List[macrobond_financial.common.types.metadata_attribute_information.MetadataAttributeInformation]`  
+        The result is in the same order as the attribute names in the request.
+
+        Examples
+        -------
+        ```python
+        with ComClient() as api: # or WebClient
+
+            # as objects
+            print(api.metadata_get_attribute_information(&#34;Region&#34;, &#34;Unit&#34;))
+
+            # as dict
+            print(api.metadata_get_attribute_information(&#34;Region&#34;)[0].to_dict())
+
+            # as data_frame
+            print(api.metadata_get_attribute_information(&#34;Region&#34;)[0].to_pd_data_frame())
+        ```
         &#34;&#34;&#34;
 
     @abstractmethod
@@ -148,7 +172,23 @@ class Api(ABC):
 
         Returns
         -------
-        `List[MetadataValueInformationItem]`
+        `List[macrobond_financial.common.types.metadata_value_information.MetadataValueInformationItem]`  
+        The result is in the same order as the attribute names in the request.
+
+        Examples
+        -------
+        ```python
+        with ComClient() as api: # or WebClient
+
+            # as objects
+            print(api.metadata_get_value_information((&#34;RateType&#34;, &#34;mole&#34;), (&#34;RateType&#34;,&#34;cobe&#34;)))
+
+            # as dict
+            print(api.metadata_get_value_information((&#34;RateType&#34;, &#34;mole&#34;))[0].to_dict())
+
+            # as data_frame
+            print(api.metadata_get_value_information((&#34;RateType&#34;, &#34;mole&#34;))[0].to_pd_data_frame())
+        ```
         &#34;&#34;&#34;
 
     # revision
@@ -454,64 +494,66 @@ class Api(ABC):
 <span>class <span class="ident">Api</span></span>
 </code></dt>
 <dd>
-<div class="desc"><p>Common API to interact with the Macrobond database.</p>
-<p>metadata methods:
-<code>metadata_list_values</code>
-<code>metadata_get_attribute_information</code>
-<code>metadata_get_value_information</code>
-<code>metadata_list_values</code></p>
-<p>revision methods:
-<code>get_revision_info</code>
-<code>get_vintage_series</code>
-<code>get_nth_release</code>
-<code>get_all_vintage_series</code>
-get_observation_history. Only available in wep api.</p>
-<p>Search methods:
-<code>entity_search</code>
-<code>entity_search_multi_filter</code></p>
+<div class="desc"><p>Common API to interact with the Macrobond database.<br>
+These methods are implemented for both the Web API and Desktop COM API.</p>
+<p>Metadata methods:<br>
+<code><a title="macrobond_financial.common.api.Api.metadata_list_values" href="#macrobond_financial.common.api.Api.metadata_list_values">Api.metadata_list_values()</a></code><br>
+<code><a title="macrobond_financial.common.api.Api.metadata_get_attribute_information" href="#macrobond_financial.common.api.Api.metadata_get_attribute_information">Api.metadata_get_attribute_information()</a></code><br>
+<code><a title="macrobond_financial.common.api.Api.metadata_get_value_information" href="#macrobond_financial.common.api.Api.metadata_get_value_information">Api.metadata_get_value_information()</a></code>
+</p>
+<p>Revision methods:<br>
+<code><a title="macrobond_financial.common.api.Api.get_revision_info" href="#macrobond_financial.common.api.Api.get_revision_info">Api.get_revision_info()</a></code><br>
+<code><a title="macrobond_financial.common.api.Api.get_vintage_series" href="#macrobond_financial.common.api.Api.get_vintage_series">Api.get_vintage_series()</a></code><br>
+<code><a title="macrobond_financial.common.api.Api.get_nth_release" href="#macrobond_financial.common.api.Api.get_nth_release">Api.get_nth_release()</a></code><br>
+<code><a title="macrobond_financial.common.api.Api.get_all_vintage_series" href="#macrobond_financial.common.api.Api.get_all_vintage_series">Api.get_all_vintage_series()</a></code><br>
+get_observation_history. Only available in wep api.
+</p>
+<p>Search methods:<br>
+<code><a title="macrobond_financial.common.api.Api.entity_search" href="#macrobond_financial.common.api.Api.entity_search">Api.entity_search()</a></code><br>
+<code><a title="macrobond_financial.common.api.Api.entity_search_multi_filter" href="#macrobond_financial.common.api.Api.entity_search_multi_filter">Api.entity_search_multi_filter()</a></code>
+</p>
 <p>Series
-methods:
-<code>get_one_series</code>
-<code>get_series</code>
-<code>get_one_entity</code>
-<code>get_entities</code>
-<code>get_unified_series</code></p></div>
+methods:<br>
+<code><a title="macrobond_financial.common.api.Api.get_one_series" href="#macrobond_financial.common.api.Api.get_one_series">Api.get_one_series()</a></code><br>
+<code><a title="macrobond_financial.common.api.Api.get_series" href="#macrobond_financial.common.api.Api.get_series">Api.get_series()</a></code><br>
+<code><a title="macrobond_financial.common.api.Api.get_one_entity" href="#macrobond_financial.common.api.Api.get_one_entity">Api.get_one_entity()</a></code><br>
+<code><a title="macrobond_financial.common.api.Api.get_entities" href="#macrobond_financial.common.api.Api.get_entities">Api.get_entities()</a></code><br>
+<code><a title="macrobond_financial.common.api.Api.get_unified_series" href="#macrobond_financial.common.api.Api.get_unified_series">Api.get_unified_series()</a></code></p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class Api(ABC):
     &#34;&#34;&#34;
-    Common API to interact with the Macrobond database.
+    Common API to interact with the Macrobond database.  
+    These methods are implemented for both the Web API and Desktop COM API.
 
 
-    metadata methods:
-        `metadata_list_values`
-        `metadata_get_attribute_information`
-        `metadata_get_value_information`
-        `metadata_list_values`
+    Metadata methods:  
+        `macrobond_financial.common.api.Api.metadata_list_values`  
+        `macrobond_financial.common.api.Api.metadata_get_attribute_information`  
+        `macrobond_financial.common.api.Api.metadata_get_value_information`  
 
 
-    revision methods:
-        `get_revision_info`
-        `get_vintage_series`
-        `get_nth_release`
-        `get_all_vintage_series`
-        get_observation_history. Only available in wep api.
+    Revision methods:  
+        `macrobond_financial.common.api.Api.get_revision_info`  
+        `macrobond_financial.common.api.Api.get_vintage_series`  
+        `macrobond_financial.common.api.Api.get_nth_release`  
+        `macrobond_financial.common.api.Api.get_all_vintage_series`  
+        get_observation_history. Only available in wep api.  
 
 
-    Search methods:
-        `entity_search`
-        `entity_search_multi_filter`
+    Search methods:  
+        `macrobond_financial.common.api.Api.entity_search`  
+        `macrobond_financial.common.api.Api.entity_search_multi_filter`  
 
 
-    Series  methods:
-        `get_one_series`
-        `get_series`
-        `get_one_entity`
-        `get_entities`
-        `get_unified_series`
-
+    Series  methods:  
+        `macrobond_financial.common.api.Api.get_one_series`  
+        `macrobond_financial.common.api.Api.get_series`  
+        `macrobond_financial.common.api.Api.get_one_entity`  
+        `macrobond_financial.common.api.Api.get_entities`  
+        `macrobond_financial.common.api.Api.get_unified_series`  
 
 
     &#34;&#34;&#34;
@@ -537,21 +579,21 @@ methods:
 
         Returns
         -------
-        `MetadataValueInformation`
+        `macrobond_financial.common.types.metadata_value_information.MetadataValueInformation`
 
         Examples
         -------
         ```python
         with ComClient() as api: # or WebClient
 
+            # as objects
+            print(api.metadata_list_values(&#34;RateType&#34;))
+
             # as dict
-            print(api.metadata_list_values(&#39;RateType&#39;).list_of_dicts())
+            print(api.metadata_list_values(&#39;RateType&#39;).to_dict())
 
             # as data_frame
-            print(api.metadata_list_values(&#39;RateType&#39;).data_frame())
-
-            # as objects
-            print(api.metadata_list_values(&#39;RateType&#39;).list_of_objects())
+            print(metadata_list_values(&#34;RateType&#34;).to_pd_data_frame())
         ```
         &#34;&#34;&#34;
 
@@ -559,6 +601,31 @@ methods:
     def metadata_get_attribute_information(self, *names: str) -&gt; List[MetadataAttributeInformation]:
         &#34;&#34;&#34;
         Get information about metadata attributes.
+
+        Parameters
+        ----------
+        *names : str
+            One or more names of metadata attributes.
+
+        Returns
+        -------
+        `List[macrobond_financial.common.types.metadata_attribute_information.MetadataAttributeInformation]`  
+        The result is in the same order as the attribute names in the request.
+
+        Examples
+        -------
+        ```python
+        with ComClient() as api: # or WebClient
+
+            # as objects
+            print(api.metadata_get_attribute_information(&#34;Region&#34;, &#34;Unit&#34;))
+
+            # as dict
+            print(api.metadata_get_attribute_information(&#34;Region&#34;)[0].to_dict())
+
+            # as data_frame
+            print(api.metadata_get_attribute_information(&#34;Region&#34;)[0].to_pd_data_frame())
+        ```
         &#34;&#34;&#34;
 
     @abstractmethod
@@ -575,7 +642,23 @@ methods:
 
         Returns
         -------
-        `List[MetadataValueInformationItem]`
+        `List[macrobond_financial.common.types.metadata_value_information.MetadataValueInformationItem]`  
+        The result is in the same order as the attribute names in the request.
+
+        Examples
+        -------
+        ```python
+        with ComClient() as api: # or WebClient
+
+            # as objects
+            print(api.metadata_get_value_information((&#34;RateType&#34;, &#34;mole&#34;), (&#34;RateType&#34;,&#34;cobe&#34;)))
+
+            # as dict
+            print(api.metadata_get_value_information((&#34;RateType&#34;, &#34;mole&#34;))[0].to_dict())
+
+            # as data_frame
+            print(api.metadata_get_value_information((&#34;RateType&#34;, &#34;mole&#34;))[0].to_pd_data_frame())
+        ```
         &#34;&#34;&#34;
 
     # revision
@@ -1453,7 +1536,27 @@ def get_vintage_series(
 <span>def <span class="ident">metadata_get_attribute_information</span></span>(<span>self, *names: str) ‑> List[<a title="macrobond_financial.common.types.metadata_attribute_information.MetadataAttributeInformation" href="types/metadata_attribute_information.html#macrobond_financial.common.types.metadata_attribute_information.MetadataAttributeInformation">MetadataAttributeInformation</a>]</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Get information about metadata attributes.</p></div>
+<div class="desc"><p>Get information about metadata attributes.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>*names</code></strong> :&ensp;<code>str</code></dt>
+<dd>One or more names of metadata attributes.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p><code>List[<a title="macrobond_financial.common.types.metadata_attribute_information.MetadataAttributeInformation" href="types/metadata_attribute_information.html#macrobond_financial.common.types.metadata_attribute_information.MetadataAttributeInformation">MetadataAttributeInformation</a>]</code><br>
+The result is in the same order as the attribute names in the request.</p>
+<h2 id="examples">Examples</h2>
+<pre><code class="language-python">with ComClient() as api: # or WebClient
+
+    # as objects
+    print(api.metadata_get_attribute_information(&quot;Region&quot;, &quot;Unit&quot;))
+
+    # as dict
+    print(api.metadata_get_attribute_information(&quot;Region&quot;)[0].to_dict())
+
+    # as data_frame
+    print(api.metadata_get_attribute_information(&quot;Region&quot;)[0].to_pd_data_frame())
+</code></pre></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -1462,6 +1565,31 @@ def get_vintage_series(
 def metadata_get_attribute_information(self, *names: str) -&gt; List[MetadataAttributeInformation]:
     &#34;&#34;&#34;
     Get information about metadata attributes.
+
+    Parameters
+    ----------
+    *names : str
+        One or more names of metadata attributes.
+
+    Returns
+    -------
+    `List[macrobond_financial.common.types.metadata_attribute_information.MetadataAttributeInformation]`  
+    The result is in the same order as the attribute names in the request.
+
+    Examples
+    -------
+    ```python
+    with ComClient() as api: # or WebClient
+
+        # as objects
+        print(api.metadata_get_attribute_information(&#34;Region&#34;, &#34;Unit&#34;))
+
+        # as dict
+        print(api.metadata_get_attribute_information(&#34;Region&#34;)[0].to_dict())
+
+        # as data_frame
+        print(api.metadata_get_attribute_information(&#34;Region&#34;)[0].to_pd_data_frame())
+    ```
     &#34;&#34;&#34;</code></pre>
 </details>
 </dd>
@@ -1476,7 +1604,20 @@ def metadata_get_attribute_information(self, *names: str) -&gt; List[MetadataAtt
 <dd>The attribute name and a value.</dd>
 </dl>
 <h2 id="returns">Returns</h2>
-<p><code>List[MetadataValueInformationItem]</code></p></div>
+<p><code>List[<a title="macrobond_financial.common.types.metadata_value_information.MetadataValueInformationItem" href="types/metadata_value_information.html#macrobond_financial.common.types.metadata_value_information.MetadataValueInformationItem">MetadataValueInformationItem</a>]</code><br>
+The result is in the same order as the attribute names in the request.</p>
+<h2 id="examples">Examples</h2>
+<pre><code class="language-python">with ComClient() as api: # or WebClient
+
+    # as objects
+    print(api.metadata_get_value_information((&quot;RateType&quot;, &quot;mole&quot;), (&quot;RateType&quot;,&quot;cobe&quot;)))
+
+    # as dict
+    print(api.metadata_get_value_information((&quot;RateType&quot;, &quot;mole&quot;))[0].to_dict())
+
+    # as data_frame
+    print(api.metadata_get_value_information((&quot;RateType&quot;, &quot;mole&quot;))[0].to_pd_data_frame())
+</code></pre></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -1495,7 +1636,23 @@ def metadata_get_value_information(
 
     Returns
     -------
-    `List[MetadataValueInformationItem]`
+    `List[macrobond_financial.common.types.metadata_value_information.MetadataValueInformationItem]`  
+    The result is in the same order as the attribute names in the request.
+
+    Examples
+    -------
+    ```python
+    with ComClient() as api: # or WebClient
+
+        # as objects
+        print(api.metadata_get_value_information((&#34;RateType&#34;, &#34;mole&#34;), (&#34;RateType&#34;,&#34;cobe&#34;)))
+
+        # as dict
+        print(api.metadata_get_value_information((&#34;RateType&#34;, &#34;mole&#34;))[0].to_dict())
+
+        # as data_frame
+        print(api.metadata_get_value_information((&#34;RateType&#34;, &#34;mole&#34;))[0].to_pd_data_frame())
+    ```
     &#34;&#34;&#34;</code></pre>
 </details>
 </dd>
@@ -1510,18 +1667,18 @@ def metadata_get_value_information(
 <dd>The name of the metadata attribute</dd>
 </dl>
 <h2 id="returns">Returns</h2>
-<p><code>MetadataValueInformation</code></p>
+<p><code><a title="macrobond_financial.common.types.metadata_value_information.MetadataValueInformation" href="types/metadata_value_information.html#macrobond_financial.common.types.metadata_value_information.MetadataValueInformation">MetadataValueInformation</a></code></p>
 <h2 id="examples">Examples</h2>
 <pre><code class="language-python">with ComClient() as api: # or WebClient
 
+    # as objects
+    print(api.metadata_list_values(&quot;RateType&quot;))
+
     # as dict
-    print(api.metadata_list_values('RateType').list_of_dicts())
+    print(api.metadata_list_values('RateType').to_dict())
 
     # as data_frame
-    print(api.metadata_list_values('RateType').data_frame())
-
-    # as objects
-    print(api.metadata_list_values('RateType').list_of_objects())
+    print(metadata_list_values(&quot;RateType&quot;).to_pd_data_frame())
 </code></pre></div>
 <details class="source">
 <summary>
@@ -1539,21 +1696,21 @@ def metadata_list_values(self, name: str) -&gt; MetadataValueInformation:
 
     Returns
     -------
-    `MetadataValueInformation`
+    `macrobond_financial.common.types.metadata_value_information.MetadataValueInformation`
 
     Examples
     -------
     ```python
     with ComClient() as api: # or WebClient
 
+        # as objects
+        print(api.metadata_list_values(&#34;RateType&#34;))
+
         # as dict
-        print(api.metadata_list_values(&#39;RateType&#39;).list_of_dicts())
+        print(api.metadata_list_values(&#39;RateType&#39;).to_dict())
 
         # as data_frame
-        print(api.metadata_list_values(&#39;RateType&#39;).data_frame())
-
-        # as objects
-        print(api.metadata_list_values(&#39;RateType&#39;).list_of_objects())
+        print(metadata_list_values(&#34;RateType&#34;).to_pd_data_frame())
     ```
     &#34;&#34;&#34;</code></pre>
 </details>

@@ -28,6 +28,7 @@
 </summary>
 <pre><code class="python"># -*- coding: utf-8 -*-
 
+
 from datetime import datetime
 from typing import Tuple, TYPE_CHECKING, Optional, cast
 
@@ -50,6 +51,15 @@ class RevisionInfoDict(TypedDict, total=False):
 
 
 class RevisionInfo:
+
+    name: str
+    error_message: str
+    stores_revisions: bool
+    has_revisions: bool
+    time_stamp_of_first_revision: Optional[datetime]
+    time_stamp_of_last_revision: Optional[datetime]
+    vintage_time_stamps: Tuple[datetime, ...]
+
     def __init__(
         self,
         name: str,
@@ -61,12 +71,25 @@ class RevisionInfo:
         vintage_time_stamps: Tuple[datetime, ...],
     ) -&gt; None:
         self.name = name
+        &#34;&#34;&#34;name&#34;&#34;&#34;
+
         self.error_message = error_message
+        &#34;&#34;&#34;error_message&#34;&#34;&#34;
+
         self.stores_revisions = stores_revisions
+        &#34;&#34;&#34;stores_revisions&#34;&#34;&#34;
+
         self.has_revisions = has_revisions
+        &#34;&#34;&#34;has_revisions&#34;&#34;&#34;
+
         self.time_stamp_of_first_revision = time_stamp_of_first_revision
+        &#34;&#34;&#34;time_stamp_of_first_revision&#34;&#34;&#34;
+
         self.time_stamp_of_last_revision = time_stamp_of_last_revision
+        &#34;&#34;&#34;time_stamp_of_last_revision&#34;&#34;&#34;
+
         self.vintage_time_stamps = vintage_time_stamps
+        &#34;&#34;&#34;vintage_time_stamps&#34;&#34;&#34;
 
     def to_dict(self) -&gt; RevisionInfoDict:
         return cast(RevisionInfoDict, vars(self))
@@ -99,6 +122,15 @@ class RevisionInfo:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class RevisionInfo:
+
+    name: str
+    error_message: str
+    stores_revisions: bool
+    has_revisions: bool
+    time_stamp_of_first_revision: Optional[datetime]
+    time_stamp_of_last_revision: Optional[datetime]
+    vintage_time_stamps: Tuple[datetime, ...]
+
     def __init__(
         self,
         name: str,
@@ -110,12 +142,25 @@ class RevisionInfo:
         vintage_time_stamps: Tuple[datetime, ...],
     ) -&gt; None:
         self.name = name
+        &#34;&#34;&#34;name&#34;&#34;&#34;
+
         self.error_message = error_message
+        &#34;&#34;&#34;error_message&#34;&#34;&#34;
+
         self.stores_revisions = stores_revisions
+        &#34;&#34;&#34;stores_revisions&#34;&#34;&#34;
+
         self.has_revisions = has_revisions
+        &#34;&#34;&#34;has_revisions&#34;&#34;&#34;
+
         self.time_stamp_of_first_revision = time_stamp_of_first_revision
+        &#34;&#34;&#34;time_stamp_of_first_revision&#34;&#34;&#34;
+
         self.time_stamp_of_last_revision = time_stamp_of_last_revision
+        &#34;&#34;&#34;time_stamp_of_last_revision&#34;&#34;&#34;
+
         self.vintage_time_stamps = vintage_time_stamps
+        &#34;&#34;&#34;vintage_time_stamps&#34;&#34;&#34;
 
     def to_dict(self) -&gt; RevisionInfoDict:
         return cast(RevisionInfoDict, vars(self))
@@ -127,6 +172,37 @@ class RevisionInfo:
     def __repr__(self):
         return f&#34;RevisionInfo name: {self.name}&#34;</code></pre>
 </details>
+<h3>Instance variables</h3>
+<dl>
+<dt id="macrobond_financial.common.types.revision_info.RevisionInfo.error_message"><code class="name">var <span class="ident">error_message</span> : str</code></dt>
+<dd>
+<div class="desc"><p>error_message</p></div>
+</dd>
+<dt id="macrobond_financial.common.types.revision_info.RevisionInfo.has_revisions"><code class="name">var <span class="ident">has_revisions</span> : bool</code></dt>
+<dd>
+<div class="desc"><p>has_revisions</p></div>
+</dd>
+<dt id="macrobond_financial.common.types.revision_info.RevisionInfo.name"><code class="name">var <span class="ident">name</span> : str</code></dt>
+<dd>
+<div class="desc"><p>name</p></div>
+</dd>
+<dt id="macrobond_financial.common.types.revision_info.RevisionInfo.stores_revisions"><code class="name">var <span class="ident">stores_revisions</span> : bool</code></dt>
+<dd>
+<div class="desc"><p>stores_revisions</p></div>
+</dd>
+<dt id="macrobond_financial.common.types.revision_info.RevisionInfo.time_stamp_of_first_revision"><code class="name">var <span class="ident">time_stamp_of_first_revision</span> : Optional[datetime.datetime]</code></dt>
+<dd>
+<div class="desc"><p>time_stamp_of_first_revision</p></div>
+</dd>
+<dt id="macrobond_financial.common.types.revision_info.RevisionInfo.time_stamp_of_last_revision"><code class="name">var <span class="ident">time_stamp_of_last_revision</span> : Optional[datetime.datetime]</code></dt>
+<dd>
+<div class="desc"><p>time_stamp_of_last_revision</p></div>
+</dd>
+<dt id="macrobond_financial.common.types.revision_info.RevisionInfo.vintage_time_stamps"><code class="name">var <span class="ident">vintage_time_stamps</span> : Tuple[datetime.datetime, ...]</code></dt>
+<dd>
+<div class="desc"><p>vintage_time_stamps</p></div>
+</dd>
+</dl>
 <h3>Methods</h3>
 <dl>
 <dt id="macrobond_financial.common.types.revision_info.RevisionInfo.to_dict"><code class="name flex">
@@ -242,8 +318,15 @@ dict(one=1, two=2)</p></div>
 <li>
 <h4><code><a title="macrobond_financial.common.types.revision_info.RevisionInfo" href="#macrobond_financial.common.types.revision_info.RevisionInfo">RevisionInfo</a></code></h4>
 <ul class="">
+<li><code><a title="macrobond_financial.common.types.revision_info.RevisionInfo.error_message" href="#macrobond_financial.common.types.revision_info.RevisionInfo.error_message">error_message</a></code></li>
+<li><code><a title="macrobond_financial.common.types.revision_info.RevisionInfo.has_revisions" href="#macrobond_financial.common.types.revision_info.RevisionInfo.has_revisions">has_revisions</a></code></li>
+<li><code><a title="macrobond_financial.common.types.revision_info.RevisionInfo.name" href="#macrobond_financial.common.types.revision_info.RevisionInfo.name">name</a></code></li>
+<li><code><a title="macrobond_financial.common.types.revision_info.RevisionInfo.stores_revisions" href="#macrobond_financial.common.types.revision_info.RevisionInfo.stores_revisions">stores_revisions</a></code></li>
+<li><code><a title="macrobond_financial.common.types.revision_info.RevisionInfo.time_stamp_of_first_revision" href="#macrobond_financial.common.types.revision_info.RevisionInfo.time_stamp_of_first_revision">time_stamp_of_first_revision</a></code></li>
+<li><code><a title="macrobond_financial.common.types.revision_info.RevisionInfo.time_stamp_of_last_revision" href="#macrobond_financial.common.types.revision_info.RevisionInfo.time_stamp_of_last_revision">time_stamp_of_last_revision</a></code></li>
 <li><code><a title="macrobond_financial.common.types.revision_info.RevisionInfo.to_dict" href="#macrobond_financial.common.types.revision_info.RevisionInfo.to_dict">to_dict</a></code></li>
 <li><code><a title="macrobond_financial.common.types.revision_info.RevisionInfo.to_pd_data_frame" href="#macrobond_financial.common.types.revision_info.RevisionInfo.to_pd_data_frame">to_pd_data_frame</a></code></li>
+<li><code><a title="macrobond_financial.common.types.revision_info.RevisionInfo.vintage_time_stamps" href="#macrobond_financial.common.types.revision_info.RevisionInfo.vintage_time_stamps">vintage_time_stamps</a></code></li>
 </ul>
 </li>
 <li>
