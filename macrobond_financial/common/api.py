@@ -180,7 +180,7 @@ class Api(ABC):
 
         Returns
         -------
-        `List[RevisionInfo]`
+        `List[macrobond_financial.common.types.revision_info.RevisionInfo]`
         """
 
     @abstractmethod

@@ -1,6 +1,6 @@
-# Macrobond data-api-python
+# Macrobond Data API for Python
 
-The Macrobond Data API for Python is used to access the world’s most extensive macroeconomic, aggregate financial and sector database provided by [Macrobond}(http://www.macrobond.com).
+The Macrobond Data API for Python is used to access the world’s most extensive macroeconomic, aggregate financial and sector database provided by [Macrobond](http://www.macrobond.com).
 Exposes a common API in Python for the [Macrobobond Web](https://help.macrobond.com/technical-information/the-macrobond-web-api-data-feed/) and [Client data](https://help.macrobond.com/technical-information/the-macrobond-api-for-python/) APIs
 
 You have to be a licensed user and have a Data+ or data feed user account in order to use the API.
@@ -25,12 +25,12 @@ with ComClient() as api:
 
 ## Features
 
-The -name- uses either the [Macrobond Web REST API](https://help.macrobond.com/technical-information/the-macrobond-web-api-data-feed/) or the [Macrobond Client data API](https://help.macrobond.com/technical-information/the-macrobond-api-for-python/) to obtain time series with values and metadata.
+The Macrobond Data API for Python uses either the [Macrobond Web REST API](https://help.macrobond.com/technical-information/the-macrobond-web-api-data-feed/) or the [Macrobond Client data API](https://help.macrobond.com/technical-information/the-macrobond-api-for-python/) to obtain time series with values and metadata.
 The API consists of a set of functions in common between the underlying APIs as well as specialized functions unique to each implementation.
 
 ## Installing -name- and Supported Versions
 
--name- is available on PyPI:
+Macrobond Data API for Python is available on PyPI:
 
 for web api
 
@@ -44,7 +44,7 @@ for com api
 python -m pip install -name- [com]
 ```
 
--name- officially supports Python 3.6+.
+Macrobond Data API for Python officially supports Python 3.6+.
 
 ## Contributing
 
