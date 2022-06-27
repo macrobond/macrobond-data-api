@@ -1,5 +1,9 @@
 # -*- coding: utf-8 -*-
 
+"""
+Definitions of common enums used in the API.
+"""
+
 from .series_weekdays import SeriesWeekdays
 from .series_frequency import SeriesFrequency
 from .calendar_merge_mode import CalendarMergeMode
