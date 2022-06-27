@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
 from math import isnan
-from typing import Any, Dict, List, Tuple, Union, TYPE_CHECKING, cast
+from typing import Any, Dict, List, Tuple, Union, TYPE_CHECKING, cast, Sequence
 
-from datetime import datetime
+from datetime import datetime, timezone
 
 from macrobond_financial.common import Api
 
@@ -26,6 +26,8 @@ from macrobond_financial.common.types import (
     Entity,
     UnifiedSerie,
     UnifiedSeries,
+    GetAllVintageSeriesResult,
+    SeriesObservationHistory,
 )
 
 if TYPE_CHECKING:  # pragma: no cover
@@ -59,6 +61,24 @@ def _fill_metadata_from_entity(com_entity: "ComEntity") -> Dict[str, Any]:
     return ret
 
 
+def _datetime_to_datetime(dates: Sequence[datetime]) -> Tuple[datetime, ...]:
+    return tuple(
+        map(
+            lambda x: datetime(
+                x.year,
+                x.month,
+                x.day,
+                x.hour,
+                x.minute,
+                x.second,
+                x.microsecond,
+                timezone.utc,
+            ),
+            dates,
+        )
+    )
+
+
 def _create_entity(com_entity: "ComEntity", name: str) -> Entity:
     if com_entity.IsError:
         return Entity(name, com_entity.ErrorMessage, None)
@@ -73,7 +93,7 @@ def _create_series(com_series: "ComSeries", name: str) -> Series:
         None,
         _fill_metadata_from_entity(com_series),
         com_series.Values,
-        com_series.DatesAtStartOfPeriod,
+        _datetime_to_datetime(com_series.DatesAtStartOfPeriod),
     )
 
 
@@ -171,7 +191,7 @@ class ComApi(Api):
                     tuple(),
                 )
 
-            vintage_time_stamps = tuple(serie.GetVintageDates())
+            vintage_time_stamps = _datetime_to_datetime(serie.GetVintageDates())
 
             time_stamp_of_first_revision = vintage_time_stamps[0] if serie.HasRevisions else None
             time_stamp_of_last_revision = vintage_time_stamps[-1] if serie.HasRevisions else None
@@ -232,7 +252,7 @@ class ComApi(Api):
 
             values = tuple(filter(lambda x: x is not None and not isnan(x), series.Values))
 
-            dates = series.DatesAtStartOfPeriod[: len(values)]
+            dates = _datetime_to_datetime(series.DatesAtStartOfPeriod[: len(values)])
 
             return VintageSeries(
                 series_name,
@@ -282,12 +302,14 @@ class ComApi(Api):
 
             values = tuple(map(lambda x: None if isnan(x) else x, series.Values))  # type: ignore
 
+            dates = _datetime_to_datetime(series.DatesAtStartOfPeriod)
+
             return Series(
                 series_name,
                 None,
                 _fill_metadata_from_entity(series),
                 values,
-                series.DatesAtStartOfPeriod,
+                dates,
             )
 
         series = list(map(to_obj, series_names))
@@ -303,7 +325,7 @@ class ComApi(Api):
 
         return series
 
-    def get_all_vintage_series(self, series_name: str) -> List[Series]:
+    def get_all_vintage_series(self, series_name: str) -> GetAllVintageSeriesResult:
         series_with_revisions = self.database.FetchOneSeriesWithRevisions(series_name)
 
         if series_with_revisions.IsError:
@@ -311,11 +333,33 @@ class ComApi(Api):
                 raise ValueError("Series not found: " + series_name)
             raise Exception(series_with_revisions.ErrorMessage)
 
-        return list(
-            map(
-                lambda x: _create_series(x, series_name), series_with_revisions.GetCompleteHistory()
-            )
+        return GetAllVintageSeriesResult(
+            list(
+                map(
+                    lambda x: _create_series(x, series_name),
+                    series_with_revisions.GetCompleteHistory(),
+                )
+            ),
+            series_name,
         )
+
+    def get_observation_history(
+        self, serie_name: str, *times: datetime
+    ) -> List[SeriesObservationHistory]:
+
+        series_with_revisions = self.database.FetchOneSeriesWithRevisions(serie_name)
+
+        if series_with_revisions.IsError:
+            if series_with_revisions.ErrorMessage == "Not found":
+                raise ValueError("Series not found: " + serie_name)
+            raise Exception(series_with_revisions.ErrorMessage)
+
+        def to_obj(time: datetime) -> SeriesObservationHistory:
+            series = series_with_revisions.GetObservationHistory(time)
+            dates = _datetime_to_datetime(series.DatesAtStartOfPeriod)
+            return SeriesObservationHistory(time, series.Values, dates)
+
+        return list(map(to_obj, times))
 
     # Search
 
@@ -353,7 +397,7 @@ class ComApi(Api):
 
         result = self.__connection.Database.Search(querys)
 
-        entities = tuple(list(map(_fill_metadata_from_entity, result.Entities)))
+        entities = list(map(_fill_metadata_from_entity, result.Entities))
         return SearchResult(entities, result.IsTruncated)
 
     # Series
@@ -436,7 +480,10 @@ class ComApi(Api):
         com_series = self.database.FetchSeries(request)
 
         first = next(filter(lambda x: not x.IsError, com_series), None)
-        dates = first.DatesAtStartOfPeriod if first else tuple()
+        if first:
+            dates = _datetime_to_datetime(first.DatesAtStartOfPeriod)
+        else:
+            dates = tuple()
 
         series: List[UnifiedSerie] = []
 
@@ -469,7 +516,7 @@ class ComApi(Api):
                     )
                 )
 
-        ret = UnifiedSeries(dates, tuple(series))
+        ret = UnifiedSeries(series, dates)
 
         errors = ret.get_errors()
         raise_error = self.raise_error if raise_error is None else raise_error

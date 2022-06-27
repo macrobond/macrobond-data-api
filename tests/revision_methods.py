@@ -86,7 +86,7 @@ class Com(TestCase):
 
 def get_vintage_series_error(test: TestCase, api: Api) -> None:
     with test.assertRaises(GetEntitiesError) as context:
-        api.get_vintage_series(datetime(2021, 4, 1), "noseries!")[0].to_pd_data_frame()
+        api.get_vintage_series(datetime(2021, 4, 1), "noseries!")
 
     test.assertEqual(
         "failed to retrieve:\n\tnoseries! error_message: Not found",
@@ -96,7 +96,7 @@ def get_vintage_series_error(test: TestCase, api: Api) -> None:
 
 def get_vintage_series_error_time(test: TestCase, api: Api) -> None:
     with test.assertRaises(ValueError) as context:
-        api.get_vintage_series(datetime(1800, 4, 1), "gbgdp")[0].to_pd_data_frame()
+        api.get_vintage_series(datetime(1800, 4, 1), "gbgdp")
 
     test.assertEqual("Invalid time", context.exception.args[0])
 

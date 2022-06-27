@@ -98,22 +98,15 @@ class Entity:
         self._add_metadata(ret)
         return ret
 
-    def to_pd_data_frame(self) -&gt; &#34;DataFrame&#34;:
-        pandas = _get_pandas()
-        return pandas.DataFrame([self.to_dict()])
-
     def metadata_to_pd_series(self, name: str = None) -&gt; &#34;Series&#34;:
         pandas = _get_pandas()
         name = name if name else self.name
         return pandas.Series(self.metadata.values(), self.metadata.keys(), name=name)
 
-    def __str__(self):
+    def __repr__(self):
         if self.is_error:
             return f&#34;{self.__class__.__name__} with error, error message: {self.error_message}&#34;
         return f&#34;{self.__class__.__name__} PrimName: {self.primary_name}&#34;
-
-    def __repr__(self):
-        return str(self)
 
     def __bool__(self):
         return not self.is_error
@@ -209,22 +202,15 @@ class Entity:
         self._add_metadata(ret)
         return ret
 
-    def to_pd_data_frame(self) -&gt; &#34;DataFrame&#34;:
-        pandas = _get_pandas()
-        return pandas.DataFrame([self.to_dict()])
-
     def metadata_to_pd_series(self, name: str = None) -&gt; &#34;Series&#34;:
         pandas = _get_pandas()
         name = name if name else self.name
         return pandas.Series(self.metadata.values(), self.metadata.keys(), name=name)
 
-    def __str__(self):
+    def __repr__(self):
         if self.is_error:
             return f&#34;{self.__class__.__name__} with error, error message: {self.error_message}&#34;
         return f&#34;{self.__class__.__name__} PrimName: {self.primary_name}&#34;
-
-    def __repr__(self):
-        return str(self)
 
     def __bool__(self):
         return not self.is_error
@@ -349,20 +335,6 @@ def title(self) -&gt; str:
     return ret</code></pre>
 </details>
 </dd>
-<dt id="macrobond_financial.common.types.entity.Entity.to_pd_data_frame"><code class="name flex">
-<span>def <span class="ident">to_pd_data_frame</span></span>(<span>self) ‑> DataFrame</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def to_pd_data_frame(self) -&gt; &#34;DataFrame&#34;:
-    pandas = _get_pandas()
-    return pandas.DataFrame([self.to_dict()])</code></pre>
-</details>
-</dd>
 </dl>
 </dd>
 </dl>
@@ -390,7 +362,6 @@ def title(self) -&gt; str:
 <li><code><a title="macrobond_financial.common.types.entity.Entity.primary_name" href="#macrobond_financial.common.types.entity.Entity.primary_name">primary_name</a></code></li>
 <li><code><a title="macrobond_financial.common.types.entity.Entity.title" href="#macrobond_financial.common.types.entity.Entity.title">title</a></code></li>
 <li><code><a title="macrobond_financial.common.types.entity.Entity.to_dict" href="#macrobond_financial.common.types.entity.Entity.to_dict">to_dict</a></code></li>
-<li><code><a title="macrobond_financial.common.types.entity.Entity.to_pd_data_frame" href="#macrobond_financial.common.types.entity.Entity.to_pd_data_frame">to_pd_data_frame</a></code></li>
 </ul>
 </li>
 </ul>

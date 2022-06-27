@@ -89,14 +89,11 @@ class MetadataValueInformationItem:
     def to_dict(self) -&gt; TypedDictMetadataValueInformation:
         return cast(TypedDictMetadataValueInformation, vars(self))
 
-    def __str__(self):
+    def __repr__(self):
         return (
             f&#34;MetadataValueInformationItem attribute_name: {self.attribute_name},&#34;
             + f&#34; value: {self.value}&#34;
         )
-
-    def __repr__(self):
-        return str(self)
 
     def __eq__(self, other):
         if not isinstance(other, MetadataValueInformationItem):
@@ -127,13 +124,10 @@ class MetadataValueInformation(Sequence[MetadataValueInformationItem]):
     def to_dict(self) -&gt; List[TypedDictMetadataValueInformation]:
         return list(map(lambda x: x.to_dict(), self.items))
 
-    def __str__(self):
+    def __repr__(self):
         return (
             f&#34;MetadataValueInformation of {len(self)} items, attribute_name: {self.attribute_name}&#34;
         )
-
-    def __repr__(self):
-        return str(self)
 
     @overload
     def __getitem__(self, idx: int) -&gt; MetadataValueInformationItem:
@@ -189,13 +183,10 @@ class MetadataValueInformation(Sequence[MetadataValueInformationItem]):
     def to_dict(self) -&gt; List[TypedDictMetadataValueInformation]:
         return list(map(lambda x: x.to_dict(), self.items))
 
-    def __str__(self):
+    def __repr__(self):
         return (
             f&#34;MetadataValueInformation of {len(self)} items, attribute_name: {self.attribute_name}&#34;
         )
-
-    def __repr__(self):
-        return str(self)
 
     @overload
     def __getitem__(self, idx: int) -&gt; MetadataValueInformationItem:
@@ -292,14 +283,11 @@ class MetadataValueInformation(Sequence[MetadataValueInformationItem]):
     def to_dict(self) -&gt; TypedDictMetadataValueInformation:
         return cast(TypedDictMetadataValueInformation, vars(self))
 
-    def __str__(self):
+    def __repr__(self):
         return (
             f&#34;MetadataValueInformationItem attribute_name: {self.attribute_name},&#34;
             + f&#34; value: {self.value}&#34;
         )
-
-    def __repr__(self):
-        return str(self)
 
     def __eq__(self, other):
         if not isinstance(other, MetadataValueInformationItem):

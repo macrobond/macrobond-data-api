@@ -88,6 +88,10 @@ class WebClient(Client["WebApi"]):
             client_id, client_secret, *scopes, api_url=api_url, authorization_url=authorization_url
         )
 
+    @property
+    def is_open(self) -> bool:
+        return bool(self.__api)
+
     def open(self) -> "WebApi":
         if self.__api is None:
             self.__session.fetch_token()

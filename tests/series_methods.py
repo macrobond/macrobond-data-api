@@ -167,7 +167,6 @@ def get_unified_series_no_series(test: TestCase, api: Api) -> None:
     )
 
     test.assertEqual(unified.dates, tuple())
-    test.assertEqual(len(unified.series), 1)
     test.assertEqual(len(unified), 1)
 
     test.assertEqual(unified[0].is_error, True)
@@ -179,7 +178,6 @@ def get_unified_series_no_series(test: TestCase, api: Api) -> None:
     )
 
     test.assertEqual(unified.dates, tuple())
-    test.assertEqual(len(unified.series), 0)
     test.assertEqual(len(unified), 0)
 
     with test.assertRaises(GetEntitiesError) as context:

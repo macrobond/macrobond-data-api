@@ -11,11 +11,8 @@ class EntitieErrorInfo:
         self.name = name
         self.error_message = error_message
 
-    def __str__(self):
-        return f"name: {self.name} error_message: {self.error_message}"
-
     def __repr__(self):
-        return str(self)
+        return f"name: {self.name} error_message: {self.error_message}"
 
 
 class GetEntitiesError(Exception):

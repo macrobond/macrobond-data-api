@@ -46,6 +46,8 @@ from .types import (
     Series,
     Entity,
     UnifiedSeries,
+    GetAllVintageSeriesResult,
+    SeriesObservationHistory,
 )
 
 from .enums import SeriesFrequency, SeriesWeekdays, CalendarMergeMode
@@ -218,7 +220,13 @@ class Api(ABC):
         &#34;&#34;&#34;
 
     @abstractmethod
-    def get_all_vintage_series(self, series_name: str) -&gt; List[Series]:
+    def get_all_vintage_series(self, series_name: str) -&gt; GetAllVintageSeriesResult:
+        ...
+
+    @abstractmethod
+    def get_observation_history(
+        self, serie_name: str, *times: datetime
+    ) -&gt; List[SeriesObservationHistory]:
         ...
 
     # Search
@@ -639,7 +647,13 @@ methods:
         &#34;&#34;&#34;
 
     @abstractmethod
-    def get_all_vintage_series(self, series_name: str) -&gt; List[Series]:
+    def get_all_vintage_series(self, series_name: str) -&gt; GetAllVintageSeriesResult:
+        ...
+
+    @abstractmethod
+    def get_observation_history(
+        self, serie_name: str, *times: datetime
+    ) -&gt; List[SeriesObservationHistory]:
         ...
 
     # Search
@@ -1000,7 +1014,7 @@ def entity_search_multi_filter(
 </details>
 </dd>
 <dt id="macrobond_financial.common.api.Api.get_all_vintage_series"><code class="name flex">
-<span>def <span class="ident">get_all_vintage_series</span></span>(<span>self, series_name: str) ‑> List[<a title="macrobond_financial.common.types.series.Series" href="types/series.html#macrobond_financial.common.types.series.Series">Series</a>]</span>
+<span>def <span class="ident">get_all_vintage_series</span></span>(<span>self, series_name: str) ‑> <a title="macrobond_financial.common.types.get_all_vintage_series_result.GetAllVintageSeriesResult" href="types/get_all_vintage_series_result.html#macrobond_financial.common.types.get_all_vintage_series_result.GetAllVintageSeriesResult">GetAllVintageSeriesResult</a></span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -1009,7 +1023,7 @@ def entity_search_multi_filter(
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@abstractmethod
-def get_all_vintage_series(self, series_name: str) -&gt; List[Series]:
+def get_all_vintage_series(self, series_name: str) -&gt; GetAllVintageSeriesResult:
     ...</code></pre>
 </details>
 </dd>
@@ -1106,6 +1120,22 @@ def get_nth_release(
     -------
     `List[Series]`
     &#34;&#34;&#34;</code></pre>
+</details>
+</dd>
+<dt id="macrobond_financial.common.api.Api.get_observation_history"><code class="name flex">
+<span>def <span class="ident">get_observation_history</span></span>(<span>self, serie_name: str, *times: datetime.datetime) ‑> List[<a title="macrobond_financial.common.types.series_observation_history.SeriesObservationHistory" href="types/series_observation_history.html#macrobond_financial.common.types.series_observation_history.SeriesObservationHistory">SeriesObservationHistory</a>]</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@abstractmethod
+def get_observation_history(
+    self, serie_name: str, *times: datetime
+) -&gt; List[SeriesObservationHistory]:
+    ...</code></pre>
 </details>
 </dd>
 <dt id="macrobond_financial.common.api.Api.get_one_entity"><code class="name flex">
@@ -1554,6 +1584,7 @@ def metadata_list_values(self, name: str) -&gt; MetadataValueInformation:
 <li><code><a title="macrobond_financial.common.api.Api.get_all_vintage_series" href="#macrobond_financial.common.api.Api.get_all_vintage_series">get_all_vintage_series</a></code></li>
 <li><code><a title="macrobond_financial.common.api.Api.get_entities" href="#macrobond_financial.common.api.Api.get_entities">get_entities</a></code></li>
 <li><code><a title="macrobond_financial.common.api.Api.get_nth_release" href="#macrobond_financial.common.api.Api.get_nth_release">get_nth_release</a></code></li>
+<li><code><a title="macrobond_financial.common.api.Api.get_observation_history" href="#macrobond_financial.common.api.Api.get_observation_history">get_observation_history</a></code></li>
 <li><code><a title="macrobond_financial.common.api.Api.get_one_entity" href="#macrobond_financial.common.api.Api.get_one_entity">get_one_entity</a></code></li>
 <li><code><a title="macrobond_financial.common.api.Api.get_one_series" href="#macrobond_financial.common.api.Api.get_one_series">get_one_series</a></code></li>
 <li><code><a title="macrobond_financial.common.api.Api.get_revision_info" href="#macrobond_financial.common.api.Api.get_revision_info">get_revision_info</a></code></li>
