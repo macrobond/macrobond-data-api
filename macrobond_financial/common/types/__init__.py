@@ -1,5 +1,9 @@
 # -*- coding: utf-8 -*-
 
+"""
+Definitions of common types used in the API.
+"""
+
 from .search_result import SearchResult
 from .start_or_end_point import StartOrEndPoint
 from .series_entry import SeriesEntry

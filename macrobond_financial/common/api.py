@@ -1,5 +1,10 @@
 # -*- coding: utf-8 -*-
 
+"""
+The class `macrobond_financial.common.api.Api` defines the core methods to interact with the
+Macrobond database.
+"""
+
 from typing import List, Sequence, Union, Tuple, Dict
 from abc import ABC, abstractmethod
 
@@ -29,34 +34,33 @@ class Api(ABC):
     # fmt: off
     """
     Common API to interact with the Macrobond database.  
-    These methods are implemented for both the Web API and Desktop COM API.
-
+    This class defines abstract methods that are implemented for both the Web API and
+    Desktop COM API. You typically access them via an instance of
+    `macrobond_financial.web.web_client.WebClient` or
+    `macrobond_financial.com.com_client.ComClient`.
 
     Metadata methods:  
         `macrobond_financial.common.api.Api.metadata_list_values`  
         `macrobond_financial.common.api.Api.metadata_get_attribute_information`  
         `macrobond_financial.common.api.Api.metadata_get_value_information`  
 
-
-    Revision methods:  
-        `macrobond_financial.common.api.Api.get_revision_info`  
-        `macrobond_financial.common.api.Api.get_vintage_series`  
-        `macrobond_financial.common.api.Api.get_nth_release`  
-        `macrobond_financial.common.api.Api.get_all_vintage_series`  
-        get_observation_history. Only available in wep api.  
-
-
-    Search methods:  
-        `macrobond_financial.common.api.Api.entity_search`  
-        `macrobond_financial.common.api.Api.entity_search_multi_filter`  
-
-
-    Series  methods:  
+    Series methods:  
         `macrobond_financial.common.api.Api.get_one_series`  
         `macrobond_financial.common.api.Api.get_series`  
         `macrobond_financial.common.api.Api.get_one_entity`  
         `macrobond_financial.common.api.Api.get_entities`  
         `macrobond_financial.common.api.Api.get_unified_series`  
+
+    Series revision methods:  
+        `macrobond_financial.common.api.Api.get_revision_info`  
+        `macrobond_financial.common.api.Api.get_vintage_series`  
+        `macrobond_financial.common.api.Api.get_nth_release`  
+        `macrobond_financial.common.api.Api.get_all_vintage_series`  
+        `macrobond_financial.common.api.Api.get_observation_history`  
+
+    Search methods:  
+        `macrobond_financial.common.api.Api.entity_search`  
+        `macrobond_financial.common.api.Api.entity_search_multi_filter`  
 
 
     """
@@ -192,7 +196,7 @@ class Api(ABC):
 
         Returns
         -------
-        `List[RevisionInfo]`
+        `List[macrobond_financial.common.types.revision_info.RevisionInfo]`
         """
 
     @abstractmethod

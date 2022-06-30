@@ -1,5 +1,10 @@
 # -*- coding: utf-8 -*-
 
+"""
+Base class for the implementations `macrobond_financial.web.web_client.WebClient` and
+`macrobond_financial.com.com_client.ComClient`.
+"""
+
 from abc import ABC, abstractmethod
 from typing import Generic, TypeVar
 
