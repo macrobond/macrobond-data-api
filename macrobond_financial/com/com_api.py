@@ -250,9 +250,25 @@ class ComApi(Api):
                     None,
                 )
 
-            values = tuple(filter(lambda x: x is not None and not isnan(x), series.Values))
+            series_values = series.Values
 
-            dates = _datetime_to_datetime(series.DatesAtStartOfPeriod[: len(values)])
+            padding_front = 0
+            for value in series_values:
+                if value is None or not isnan(value):
+                    break
+                padding_front = padding_front + 1
+
+            padding_back = 0
+            for value in series_values[::-1]:
+                if value is None or not isnan(value):
+                    break
+                padding_back = padding_back + 1
+
+            padding_back = len(series_values) - padding_back
+
+            values = tuple(series_values[padding_front:padding_back])
+
+            dates = _datetime_to_datetime(series.DatesAtStartOfPeriod[padding_front:padding_back])
 
             return VintageSeries(
                 series_name,
@@ -351,7 +367,7 @@ class ComApi(Api):
 
         if series_with_revisions.IsError:
             if series_with_revisions.ErrorMessage == "Not found":
-                raise ValueError("Series not found: " + serie_name)
+                raise ValueError("Not found " + serie_name)
             raise Exception(series_with_revisions.ErrorMessage)
 
         def to_obj(time: datetime) -> SeriesObservationHistory:

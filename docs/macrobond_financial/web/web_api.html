@@ -220,17 +220,21 @@ class WebApi(Api):
                 serie.get(&#34;timeStampOfLastRevision&#34;)
             )
 
-            vintage_time_stamps = tuple(
-                map(
-                    _str_to_datetime_z,
-                    serie[&#34;vintageTimeStamps&#34;],
+            stores_revisions = serie[&#34;storesRevisions&#34;]
+            if stores_revisions:
+                vintage_time_stamps = tuple(
+                    map(
+                        _str_to_datetime_z,
+                        serie[&#34;vintageTimeStamps&#34;],
+                    )
                 )
-            )
+            else:
+                vintage_time_stamps = tuple()
 
             return RevisionInfo(
                 name,
                 &#34;&#34;,
-                serie[&#34;storesRevisions&#34;],
+                stores_revisions,
                 serie[&#34;hasRevisions&#34;],
                 time_stamp_of_first_revision,
                 time_stamp_of_last_revision,
@@ -608,17 +612,21 @@ methods:<br>
                 serie.get(&#34;timeStampOfLastRevision&#34;)
             )
 
-            vintage_time_stamps = tuple(
-                map(
-                    _str_to_datetime_z,
-                    serie[&#34;vintageTimeStamps&#34;],
+            stores_revisions = serie[&#34;storesRevisions&#34;]
+            if stores_revisions:
+                vintage_time_stamps = tuple(
+                    map(
+                        _str_to_datetime_z,
+                        serie[&#34;vintageTimeStamps&#34;],
+                    )
                 )
-            )
+            else:
+                vintage_time_stamps = tuple()
 
             return RevisionInfo(
                 name,
                 &#34;&#34;,
-                serie[&#34;storesRevisions&#34;],
+                stores_revisions,
                 serie[&#34;hasRevisions&#34;],
                 time_stamp_of_first_revision,
                 time_stamp_of_last_revision,

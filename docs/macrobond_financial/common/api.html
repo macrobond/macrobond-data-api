@@ -54,6 +54,7 @@ from .enums import SeriesFrequency, SeriesWeekdays, CalendarMergeMode
 
 
 class Api(ABC):
+    # fmt: off
     &#34;&#34;&#34;
     Common API to interact with the Macrobond database.  
     These methods are implemented for both the Web API and Desktop COM API.
@@ -87,6 +88,7 @@ class Api(ABC):
 
 
     &#34;&#34;&#34;
+    # fmt: on
 
     def __init__(self) -&gt; None:
         self.raise_error = True
@@ -129,6 +131,8 @@ class Api(ABC):
 
     @abstractmethod
     def metadata_get_attribute_information(self, *names: str) -&gt; List[MetadataAttributeInformation]:
+        # pylint: disable=line-too-long
+        # fmt: off
         &#34;&#34;&#34;
         Get information about metadata attributes.
 
@@ -157,11 +161,15 @@ class Api(ABC):
             print(api.metadata_get_attribute_information(&#34;Region&#34;)[0].to_pd_data_frame())
         ```
         &#34;&#34;&#34;
+        # pylint: enable=line-too-long
+        # fmt: on
 
     @abstractmethod
     def metadata_get_value_information(
         self, *name_val: Tuple[str, str]
     ) -&gt; List[MetadataValueInformationItem]:
+        # pylint: disable=line-too-long
+        # fmt: off
         &#34;&#34;&#34;
         Get information about metadata values.
 
@@ -190,6 +198,8 @@ class Api(ABC):
             print(api.metadata_get_value_information((&#34;RateType&#34;, &#34;mole&#34;))[0].to_pd_data_frame())
         ```
         &#34;&#34;&#34;
+        # fmt: on
+        # pylint: enable=line-too-long
 
     # revision
 
@@ -448,6 +458,7 @@ class Api(ABC):
         end_point: StartOrEndPoint = None,
         raise_error: bool = None
     ) -&gt; UnifiedSeries:
+        # pylint: disable=line-too-long
         &#34;&#34;&#34;
         Get one or more series and convert them to a common frequency and calendar.
 
@@ -478,7 +489,8 @@ class Api(ABC):
         Returns
         -------
         `UnifiedSeries`
-        &#34;&#34;&#34;</code></pre>
+        &#34;&#34;&#34;
+        # pylint: enable=line-too-long</code></pre>
 </details>
 </section>
 <section>
@@ -524,6 +536,7 @@ methods:<br>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class Api(ABC):
+    # fmt: off
     &#34;&#34;&#34;
     Common API to interact with the Macrobond database.  
     These methods are implemented for both the Web API and Desktop COM API.
@@ -557,6 +570,7 @@ methods:<br>
 
 
     &#34;&#34;&#34;
+    # fmt: on
 
     def __init__(self) -&gt; None:
         self.raise_error = True
@@ -599,6 +613,8 @@ methods:<br>
 
     @abstractmethod
     def metadata_get_attribute_information(self, *names: str) -&gt; List[MetadataAttributeInformation]:
+        # pylint: disable=line-too-long
+        # fmt: off
         &#34;&#34;&#34;
         Get information about metadata attributes.
 
@@ -627,11 +643,15 @@ methods:<br>
             print(api.metadata_get_attribute_information(&#34;Region&#34;)[0].to_pd_data_frame())
         ```
         &#34;&#34;&#34;
+        # pylint: enable=line-too-long
+        # fmt: on
 
     @abstractmethod
     def metadata_get_value_information(
         self, *name_val: Tuple[str, str]
     ) -&gt; List[MetadataValueInformationItem]:
+        # pylint: disable=line-too-long
+        # fmt: off
         &#34;&#34;&#34;
         Get information about metadata values.
 
@@ -660,6 +680,8 @@ methods:<br>
             print(api.metadata_get_value_information((&#34;RateType&#34;, &#34;mole&#34;))[0].to_pd_data_frame())
         ```
         &#34;&#34;&#34;
+        # fmt: on
+        # pylint: enable=line-too-long
 
     # revision
 
@@ -918,6 +940,7 @@ methods:<br>
         end_point: StartOrEndPoint = None,
         raise_error: bool = None
     ) -&gt; UnifiedSeries:
+        # pylint: disable=line-too-long
         &#34;&#34;&#34;
         Get one or more series and convert them to a common frequency and calendar.
 
@@ -1453,6 +1476,7 @@ def get_unified_series(
     end_point: StartOrEndPoint = None,
     raise_error: bool = None
 ) -&gt; UnifiedSeries:
+    # pylint: disable=line-too-long
     &#34;&#34;&#34;
     Get one or more series and convert them to a common frequency and calendar.
 
@@ -1563,6 +1587,8 @@ The result is in the same order as the attribute names in the request.</p>
 </summary>
 <pre><code class="python">@abstractmethod
 def metadata_get_attribute_information(self, *names: str) -&gt; List[MetadataAttributeInformation]:
+    # pylint: disable=line-too-long
+    # fmt: off
     &#34;&#34;&#34;
     Get information about metadata attributes.
 
@@ -1626,6 +1652,8 @@ The result is in the same order as the attribute names in the request.</p>
 def metadata_get_value_information(
     self, *name_val: Tuple[str, str]
 ) -&gt; List[MetadataValueInformationItem]:
+    # pylint: disable=line-too-long
+    # fmt: off
     &#34;&#34;&#34;
     Get information about metadata values.
 

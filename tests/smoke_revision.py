@@ -38,8 +38,8 @@ def run(test: TestCase, api: Api) -> None:  # pylint: disable=unused-argument
 
     # Get_observation_history
     result5 = api.get_observation_history("usgdp", datetime(2022, 3, 27))[0]
-    #    str(result5.to_pd_data_frame())
-    #    result5.to_dict()
+    str(result5.to_pd_data_frame())
+    result5.to_dict()
     result5.to_pd_series()
 
 

@@ -4,6 +4,8 @@
 from macrobond_financial.common import Api
 from macrobond_financial.common.types import GetEntitiesError
 
+from pandas import Series as PdSeries, DataFrame  # type: ignore
+
 from tests.test_common import TestCase
 
 
@@ -187,3 +189,74 @@ def get_unified_series_no_series(test: TestCase, api: Api) -> None:
         "failed to retrieve:\n\tnoseries! error_message: noseries! : Not found",
         context.exception.message,
     )
+
+
+class Common(TestCase):
+
+    # get_one_series
+
+    def test_get_one_series_values_to_pd_series(self) -> None:
+        self.assertEqual(
+            0,
+            len(
+                PdSeries.compare(
+                    self.web_api.get_one_series("usgdp").values_to_pd_series(),
+                    self.com_api.get_one_series("usgdp").values_to_pd_series(),
+                )
+            ),
+            "usgdp",
+        )
+        self.assertEqual(
+            0,
+            len(
+                PdSeries.compare(
+                    self.web_api.get_one_series("ustrad4488").values_to_pd_series(),
+                    self.com_api.get_one_series("ustrad4488").values_to_pd_series(),
+                )
+            ),
+            "ustrad4488",
+        )
+        self.assertEqual(
+            0,
+            len(
+                PdSeries.compare(
+                    self.web_api.get_one_series("ct_au_e_ao_c_22_v").values_to_pd_series(),
+                    self.com_api.get_one_series("ct_au_e_ao_c_22_v").values_to_pd_series(),
+                )
+            ),
+            "ct_au_e_ao_c_22_v",
+        )
+
+    # get_unified_series
+
+    def test_get_unified_series_to_pd_data_frame(self) -> None:
+        self.assertEqual(
+            0,
+            len(
+                DataFrame.compare(
+                    self.web_api.get_unified_series("usgdp").to_pd_data_frame(),
+                    self.com_api.get_unified_series("usgdp").to_pd_data_frame(),
+                )
+            ),
+            "usgdp",
+        )
+        self.assertEqual(
+            0,
+            len(
+                DataFrame.compare(
+                    self.web_api.get_unified_series("ustrad4488").to_pd_data_frame(),
+                    self.com_api.get_unified_series("ustrad4488").to_pd_data_frame(),
+                )
+            ),
+            "ustrad4488",
+        )
+        self.assertEqual(
+            0,
+            len(
+                DataFrame.compare(
+                    self.web_api.get_unified_series("ct_au_e_ao_c_22_v").to_pd_data_frame(),
+                    self.com_api.get_unified_series("ct_au_e_ao_c_22_v").to_pd_data_frame(),
+                )
+            ),
+            "ct_au_e_ao_c_22_v",
+        )

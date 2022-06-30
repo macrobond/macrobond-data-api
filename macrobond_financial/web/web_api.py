@@ -192,17 +192,21 @@ class WebApi(Api):
                 serie.get("timeStampOfLastRevision")
             )
 
-            vintage_time_stamps = tuple(
-                map(
-                    _str_to_datetime_z,
-                    serie["vintageTimeStamps"],
+            stores_revisions = serie["storesRevisions"]
+            if stores_revisions:
+                vintage_time_stamps = tuple(
+                    map(
+                        _str_to_datetime_z,
+                        serie["vintageTimeStamps"],
+                    )
                 )
-            )
+            else:
+                vintage_time_stamps = tuple()
 
             return RevisionInfo(
                 name,
                 "",
-                serie["storesRevisions"],
+                stores_revisions,
                 serie["hasRevisions"],
                 time_stamp_of_first_revision,
                 time_stamp_of_last_revision,

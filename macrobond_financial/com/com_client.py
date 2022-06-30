@@ -48,10 +48,6 @@ class ComClient(Client["ComApi"]):
 
     def __init__(self) -> None:
         super().__init__()
-        if _win32com_import_error:
-            raise _win32com_import_error
-        if _pywintypes_import_error:
-            raise _pywintypes_import_error
         self.__api: Optional["ComApi"] = None
 
     @property
@@ -59,6 +55,12 @@ class ComClient(Client["ComApi"]):
         return bool(self.__api)
 
     def open(self) -> "ComApi":
+        if _win32com_import_error:
+            raise _win32com_import_error
+
+        if _pywintypes_import_error:
+            raise _pywintypes_import_error
+
         if self.__api is None:
             try:
                 connection: "Connection" = _client.Dispatch("Macrobond.Connection")

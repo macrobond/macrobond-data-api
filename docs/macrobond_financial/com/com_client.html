@@ -76,10 +76,6 @@ class ComClient(Client[&#34;ComApi&#34;]):
 
     def __init__(self) -&gt; None:
         super().__init__()
-        if _win32com_import_error:
-            raise _win32com_import_error
-        if _pywintypes_import_error:
-            raise _pywintypes_import_error
         self.__api: Optional[&#34;ComApi&#34;] = None
 
     @property
@@ -87,6 +83,12 @@ class ComClient(Client[&#34;ComApi&#34;]):
         return bool(self.__api)
 
     def open(self) -&gt; &#34;ComApi&#34;:
+        if _win32com_import_error:
+            raise _win32com_import_error
+
+        if _pywintypes_import_error:
+            raise _pywintypes_import_error
+
         if self.__api is None:
             try:
                 connection: &#34;Connection&#34; = _client.Dispatch(&#34;Macrobond.Connection&#34;)
@@ -194,10 +196,6 @@ class ComClient(Client[&#34;ComApi&#34;]):
 
     def __init__(self) -&gt; None:
         super().__init__()
-        if _win32com_import_error:
-            raise _win32com_import_error
-        if _pywintypes_import_error:
-            raise _pywintypes_import_error
         self.__api: Optional[&#34;ComApi&#34;] = None
 
     @property
@@ -205,6 +203,12 @@ class ComClient(Client[&#34;ComApi&#34;]):
         return bool(self.__api)
 
     def open(self) -&gt; &#34;ComApi&#34;:
+        if _win32com_import_error:
+            raise _win32com_import_error
+
+        if _pywintypes_import_error:
+            raise _pywintypes_import_error
+
         if self.__api is None:
             try:
                 connection: &#34;Connection&#34; = _client.Dispatch(&#34;Macrobond.Connection&#34;)
@@ -320,6 +324,12 @@ so it is usually not a good idea to open and close them for each request</p></di
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def open(self) -&gt; &#34;ComApi&#34;:
+    if _win32com_import_error:
+        raise _win32com_import_error
+
+    if _pywintypes_import_error:
+        raise _pywintypes_import_error
+
     if self.__api is None:
         try:
             connection: &#34;Connection&#34; = _client.Dispatch(&#34;Macrobond.Connection&#34;)
