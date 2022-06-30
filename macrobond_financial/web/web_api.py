@@ -60,6 +60,10 @@ __pdoc__ = {
 }
 
 
+# TODO @mb-jp impove , can we use a standard lib for this ?
+# https://stackoverflow.com/questions/127803/how-do-i-parse-an-iso-8601-formatted-date
+
+
 def _str_to_datetime_z(datetime_str: str) -> datetime:
     return datetime.strptime(datetime_str, "%Y-%m-%dT%H:%M:%SZ").replace(tzinfo=timezone.utc)
 

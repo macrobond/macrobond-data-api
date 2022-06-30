@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from math import isnan
-from typing import Any, Dict, List, Tuple, Union, TYPE_CHECKING, cast, Sequence
+from typing import Any, Dict, List, Optional, Tuple, Union, TYPE_CHECKING, cast, Sequence
 
 from datetime import datetime, timezone
 
@@ -94,6 +94,31 @@ def _create_series(com_series: "ComSeries", name: str) -> Series:
         _fill_metadata_from_entity(com_series),
         com_series.Values,
         _datetime_to_datetime(com_series.DatesAtStartOfPeriod),
+    )
+
+
+def remove_padding(series: "ComSeries") -> Tuple[Tuple[Optional[float], ...], Tuple[datetime, ...]]:
+    series_values = series.Values
+
+    padding_front = 0
+    for value in series_values:
+        if value is None or not isnan(value):
+            break
+        padding_front = padding_front + 1
+
+    padding_back = 0
+    for value in series_values[::-1]:
+        if value is None or not isnan(value):
+            break
+        padding_back = padding_back + 1
+
+    padding_back = len(series_values) - padding_back
+
+    return (
+        tuple(series_values[padding_front:padding_back]),
+        # _datetime_to_datetime(
+        series.DatesAtStartOfPeriod[padding_front:padding_back]
+        # ),
     )
 
 
@@ -250,32 +275,14 @@ class ComApi(Api):
                     None,
                 )
 
-            series_values = series.Values
-
-            padding_front = 0
-            for value in series_values:
-                if value is None or not isnan(value):
-                    break
-                padding_front = padding_front + 1
-
-            padding_back = 0
-            for value in series_values[::-1]:
-                if value is None or not isnan(value):
-                    break
-                padding_back = padding_back + 1
-
-            padding_back = len(series_values) - padding_back
-
-            values = tuple(series_values[padding_front:padding_back])
-
-            dates = _datetime_to_datetime(series.DatesAtStartOfPeriod[padding_front:padding_back])
+            values_and_dates = remove_padding(series)
 
             return VintageSeries(
                 series_name,
                 "",
                 _fill_metadata_from_entity(series),
-                values,
-                dates,
+                values_and_dates[0],
+                _datetime_to_datetime(values_and_dates[1]),
             )
 
         series = list(map(to_obj, series_names))
@@ -342,6 +349,20 @@ class ComApi(Api):
         return series
 
     def get_all_vintage_series(self, series_name: str) -> GetAllVintageSeriesResult:
+        def to_obj(com_series: "ComSeries", name: str):
+            if com_series.IsError:
+                return Series(name, com_series.ErrorMessage, None, None, None)
+
+            values_and_dates = remove_padding(com_series)
+
+            return Series(
+                name,
+                None,
+                _fill_metadata_from_entity(com_series),
+                values_and_dates[0],
+                _datetime_to_datetime(values_and_dates[1]),
+            )
+
         series_with_revisions = self.database.FetchOneSeriesWithRevisions(series_name)
 
         if series_with_revisions.IsError:
@@ -352,7 +373,7 @@ class ComApi(Api):
         return GetAllVintageSeriesResult(
             list(
                 map(
-                    lambda x: _create_series(x, series_name),
+                    lambda x: to_obj(x, series_name),
                     series_with_revisions.GetCompleteHistory(),
                 )
             ),

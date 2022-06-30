@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from datetime import datetime
+from pandas import Series as PdSeries  # type: ignore
 
 from macrobond_financial.common import Api
 from tests.test_common import TestCase
@@ -51,3 +52,21 @@ class Web(TestCase):
 class Com(TestCase):
     def test(self) -> None:
         self.assertNoWarnings(lambda: run(self, self.com_api))
+
+
+class Common(TestCase):
+    def test(self) -> None:
+        PdSeries.compare(
+            self.web_api.get_all_vintage_series("usgdp")[0].values_to_pd_series(),
+            self.com_api.get_all_vintage_series("usgdp")[0].values_to_pd_series(),
+        )
+
+        PdSeries.compare(
+            self.web_api.get_all_vintage_series("ustrad4488")[0].values_to_pd_series(),
+            self.com_api.get_all_vintage_series("ustrad4488")[0].values_to_pd_series(),
+        )
+
+        PdSeries.compare(
+            self.web_api.get_all_vintage_series("ct_au_e_ao_c_22_v")[0].values_to_pd_series(),
+            self.com_api.get_all_vintage_series("ct_au_e_ao_c_22_v")[0].values_to_pd_series(),
+        )
