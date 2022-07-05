@@ -23,6 +23,9 @@ class UnifiedSeriesEntry(TypedDict):
     name: str
     """The name of the series."""
 
+    vintage: Optional[str]
+    """The vintage of the series. The default is the latest version of the series."""
+
     missingValueMethod: Optional[SeriesMissingValueMethod]
     """The method for filling in missing values. The default is the automatic method."""
 

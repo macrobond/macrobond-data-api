@@ -149,3 +149,11 @@ class SeriesRequest:
         interface to do further configurations, such as methods for missing
         value and frequency conversion.
         """
+
+    def AddSeriesWithVintage(self, name: str, vintage: datetime) -> SeriesExpression:
+        """
+        Add a series with a vintage to the list of series to request. You can optionally use
+        the returned
+        interface to do further configurations, such as methods for missing
+        value and frequency conversion.
+        """

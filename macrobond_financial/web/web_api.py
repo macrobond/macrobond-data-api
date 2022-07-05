@@ -60,7 +60,7 @@ __pdoc__ = {
 }
 
 
-# TODO @mb-jp impove , can we use a standard lib for this ?
+# TODO: @mb-jp impove , can we use a standard lib for this ?
 # https://stackoverflow.com/questions/127803/how-do-i-parse-an-iso-8601-formatted-date
 
 
@@ -402,6 +402,7 @@ class WebApi(Api):
             entrie = entry_or_name
             return {
                 "name": entrie.name,
+                "vintage": entrie.vintage.isoformat() if entrie.vintage is not None else None, 
                 "missingValueMethod": entrie.missing_value_method,
                 "partialPeriodsMethod": entrie.partial_periods_method,
                 "toLowerFrequencyMethod": entrie.to_lowerfrequency_method,

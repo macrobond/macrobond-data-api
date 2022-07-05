@@ -1,10 +1,9 @@
 # -*- coding: utf-8 -*-
 
+from pandas import Series as PdSeries, DataFrame  # type: ignore
 
 from macrobond_financial.common import Api
-from macrobond_financial.common.types import GetEntitiesError
-
-from pandas import Series as PdSeries, DataFrame  # type: ignore
+from macrobond_financial.common.types import GetEntitiesError, SeriesEntry
 
 from tests.test_common import TestCase
 
@@ -25,6 +24,9 @@ class Web(TestCase):
     def test_get_unified_series_no_series(self) -> None:
         get_unified_series_no_series(self, self.web_api)
 
+    def test_get_unified_series_vintage(self) -> None:
+        get_unified_series_vintage(self, self.web_api)
+
 
 class Com(TestCase):
     def test_get_one_series(self) -> None:
@@ -41,6 +43,9 @@ class Com(TestCase):
 
     def test_get_unified_series_no_series(self) -> None:
         get_unified_series_no_series(self, self.com_api)
+
+    def test_get_unified_series_vintage(self) -> None:
+        get_unified_series_vintage(self, self.com_api)
 
 
 def get_one_series(test: TestCase, api: Api) -> None:
@@ -189,6 +194,24 @@ def get_unified_series_no_series(test: TestCase, api: Api) -> None:
         "failed to retrieve:\n\tnoseries! error_message: noseries! : Not found",
         context.exception.message,
     )
+
+
+def get_unified_series_vintage(test: TestCase, api: Api) -> None:
+    revision_info = api.get_revision_info("usgdp")[0]
+
+    unified_1 = api.get_unified_series(SeriesEntry("usgdp"))[0]
+
+    unified_2 = api.get_unified_series(
+        SeriesEntry("usgdp", revision_info.time_stamp_of_last_revision)
+    )[0]
+
+    unified_3 = api.get_unified_series(
+        SeriesEntry("usgdp", revision_info.time_stamp_of_first_revision)
+    )[0]
+
+    test.assertEqual(unified_1.values, unified_2.values)
+
+    test.assertNotEqual(unified_1.values, unified_3.values)
 
 
 class Common(TestCase):

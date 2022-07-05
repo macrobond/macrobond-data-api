@@ -488,7 +488,10 @@ class ComApi(Api):
                 entry_or_name = SeriesEntry(entry_or_name)
 
             entrie = entry_or_name
-            series_expression = request.AddSeries(entrie.name)
+            if entrie.vintage is None: 
+                series_expression = request.AddSeries(entrie.name)
+            else:
+                series_expression = request.AddSeriesWithVintage(entrie.name, entrie.vintage)
 
             series_expression.MissingValueMethod = entrie.missing_value_method
 
