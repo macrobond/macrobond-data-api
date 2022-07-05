@@ -8,7 +8,8 @@ from .series_methods import SeriesMethods
 
 from .series_tree_methods import SeriesTreeMethods
 
-from .session_http_exception import SessionHttpException
+from .http_exception import HttpException
+from .problem_details_exception import ProblemDetailsException
 
 from .status_response import ResponseErrorCode
 

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from typing import Callable, Optional, Any, TYPE_CHECKING
+from typing import Callable, Optional, Any, TYPE_CHECKING, Sequence
 
 from authlib.integrations.requests_client import OAuth2Session  # type: ignore
 from authlib.integrations.base_client.errors import InvalidTokenError  # type: ignore
@@ -9,7 +9,8 @@ from .web_types import (
     SearchMethods,
     SeriesMethods,
     SeriesTreeMethods,
-    SessionHttpException,
+    HttpException,
+    ProblemDetailsException,
 )
 
 from .scope import Scope
@@ -106,10 +107,11 @@ class Session:
 
         return self.__if_status_code_401_fetch_token_and_retry(http)
 
-    def get_or_raise(self, url: str, params: dict = None) -> "Response":
+    def get_or_raise(
+        self, url: str, params: dict = None, non_error_status: Sequence[int] = None
+    ) -> "Response":
         response = self.get(url, params)
-        if response.status_code != 200:
-            raise SessionHttpException(response)
+        self._raise_on_error(response, non_error_status)
         return response
 
     def post(self, url: str, params: dict = None, json: object = None) -> "Response":
@@ -118,11 +120,33 @@ class Session:
 
         return self.__if_status_code_401_fetch_token_and_retry(http)
 
-    def post_or_raise(self, url: str, params: dict = None, json: object = None) -> "Response":
+    def post_or_raise(
+        self,
+        url: str,
+        params: dict = None,
+        json: object = None,
+        non_error_status: Sequence[int] = None,
+    ) -> "Response":
         response = self.post(url, params, json)
-        if response.status_code != 200:
-            raise SessionHttpException(response)
+        self._raise_on_error(response, non_error_status)
         return response
+
+    def _raise_on_error(self, response: "Response", non_error_status: Sequence[int] = None) -> None:
+        if non_error_status is None:
+            non_error_status = [200]
+
+        if response.status_code in non_error_status:
+            return
+
+        content_type = response.headers.get("Content-Type")
+        if ["application/json; charset=utf-8", "application/json"].count(content_type) != 0:
+            raise ProblemDetailsException.create_from_response(response)
+
+        macrobond_status = response.headers.get("X-Macrobond-Status")
+        if macrobond_status:
+            raise ProblemDetailsException(response, detail=macrobond_status)
+
+        raise HttpException(response)
 
     def discovery(self, url: str) -> str:
         response = self.auth2_session.request("get", url + ".well-known/openid-configuration", True)

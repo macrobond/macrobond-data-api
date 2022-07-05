@@ -2,13 +2,13 @@
 
 from typing import cast
 
-from datetime import datetime, timezone
+from datetime import datetime
 
 from pandas import Series as PdSeries, DataFrame  # type: ignore
 
 from tests.test_common import TestCase
 
-from macrobond_financial.common.types import GetEntitiesError, SeriesObservationHistory
+from macrobond_financial.common.types import GetEntitiesError
 
 from macrobond_financial.common import Api
 

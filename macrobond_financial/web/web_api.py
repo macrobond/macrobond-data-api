@@ -36,7 +36,7 @@ from macrobond_financial.common.types import (
     GetAllVintageSeriesResult,
 )
 
-from .session import SessionHttpException
+from .session import ProblemDetailsException
 
 if TYPE_CHECKING:  # pragma: no cover
     from .session import Session
@@ -166,9 +166,9 @@ class WebApi(Api):
                         info.get("comment"),
                     )
                 )
-        except SessionHttpException as ex:
-            if ex.status_code == 404:
-                raise ValueError(ex.response.json()["detail"]) from ex
+        except ProblemDetailsException as ex:
+            if ex.status == 404:
+                raise ValueError(ex.detail) from ex
             raise ex
         return ret
 
@@ -289,8 +289,8 @@ class WebApi(Api):
     def get_all_vintage_series(self, series_name: str) -> GetAllVintageSeriesResult:
         try:
             response = self.session.series.fetch_all_vintage_series(series_name)
-        except SessionHttpException as ex:
-            if ex.status_code == 404:
+        except ProblemDetailsException as ex:
+            if ex.status == 404:
                 raise ValueError("Series not found: " + series_name) from ex
             raise ex
 
@@ -303,9 +303,9 @@ class WebApi(Api):
     ) -> List[SeriesObservationHistory]:
         try:
             response = self.session.series.fetch_observation_history(serie_name, list(times))
-        except SessionHttpException as ex:
-            if ex.status_code == 404:
-                raise Exception(ex.response.json()["detail"]) from ex
+        except ProblemDetailsException as ex:
+            if ex.status == 404:
+                raise Exception(ex.detail) from ex
             raise ex
 
         return list(
@@ -402,7 +402,7 @@ class WebApi(Api):
             entrie = entry_or_name
             return {
                 "name": entrie.name,
-                "vintage": entrie.vintage.isoformat() if entrie.vintage is not None else None, 
+                "vintage": entrie.vintage.isoformat() if entrie.vintage is not None else None,
                 "missingValueMethod": entrie.missing_value_method,
                 "partialPeriodsMethod": entrie.partial_periods_method,
                 "toLowerFrequencyMethod": entrie.to_lowerfrequency_method,

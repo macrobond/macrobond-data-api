@@ -6,14 +6,9 @@ if TYPE_CHECKING:  # pragma: no cover
     from requests import Response  # type: ignore
 
 
-class SessionHttpException(Exception):
-    @property
-    def status_code(self) -> int:
-        return self.__response.status_code
+class HttpException(Exception):
 
-    @property
-    def response(self) -> "Response":
-        return self.__response
+    response: "Response"
 
     def __init__(self, response: "Response") -> None:
         request = response.request
@@ -24,4 +19,4 @@ class SessionHttpException(Exception):
                 f'text: "{response.text}"'
             )
         )
-        self.__response = response
+        self.response = response
