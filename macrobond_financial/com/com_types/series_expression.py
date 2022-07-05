@@ -2,6 +2,9 @@
 
 # pylint: disable = invalid-name , missing-module-docstring
 
+from typing import Optional
+from datetime import datetime
+
 from macrobond_financial.common.enums import (
     SeriesMissingValueMethod,
     SeriesToLowerFrequencyMethod,
@@ -52,3 +55,11 @@ class SeriesExpression:
     @PartialPeriodsMethod.setter
     def PartialPeriodsMethod(self, new_missing_value_method: SeriesPartialPeriodsMethod):
         """Set the method to use for converting partial periods to lower frequency."""
+
+    @property
+    def Vintage(self) -> Optional[datetime]:
+        """Get the vintage date of the series."""
+
+    @Vintage.setter
+    def Vintage(self, new_vintage: Optional[datetime]):
+        """Set the vintage date of the series."""
