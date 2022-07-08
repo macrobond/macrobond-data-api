@@ -15,7 +15,9 @@ EntityColumns = List[EntityColumnsLiterals]
 
 
 class Entity:
-    """Interface for a database Macrobond entity."""
+    """
+    Represents a Macrobond entity.
+    """
 
     __slots__ = ("name", "error_message", "metadata")
 
