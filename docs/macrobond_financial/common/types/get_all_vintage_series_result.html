@@ -22,58 +22,6 @@
 <h1 class="title">Module <code>macrobond_financial.common.types.get_all_vintage_series_result</code></h1>
 </header>
 <section id="section-intro">
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python"># get_all_vintage_series_result
-
-
-from typing import TYPE_CHECKING, Any, Dict, Sequence, List
-
-from macrobond_financial.common.types import Series
-
-from .._get_pandas import _get_pandas
-
-if TYPE_CHECKING:  # pragma: no cover
-    from pandas import DataFrame  # type: ignore
-
-
-class GetAllVintageSeriesResult(List[Series]):
-    series_name: str
-
-    def __init__(
-        self,
-        series: Sequence[Series],
-        series_name: str,
-    ) -&gt; None:
-        super().__init__(series)
-        self.series_name = series_name
-        &#34;&#34;&#34;series_name&#34;&#34;&#34;
-
-    @property
-    def series(self) -&gt; List[Series]:
-        &#34;&#34;&#34;
-        A sequence of the metadata of the entities found.
-        &#34;&#34;&#34;
-        return list(self)
-
-    def to_pd_data_frame(self) -&gt; &#34;DataFrame&#34;:
-        pandas = _get_pandas()
-        data = list(map(lambda s: s.values_to_pd_series(), self))
-        data_frame = pandas.concat(data, axis=1, keys=[s.name for s in self])
-        data_frame = data_frame.sort_index()
-        return data_frame
-
-    def to_dict(self) -&gt; Dict[str, Any]:
-        return {
-            &#34;series_name&#34;: self.series_name,
-            &#34;series&#34;: tuple(map(lambda x: x.to_dict(), self)),
-        }
-
-    def __repr__(self):
-        return &#34;GetAllVintageSeriesResult series_name: &#34; + self.series_name</code></pre>
-</details>
 </section>
 <section>
 </section>
@@ -92,45 +40,6 @@ class GetAllVintageSeriesResult(List[Series]):
 <div class="desc"><p>Built-in mutable sequence.</p>
 <p>If no argument is given, the constructor creates a new empty list.
 The argument must be an iterable if specified.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">class GetAllVintageSeriesResult(List[Series]):
-    series_name: str
-
-    def __init__(
-        self,
-        series: Sequence[Series],
-        series_name: str,
-    ) -&gt; None:
-        super().__init__(series)
-        self.series_name = series_name
-        &#34;&#34;&#34;series_name&#34;&#34;&#34;
-
-    @property
-    def series(self) -&gt; List[Series]:
-        &#34;&#34;&#34;
-        A sequence of the metadata of the entities found.
-        &#34;&#34;&#34;
-        return list(self)
-
-    def to_pd_data_frame(self) -&gt; &#34;DataFrame&#34;:
-        pandas = _get_pandas()
-        data = list(map(lambda s: s.values_to_pd_series(), self))
-        data_frame = pandas.concat(data, axis=1, keys=[s.name for s in self])
-        data_frame = data_frame.sort_index()
-        return data_frame
-
-    def to_dict(self) -&gt; Dict[str, Any]:
-        return {
-            &#34;series_name&#34;: self.series_name,
-            &#34;series&#34;: tuple(map(lambda x: x.to_dict(), self)),
-        }
-
-    def __repr__(self):
-        return &#34;GetAllVintageSeriesResult series_name: &#34; + self.series_name</code></pre>
-</details>
 <h3>Ancestors</h3>
 <ul class="hlist">
 <li>builtins.list</li>
@@ -141,17 +50,6 @@ The argument must be an iterable if specified.</p></div>
 <dt id="macrobond_financial.common.types.get_all_vintage_series_result.GetAllVintageSeriesResult.series"><code class="name">var <span class="ident">series</span> : List[<a title="macrobond_financial.common.types.series.Series" href="series.html#macrobond_financial.common.types.series.Series">Series</a>]</code></dt>
 <dd>
 <div class="desc"><p>A sequence of the metadata of the entities found.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@property
-def series(self) -&gt; List[Series]:
-    &#34;&#34;&#34;
-    A sequence of the metadata of the entities found.
-    &#34;&#34;&#34;
-    return list(self)</code></pre>
-</details>
 </dd>
 <dt id="macrobond_financial.common.types.get_all_vintage_series_result.GetAllVintageSeriesResult.series_name"><code class="name">var <span class="ident">series_name</span> : str</code></dt>
 <dd>
@@ -165,33 +63,12 @@ def series(self) -&gt; List[Series]:
 </code></dt>
 <dd>
 <div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def to_dict(self) -&gt; Dict[str, Any]:
-    return {
-        &#34;series_name&#34;: self.series_name,
-        &#34;series&#34;: tuple(map(lambda x: x.to_dict(), self)),
-    }</code></pre>
-</details>
 </dd>
 <dt id="macrobond_financial.common.types.get_all_vintage_series_result.GetAllVintageSeriesResult.to_pd_data_frame"><code class="name flex">
 <span>def <span class="ident">to_pd_data_frame</span></span>(<span>self) ‑> DataFrame</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def to_pd_data_frame(self) -&gt; &#34;DataFrame&#34;:
-    pandas = _get_pandas()
-    data = list(map(lambda s: s.values_to_pd_series(), self))
-    data_frame = pandas.concat(data, axis=1, keys=[s.name for s in self])
-    data_frame = data_frame.sort_index()
-    return data_frame</code></pre>
-</details>
 </dd>
 </dl>
 </dd>

@@ -5,7 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.10.0" />
 <title>macrobond_financial.common.client API documentation</title>
-<meta name="description" content="" />
+<meta name="description" content="Base class for the implementations `macrobond_financial.web.web_client.WebClient` and
+`macrobond_financial.com.com_client.ComClient`." />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
 <link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
@@ -22,50 +23,8 @@
 <h1 class="title">Module <code>macrobond_financial.common.client</code></h1>
 </header>
 <section id="section-intro">
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python"># -*- coding: utf-8 -*-
-
-from abc import ABC, abstractmethod
-from typing import Generic, TypeVar
-
-from .api import Api
-
-TypeVarApi = TypeVar(&#34;TypeVarApi&#34;, bound=Api)
-
-__pdoc__ = {
-    &#34;Client.__init__&#34;: False,
-}
-
-
-class Client(ABC, Generic[TypeVarApi]):
-    def __init__(self) -&gt; None:
-        ...  # pragma: no cover
-
-    def __enter__(self) -&gt; TypeVarApi:
-        return self.open()  # pragma: no cover
-
-    def __exit__(self, exception_type, exception_value, traceback) -&gt; None:
-        self.close()  # pragma: no cover
-
-    @property
-    @abstractmethod
-    def is_open(self) -&gt; bool:
-        ...
-
-    @abstractmethod
-    def open(self) -&gt; TypeVarApi:
-        ...  # pragma: no cover
-
-    @abstractmethod
-    def close(self) -&gt; None:
-        ...  # pragma: no cover
-
-    def __repr__(self):
-        return f&#34;{self.__class__.__name__} is_open: {self.is_open}&#34;</code></pre>
-</details>
+<p>Base class for the implementations <code><a title="macrobond_financial.web.web_client.WebClient" href="../web/web_client.html#macrobond_financial.web.web_client.WebClient">WebClient</a></code> and
+<code><a title="macrobond_financial.com.com_client.ComClient" href="../com/com_client.html#macrobond_financial.com.com_client.ComClient">ComClient</a></code>.</p>
 </section>
 <section>
 </section>
@@ -82,36 +41,6 @@ class Client(ABC, Generic[TypeVarApi]):
 <dd>
 <div class="desc"><p>Helper class that provides a standard way to create an ABC using
 inheritance.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">class Client(ABC, Generic[TypeVarApi]):
-    def __init__(self) -&gt; None:
-        ...  # pragma: no cover
-
-    def __enter__(self) -&gt; TypeVarApi:
-        return self.open()  # pragma: no cover
-
-    def __exit__(self, exception_type, exception_value, traceback) -&gt; None:
-        self.close()  # pragma: no cover
-
-    @property
-    @abstractmethod
-    def is_open(self) -&gt; bool:
-        ...
-
-    @abstractmethod
-    def open(self) -&gt; TypeVarApi:
-        ...  # pragma: no cover
-
-    @abstractmethod
-    def close(self) -&gt; None:
-        ...  # pragma: no cover
-
-    def __repr__(self):
-        return f&#34;{self.__class__.__name__} is_open: {self.is_open}&#34;</code></pre>
-</details>
 <h3>Ancestors</h3>
 <ul class="hlist">
 <li>abc.ABC</li>
@@ -127,15 +56,6 @@ inheritance.</p></div>
 <dt id="macrobond_financial.common.client.Client.is_open"><code class="name">var <span class="ident">is_open</span> : bool</code></dt>
 <dd>
 <div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@property
-@abstractmethod
-def is_open(self) -&gt; bool:
-    ...</code></pre>
-</details>
 </dd>
 </dl>
 <h3>Methods</h3>
@@ -145,28 +65,12 @@ def is_open(self) -&gt; bool:
 </code></dt>
 <dd>
 <div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@abstractmethod
-def close(self) -&gt; None:
-    ...  # pragma: no cover</code></pre>
-</details>
 </dd>
 <dt id="macrobond_financial.common.client.Client.open"><code class="name flex">
 <span>def <span class="ident">open</span></span>(<span>self) ‑> ~TypeVarApi</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@abstractmethod
-def open(self) -&gt; TypeVarApi:
-    ...  # pragma: no cover</code></pre>
-</details>
 </dd>
 </dl>
 </dd>

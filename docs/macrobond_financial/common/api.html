@@ -5,7 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.10.0" />
 <title>macrobond_financial.common.api API documentation</title>
-<meta name="description" content="" />
+<meta name="description" content="The class `macrobond_financial.common.api.Api` defines the core methods to interact with the
+Macrobond database." />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
 <link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
@@ -22,476 +23,8 @@
 <h1 class="title">Module <code>macrobond_financial.common.api</code></h1>
 </header>
 <section id="section-intro">
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python"># -*- coding: utf-8 -*-
-
-from typing import List, Sequence, Union, Tuple, Dict
-from abc import ABC, abstractmethod
-
-from datetime import datetime
-
-from .types import (
-    SearchFilter,
-    SearchResult,
-    StartOrEndPoint,
-    SeriesEntry,
-    MetadataValueInformation,
-    MetadataAttributeInformation,
-    MetadataValueInformationItem,
-    RevisionInfo,
-    VintageSeries,
-    Series,
-    Entity,
-    UnifiedSeries,
-    GetAllVintageSeriesResult,
-    SeriesObservationHistory,
-)
-
-from .enums import SeriesFrequency, SeriesWeekdays, CalendarMergeMode
-
-
-class Api(ABC):
-    # fmt: off
-    &#34;&#34;&#34;
-    Common API to interact with the Macrobond database.  
-    These methods are implemented for both the Web API and Desktop COM API.
-
-
-    Metadata methods:  
-        `macrobond_financial.common.api.Api.metadata_list_values`  
-        `macrobond_financial.common.api.Api.metadata_get_attribute_information`  
-        `macrobond_financial.common.api.Api.metadata_get_value_information`  
-
-
-    Revision methods:  
-        `macrobond_financial.common.api.Api.get_revision_info`  
-        `macrobond_financial.common.api.Api.get_vintage_series`  
-        `macrobond_financial.common.api.Api.get_nth_release`  
-        `macrobond_financial.common.api.Api.get_all_vintage_series`  
-        get_observation_history. Only available in wep api.  
-
-
-    Search methods:  
-        `macrobond_financial.common.api.Api.entity_search`  
-        `macrobond_financial.common.api.Api.entity_search_multi_filter`  
-
-
-    Series  methods:  
-        `macrobond_financial.common.api.Api.get_one_series`  
-        `macrobond_financial.common.api.Api.get_series`  
-        `macrobond_financial.common.api.Api.get_one_entity`  
-        `macrobond_financial.common.api.Api.get_entities`  
-        `macrobond_financial.common.api.Api.get_unified_series`  
-
-
-    &#34;&#34;&#34;
-    # fmt: on
-
-    def __init__(self) -&gt; None:
-        self.raise_error = True
-        &#34;&#34;&#34;
-        Controls the default value of the parameter called raise_error, which is used in many
-        API calls. The default value is &#34;True&#34;.
-        &#34;&#34;&#34;
-
-    # metadata
-
-    @abstractmethod
-    def metadata_list_values(self, name: str) -&gt; MetadataValueInformation:
-        &#34;&#34;&#34;
-        List all metadata attribute values of an attribute that uses a value list.
-
-        Parameters
-        ----------
-        name : str
-            The name of the metadata attribute
-
-        Returns
-        -------
-        `macrobond_financial.common.types.metadata_value_information.MetadataValueInformation`
-
-        Examples
-        -------
-        ```python
-        with ComClient() as api: # or WebClient
-
-            # as objects
-            print(api.metadata_list_values(&#34;RateType&#34;))
-
-            # as dict
-            print(api.metadata_list_values(&#39;RateType&#39;).to_dict())
-
-            # as data_frame
-            print(metadata_list_values(&#34;RateType&#34;).to_pd_data_frame())
-        ```
-        &#34;&#34;&#34;
-
-    @abstractmethod
-    def metadata_get_attribute_information(self, *names: str) -&gt; List[MetadataAttributeInformation]:
-        # pylint: disable=line-too-long
-        # fmt: off
-        &#34;&#34;&#34;
-        Get information about metadata attributes.
-
-        Parameters
-        ----------
-        *names : str
-            One or more names of metadata attributes.
-
-        Returns
-        -------
-        `List[macrobond_financial.common.types.metadata_attribute_information.MetadataAttributeInformation]`  
-        The result is in the same order as the attribute names in the request.
-
-        Examples
-        -------
-        ```python
-        with ComClient() as api: # or WebClient
-
-            # as objects
-            print(api.metadata_get_attribute_information(&#34;Region&#34;, &#34;Unit&#34;))
-
-            # as dict
-            print(api.metadata_get_attribute_information(&#34;Region&#34;)[0].to_dict())
-
-            # as data_frame
-            print(api.metadata_get_attribute_information(&#34;Region&#34;)[0].to_pd_data_frame())
-        ```
-        &#34;&#34;&#34;
-        # pylint: enable=line-too-long
-        # fmt: on
-
-    @abstractmethod
-    def metadata_get_value_information(
-        self, *name_val: Tuple[str, str]
-    ) -&gt; List[MetadataValueInformationItem]:
-        # pylint: disable=line-too-long
-        # fmt: off
-        &#34;&#34;&#34;
-        Get information about metadata values.
-
-        Parameters
-        ----------
-        *name_val : Tuple[str, str]
-            The attribute name and a value.
-
-        Returns
-        -------
-        `List[macrobond_financial.common.types.metadata_value_information.MetadataValueInformationItem]`  
-        The result is in the same order as the attribute names in the request.
-
-        Examples
-        -------
-        ```python
-        with ComClient() as api: # or WebClient
-
-            # as objects
-            print(api.metadata_get_value_information((&#34;RateType&#34;, &#34;mole&#34;), (&#34;RateType&#34;,&#34;cobe&#34;)))
-
-            # as dict
-            print(api.metadata_get_value_information((&#34;RateType&#34;, &#34;mole&#34;))[0].to_dict())
-
-            # as data_frame
-            print(api.metadata_get_value_information((&#34;RateType&#34;, &#34;mole&#34;))[0].to_pd_data_frame())
-        ```
-        &#34;&#34;&#34;
-        # fmt: on
-        # pylint: enable=line-too-long
-
-    # revision
-
-    @abstractmethod
-    def get_revision_info(self, *series_names: str, raise_error: bool = None) -&gt; List[RevisionInfo]:
-        &#34;&#34;&#34;
-        Get information about if revision history is available for a series
-        and a list of revision timestamps.
-
-        Parameters
-        ----------
-        *series_names : str
-            One or more series names.
-        raise_error : bool
-            If True, accessing the resulting series raises a GetEntitiesError.
-            If False you should inspect the is_error property of the result instead.
-            If None, it will use the global value `macrobond_financial.common.api.Api.raise_error`
-
-        Returns
-        -------
-        `List[RevisionInfo]`
-        &#34;&#34;&#34;
-
-    @abstractmethod
-    def get_vintage_series(
-        self, time: datetime, *series_names: str, raise_error: bool = None
-    ) -&gt; List[VintageSeries]:
-        &#34;&#34;&#34;
-        Fetch a vintage series.
-
-        Parameters
-        ----------
-        time : datetime
-            The time of the vintage to return.
-        series_name : str
-            One or more names of series.
-        raise_error : bool
-            If True, accessing the resulting series raises a GetEntitiesError.
-            If False you should inspect the is_error property of the result instead.
-            If None, it will use the global value `macrobond_financial.common.api.Api.raise_error`
-
-        Returns
-        -------
-        `List[VintageSeries]`
-        &#34;&#34;&#34;
-
-    @abstractmethod
-    def get_nth_release(
-        self, nth: int, *series_names: str, raise_error: bool = None
-    ) -&gt; List[Series]:
-        &#34;&#34;&#34;
-        Fetcha series where each value is the nth change of the value.
-
-        Parameters
-        ----------
-        time : nth
-            The nth change of each value.
-        series_names : str
-            One or more names of series.
-        raise_error : bool
-            If True, accessing the resulting series raises a GetEntitiesError.
-            If False you should inspect the is_error property of the result instead.
-            If None, it will use the global value `macrobond_financial.common.api.Api.raise_error`
-
-        Returns
-        -------
-        `List[Series]`
-        &#34;&#34;&#34;
-
-    @abstractmethod
-    def get_all_vintage_series(self, series_name: str) -&gt; GetAllVintageSeriesResult:
-        ...
-
-    @abstractmethod
-    def get_observation_history(
-        self, serie_name: str, *times: datetime
-    ) -&gt; List[SeriesObservationHistory]:
-        ...
-
-    # Search
-
-    def entity_search(
-        self,
-        text: str = None,
-        entity_types: Union[Sequence[str], str] = None,
-        must_have_values: Dict[str, object] = None,
-        must_not_have_values: Dict[str, object] = None,
-        must_have_attributes: Union[Sequence[str], str] = None,
-        must_not_have_attributes: Union[Sequence[str], str] = None,
-        include_discontinued: bool = False,
-        no_metadata: bool = False,
-    ) -&gt; SearchResult:
-        &#34;&#34;&#34;
-        Search for time series and other entitites.
-
-        Parameters
-        ----------
-        text: str
-            Optional set of keywords separated by space.
-        must_have_values: Dict[str, object]
-            Optional dictionary of values that must be present in the entity metadata.
-            The value can be a single value or an array of values. If there are several values
-            for an attribute, it means that either of them must be present.
-        must_not_have_values: Dict[str, object]
-            Optional dictionary of values that must not be present in the entity metadata.
-            The value can be a single value or an array of values.
-        must_have_attributes: Union[Sequence[str], str]
-            Optional set of attributes that must be present in the entity metadata.
-            The value can be a single value or a sequence of values.
-        must_not_have_attributes: Union[Sequence[str], str]
-            Optional set of attributes that must no be present in the entity metadata.
-            The value can be a single value or a sequence of values.
-        include_discontinued: bool
-            Set this value to True in order to include discontinued entities in the search.
-
-        Returns
-        -------
-        `SearchResult`
-        &#34;&#34;&#34;
-        return self.entity_search_multi_filter(
-            SearchFilter(
-                text=text,
-                entity_types=entity_types,
-                must_have_values=must_have_values,
-                must_not_have_values=must_not_have_values,
-                must_have_attributes=must_have_attributes,
-                must_not_have_attributes=must_not_have_attributes,
-            ),
-            include_discontinued=include_discontinued,
-            no_metadata=no_metadata,
-        )
-
-    @abstractmethod
-    def entity_search_multi_filter(
-        self, *filters: SearchFilter, include_discontinued: bool = False, no_metadata: bool = False
-    ) -&gt; SearchResult:
-        &#34;&#34;&#34;
-        Search for time series and other entitites.
-        You can pass more than one search filter. In this case the filters have to use different
-        entity types and searches will be nested so that the result of the previous filter will be
-        used as a condition in the subsequent filter linked by the entity type.
-
-        Parameters
-        ----------
-        *filters : `macrobond_financial.common.types.search_filter.SearchFilter`
-            One or more search filters.
-        include_discontinued : bool
-            Set this value to True in order to include discontinued entities in the search.
-
-        Returns
-        -------
-        `macrobond_financial.common.types.search_result.SearchResult`
-        &#34;&#34;&#34;
-
-    # Series
-
-    @abstractmethod
-    def get_one_series(self, series_name: str, raise_error: bool = None) -&gt; Series:
-        &#34;&#34;&#34;
-        Download one series.
-
-        .. important:: It is much more efficient to download more than one series at a time.
-           See `Api.get_series`.
-
-        Parameters
-        ----------
-        series_name : str
-            The name of the series.
-        raise_error : bool
-            If True, accessing the resulting series raises a GetEntitiesError.
-            If False you should inspect the is_error property of the result instead.
-            If None, it will use the global value `macrobond_financial.common.api.Api.raise_error`
-
-        Returns
-        -------
-        `Series`
-        &#34;&#34;&#34;
-
-    @abstractmethod
-    def get_series(self, *series_names: str, raise_error: bool = None) -&gt; List[Series]:
-        &#34;&#34;&#34;
-        Download one or more series.
-
-        .. Important:: It is much more efficient to download more than one series at a time.
-           However, downloading too many at a time is less efficient and can exhaust memory.
-           A good habit is to download series in batches of around 200.
-
-        Parameters
-        ----------
-        *series_names : str
-            One or more names of series.
-        raise_error : bool
-            If True, accessing the resulting series raises a GetEntitiesError.
-            If False you should inspect the is_error property of the result instead.
-            If None, it will use the global value `macrobond_financial.common.api.Api.raise_error`
-
-        Returns
-        -------
-        `List[Series]`
-        &#34;&#34;&#34;
-
-    @abstractmethod
-    def get_one_entity(self, entity_name: str, raise_error: bool = None) -&gt; Entity:
-        &#34;&#34;&#34;
-        Download one entity.
-
-        .. important:: It is much more efficient to download more than one entity at a time.
-           See `Api.get_entities`.
-
-        Parameters
-        ----------
-        entity_name : str
-            The name the entity.
-        raise_error : bool
-            If True, accessing the resulting entity raises a GetEntitiesError.
-            If False you should inspect the is_error property of the result instead.
-            If None, it will use the global value `macrobond_financial.common.api.Api.raise_error`
-
-        Returns
-        -------
-        `Entity`
-        &#34;&#34;&#34;
-
-    @abstractmethod
-    def get_entities(self, *entity_names: str, raise_error: bool = None) -&gt; List[Entity]:
-        &#34;&#34;&#34;
-        Download one or more entities.
-
-        .. Important:: It is much more efficient to download more than one entity at a time.
-           However, downloading too many at a time is less efficient and can exhaust memory.
-           A good habit is to download entities in batches of around 200.
-
-        Parameters
-        ----------
-        *entity_names : str
-            One or more names of entities.
-        raise_error : bool
-            If True, accessing the resulting entities raises a GetEntitiesError.
-            If False you should inspect the is_error property of the result instead.
-            If None, it will use the global value `macrobond_financial.common.api.Api.raise_error`
-
-        Returns
-        -------
-        `List[Entity]`
-        &#34;&#34;&#34;
-
-    @abstractmethod
-    def get_unified_series(
-        self,
-        *series_entries: Union[SeriesEntry, str],
-        frequency=SeriesFrequency.HIGHEST,
-        weekdays=SeriesWeekdays.MONDAY_TO_FRIDAY,
-        calendar_merge_mode=CalendarMergeMode.AVAILABLE_IN_ANY,
-        currency=&#34;&#34;,
-        start_point: StartOrEndPoint = None,
-        end_point: StartOrEndPoint = None,
-        raise_error: bool = None
-    ) -&gt; UnifiedSeries:
-        # pylint: disable=line-too-long
-        &#34;&#34;&#34;
-        Get one or more series and convert them to a common frequency and calendar.
-
-        Parameters
-        ----------
-        *series_entries : Union[SeriesEntry, str]
-            One or more names of series or
-            `macrobond_financial.common.types.series_entry.SeriesEntry` objects.
-        frequency : `macrobond_financial.common.enums.series_frequency.SeriesFrequency`
-            Specifies what frequency the series should be converted to.
-            By default, it will be converted to the highest frequency of any series.
-        weekdays : `macrobond_financial.common.enums.series_weekdays.SeriesWeekdays`
-            The days of the week used for daily series. The default is Monday to Friday.
-        calendar_merge_mode : `macrobond_financial.common.enums.calendar_merge_mode.CalendarMergeMode`
-            The start date mode determines how the start date is calculated.
-            By default the mode is to start when there is data in any series.
-        currency : str
-            The currency to use for currency conversion or omitted for no conversion.
-        start_point : `macrobond_financial.common.types.start_or_end_point.StartOrEndPoint`
-            The start point. By default, this is determined by the startDateMode.
-        end_point : `macrobond_financial.common.types.start_or_end_point.StartOrEndPoint`
-            The end point. By default, this is determined by the endDateMode.
-        raise_error : bool
-            If True, accessing the resulting entities raises a GetEntitiesError.
-            If False you should inspect the is_error property of the result instead.
-            If None, it will use the global value `macrobond_financial.common.api.Api.raise_error`
-
-        Returns
-        -------
-        `UnifiedSeries`
-        &#34;&#34;&#34;
-        # pylint: enable=line-too-long</code></pre>
-</details>
+<p>The class <code><a title="macrobond_financial.common.api.Api" href="#macrobond_financial.common.api.Api">Api</a></code> defines the core methods to interact with the
+Macrobond database.</p>
 </section>
 <section>
 </section>
@@ -507,472 +40,32 @@ class Api(ABC):
 </code></dt>
 <dd>
 <div class="desc"><p>Common API to interact with the Macrobond database.<br>
-These methods are implemented for both the Web API and Desktop COM API.</p>
+This class defines abstract methods that are implemented for both the Web API and
+Desktop COM API. You typically access them via an instance of
+<code><a title="macrobond_financial.web.web_client.WebClient" href="../web/web_client.html#macrobond_financial.web.web_client.WebClient">WebClient</a></code> or
+<code><a title="macrobond_financial.com.com_client.ComClient" href="../com/com_client.html#macrobond_financial.com.com_client.ComClient">ComClient</a></code>.</p>
 <p>Metadata methods:<br>
 <code><a title="macrobond_financial.common.api.Api.metadata_list_values" href="#macrobond_financial.common.api.Api.metadata_list_values">Api.metadata_list_values()</a></code><br>
 <code><a title="macrobond_financial.common.api.Api.metadata_get_attribute_information" href="#macrobond_financial.common.api.Api.metadata_get_attribute_information">Api.metadata_get_attribute_information()</a></code><br>
 <code><a title="macrobond_financial.common.api.Api.metadata_get_value_information" href="#macrobond_financial.common.api.Api.metadata_get_value_information">Api.metadata_get_value_information()</a></code>
 </p>
-<p>Revision methods:<br>
-<code><a title="macrobond_financial.common.api.Api.get_revision_info" href="#macrobond_financial.common.api.Api.get_revision_info">Api.get_revision_info()</a></code><br>
-<code><a title="macrobond_financial.common.api.Api.get_vintage_series" href="#macrobond_financial.common.api.Api.get_vintage_series">Api.get_vintage_series()</a></code><br>
-<code><a title="macrobond_financial.common.api.Api.get_nth_release" href="#macrobond_financial.common.api.Api.get_nth_release">Api.get_nth_release()</a></code><br>
-<code><a title="macrobond_financial.common.api.Api.get_all_vintage_series" href="#macrobond_financial.common.api.Api.get_all_vintage_series">Api.get_all_vintage_series()</a></code><br>
-get_observation_history. Only available in wep api.
-</p>
-<p>Search methods:<br>
-<code><a title="macrobond_financial.common.api.Api.entity_search" href="#macrobond_financial.common.api.Api.entity_search">Api.entity_search()</a></code><br>
-<code><a title="macrobond_financial.common.api.Api.entity_search_multi_filter" href="#macrobond_financial.common.api.Api.entity_search_multi_filter">Api.entity_search_multi_filter()</a></code>
-</p>
-<p>Series
-methods:<br>
+<p>Series methods:<br>
 <code><a title="macrobond_financial.common.api.Api.get_one_series" href="#macrobond_financial.common.api.Api.get_one_series">Api.get_one_series()</a></code><br>
 <code><a title="macrobond_financial.common.api.Api.get_series" href="#macrobond_financial.common.api.Api.get_series">Api.get_series()</a></code><br>
 <code><a title="macrobond_financial.common.api.Api.get_one_entity" href="#macrobond_financial.common.api.Api.get_one_entity">Api.get_one_entity()</a></code><br>
 <code><a title="macrobond_financial.common.api.Api.get_entities" href="#macrobond_financial.common.api.Api.get_entities">Api.get_entities()</a></code><br>
-<code><a title="macrobond_financial.common.api.Api.get_unified_series" href="#macrobond_financial.common.api.Api.get_unified_series">Api.get_unified_series()</a></code></p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">class Api(ABC):
-    # fmt: off
-    &#34;&#34;&#34;
-    Common API to interact with the Macrobond database.  
-    These methods are implemented for both the Web API and Desktop COM API.
-
-
-    Metadata methods:  
-        `macrobond_financial.common.api.Api.metadata_list_values`  
-        `macrobond_financial.common.api.Api.metadata_get_attribute_information`  
-        `macrobond_financial.common.api.Api.metadata_get_value_information`  
-
-
-    Revision methods:  
-        `macrobond_financial.common.api.Api.get_revision_info`  
-        `macrobond_financial.common.api.Api.get_vintage_series`  
-        `macrobond_financial.common.api.Api.get_nth_release`  
-        `macrobond_financial.common.api.Api.get_all_vintage_series`  
-        get_observation_history. Only available in wep api.  
-
-
-    Search methods:  
-        `macrobond_financial.common.api.Api.entity_search`  
-        `macrobond_financial.common.api.Api.entity_search_multi_filter`  
-
-
-    Series  methods:  
-        `macrobond_financial.common.api.Api.get_one_series`  
-        `macrobond_financial.common.api.Api.get_series`  
-        `macrobond_financial.common.api.Api.get_one_entity`  
-        `macrobond_financial.common.api.Api.get_entities`  
-        `macrobond_financial.common.api.Api.get_unified_series`  
-
-
-    &#34;&#34;&#34;
-    # fmt: on
-
-    def __init__(self) -&gt; None:
-        self.raise_error = True
-        &#34;&#34;&#34;
-        Controls the default value of the parameter called raise_error, which is used in many
-        API calls. The default value is &#34;True&#34;.
-        &#34;&#34;&#34;
-
-    # metadata
-
-    @abstractmethod
-    def metadata_list_values(self, name: str) -&gt; MetadataValueInformation:
-        &#34;&#34;&#34;
-        List all metadata attribute values of an attribute that uses a value list.
-
-        Parameters
-        ----------
-        name : str
-            The name of the metadata attribute
-
-        Returns
-        -------
-        `macrobond_financial.common.types.metadata_value_information.MetadataValueInformation`
-
-        Examples
-        -------
-        ```python
-        with ComClient() as api: # or WebClient
-
-            # as objects
-            print(api.metadata_list_values(&#34;RateType&#34;))
-
-            # as dict
-            print(api.metadata_list_values(&#39;RateType&#39;).to_dict())
-
-            # as data_frame
-            print(metadata_list_values(&#34;RateType&#34;).to_pd_data_frame())
-        ```
-        &#34;&#34;&#34;
-
-    @abstractmethod
-    def metadata_get_attribute_information(self, *names: str) -&gt; List[MetadataAttributeInformation]:
-        # pylint: disable=line-too-long
-        # fmt: off
-        &#34;&#34;&#34;
-        Get information about metadata attributes.
-
-        Parameters
-        ----------
-        *names : str
-            One or more names of metadata attributes.
-
-        Returns
-        -------
-        `List[macrobond_financial.common.types.metadata_attribute_information.MetadataAttributeInformation]`  
-        The result is in the same order as the attribute names in the request.
-
-        Examples
-        -------
-        ```python
-        with ComClient() as api: # or WebClient
-
-            # as objects
-            print(api.metadata_get_attribute_information(&#34;Region&#34;, &#34;Unit&#34;))
-
-            # as dict
-            print(api.metadata_get_attribute_information(&#34;Region&#34;)[0].to_dict())
-
-            # as data_frame
-            print(api.metadata_get_attribute_information(&#34;Region&#34;)[0].to_pd_data_frame())
-        ```
-        &#34;&#34;&#34;
-        # pylint: enable=line-too-long
-        # fmt: on
-
-    @abstractmethod
-    def metadata_get_value_information(
-        self, *name_val: Tuple[str, str]
-    ) -&gt; List[MetadataValueInformationItem]:
-        # pylint: disable=line-too-long
-        # fmt: off
-        &#34;&#34;&#34;
-        Get information about metadata values.
-
-        Parameters
-        ----------
-        *name_val : Tuple[str, str]
-            The attribute name and a value.
-
-        Returns
-        -------
-        `List[macrobond_financial.common.types.metadata_value_information.MetadataValueInformationItem]`  
-        The result is in the same order as the attribute names in the request.
-
-        Examples
-        -------
-        ```python
-        with ComClient() as api: # or WebClient
-
-            # as objects
-            print(api.metadata_get_value_information((&#34;RateType&#34;, &#34;mole&#34;), (&#34;RateType&#34;,&#34;cobe&#34;)))
-
-            # as dict
-            print(api.metadata_get_value_information((&#34;RateType&#34;, &#34;mole&#34;))[0].to_dict())
-
-            # as data_frame
-            print(api.metadata_get_value_information((&#34;RateType&#34;, &#34;mole&#34;))[0].to_pd_data_frame())
-        ```
-        &#34;&#34;&#34;
-        # fmt: on
-        # pylint: enable=line-too-long
-
-    # revision
-
-    @abstractmethod
-    def get_revision_info(self, *series_names: str, raise_error: bool = None) -&gt; List[RevisionInfo]:
-        &#34;&#34;&#34;
-        Get information about if revision history is available for a series
-        and a list of revision timestamps.
-
-        Parameters
-        ----------
-        *series_names : str
-            One or more series names.
-        raise_error : bool
-            If True, accessing the resulting series raises a GetEntitiesError.
-            If False you should inspect the is_error property of the result instead.
-            If None, it will use the global value `macrobond_financial.common.api.Api.raise_error`
-
-        Returns
-        -------
-        `List[RevisionInfo]`
-        &#34;&#34;&#34;
-
-    @abstractmethod
-    def get_vintage_series(
-        self, time: datetime, *series_names: str, raise_error: bool = None
-    ) -&gt; List[VintageSeries]:
-        &#34;&#34;&#34;
-        Fetch a vintage series.
-
-        Parameters
-        ----------
-        time : datetime
-            The time of the vintage to return.
-        series_name : str
-            One or more names of series.
-        raise_error : bool
-            If True, accessing the resulting series raises a GetEntitiesError.
-            If False you should inspect the is_error property of the result instead.
-            If None, it will use the global value `macrobond_financial.common.api.Api.raise_error`
-
-        Returns
-        -------
-        `List[VintageSeries]`
-        &#34;&#34;&#34;
-
-    @abstractmethod
-    def get_nth_release(
-        self, nth: int, *series_names: str, raise_error: bool = None
-    ) -&gt; List[Series]:
-        &#34;&#34;&#34;
-        Fetcha series where each value is the nth change of the value.
-
-        Parameters
-        ----------
-        time : nth
-            The nth change of each value.
-        series_names : str
-            One or more names of series.
-        raise_error : bool
-            If True, accessing the resulting series raises a GetEntitiesError.
-            If False you should inspect the is_error property of the result instead.
-            If None, it will use the global value `macrobond_financial.common.api.Api.raise_error`
-
-        Returns
-        -------
-        `List[Series]`
-        &#34;&#34;&#34;
-
-    @abstractmethod
-    def get_all_vintage_series(self, series_name: str) -&gt; GetAllVintageSeriesResult:
-        ...
-
-    @abstractmethod
-    def get_observation_history(
-        self, serie_name: str, *times: datetime
-    ) -&gt; List[SeriesObservationHistory]:
-        ...
-
-    # Search
-
-    def entity_search(
-        self,
-        text: str = None,
-        entity_types: Union[Sequence[str], str] = None,
-        must_have_values: Dict[str, object] = None,
-        must_not_have_values: Dict[str, object] = None,
-        must_have_attributes: Union[Sequence[str], str] = None,
-        must_not_have_attributes: Union[Sequence[str], str] = None,
-        include_discontinued: bool = False,
-        no_metadata: bool = False,
-    ) -&gt; SearchResult:
-        &#34;&#34;&#34;
-        Search for time series and other entitites.
-
-        Parameters
-        ----------
-        text: str
-            Optional set of keywords separated by space.
-        must_have_values: Dict[str, object]
-            Optional dictionary of values that must be present in the entity metadata.
-            The value can be a single value or an array of values. If there are several values
-            for an attribute, it means that either of them must be present.
-        must_not_have_values: Dict[str, object]
-            Optional dictionary of values that must not be present in the entity metadata.
-            The value can be a single value or an array of values.
-        must_have_attributes: Union[Sequence[str], str]
-            Optional set of attributes that must be present in the entity metadata.
-            The value can be a single value or a sequence of values.
-        must_not_have_attributes: Union[Sequence[str], str]
-            Optional set of attributes that must no be present in the entity metadata.
-            The value can be a single value or a sequence of values.
-        include_discontinued: bool
-            Set this value to True in order to include discontinued entities in the search.
-
-        Returns
-        -------
-        `SearchResult`
-        &#34;&#34;&#34;
-        return self.entity_search_multi_filter(
-            SearchFilter(
-                text=text,
-                entity_types=entity_types,
-                must_have_values=must_have_values,
-                must_not_have_values=must_not_have_values,
-                must_have_attributes=must_have_attributes,
-                must_not_have_attributes=must_not_have_attributes,
-            ),
-            include_discontinued=include_discontinued,
-            no_metadata=no_metadata,
-        )
-
-    @abstractmethod
-    def entity_search_multi_filter(
-        self, *filters: SearchFilter, include_discontinued: bool = False, no_metadata: bool = False
-    ) -&gt; SearchResult:
-        &#34;&#34;&#34;
-        Search for time series and other entitites.
-        You can pass more than one search filter. In this case the filters have to use different
-        entity types and searches will be nested so that the result of the previous filter will be
-        used as a condition in the subsequent filter linked by the entity type.
-
-        Parameters
-        ----------
-        *filters : `macrobond_financial.common.types.search_filter.SearchFilter`
-            One or more search filters.
-        include_discontinued : bool
-            Set this value to True in order to include discontinued entities in the search.
-
-        Returns
-        -------
-        `macrobond_financial.common.types.search_result.SearchResult`
-        &#34;&#34;&#34;
-
-    # Series
-
-    @abstractmethod
-    def get_one_series(self, series_name: str, raise_error: bool = None) -&gt; Series:
-        &#34;&#34;&#34;
-        Download one series.
-
-        .. important:: It is much more efficient to download more than one series at a time.
-           See `Api.get_series`.
-
-        Parameters
-        ----------
-        series_name : str
-            The name of the series.
-        raise_error : bool
-            If True, accessing the resulting series raises a GetEntitiesError.
-            If False you should inspect the is_error property of the result instead.
-            If None, it will use the global value `macrobond_financial.common.api.Api.raise_error`
-
-        Returns
-        -------
-        `Series`
-        &#34;&#34;&#34;
-
-    @abstractmethod
-    def get_series(self, *series_names: str, raise_error: bool = None) -&gt; List[Series]:
-        &#34;&#34;&#34;
-        Download one or more series.
-
-        .. Important:: It is much more efficient to download more than one series at a time.
-           However, downloading too many at a time is less efficient and can exhaust memory.
-           A good habit is to download series in batches of around 200.
-
-        Parameters
-        ----------
-        *series_names : str
-            One or more names of series.
-        raise_error : bool
-            If True, accessing the resulting series raises a GetEntitiesError.
-            If False you should inspect the is_error property of the result instead.
-            If None, it will use the global value `macrobond_financial.common.api.Api.raise_error`
-
-        Returns
-        -------
-        `List[Series]`
-        &#34;&#34;&#34;
-
-    @abstractmethod
-    def get_one_entity(self, entity_name: str, raise_error: bool = None) -&gt; Entity:
-        &#34;&#34;&#34;
-        Download one entity.
-
-        .. important:: It is much more efficient to download more than one entity at a time.
-           See `Api.get_entities`.
-
-        Parameters
-        ----------
-        entity_name : str
-            The name the entity.
-        raise_error : bool
-            If True, accessing the resulting entity raises a GetEntitiesError.
-            If False you should inspect the is_error property of the result instead.
-            If None, it will use the global value `macrobond_financial.common.api.Api.raise_error`
-
-        Returns
-        -------
-        `Entity`
-        &#34;&#34;&#34;
-
-    @abstractmethod
-    def get_entities(self, *entity_names: str, raise_error: bool = None) -&gt; List[Entity]:
-        &#34;&#34;&#34;
-        Download one or more entities.
-
-        .. Important:: It is much more efficient to download more than one entity at a time.
-           However, downloading too many at a time is less efficient and can exhaust memory.
-           A good habit is to download entities in batches of around 200.
-
-        Parameters
-        ----------
-        *entity_names : str
-            One or more names of entities.
-        raise_error : bool
-            If True, accessing the resulting entities raises a GetEntitiesError.
-            If False you should inspect the is_error property of the result instead.
-            If None, it will use the global value `macrobond_financial.common.api.Api.raise_error`
-
-        Returns
-        -------
-        `List[Entity]`
-        &#34;&#34;&#34;
-
-    @abstractmethod
-    def get_unified_series(
-        self,
-        *series_entries: Union[SeriesEntry, str],
-        frequency=SeriesFrequency.HIGHEST,
-        weekdays=SeriesWeekdays.MONDAY_TO_FRIDAY,
-        calendar_merge_mode=CalendarMergeMode.AVAILABLE_IN_ANY,
-        currency=&#34;&#34;,
-        start_point: StartOrEndPoint = None,
-        end_point: StartOrEndPoint = None,
-        raise_error: bool = None
-    ) -&gt; UnifiedSeries:
-        # pylint: disable=line-too-long
-        &#34;&#34;&#34;
-        Get one or more series and convert them to a common frequency and calendar.
-
-        Parameters
-        ----------
-        *series_entries : Union[SeriesEntry, str]
-            One or more names of series or
-            `macrobond_financial.common.types.series_entry.SeriesEntry` objects.
-        frequency : `macrobond_financial.common.enums.series_frequency.SeriesFrequency`
-            Specifies what frequency the series should be converted to.
-            By default, it will be converted to the highest frequency of any series.
-        weekdays : `macrobond_financial.common.enums.series_weekdays.SeriesWeekdays`
-            The days of the week used for daily series. The default is Monday to Friday.
-        calendar_merge_mode : `macrobond_financial.common.enums.calendar_merge_mode.CalendarMergeMode`
-            The start date mode determines how the start date is calculated.
-            By default the mode is to start when there is data in any series.
-        currency : str
-            The currency to use for currency conversion or omitted for no conversion.
-        start_point : `macrobond_financial.common.types.start_or_end_point.StartOrEndPoint`
-            The start point. By default, this is determined by the startDateMode.
-        end_point : `macrobond_financial.common.types.start_or_end_point.StartOrEndPoint`
-            The end point. By default, this is determined by the endDateMode.
-        raise_error : bool
-            If True, accessing the resulting entities raises a GetEntitiesError.
-            If False you should inspect the is_error property of the result instead.
-            If None, it will use the global value `macrobond_financial.common.api.Api.raise_error`
-
-        Returns
-        -------
-        `UnifiedSeries`
-        &#34;&#34;&#34;</code></pre>
-</details>
+<code><a title="macrobond_financial.common.api.Api.get_unified_series" href="#macrobond_financial.common.api.Api.get_unified_series">Api.get_unified_series()</a></code>
+</p>
+<p>Series revision methods:<br>
+<code><a title="macrobond_financial.common.api.Api.get_revision_info" href="#macrobond_financial.common.api.Api.get_revision_info">Api.get_revision_info()</a></code><br>
+<code><a title="macrobond_financial.common.api.Api.get_vintage_series" href="#macrobond_financial.common.api.Api.get_vintage_series">Api.get_vintage_series()</a></code><br>
+<code><a title="macrobond_financial.common.api.Api.get_nth_release" href="#macrobond_financial.common.api.Api.get_nth_release">Api.get_nth_release()</a></code><br>
+<code><a title="macrobond_financial.common.api.Api.get_all_vintage_series" href="#macrobond_financial.common.api.Api.get_all_vintage_series">Api.get_all_vintage_series()</a></code><br>
+<code><a title="macrobond_financial.common.api.Api.get_observation_history" href="#macrobond_financial.common.api.Api.get_observation_history">Api.get_observation_history()</a></code>
+</p>
+<p>Search methods:<br>
+<code><a title="macrobond_financial.common.api.Api.entity_search" href="#macrobond_financial.common.api.Api.entity_search">Api.entity_search()</a></code><br>
+<code><a title="macrobond_financial.common.api.Api.entity_search_multi_filter" href="#macrobond_financial.common.api.Api.entity_search_multi_filter">Api.entity_search_multi_filter()</a></code></p></div>
 <h3>Ancestors</h3>
 <ul class="hlist">
 <li>abc.ABC</li>
@@ -1019,61 +112,6 @@ The value can be a single value or a sequence of values.</dd>
 </dl>
 <h2 id="returns">Returns</h2>
 <p><code>SearchResult</code></p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def entity_search(
-    self,
-    text: str = None,
-    entity_types: Union[Sequence[str], str] = None,
-    must_have_values: Dict[str, object] = None,
-    must_not_have_values: Dict[str, object] = None,
-    must_have_attributes: Union[Sequence[str], str] = None,
-    must_not_have_attributes: Union[Sequence[str], str] = None,
-    include_discontinued: bool = False,
-    no_metadata: bool = False,
-) -&gt; SearchResult:
-    &#34;&#34;&#34;
-    Search for time series and other entitites.
-
-    Parameters
-    ----------
-    text: str
-        Optional set of keywords separated by space.
-    must_have_values: Dict[str, object]
-        Optional dictionary of values that must be present in the entity metadata.
-        The value can be a single value or an array of values. If there are several values
-        for an attribute, it means that either of them must be present.
-    must_not_have_values: Dict[str, object]
-        Optional dictionary of values that must not be present in the entity metadata.
-        The value can be a single value or an array of values.
-    must_have_attributes: Union[Sequence[str], str]
-        Optional set of attributes that must be present in the entity metadata.
-        The value can be a single value or a sequence of values.
-    must_not_have_attributes: Union[Sequence[str], str]
-        Optional set of attributes that must no be present in the entity metadata.
-        The value can be a single value or a sequence of values.
-    include_discontinued: bool
-        Set this value to True in order to include discontinued entities in the search.
-
-    Returns
-    -------
-    `SearchResult`
-    &#34;&#34;&#34;
-    return self.entity_search_multi_filter(
-        SearchFilter(
-            text=text,
-            entity_types=entity_types,
-            must_have_values=must_have_values,
-            must_not_have_values=must_not_have_values,
-            must_have_attributes=must_have_attributes,
-            must_not_have_attributes=must_not_have_attributes,
-        ),
-        include_discontinued=include_discontinued,
-        no_metadata=no_metadata,
-    )</code></pre>
-</details>
 </dd>
 <dt id="macrobond_financial.common.api.Api.entity_search_multi_filter"><code class="name flex">
 <span>def <span class="ident">entity_search_multi_filter</span></span>(<span>self, *filters: <a title="macrobond_financial.common.types.search_filter.SearchFilter" href="types/search_filter.html#macrobond_financial.common.types.search_filter.SearchFilter">SearchFilter</a>, include_discontinued: bool = False, no_metadata: bool = False) ‑> <a title="macrobond_financial.common.types.search_result.SearchResult" href="types/search_result.html#macrobond_financial.common.types.search_result.SearchResult">SearchResult</a></span>
@@ -1092,46 +130,12 @@ used as a condition in the subsequent filter linked by the entity type.</p>
 </dl>
 <h2 id="returns">Returns</h2>
 <p><code><a title="macrobond_financial.common.types.search_result.SearchResult" href="types/search_result.html#macrobond_financial.common.types.search_result.SearchResult">SearchResult</a></code></p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@abstractmethod
-def entity_search_multi_filter(
-    self, *filters: SearchFilter, include_discontinued: bool = False, no_metadata: bool = False
-) -&gt; SearchResult:
-    &#34;&#34;&#34;
-    Search for time series and other entitites.
-    You can pass more than one search filter. In this case the filters have to use different
-    entity types and searches will be nested so that the result of the previous filter will be
-    used as a condition in the subsequent filter linked by the entity type.
-
-    Parameters
-    ----------
-    *filters : `macrobond_financial.common.types.search_filter.SearchFilter`
-        One or more search filters.
-    include_discontinued : bool
-        Set this value to True in order to include discontinued entities in the search.
-
-    Returns
-    -------
-    `macrobond_financial.common.types.search_result.SearchResult`
-    &#34;&#34;&#34;</code></pre>
-</details>
 </dd>
 <dt id="macrobond_financial.common.api.Api.get_all_vintage_series"><code class="name flex">
 <span>def <span class="ident">get_all_vintage_series</span></span>(<span>self, series_name: str) ‑> <a title="macrobond_financial.common.types.get_all_vintage_series_result.GetAllVintageSeriesResult" href="types/get_all_vintage_series_result.html#macrobond_financial.common.types.get_all_vintage_series_result.GetAllVintageSeriesResult">GetAllVintageSeriesResult</a></span>
 </code></dt>
 <dd>
 <div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@abstractmethod
-def get_all_vintage_series(self, series_name: str) -&gt; GetAllVintageSeriesResult:
-    ...</code></pre>
-</details>
 </dd>
 <dt id="macrobond_financial.common.api.Api.get_entities"><code class="name flex">
 <span>def <span class="ident">get_entities</span></span>(<span>self, *entity_names: str, raise_error: bool = None) ‑> List[<a title="macrobond_financial.common.types.entity.Entity" href="types/entity.html#macrobond_financial.common.types.entity.Entity">Entity</a>]</span>
@@ -1154,33 +158,6 @@ If None, it will use the global value <code><a title="macrobond_financial.common
 </dl>
 <h2 id="returns">Returns</h2>
 <p><code>List[Entity]</code></p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@abstractmethod
-def get_entities(self, *entity_names: str, raise_error: bool = None) -&gt; List[Entity]:
-    &#34;&#34;&#34;
-    Download one or more entities.
-
-    .. Important:: It is much more efficient to download more than one entity at a time.
-       However, downloading too many at a time is less efficient and can exhaust memory.
-       A good habit is to download entities in batches of around 200.
-
-    Parameters
-    ----------
-    *entity_names : str
-        One or more names of entities.
-    raise_error : bool
-        If True, accessing the resulting entities raises a GetEntitiesError.
-        If False you should inspect the is_error property of the result instead.
-        If None, it will use the global value `macrobond_financial.common.api.Api.raise_error`
-
-    Returns
-    -------
-    `List[Entity]`
-    &#34;&#34;&#34;</code></pre>
-</details>
 </dd>
 <dt id="macrobond_financial.common.api.Api.get_nth_release"><code class="name flex">
 <span>def <span class="ident">get_nth_release</span></span>(<span>self, nth: int, *series_names: str, raise_error: bool = None) ‑> List[<a title="macrobond_financial.common.types.series.Series" href="types/series.html#macrobond_financial.common.types.series.Series">Series</a>]</span>
@@ -1200,49 +177,12 @@ If None, it will use the global value <code><a title="macrobond_financial.common
 </dl>
 <h2 id="returns">Returns</h2>
 <p><code>List[Series]</code></p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@abstractmethod
-def get_nth_release(
-    self, nth: int, *series_names: str, raise_error: bool = None
-) -&gt; List[Series]:
-    &#34;&#34;&#34;
-    Fetcha series where each value is the nth change of the value.
-
-    Parameters
-    ----------
-    time : nth
-        The nth change of each value.
-    series_names : str
-        One or more names of series.
-    raise_error : bool
-        If True, accessing the resulting series raises a GetEntitiesError.
-        If False you should inspect the is_error property of the result instead.
-        If None, it will use the global value `macrobond_financial.common.api.Api.raise_error`
-
-    Returns
-    -------
-    `List[Series]`
-    &#34;&#34;&#34;</code></pre>
-</details>
 </dd>
 <dt id="macrobond_financial.common.api.Api.get_observation_history"><code class="name flex">
 <span>def <span class="ident">get_observation_history</span></span>(<span>self, serie_name: str, *times: datetime.datetime) ‑> List[<a title="macrobond_financial.common.types.series_observation_history.SeriesObservationHistory" href="types/series_observation_history.html#macrobond_financial.common.types.series_observation_history.SeriesObservationHistory">SeriesObservationHistory</a>]</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@abstractmethod
-def get_observation_history(
-    self, serie_name: str, *times: datetime
-) -&gt; List[SeriesObservationHistory]:
-    ...</code></pre>
-</details>
 </dd>
 <dt id="macrobond_financial.common.api.Api.get_one_entity"><code class="name flex">
 <span>def <span class="ident">get_one_entity</span></span>(<span>self, entity_name: str, raise_error: bool = None) ‑> <a title="macrobond_financial.common.types.entity.Entity" href="types/entity.html#macrobond_financial.common.types.entity.Entity">Entity</a></span>
@@ -1264,32 +204,6 @@ If None, it will use the global value <code><a title="macrobond_financial.common
 </dl>
 <h2 id="returns">Returns</h2>
 <p><code>Entity</code></p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@abstractmethod
-def get_one_entity(self, entity_name: str, raise_error: bool = None) -&gt; Entity:
-    &#34;&#34;&#34;
-    Download one entity.
-
-    .. important:: It is much more efficient to download more than one entity at a time.
-       See `Api.get_entities`.
-
-    Parameters
-    ----------
-    entity_name : str
-        The name the entity.
-    raise_error : bool
-        If True, accessing the resulting entity raises a GetEntitiesError.
-        If False you should inspect the is_error property of the result instead.
-        If None, it will use the global value `macrobond_financial.common.api.Api.raise_error`
-
-    Returns
-    -------
-    `Entity`
-    &#34;&#34;&#34;</code></pre>
-</details>
 </dd>
 <dt id="macrobond_financial.common.api.Api.get_one_series"><code class="name flex">
 <span>def <span class="ident">get_one_series</span></span>(<span>self, series_name: str, raise_error: bool = None) ‑> <a title="macrobond_financial.common.types.series.Series" href="types/series.html#macrobond_financial.common.types.series.Series">Series</a></span>
@@ -1311,32 +225,6 @@ If None, it will use the global value <code><a title="macrobond_financial.common
 </dl>
 <h2 id="returns">Returns</h2>
 <p><code>Series</code></p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@abstractmethod
-def get_one_series(self, series_name: str, raise_error: bool = None) -&gt; Series:
-    &#34;&#34;&#34;
-    Download one series.
-
-    .. important:: It is much more efficient to download more than one series at a time.
-       See `Api.get_series`.
-
-    Parameters
-    ----------
-    series_name : str
-        The name of the series.
-    raise_error : bool
-        If True, accessing the resulting series raises a GetEntitiesError.
-        If False you should inspect the is_error property of the result instead.
-        If None, it will use the global value `macrobond_financial.common.api.Api.raise_error`
-
-    Returns
-    -------
-    `Series`
-    &#34;&#34;&#34;</code></pre>
-</details>
 </dd>
 <dt id="macrobond_financial.common.api.Api.get_revision_info"><code class="name flex">
 <span>def <span class="ident">get_revision_info</span></span>(<span>self, *series_names: str, raise_error: bool = None) ‑> List[<a title="macrobond_financial.common.types.revision_info.RevisionInfo" href="types/revision_info.html#macrobond_financial.common.types.revision_info.RevisionInfo">RevisionInfo</a>]</span>
@@ -1354,31 +242,7 @@ If False you should inspect the is_error property of the result instead.
 If None, it will use the global value <code><a title="macrobond_financial.common.api.Api.raise_error" href="#macrobond_financial.common.api.Api.raise_error">Api.raise_error</a></code></dd>
 </dl>
 <h2 id="returns">Returns</h2>
-<p><code>List[RevisionInfo]</code></p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@abstractmethod
-def get_revision_info(self, *series_names: str, raise_error: bool = None) -&gt; List[RevisionInfo]:
-    &#34;&#34;&#34;
-    Get information about if revision history is available for a series
-    and a list of revision timestamps.
-
-    Parameters
-    ----------
-    *series_names : str
-        One or more series names.
-    raise_error : bool
-        If True, accessing the resulting series raises a GetEntitiesError.
-        If False you should inspect the is_error property of the result instead.
-        If None, it will use the global value `macrobond_financial.common.api.Api.raise_error`
-
-    Returns
-    -------
-    `List[RevisionInfo]`
-    &#34;&#34;&#34;</code></pre>
-</details>
+<p><code>List[<a title="macrobond_financial.common.types.revision_info.RevisionInfo" href="types/revision_info.html#macrobond_financial.common.types.revision_info.RevisionInfo">RevisionInfo</a>]</code></p></div>
 </dd>
 <dt id="macrobond_financial.common.api.Api.get_series"><code class="name flex">
 <span>def <span class="ident">get_series</span></span>(<span>self, *series_names: str, raise_error: bool = None) ‑> List[<a title="macrobond_financial.common.types.series.Series" href="types/series.html#macrobond_financial.common.types.series.Series">Series</a>]</span>
@@ -1401,33 +265,6 @@ If None, it will use the global value <code><a title="macrobond_financial.common
 </dl>
 <h2 id="returns">Returns</h2>
 <p><code>List[Series]</code></p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@abstractmethod
-def get_series(self, *series_names: str, raise_error: bool = None) -&gt; List[Series]:
-    &#34;&#34;&#34;
-    Download one or more series.
-
-    .. Important:: It is much more efficient to download more than one series at a time.
-       However, downloading too many at a time is less efficient and can exhaust memory.
-       A good habit is to download series in batches of around 200.
-
-    Parameters
-    ----------
-    *series_names : str
-        One or more names of series.
-    raise_error : bool
-        If True, accessing the resulting series raises a GetEntitiesError.
-        If False you should inspect the is_error property of the result instead.
-        If None, it will use the global value `macrobond_financial.common.api.Api.raise_error`
-
-    Returns
-    -------
-    `List[Series]`
-    &#34;&#34;&#34;</code></pre>
-</details>
 </dd>
 <dt id="macrobond_financial.common.api.Api.get_unified_series"><code class="name flex">
 <span>def <span class="ident">get_unified_series</span></span>(<span>self, *series_entries: Union[<a title="macrobond_financial.common.types.series_entry.SeriesEntry" href="types/series_entry.html#macrobond_financial.common.types.series_entry.SeriesEntry">SeriesEntry</a>, str], frequency=SeriesFrequency.HIGHEST, weekdays=SeriesWeekdays.MONDAY_TO_FRIDAY, calendar_merge_mode=CalendarMergeMode.AVAILABLE_IN_ANY, currency='', start_point: <a title="macrobond_financial.common.types.start_or_end_point.StartOrEndPoint" href="types/start_or_end_point.html#macrobond_financial.common.types.start_or_end_point.StartOrEndPoint">StartOrEndPoint</a> = None, end_point: <a title="macrobond_financial.common.types.start_or_end_point.StartOrEndPoint" href="types/start_or_end_point.html#macrobond_financial.common.types.start_or_end_point.StartOrEndPoint">StartOrEndPoint</a> = None, raise_error: bool = None) ‑> <a title="macrobond_financial.common.types.unified_series.UnifiedSeries" href="types/unified_series.html#macrobond_financial.common.types.unified_series.UnifiedSeries">UnifiedSeries</a></span>
@@ -1460,55 +297,6 @@ If None, it will use the global value <code><a title="macrobond_financial.common
 </dl>
 <h2 id="returns">Returns</h2>
 <p><code>UnifiedSeries</code></p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@abstractmethod
-def get_unified_series(
-    self,
-    *series_entries: Union[SeriesEntry, str],
-    frequency=SeriesFrequency.HIGHEST,
-    weekdays=SeriesWeekdays.MONDAY_TO_FRIDAY,
-    calendar_merge_mode=CalendarMergeMode.AVAILABLE_IN_ANY,
-    currency=&#34;&#34;,
-    start_point: StartOrEndPoint = None,
-    end_point: StartOrEndPoint = None,
-    raise_error: bool = None
-) -&gt; UnifiedSeries:
-    # pylint: disable=line-too-long
-    &#34;&#34;&#34;
-    Get one or more series and convert them to a common frequency and calendar.
-
-    Parameters
-    ----------
-    *series_entries : Union[SeriesEntry, str]
-        One or more names of series or
-        `macrobond_financial.common.types.series_entry.SeriesEntry` objects.
-    frequency : `macrobond_financial.common.enums.series_frequency.SeriesFrequency`
-        Specifies what frequency the series should be converted to.
-        By default, it will be converted to the highest frequency of any series.
-    weekdays : `macrobond_financial.common.enums.series_weekdays.SeriesWeekdays`
-        The days of the week used for daily series. The default is Monday to Friday.
-    calendar_merge_mode : `macrobond_financial.common.enums.calendar_merge_mode.CalendarMergeMode`
-        The start date mode determines how the start date is calculated.
-        By default the mode is to start when there is data in any series.
-    currency : str
-        The currency to use for currency conversion or omitted for no conversion.
-    start_point : `macrobond_financial.common.types.start_or_end_point.StartOrEndPoint`
-        The start point. By default, this is determined by the startDateMode.
-    end_point : `macrobond_financial.common.types.start_or_end_point.StartOrEndPoint`
-        The end point. By default, this is determined by the endDateMode.
-    raise_error : bool
-        If True, accessing the resulting entities raises a GetEntitiesError.
-        If False you should inspect the is_error property of the result instead.
-        If None, it will use the global value `macrobond_financial.common.api.Api.raise_error`
-
-    Returns
-    -------
-    `UnifiedSeries`
-    &#34;&#34;&#34;</code></pre>
-</details>
 </dd>
 <dt id="macrobond_financial.common.api.Api.get_vintage_series"><code class="name flex">
 <span>def <span class="ident">get_vintage_series</span></span>(<span>self, time: datetime.datetime, *series_names: str, raise_error: bool = None) ‑> List[<a title="macrobond_financial.common.types.vintage_series.VintageSeries" href="types/vintage_series.html#macrobond_financial.common.types.vintage_series.VintageSeries">VintageSeries</a>]</span>
@@ -1528,33 +316,6 @@ If None, it will use the global value <code><a title="macrobond_financial.common
 </dl>
 <h2 id="returns">Returns</h2>
 <p><code>List[VintageSeries]</code></p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@abstractmethod
-def get_vintage_series(
-    self, time: datetime, *series_names: str, raise_error: bool = None
-) -&gt; List[VintageSeries]:
-    &#34;&#34;&#34;
-    Fetch a vintage series.
-
-    Parameters
-    ----------
-    time : datetime
-        The time of the vintage to return.
-    series_name : str
-        One or more names of series.
-    raise_error : bool
-        If True, accessing the resulting series raises a GetEntitiesError.
-        If False you should inspect the is_error property of the result instead.
-        If None, it will use the global value `macrobond_financial.common.api.Api.raise_error`
-
-    Returns
-    -------
-    `List[VintageSeries]`
-    &#34;&#34;&#34;</code></pre>
-</details>
 </dd>
 <dt id="macrobond_financial.common.api.Api.metadata_get_attribute_information"><code class="name flex">
 <span>def <span class="ident">metadata_get_attribute_information</span></span>(<span>self, *names: str) ‑> List[<a title="macrobond_financial.common.types.metadata_attribute_information.MetadataAttributeInformation" href="types/metadata_attribute_information.html#macrobond_financial.common.types.metadata_attribute_information.MetadataAttributeInformation">MetadataAttributeInformation</a>]</span>
@@ -1581,43 +342,6 @@ The result is in the same order as the attribute names in the request.</p>
     # as data_frame
     print(api.metadata_get_attribute_information(&quot;Region&quot;)[0].to_pd_data_frame())
 </code></pre></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@abstractmethod
-def metadata_get_attribute_information(self, *names: str) -&gt; List[MetadataAttributeInformation]:
-    # pylint: disable=line-too-long
-    # fmt: off
-    &#34;&#34;&#34;
-    Get information about metadata attributes.
-
-    Parameters
-    ----------
-    *names : str
-        One or more names of metadata attributes.
-
-    Returns
-    -------
-    `List[macrobond_financial.common.types.metadata_attribute_information.MetadataAttributeInformation]`  
-    The result is in the same order as the attribute names in the request.
-
-    Examples
-    -------
-    ```python
-    with ComClient() as api: # or WebClient
-
-        # as objects
-        print(api.metadata_get_attribute_information(&#34;Region&#34;, &#34;Unit&#34;))
-
-        # as dict
-        print(api.metadata_get_attribute_information(&#34;Region&#34;)[0].to_dict())
-
-        # as data_frame
-        print(api.metadata_get_attribute_information(&#34;Region&#34;)[0].to_pd_data_frame())
-    ```
-    &#34;&#34;&#34;</code></pre>
-</details>
 </dd>
 <dt id="macrobond_financial.common.api.Api.metadata_get_value_information"><code class="name flex">
 <span>def <span class="ident">metadata_get_value_information</span></span>(<span>self, *name_val: Tuple[str, str]) ‑> List[<a title="macrobond_financial.common.types.metadata_value_information.MetadataValueInformationItem" href="types/metadata_value_information.html#macrobond_financial.common.types.metadata_value_information.MetadataValueInformationItem">MetadataValueInformationItem</a>]</span>
@@ -1644,45 +368,6 @@ The result is in the same order as the attribute names in the request.</p>
     # as data_frame
     print(api.metadata_get_value_information((&quot;RateType&quot;, &quot;mole&quot;))[0].to_pd_data_frame())
 </code></pre></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@abstractmethod
-def metadata_get_value_information(
-    self, *name_val: Tuple[str, str]
-) -&gt; List[MetadataValueInformationItem]:
-    # pylint: disable=line-too-long
-    # fmt: off
-    &#34;&#34;&#34;
-    Get information about metadata values.
-
-    Parameters
-    ----------
-    *name_val : Tuple[str, str]
-        The attribute name and a value.
-
-    Returns
-    -------
-    `List[macrobond_financial.common.types.metadata_value_information.MetadataValueInformationItem]`  
-    The result is in the same order as the attribute names in the request.
-
-    Examples
-    -------
-    ```python
-    with ComClient() as api: # or WebClient
-
-        # as objects
-        print(api.metadata_get_value_information((&#34;RateType&#34;, &#34;mole&#34;), (&#34;RateType&#34;,&#34;cobe&#34;)))
-
-        # as dict
-        print(api.metadata_get_value_information((&#34;RateType&#34;, &#34;mole&#34;))[0].to_dict())
-
-        # as data_frame
-        print(api.metadata_get_value_information((&#34;RateType&#34;, &#34;mole&#34;))[0].to_pd_data_frame())
-    ```
-    &#34;&#34;&#34;</code></pre>
-</details>
 </dd>
 <dt id="macrobond_financial.common.api.Api.metadata_list_values"><code class="name flex">
 <span>def <span class="ident">metadata_list_values</span></span>(<span>self, name: str) ‑> <a title="macrobond_financial.common.types.metadata_value_information.MetadataValueInformation" href="types/metadata_value_information.html#macrobond_financial.common.types.metadata_value_information.MetadataValueInformation">MetadataValueInformation</a></span>
@@ -1708,40 +393,6 @@ def metadata_get_value_information(
     # as data_frame
     print(metadata_list_values(&quot;RateType&quot;).to_pd_data_frame())
 </code></pre></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@abstractmethod
-def metadata_list_values(self, name: str) -&gt; MetadataValueInformation:
-    &#34;&#34;&#34;
-    List all metadata attribute values of an attribute that uses a value list.
-
-    Parameters
-    ----------
-    name : str
-        The name of the metadata attribute
-
-    Returns
-    -------
-    `macrobond_financial.common.types.metadata_value_information.MetadataValueInformation`
-
-    Examples
-    -------
-    ```python
-    with ComClient() as api: # or WebClient
-
-        # as objects
-        print(api.metadata_list_values(&#34;RateType&#34;))
-
-        # as dict
-        print(api.metadata_list_values(&#39;RateType&#39;).to_dict())
-
-        # as data_frame
-        print(metadata_list_values(&#34;RateType&#34;).to_pd_data_frame())
-    ```
-    &#34;&#34;&#34;</code></pre>
-</details>
 </dd>
 </dl>
 </dd>

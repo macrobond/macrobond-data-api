@@ -4,10 +4,7 @@ from typing import List, cast, Tuple, TYPE_CHECKING
 
 if TYPE_CHECKING:  # pragma: no cover
     from ..session import Session
-    from .metadata_attribute_information_response import (
-        MetadataAttributeInformationResponse,
-    )
-    from .metadata_value_information_response import MetadataValueInformationResponse
+    from .metadata import MetadataAttributeInformationResponse, MetadataValueInformationResponse
 
 
 class MetadataMethods:

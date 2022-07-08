@@ -22,142 +22,6 @@
 <h1 class="title">Module <code>macrobond_financial.common.types.metadata_value_information</code></h1>
 </header>
 <section id="section-intro">
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python"># -*- coding: utf-8 -*-
-
-from typing import (
-    Any,
-    Optional,
-    List,
-    TYPE_CHECKING,
-    Sequence,
-    cast,
-)
-from typing_extensions import TypedDict, Literal
-
-from .._get_pandas import _get_pandas
-
-
-if TYPE_CHECKING:  # pragma: no cover
-    from pandas import DataFrame, _typing as pandas_typing  # type: ignore
-
-
-MetadataValueInformationColumns = List[Literal[&#34;attribute_name&#34;, &#34;value&#34;, &#34;description&#34;, &#34;comment&#34;]]
-
-
-# TODO: Perhaps this should be called TypedDictMetadataValueInformationItem?
-class TypedDictMetadataValueInformation(TypedDict):
-    &#34;&#34;&#34;
-    Contains information about one metadata attribute value.
-    &#34;&#34;&#34;
-
-    attribute_name: str
-    &#34;&#34;&#34;The name of the metadata attribute&#34;&#34;&#34;
-
-    value: Any
-    &#34;&#34;&#34;The value&#34;&#34;&#34;
-
-    description: str
-    &#34;&#34;&#34;The description of the metadata value&#34;&#34;&#34;
-
-    comment: Optional[str]
-    &#34;&#34;&#34;The comment of the metadata value&#34;&#34;&#34;
-
-
-class MetadataValueInformationItem:
-    &#34;&#34;&#34;
-    Contains information about one metadata attribute value.
-    &#34;&#34;&#34;
-
-    attribute_name: str
-    value: Any
-    description: str
-    comment: Optional[str]
-
-    def __init__(
-        self, attribute_name: str, value: Any, description: str, comment: Optional[str]
-    ) -&gt; None:
-        self.attribute_name = attribute_name
-        &#34;&#34;&#34;The name of the metadata attribute&#34;&#34;&#34;
-
-        self.value = value
-        &#34;&#34;&#34;The value&#34;&#34;&#34;
-
-        self.description = description
-        &#34;&#34;&#34;The description of the metadata value&#34;&#34;&#34;
-
-        self.comment = comment
-        &#34;&#34;&#34;The comment of the metadata value&#34;&#34;&#34;
-
-    def to_pd_data_frame(self) -&gt; &#34;DataFrame&#34;:
-        &#34;&#34;&#34;The information represented as a Pandas DataFrame&#34;&#34;&#34;
-        pandas = _get_pandas()
-        return pandas.DataFrame([self.to_dict()])
-
-    def to_dict(self) -&gt; TypedDictMetadataValueInformation:
-        &#34;&#34;&#34;The information represented as a dictionary&#34;&#34;&#34;
-        return cast(TypedDictMetadataValueInformation, vars(self))
-
-    def __repr__(self):
-        return (
-            f&#34;MetadataValueInformationItem attribute_name: {self.attribute_name},&#34;
-            + f&#34; value: {self.value}, &#34;
-            + f&#34; description: {self.description}&#34;
-        )
-
-    def __eq__(self, other):
-        if not isinstance(other, MetadataValueInformationItem):
-            return NotImplemented
-
-        return self is other or (
-            self.value == other.value
-            and self.description == other.description
-            and self.comment == other.comment
-        )
-
-
-class MetadataValueInformation(List[MetadataValueInformationItem]):
-    # fmt: off
-    &#34;&#34;&#34;
-    The result of a call to `macrobond_financial.common.api.Api.metadata_get_value_information`.  
-    Contains information about the requested metadata attribute values.
-    &#34;&#34;&#34;
-    # fmt: on
-
-    attribute_name: str
-
-    @property
-    def entities(self) -&gt; List[MetadataValueInformationItem]:
-        &#34;&#34;&#34;entities&#34;&#34;&#34;
-        return list(self)
-
-    def __init__(
-        self,
-        items: Sequence[MetadataValueInformationItem],
-        attribute_name: str,
-    ) -&gt; None:
-        super().__init__(items)
-
-        self.attribute_name = attribute_name
-        &#34;&#34;&#34;The name of the metadata attribute&#34;&#34;&#34;
-
-    def to_pd_data_frame(self) -&gt; &#34;DataFrame&#34;:
-        &#34;&#34;&#34;The information represented as a Pandas DataFrame&#34;&#34;&#34;
-        pandas = _get_pandas()
-        return pandas.DataFrame(self.to_dict())
-
-    def to_dict(self) -&gt; List[TypedDictMetadataValueInformation]:
-        &#34;&#34;&#34;The information represented as a dictionary&#34;&#34;&#34;
-        return list(map(lambda x: x.to_dict(), self))
-
-    def __repr__(self):
-        return (
-            f&#34;MetadataValueInformation of {len(self)} items, attribute_name: {self.attribute_name}&#34;
-        )</code></pre>
-</details>
 </section>
 <section>
 </section>
@@ -175,49 +39,6 @@ class MetadataValueInformation(List[MetadataValueInformationItem]):
 <dd>
 <div class="desc"><p>The result of a call to <code><a title="macrobond_financial.common.api.Api.metadata_get_value_information" href="../api.html#macrobond_financial.common.api.Api.metadata_get_value_information">Api.metadata_get_value_information()</a></code>.<br>
 Contains information about the requested metadata attribute values.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">class MetadataValueInformation(List[MetadataValueInformationItem]):
-    # fmt: off
-    &#34;&#34;&#34;
-    The result of a call to `macrobond_financial.common.api.Api.metadata_get_value_information`.  
-    Contains information about the requested metadata attribute values.
-    &#34;&#34;&#34;
-    # fmt: on
-
-    attribute_name: str
-
-    @property
-    def entities(self) -&gt; List[MetadataValueInformationItem]:
-        &#34;&#34;&#34;entities&#34;&#34;&#34;
-        return list(self)
-
-    def __init__(
-        self,
-        items: Sequence[MetadataValueInformationItem],
-        attribute_name: str,
-    ) -&gt; None:
-        super().__init__(items)
-
-        self.attribute_name = attribute_name
-        &#34;&#34;&#34;The name of the metadata attribute&#34;&#34;&#34;
-
-    def to_pd_data_frame(self) -&gt; &#34;DataFrame&#34;:
-        &#34;&#34;&#34;The information represented as a Pandas DataFrame&#34;&#34;&#34;
-        pandas = _get_pandas()
-        return pandas.DataFrame(self.to_dict())
-
-    def to_dict(self) -&gt; List[TypedDictMetadataValueInformation]:
-        &#34;&#34;&#34;The information represented as a dictionary&#34;&#34;&#34;
-        return list(map(lambda x: x.to_dict(), self))
-
-    def __repr__(self):
-        return (
-            f&#34;MetadataValueInformation of {len(self)} items, attribute_name: {self.attribute_name}&#34;
-        )</code></pre>
-</details>
 <h3>Ancestors</h3>
 <ul class="hlist">
 <li>builtins.list</li>
@@ -232,15 +53,6 @@ Contains information about the requested metadata attribute values.</p></div>
 <dt id="macrobond_financial.common.types.metadata_value_information.MetadataValueInformation.entities"><code class="name">var <span class="ident">entities</span> : List[<a title="macrobond_financial.common.types.metadata_value_information.MetadataValueInformationItem" href="#macrobond_financial.common.types.metadata_value_information.MetadataValueInformationItem">MetadataValueInformationItem</a>]</code></dt>
 <dd>
 <div class="desc"><p>entities</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@property
-def entities(self) -&gt; List[MetadataValueInformationItem]:
-    &#34;&#34;&#34;entities&#34;&#34;&#34;
-    return list(self)</code></pre>
-</details>
 </dd>
 </dl>
 <h3>Methods</h3>
@@ -250,29 +62,12 @@ def entities(self) -&gt; List[MetadataValueInformationItem]:
 </code></dt>
 <dd>
 <div class="desc"><p>The information represented as a dictionary</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def to_dict(self) -&gt; List[TypedDictMetadataValueInformation]:
-    &#34;&#34;&#34;The information represented as a dictionary&#34;&#34;&#34;
-    return list(map(lambda x: x.to_dict(), self))</code></pre>
-</details>
 </dd>
 <dt id="macrobond_financial.common.types.metadata_value_information.MetadataValueInformation.to_pd_data_frame"><code class="name flex">
 <span>def <span class="ident">to_pd_data_frame</span></span>(<span>self) ‑> DataFrame</span>
 </code></dt>
 <dd>
 <div class="desc"><p>The information represented as a Pandas DataFrame</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def to_pd_data_frame(self) -&gt; &#34;DataFrame&#34;:
-    &#34;&#34;&#34;The information represented as a Pandas DataFrame&#34;&#34;&#34;
-    pandas = _get_pandas()
-    return pandas.DataFrame(self.to_dict())</code></pre>
-</details>
 </dd>
 </dl>
 </dd>
@@ -282,61 +77,6 @@ def entities(self) -&gt; List[MetadataValueInformationItem]:
 </code></dt>
 <dd>
 <div class="desc"><p>Contains information about one metadata attribute value.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">class MetadataValueInformationItem:
-    &#34;&#34;&#34;
-    Contains information about one metadata attribute value.
-    &#34;&#34;&#34;
-
-    attribute_name: str
-    value: Any
-    description: str
-    comment: Optional[str]
-
-    def __init__(
-        self, attribute_name: str, value: Any, description: str, comment: Optional[str]
-    ) -&gt; None:
-        self.attribute_name = attribute_name
-        &#34;&#34;&#34;The name of the metadata attribute&#34;&#34;&#34;
-
-        self.value = value
-        &#34;&#34;&#34;The value&#34;&#34;&#34;
-
-        self.description = description
-        &#34;&#34;&#34;The description of the metadata value&#34;&#34;&#34;
-
-        self.comment = comment
-        &#34;&#34;&#34;The comment of the metadata value&#34;&#34;&#34;
-
-    def to_pd_data_frame(self) -&gt; &#34;DataFrame&#34;:
-        &#34;&#34;&#34;The information represented as a Pandas DataFrame&#34;&#34;&#34;
-        pandas = _get_pandas()
-        return pandas.DataFrame([self.to_dict()])
-
-    def to_dict(self) -&gt; TypedDictMetadataValueInformation:
-        &#34;&#34;&#34;The information represented as a dictionary&#34;&#34;&#34;
-        return cast(TypedDictMetadataValueInformation, vars(self))
-
-    def __repr__(self):
-        return (
-            f&#34;MetadataValueInformationItem attribute_name: {self.attribute_name},&#34;
-            + f&#34; value: {self.value}, &#34;
-            + f&#34; description: {self.description}&#34;
-        )
-
-    def __eq__(self, other):
-        if not isinstance(other, MetadataValueInformationItem):
-            return NotImplemented
-
-        return self is other or (
-            self.value == other.value
-            and self.description == other.description
-            and self.comment == other.comment
-        )</code></pre>
-</details>
 <h3>Instance variables</h3>
 <dl>
 <dt id="macrobond_financial.common.types.metadata_value_information.MetadataValueInformationItem.attribute_name"><code class="name">var <span class="ident">attribute_name</span> : str</code></dt>
@@ -363,29 +103,12 @@ def entities(self) -&gt; List[MetadataValueInformationItem]:
 </code></dt>
 <dd>
 <div class="desc"><p>The information represented as a dictionary</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def to_dict(self) -&gt; TypedDictMetadataValueInformation:
-    &#34;&#34;&#34;The information represented as a dictionary&#34;&#34;&#34;
-    return cast(TypedDictMetadataValueInformation, vars(self))</code></pre>
-</details>
 </dd>
 <dt id="macrobond_financial.common.types.metadata_value_information.MetadataValueInformationItem.to_pd_data_frame"><code class="name flex">
 <span>def <span class="ident">to_pd_data_frame</span></span>(<span>self) ‑> DataFrame</span>
 </code></dt>
 <dd>
 <div class="desc"><p>The information represented as a Pandas DataFrame</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def to_pd_data_frame(self) -&gt; &#34;DataFrame&#34;:
-    &#34;&#34;&#34;The information represented as a Pandas DataFrame&#34;&#34;&#34;
-    pandas = _get_pandas()
-    return pandas.DataFrame([self.to_dict()])</code></pre>
-</details>
 </dd>
 </dl>
 </dd>
@@ -395,27 +118,6 @@ def entities(self) -&gt; List[MetadataValueInformationItem]:
 </code></dt>
 <dd>
 <div class="desc"><p>Contains information about one metadata attribute value.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">class TypedDictMetadataValueInformation(TypedDict):
-    &#34;&#34;&#34;
-    Contains information about one metadata attribute value.
-    &#34;&#34;&#34;
-
-    attribute_name: str
-    &#34;&#34;&#34;The name of the metadata attribute&#34;&#34;&#34;
-
-    value: Any
-    &#34;&#34;&#34;The value&#34;&#34;&#34;
-
-    description: str
-    &#34;&#34;&#34;The description of the metadata value&#34;&#34;&#34;
-
-    comment: Optional[str]
-    &#34;&#34;&#34;The comment of the metadata value&#34;&#34;&#34;</code></pre>
-</details>
 <h3>Ancestors</h3>
 <ul class="hlist">
 <li>builtins.dict</li>

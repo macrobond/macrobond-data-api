@@ -22,37 +22,6 @@
 <h1 class="title">Module <code>macrobond_financial.web.web_types.series_with_revisions_info_response</code></h1>
 </header>
 <section id="section-intro">
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python"># -*- coding: utf-8 -*-
-
-# pylint: disable = missing-module-docstring
-
-from typing import List, Optional
-
-from .status_response import StatusResponse
-
-
-class SeriesWithRevisionsInfoResponse(StatusResponse):
-    &#34;&#34;&#34;Information about a series related to storage of updates&#34;&#34;&#34;
-
-    storesRevisions: bool
-    &#34;&#34;&#34;If True, a record of of updates of the series are stored&#34;&#34;&#34;
-
-    hasRevisions: bool
-    &#34;&#34;&#34;If True, at least one update has been stored&#34;&#34;&#34;
-
-    timeStampOfFirstRevision: Optional[str]
-    &#34;&#34;&#34;The timestamp of the first recorded update&#34;&#34;&#34;
-
-    timeStampOfLastRevision: Optional[str]
-    &#34;&#34;&#34;The timestamp of the last recorded update&#34;&#34;&#34;
-
-    vintageTimeStamps: List[str]
-    &#34;&#34;&#34;A list of timestamp of recorded updates&#34;&#34;&#34;</code></pre>
-</details>
 </section>
 <section>
 </section>
@@ -69,28 +38,6 @@ class SeriesWithRevisionsInfoResponse(StatusResponse):
 </code></dt>
 <dd>
 <div class="desc"><p>Information about a series related to storage of updates</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">class SeriesWithRevisionsInfoResponse(StatusResponse):
-    &#34;&#34;&#34;Information about a series related to storage of updates&#34;&#34;&#34;
-
-    storesRevisions: bool
-    &#34;&#34;&#34;If True, a record of of updates of the series are stored&#34;&#34;&#34;
-
-    hasRevisions: bool
-    &#34;&#34;&#34;If True, at least one update has been stored&#34;&#34;&#34;
-
-    timeStampOfFirstRevision: Optional[str]
-    &#34;&#34;&#34;The timestamp of the first recorded update&#34;&#34;&#34;
-
-    timeStampOfLastRevision: Optional[str]
-    &#34;&#34;&#34;The timestamp of the last recorded update&#34;&#34;&#34;
-
-    vintageTimeStamps: List[str]
-    &#34;&#34;&#34;A list of timestamp of recorded updates&#34;&#34;&#34;</code></pre>
-</details>
 <h3>Ancestors</h3>
 <ul class="hlist">
 <li>builtins.dict</li>

@@ -15,7 +15,7 @@ from .status_response import ResponseErrorCode
 
 from .entity_info_for_display_response import (
     EntityInfoForDisplayItem,
-    EntityNameWithTimeStamp,
+    EntityInfoForDisplayGroup,
     EntityInfoForDisplayResponse,
 )
 
@@ -23,41 +23,11 @@ from .entity_request import EntityRequest
 
 from .entity_response import EntityResponse
 
-from .feed_entities_response import FeedEntitiesResponse
-
-from .item_listing_response import ItemInformation, ItemListingResponse
-
-from .metadata_attribute_information_response import (
-    MetadataAttributeTypeRestriction,
-    MetadataAttributeInformationResponse,
-)
-
-from .metadata_value_information_response import (
-    MetadataValueInformationItem,
-    MetadataValueInformationResponse,
-)
-
-from .search_filter import SearchFilter
-
-from .search_for_display_request import SearchForDisplayRequest
-
-from .search_for_display_response import SearchForDisplayResponse
-
-from .search_request_base import SearchRequestBase
-
-from .search_request import SearchRequest
-
-from .search_response import SearchResponse
+from .feed_entities_response import FeedEntitiesResponse, EntityNameWithTimeStamp
 
 from .series_observation_history_response import SeriesObservationHistoryResponse
 
 from .series_response import SeriesResponse
-
-from .series_tree_listing_response import SeriesTreeListingResponse
-
-from .series_tree_location_part import SeriesTreeLocationPart
-
-from .series_tree_node_response import SeriesTreeNodeResponse
 
 from .series_with_revisions_info_response import SeriesWithRevisionsInfoResponse
 
@@ -74,3 +44,9 @@ from .values_response import ValuesResponse
 from .vintage_series_response import VintageSeriesResponse
 
 from .metadata_methods import MetadataMethods
+
+from .revision_history_request import RevisionHistoryRequest
+
+from .series_with_vintages_response import SeriesWithVintagesResponse
+
+from .vintage_values_response import VintageValuesResponse

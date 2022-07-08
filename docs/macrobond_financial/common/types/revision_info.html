@@ -22,85 +22,6 @@
 <h1 class="title">Module <code>macrobond_financial.common.types.revision_info</code></h1>
 </header>
 <section id="section-intro">
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python"># -*- coding: utf-8 -*-
-
-
-from datetime import datetime
-from typing import Tuple, TYPE_CHECKING, Optional, cast
-
-from typing_extensions import TypedDict
-
-from .._get_pandas import _get_pandas
-
-if TYPE_CHECKING:  # pragma: no cover
-    from pandas import DataFrame  # type: ignore
-
-
-class RevisionInfoDict(TypedDict, total=False):
-    name: str
-    error_message: str
-    stores_revisions: bool
-    has_revisions: bool
-    time_stamp_of_first_revision: Optional[datetime]
-    time_stamp_of_last_revision: Optional[datetime]
-    vintage_time_stamps: Tuple[datetime, ...]
-
-
-class RevisionInfo:
-
-    name: str
-    error_message: str
-    stores_revisions: bool
-    has_revisions: bool
-    time_stamp_of_first_revision: Optional[datetime]
-    time_stamp_of_last_revision: Optional[datetime]
-    vintage_time_stamps: Tuple[datetime, ...]
-
-    def __init__(
-        self,
-        name: str,
-        error_message: str,
-        stores_revisions: bool,
-        has_revisions: bool,
-        time_stamp_of_first_revision: Optional[datetime],
-        time_stamp_of_last_revision: Optional[datetime],
-        vintage_time_stamps: Tuple[datetime, ...],
-    ) -&gt; None:
-        self.name = name
-        &#34;&#34;&#34;name&#34;&#34;&#34;
-
-        self.error_message = error_message
-        &#34;&#34;&#34;error_message&#34;&#34;&#34;
-
-        self.stores_revisions = stores_revisions
-        &#34;&#34;&#34;stores_revisions&#34;&#34;&#34;
-
-        self.has_revisions = has_revisions
-        &#34;&#34;&#34;has_revisions&#34;&#34;&#34;
-
-        self.time_stamp_of_first_revision = time_stamp_of_first_revision
-        &#34;&#34;&#34;time_stamp_of_first_revision&#34;&#34;&#34;
-
-        self.time_stamp_of_last_revision = time_stamp_of_last_revision
-        &#34;&#34;&#34;time_stamp_of_last_revision&#34;&#34;&#34;
-
-        self.vintage_time_stamps = vintage_time_stamps
-        &#34;&#34;&#34;vintage_time_stamps&#34;&#34;&#34;
-
-    def to_dict(self) -&gt; RevisionInfoDict:
-        return cast(RevisionInfoDict, vars(self))
-
-    def to_pd_data_frame(self) -&gt; &#34;DataFrame&#34;:
-        pandas = _get_pandas()
-        return pandas.DataFrame(self.to_dict())
-
-    def __repr__(self):
-        return f&#34;RevisionInfo name: {self.name}&#34;</code></pre>
-</details>
 </section>
 <section>
 </section>
@@ -117,61 +38,6 @@ class RevisionInfo:
 </code></dt>
 <dd>
 <div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">class RevisionInfo:
-
-    name: str
-    error_message: str
-    stores_revisions: bool
-    has_revisions: bool
-    time_stamp_of_first_revision: Optional[datetime]
-    time_stamp_of_last_revision: Optional[datetime]
-    vintage_time_stamps: Tuple[datetime, ...]
-
-    def __init__(
-        self,
-        name: str,
-        error_message: str,
-        stores_revisions: bool,
-        has_revisions: bool,
-        time_stamp_of_first_revision: Optional[datetime],
-        time_stamp_of_last_revision: Optional[datetime],
-        vintage_time_stamps: Tuple[datetime, ...],
-    ) -&gt; None:
-        self.name = name
-        &#34;&#34;&#34;name&#34;&#34;&#34;
-
-        self.error_message = error_message
-        &#34;&#34;&#34;error_message&#34;&#34;&#34;
-
-        self.stores_revisions = stores_revisions
-        &#34;&#34;&#34;stores_revisions&#34;&#34;&#34;
-
-        self.has_revisions = has_revisions
-        &#34;&#34;&#34;has_revisions&#34;&#34;&#34;
-
-        self.time_stamp_of_first_revision = time_stamp_of_first_revision
-        &#34;&#34;&#34;time_stamp_of_first_revision&#34;&#34;&#34;
-
-        self.time_stamp_of_last_revision = time_stamp_of_last_revision
-        &#34;&#34;&#34;time_stamp_of_last_revision&#34;&#34;&#34;
-
-        self.vintage_time_stamps = vintage_time_stamps
-        &#34;&#34;&#34;vintage_time_stamps&#34;&#34;&#34;
-
-    def to_dict(self) -&gt; RevisionInfoDict:
-        return cast(RevisionInfoDict, vars(self))
-
-    def to_pd_data_frame(self) -&gt; &#34;DataFrame&#34;:
-        pandas = _get_pandas()
-        return pandas.DataFrame(self.to_dict())
-
-    def __repr__(self):
-        return f&#34;RevisionInfo name: {self.name}&#34;</code></pre>
-</details>
 <h3>Instance variables</h3>
 <dl>
 <dt id="macrobond_financial.common.types.revision_info.RevisionInfo.error_message"><code class="name">var <span class="ident">error_message</span> : str</code></dt>
@@ -210,27 +76,12 @@ class RevisionInfo:
 </code></dt>
 <dd>
 <div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def to_dict(self) -&gt; RevisionInfoDict:
-    return cast(RevisionInfoDict, vars(self))</code></pre>
-</details>
 </dd>
 <dt id="macrobond_financial.common.types.revision_info.RevisionInfo.to_pd_data_frame"><code class="name flex">
 <span>def <span class="ident">to_pd_data_frame</span></span>(<span>self) ‑> DataFrame</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def to_pd_data_frame(self) -&gt; &#34;DataFrame&#34;:
-    pandas = _get_pandas()
-    return pandas.DataFrame(self.to_dict())</code></pre>
-</details>
 </dd>
 </dl>
 </dd>
@@ -250,19 +101,6 @@ dict(**kwargs) -&gt; new dictionary initialized with the name=value pairs
 in the keyword argument list.
 For example:
 dict(one=1, two=2)</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">class RevisionInfoDict(TypedDict, total=False):
-    name: str
-    error_message: str
-    stores_revisions: bool
-    has_revisions: bool
-    time_stamp_of_first_revision: Optional[datetime]
-    time_stamp_of_last_revision: Optional[datetime]
-    vintage_time_stamps: Tuple[datetime, ...]</code></pre>
-</details>
 <h3>Ancestors</h3>
 <ul class="hlist">
 <li>builtins.dict</li>

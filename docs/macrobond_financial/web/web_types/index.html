@@ -22,86 +22,6 @@
 <h1 class="title">Module <code>macrobond_financial.web.web_types</code></h1>
 </header>
 <section id="section-intro">
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python"># -*- coding: utf-8 -*-
-
-from typing import TYPE_CHECKING
-
-from .search_methods import SearchMethods
-
-from .series_methods import SeriesMethods
-
-from .series_tree_methods import SeriesTreeMethods
-
-from .session_http_exception import SessionHttpException
-
-from .status_response import ResponseErrorCode
-
-from .entity_info_for_display_response import (
-    EntityInfoForDisplayItem,
-    EntityNameWithTimeStamp,
-    EntityInfoForDisplayResponse,
-)
-
-from .entity_request import EntityRequest
-
-from .entity_response import EntityResponse
-
-from .feed_entities_response import FeedEntitiesResponse
-
-from .item_listing_response import ItemInformation, ItemListingResponse
-
-from .metadata_attribute_information_response import (
-    MetadataAttributeTypeRestriction,
-    MetadataAttributeInformationResponse,
-)
-
-from .metadata_value_information_response import (
-    MetadataValueInformationItem,
-    MetadataValueInformationResponse,
-)
-
-from .search_filter import SearchFilter
-
-from .search_for_display_request import SearchForDisplayRequest
-
-from .search_for_display_response import SearchForDisplayResponse
-
-from .search_request_base import SearchRequestBase
-
-from .search_request import SearchRequest
-
-from .search_response import SearchResponse
-
-from .series_observation_history_response import SeriesObservationHistoryResponse
-
-from .series_response import SeriesResponse
-
-from .series_tree_listing_response import SeriesTreeListingResponse
-
-from .series_tree_location_part import SeriesTreeLocationPart
-
-from .series_tree_node_response import SeriesTreeNodeResponse
-
-from .series_with_revisions_info_response import SeriesWithRevisionsInfoResponse
-
-from .series_with_times_of_change_response import SeriesWithTimesOfChangeResponse
-
-from .status_response import StatusResponse
-
-from .unified_series_request import UnifiedSeriesEntry, UnifiedSeriesRequest
-
-from .unified_series_response import UnifiedSeriesResponse
-
-from .values_response import ValuesResponse
-
-from .vintage_series_response import VintageSeriesResponse
-
-from .metadata_methods import MetadataMethods</code></pre>
-</details>
 </section>
 <section>
 <h2 class="section-title" id="header-submodules">Sub-modules</h2>
@@ -122,11 +42,11 @@ from .metadata_methods import MetadataMethods</code></pre>
 <dd>
 <div class="desc"></div>
 </dd>
-<dt><code class="name"><a title="macrobond_financial.web.web_types.item_listing_response" href="item_listing_response.html">macrobond_financial.web.web_types.item_listing_response</a></code></dt>
+<dt><code class="name"><a title="macrobond_financial.web.web_types.http_exception" href="http_exception.html">macrobond_financial.web.web_types.http_exception</a></code></dt>
 <dd>
 <div class="desc"></div>
 </dd>
-<dt><code class="name"><a title="macrobond_financial.web.web_types.metadata_attribute_information_response" href="metadata_attribute_information_response.html">macrobond_financial.web.web_types.metadata_attribute_information_response</a></code></dt>
+<dt><code class="name"><a title="macrobond_financial.web.web_types.metadata" href="metadata/index.html">macrobond_financial.web.web_types.metadata</a></code></dt>
 <dd>
 <div class="desc"></div>
 </dd>
@@ -134,35 +54,23 @@ from .metadata_methods import MetadataMethods</code></pre>
 <dd>
 <div class="desc"></div>
 </dd>
-<dt><code class="name"><a title="macrobond_financial.web.web_types.metadata_value_information_response" href="metadata_value_information_response.html">macrobond_financial.web.web_types.metadata_value_information_response</a></code></dt>
+<dt><code class="name"><a title="macrobond_financial.web.web_types.problem_details_exception" href="problem_details_exception.html">macrobond_financial.web.web_types.problem_details_exception</a></code></dt>
 <dd>
 <div class="desc"></div>
 </dd>
-<dt><code class="name"><a title="macrobond_financial.web.web_types.search_filter" href="search_filter.html">macrobond_financial.web.web_types.search_filter</a></code></dt>
+<dt><code class="name"><a title="macrobond_financial.web.web_types.response_error_code" href="response_error_code.html">macrobond_financial.web.web_types.response_error_code</a></code></dt>
 <dd>
 <div class="desc"></div>
 </dd>
-<dt><code class="name"><a title="macrobond_financial.web.web_types.search_for_display_request" href="search_for_display_request.html">macrobond_financial.web.web_types.search_for_display_request</a></code></dt>
+<dt><code class="name"><a title="macrobond_financial.web.web_types.revision_history_request" href="revision_history_request.html">macrobond_financial.web.web_types.revision_history_request</a></code></dt>
 <dd>
 <div class="desc"></div>
 </dd>
-<dt><code class="name"><a title="macrobond_financial.web.web_types.search_for_display_response" href="search_for_display_response.html">macrobond_financial.web.web_types.search_for_display_response</a></code></dt>
+<dt><code class="name"><a title="macrobond_financial.web.web_types.search" href="search/index.html">macrobond_financial.web.web_types.search</a></code></dt>
 <dd>
 <div class="desc"></div>
 </dd>
 <dt><code class="name"><a title="macrobond_financial.web.web_types.search_methods" href="search_methods.html">macrobond_financial.web.web_types.search_methods</a></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt><code class="name"><a title="macrobond_financial.web.web_types.search_request" href="search_request.html">macrobond_financial.web.web_types.search_request</a></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt><code class="name"><a title="macrobond_financial.web.web_types.search_request_base" href="search_request_base.html">macrobond_financial.web.web_types.search_request_base</a></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt><code class="name"><a title="macrobond_financial.web.web_types.search_response" href="search_response.html">macrobond_financial.web.web_types.search_response</a></code></dt>
 <dd>
 <div class="desc"></div>
 </dd>
@@ -178,19 +86,11 @@ from .metadata_methods import MetadataMethods</code></pre>
 <dd>
 <div class="desc"></div>
 </dd>
-<dt><code class="name"><a title="macrobond_financial.web.web_types.series_tree_listing_response" href="series_tree_listing_response.html">macrobond_financial.web.web_types.series_tree_listing_response</a></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt><code class="name"><a title="macrobond_financial.web.web_types.series_tree_location_part" href="series_tree_location_part.html">macrobond_financial.web.web_types.series_tree_location_part</a></code></dt>
+<dt><code class="name"><a title="macrobond_financial.web.web_types.series_tree" href="series_tree/index.html">macrobond_financial.web.web_types.series_tree</a></code></dt>
 <dd>
 <div class="desc"></div>
 </dd>
 <dt><code class="name"><a title="macrobond_financial.web.web_types.series_tree_methods" href="series_tree_methods.html">macrobond_financial.web.web_types.series_tree_methods</a></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt><code class="name"><a title="macrobond_financial.web.web_types.series_tree_node_response" href="series_tree_node_response.html">macrobond_financial.web.web_types.series_tree_node_response</a></code></dt>
 <dd>
 <div class="desc"></div>
 </dd>
@@ -202,11 +102,15 @@ from .metadata_methods import MetadataMethods</code></pre>
 <dd>
 <div class="desc"></div>
 </dd>
-<dt><code class="name"><a title="macrobond_financial.web.web_types.session_http_exception" href="session_http_exception.html">macrobond_financial.web.web_types.session_http_exception</a></code></dt>
+<dt><code class="name"><a title="macrobond_financial.web.web_types.series_with_vintages_response" href="series_with_vintages_response.html">macrobond_financial.web.web_types.series_with_vintages_response</a></code></dt>
 <dd>
 <div class="desc"></div>
 </dd>
 <dt><code class="name"><a title="macrobond_financial.web.web_types.status_response" href="status_response.html">macrobond_financial.web.web_types.status_response</a></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt><code class="name"><a title="macrobond_financial.web.web_types.subscription_list_state" href="subscription_list_state.html">macrobond_financial.web.web_types.subscription_list_state</a></code></dt>
 <dd>
 <div class="desc"></div>
 </dd>
@@ -223,6 +127,10 @@ from .metadata_methods import MetadataMethods</code></pre>
 <div class="desc"></div>
 </dd>
 <dt><code class="name"><a title="macrobond_financial.web.web_types.vintage_series_response" href="vintage_series_response.html">macrobond_financial.web.web_types.vintage_series_response</a></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt><code class="name"><a title="macrobond_financial.web.web_types.vintage_values_response" href="vintage_values_response.html">macrobond_financial.web.web_types.vintage_values_response</a></code></dt>
 <dd>
 <div class="desc"></div>
 </dd>
@@ -252,32 +160,29 @@ from .metadata_methods import MetadataMethods</code></pre>
 <li><code><a title="macrobond_financial.web.web_types.entity_request" href="entity_request.html">macrobond_financial.web.web_types.entity_request</a></code></li>
 <li><code><a title="macrobond_financial.web.web_types.entity_response" href="entity_response.html">macrobond_financial.web.web_types.entity_response</a></code></li>
 <li><code><a title="macrobond_financial.web.web_types.feed_entities_response" href="feed_entities_response.html">macrobond_financial.web.web_types.feed_entities_response</a></code></li>
-<li><code><a title="macrobond_financial.web.web_types.item_listing_response" href="item_listing_response.html">macrobond_financial.web.web_types.item_listing_response</a></code></li>
-<li><code><a title="macrobond_financial.web.web_types.metadata_attribute_information_response" href="metadata_attribute_information_response.html">macrobond_financial.web.web_types.metadata_attribute_information_response</a></code></li>
+<li><code><a title="macrobond_financial.web.web_types.http_exception" href="http_exception.html">macrobond_financial.web.web_types.http_exception</a></code></li>
+<li><code><a title="macrobond_financial.web.web_types.metadata" href="metadata/index.html">macrobond_financial.web.web_types.metadata</a></code></li>
 <li><code><a title="macrobond_financial.web.web_types.metadata_methods" href="metadata_methods.html">macrobond_financial.web.web_types.metadata_methods</a></code></li>
-<li><code><a title="macrobond_financial.web.web_types.metadata_value_information_response" href="metadata_value_information_response.html">macrobond_financial.web.web_types.metadata_value_information_response</a></code></li>
-<li><code><a title="macrobond_financial.web.web_types.search_filter" href="search_filter.html">macrobond_financial.web.web_types.search_filter</a></code></li>
-<li><code><a title="macrobond_financial.web.web_types.search_for_display_request" href="search_for_display_request.html">macrobond_financial.web.web_types.search_for_display_request</a></code></li>
-<li><code><a title="macrobond_financial.web.web_types.search_for_display_response" href="search_for_display_response.html">macrobond_financial.web.web_types.search_for_display_response</a></code></li>
+<li><code><a title="macrobond_financial.web.web_types.problem_details_exception" href="problem_details_exception.html">macrobond_financial.web.web_types.problem_details_exception</a></code></li>
+<li><code><a title="macrobond_financial.web.web_types.response_error_code" href="response_error_code.html">macrobond_financial.web.web_types.response_error_code</a></code></li>
+<li><code><a title="macrobond_financial.web.web_types.revision_history_request" href="revision_history_request.html">macrobond_financial.web.web_types.revision_history_request</a></code></li>
+<li><code><a title="macrobond_financial.web.web_types.search" href="search/index.html">macrobond_financial.web.web_types.search</a></code></li>
 <li><code><a title="macrobond_financial.web.web_types.search_methods" href="search_methods.html">macrobond_financial.web.web_types.search_methods</a></code></li>
-<li><code><a title="macrobond_financial.web.web_types.search_request" href="search_request.html">macrobond_financial.web.web_types.search_request</a></code></li>
-<li><code><a title="macrobond_financial.web.web_types.search_request_base" href="search_request_base.html">macrobond_financial.web.web_types.search_request_base</a></code></li>
-<li><code><a title="macrobond_financial.web.web_types.search_response" href="search_response.html">macrobond_financial.web.web_types.search_response</a></code></li>
 <li><code><a title="macrobond_financial.web.web_types.series_methods" href="series_methods.html">macrobond_financial.web.web_types.series_methods</a></code></li>
 <li><code><a title="macrobond_financial.web.web_types.series_observation_history_response" href="series_observation_history_response.html">macrobond_financial.web.web_types.series_observation_history_response</a></code></li>
 <li><code><a title="macrobond_financial.web.web_types.series_response" href="series_response.html">macrobond_financial.web.web_types.series_response</a></code></li>
-<li><code><a title="macrobond_financial.web.web_types.series_tree_listing_response" href="series_tree_listing_response.html">macrobond_financial.web.web_types.series_tree_listing_response</a></code></li>
-<li><code><a title="macrobond_financial.web.web_types.series_tree_location_part" href="series_tree_location_part.html">macrobond_financial.web.web_types.series_tree_location_part</a></code></li>
+<li><code><a title="macrobond_financial.web.web_types.series_tree" href="series_tree/index.html">macrobond_financial.web.web_types.series_tree</a></code></li>
 <li><code><a title="macrobond_financial.web.web_types.series_tree_methods" href="series_tree_methods.html">macrobond_financial.web.web_types.series_tree_methods</a></code></li>
-<li><code><a title="macrobond_financial.web.web_types.series_tree_node_response" href="series_tree_node_response.html">macrobond_financial.web.web_types.series_tree_node_response</a></code></li>
 <li><code><a title="macrobond_financial.web.web_types.series_with_revisions_info_response" href="series_with_revisions_info_response.html">macrobond_financial.web.web_types.series_with_revisions_info_response</a></code></li>
 <li><code><a title="macrobond_financial.web.web_types.series_with_times_of_change_response" href="series_with_times_of_change_response.html">macrobond_financial.web.web_types.series_with_times_of_change_response</a></code></li>
-<li><code><a title="macrobond_financial.web.web_types.session_http_exception" href="session_http_exception.html">macrobond_financial.web.web_types.session_http_exception</a></code></li>
+<li><code><a title="macrobond_financial.web.web_types.series_with_vintages_response" href="series_with_vintages_response.html">macrobond_financial.web.web_types.series_with_vintages_response</a></code></li>
 <li><code><a title="macrobond_financial.web.web_types.status_response" href="status_response.html">macrobond_financial.web.web_types.status_response</a></code></li>
+<li><code><a title="macrobond_financial.web.web_types.subscription_list_state" href="subscription_list_state.html">macrobond_financial.web.web_types.subscription_list_state</a></code></li>
 <li><code><a title="macrobond_financial.web.web_types.unified_series_request" href="unified_series_request.html">macrobond_financial.web.web_types.unified_series_request</a></code></li>
 <li><code><a title="macrobond_financial.web.web_types.unified_series_response" href="unified_series_response.html">macrobond_financial.web.web_types.unified_series_response</a></code></li>
 <li><code><a title="macrobond_financial.web.web_types.values_response" href="values_response.html">macrobond_financial.web.web_types.values_response</a></code></li>
 <li><code><a title="macrobond_financial.web.web_types.vintage_series_response" href="vintage_series_response.html">macrobond_financial.web.web_types.vintage_series_response</a></code></li>
+<li><code><a title="macrobond_financial.web.web_types.vintage_values_response" href="vintage_values_response.html">macrobond_financial.web.web_types.vintage_values_response</a></code></li>
 </ul>
 </li>
 </ul>

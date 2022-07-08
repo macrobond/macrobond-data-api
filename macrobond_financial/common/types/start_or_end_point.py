@@ -30,6 +30,8 @@ class StartOrEndPoint:
         Defines how the automatic start or end is calculated.
     """
 
+    __slots__ = ("time", "mode")
+
     def __init__(self, time: str, mode: Optional[CalendarDateMode]) -> None:
         self.time = time
         self.mode = CalendarDateMode.DATA_IN_ANY_SERIES if mode is None else mode

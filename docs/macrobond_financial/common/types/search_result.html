@@ -22,54 +22,6 @@
 <h1 class="title">Module <code>macrobond_financial.common.types.search_result</code></h1>
 </header>
 <section id="section-intro">
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python"># -*- coding: utf-8 -*-
-
-from typing import Any, Dict, TYPE_CHECKING, List, Sequence
-
-from .._get_pandas import _get_pandas
-
-if TYPE_CHECKING:  # pragma: no cover
-    from pandas import DataFrame  # type: ignore
-
-
-class SearchResult(List[Dict[str, Any]]):
-    &#34;&#34;&#34;
-    The result of a entity search operation.
-    &#34;&#34;&#34;
-
-    is_truncated: bool
-
-    def __init__(self, entities: Sequence[Dict[str, Any]], is_truncated: bool) -&gt; None:
-        super().__init__(entities)
-        self.is_truncated = is_truncated
-        &#34;&#34;&#34;
-        Indicates whether the search result was too long and truncated.
-        &#34;&#34;&#34;
-
-    @property
-    def entities(self) -&gt; List[Dict[str, Any]]:
-        &#34;&#34;&#34;
-        A sequence of the metadata of the entities found.
-        &#34;&#34;&#34;
-        return list(self)
-
-    def __repr__(self):
-        return f&#34;SearchResult of {len(self)} entities, is_truncated: {self.is_truncated}&#34;
-
-    def to_dict(self) -&gt; List[Dict[str, Any]]:
-        return list(self)
-
-    def to_pd_data_frame(self) -&gt; &#34;DataFrame&#34;:
-        &#34;&#34;&#34;
-        Return the result as a `DataFrame`.
-        &#34;&#34;&#34;
-        pandas = _get_pandas()
-        return pandas.DataFrame(self)</code></pre>
-</details>
 </section>
 <section>
 </section>
@@ -86,44 +38,6 @@ class SearchResult(List[Dict[str, Any]]):
 </code></dt>
 <dd>
 <div class="desc"><p>The result of a entity search operation.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">class SearchResult(List[Dict[str, Any]]):
-    &#34;&#34;&#34;
-    The result of a entity search operation.
-    &#34;&#34;&#34;
-
-    is_truncated: bool
-
-    def __init__(self, entities: Sequence[Dict[str, Any]], is_truncated: bool) -&gt; None:
-        super().__init__(entities)
-        self.is_truncated = is_truncated
-        &#34;&#34;&#34;
-        Indicates whether the search result was too long and truncated.
-        &#34;&#34;&#34;
-
-    @property
-    def entities(self) -&gt; List[Dict[str, Any]]:
-        &#34;&#34;&#34;
-        A sequence of the metadata of the entities found.
-        &#34;&#34;&#34;
-        return list(self)
-
-    def __repr__(self):
-        return f&#34;SearchResult of {len(self)} entities, is_truncated: {self.is_truncated}&#34;
-
-    def to_dict(self) -&gt; List[Dict[str, Any]]:
-        return list(self)
-
-    def to_pd_data_frame(self) -&gt; &#34;DataFrame&#34;:
-        &#34;&#34;&#34;
-        Return the result as a `DataFrame`.
-        &#34;&#34;&#34;
-        pandas = _get_pandas()
-        return pandas.DataFrame(self)</code></pre>
-</details>
 <h3>Ancestors</h3>
 <ul class="hlist">
 <li>builtins.list</li>
@@ -134,17 +48,6 @@ class SearchResult(List[Dict[str, Any]]):
 <dt id="macrobond_financial.common.types.search_result.SearchResult.entities"><code class="name">var <span class="ident">entities</span> : List[Dict[str, Any]]</code></dt>
 <dd>
 <div class="desc"><p>A sequence of the metadata of the entities found.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@property
-def entities(self) -&gt; List[Dict[str, Any]]:
-    &#34;&#34;&#34;
-    A sequence of the metadata of the entities found.
-    &#34;&#34;&#34;
-    return list(self)</code></pre>
-</details>
 </dd>
 <dt id="macrobond_financial.common.types.search_result.SearchResult.is_truncated"><code class="name">var <span class="ident">is_truncated</span> : bool</code></dt>
 <dd>
@@ -158,30 +61,12 @@ def entities(self) -&gt; List[Dict[str, Any]]:
 </code></dt>
 <dd>
 <div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def to_dict(self) -&gt; List[Dict[str, Any]]:
-    return list(self)</code></pre>
-</details>
 </dd>
 <dt id="macrobond_financial.common.types.search_result.SearchResult.to_pd_data_frame"><code class="name flex">
 <span>def <span class="ident">to_pd_data_frame</span></span>(<span>self) ‑> DataFrame</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Return the result as a <code>DataFrame</code>.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def to_pd_data_frame(self) -&gt; &#34;DataFrame&#34;:
-    &#34;&#34;&#34;
-    Return the result as a `DataFrame`.
-    &#34;&#34;&#34;
-    pandas = _get_pandas()
-    return pandas.DataFrame(self)</code></pre>
-</details>
 </dd>
 </dl>
 </dd>

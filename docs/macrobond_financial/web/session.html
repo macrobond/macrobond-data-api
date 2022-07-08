@@ -22,168 +22,6 @@
 <h1 class="title">Module <code>macrobond_financial.web.session</code></h1>
 </header>
 <section id="section-intro">
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python"># -*- coding: utf-8 -*-
-
-from typing import Callable, Optional, Any, TYPE_CHECKING
-
-from authlib.integrations.requests_client import OAuth2Session  # type: ignore
-from authlib.integrations.base_client.errors import InvalidTokenError  # type: ignore
-from .web_types import (
-    MetadataMethods,
-    SearchMethods,
-    SeriesMethods,
-    SeriesTreeMethods,
-    SessionHttpException,
-)
-
-from .scope import Scope
-
-API_URL_DEFAULT = &#34;https://api.macrobondfinancial.com/&#34;
-AUTHORIZATION_URL_DEFAULT = &#34;https://apiauth.macrobondfinancial.com/mbauth/&#34;
-
-if TYPE_CHECKING:  # pragma: no cover
-    from requests import Response  # type: ignore
-
-__pdoc__ = {
-    &#34;Session.__init__&#34;: False,
-}
-
-
-class Session:
-    @property
-    def metadata(self) -&gt; MetadataMethods:
-        &#34;&#34;&#34;Metadata operations&#34;&#34;&#34;
-        return self.__metadata
-
-    @property
-    def search(self) -&gt; SearchMethods:
-        &#34;&#34;&#34;Search for time series and other entites&#34;&#34;&#34;
-        return self.__search
-
-    @property
-    def series(self) -&gt; SeriesMethods:
-        &#34;&#34;&#34;Time series and entity operations&#34;&#34;&#34;
-        return self.__series
-
-    @property
-    def series_tree(self) -&gt; SeriesTreeMethods:
-        &#34;&#34;&#34;Operations related to the visual series database tree structure&#34;&#34;&#34;
-        return self.__series_tree
-
-    @property
-    def api_url(self):
-        return self.__api_url
-
-    @property
-    def authorization_url(self):
-        return self.__authorization_url
-
-    @property
-    def token_endpoint(self):
-        return self.__token_endpoint
-
-    @property
-    def auth2_session(self):
-        return self.__auth2_session
-
-    def __init__(
-        self,
-        client_id: str,
-        client_secret: str,
-        *scopes: Scope,
-        api_url: str = API_URL_DEFAULT,
-        authorization_url: str = API_URL_DEFAULT,
-        test_auth2_session: Any = None
-    ) -&gt; None:
-        self.__token_endpoint: Optional[str] = None
-
-        if not authorization_url.endswith(&#34;/&#34;):
-            authorization_url = authorization_url + &#34;/&#34;
-        self.__authorization_url = authorization_url
-
-        if not api_url.endswith(&#34;/&#34;):
-            api_url = api_url + &#34;/&#34;
-        self.__api_url = api_url
-
-        scopes_str_list = list(map(lambda s: s.value, scopes))
-        if test_auth2_session is None:
-            self.__auth2_session = OAuth2Session(client_id, client_secret, scope=scopes_str_list)
-        else:
-            self.__auth2_session = test_auth2_session
-
-        self.__metadata = MetadataMethods(self)
-        self.__search = SearchMethods(self)
-        self.__series = SeriesMethods(self)
-        self.__series_tree = SeriesTreeMethods(self)
-
-    def close(self) -&gt; None:
-        self.auth2_session.close()
-
-    def fetch_token(self) -&gt; None:
-        if self.token_endpoint is None:
-            self.__token_endpoint = self.discovery(self.authorization_url)
-        self.auth2_session.fetch_token(self.token_endpoint)
-
-    def get(self, url: str, params: dict = None) -&gt; &#34;Response&#34;:
-        def http():
-            return self.auth2_session.get(url=self.api_url + url, params=params)
-
-        return self.__if_status_code_401_fetch_token_and_retry(http)
-
-    def get_or_raise(self, url: str, params: dict = None) -&gt; &#34;Response&#34;:
-        response = self.get(url, params)
-        if response.status_code != 200:
-            raise SessionHttpException(response)
-        return response
-
-    def post(self, url: str, params: dict = None, json: object = None) -&gt; &#34;Response&#34;:
-        def http():
-            return self.auth2_session.post(url=self.api_url + url, params=params, json=json)
-
-        return self.__if_status_code_401_fetch_token_and_retry(http)
-
-    def post_or_raise(self, url: str, params: dict = None, json: object = None) -&gt; &#34;Response&#34;:
-        response = self.post(url, params, json)
-        if response.status_code != 200:
-            raise SessionHttpException(response)
-        return response
-
-    def discovery(self, url: str) -&gt; str:
-        response = self.auth2_session.request(&#34;get&#34;, url + &#34;.well-known/openid-configuration&#34;, True)
-        if response.status_code != 200:
-            raise Exception(&#34;discovery Exception, status code is not 200&#34;)
-
-        try:
-            json: Optional[dict] = response.json()
-        except BaseException as base_exception:
-            raise Exception(&#34;discovery Exception, not valid json.&#34;) from base_exception
-
-        if not isinstance(json, dict):
-            raise Exception(&#34;discovery Exception, no root obj in json.&#34;)
-
-        token_endpoint: Optional[str] = json.get(&#34;token_endpoint&#34;)
-        if token_endpoint is None:
-            raise Exception(&#34;discovery Exception, token_endpoint in root obj.&#34;)
-
-        return token_endpoint
-
-    def __if_status_code_401_fetch_token_and_retry(
-        self, http: Callable[[], &#34;Response&#34;]
-    ) -&gt; &#34;Response&#34;:
-        try:
-            response = http()
-        except InvalidTokenError:
-            self.fetch_token()
-            return http()
-        if response.status_code == 401:
-            self.fetch_token()
-            response = http()
-        return response</code></pre>
-</details>
 </section>
 <section>
 </section>
@@ -199,242 +37,39 @@ class Session:
 </code></dt>
 <dd>
 <div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">class Session:
-    @property
-    def metadata(self) -&gt; MetadataMethods:
-        &#34;&#34;&#34;Metadata operations&#34;&#34;&#34;
-        return self.__metadata
-
-    @property
-    def search(self) -&gt; SearchMethods:
-        &#34;&#34;&#34;Search for time series and other entites&#34;&#34;&#34;
-        return self.__search
-
-    @property
-    def series(self) -&gt; SeriesMethods:
-        &#34;&#34;&#34;Time series and entity operations&#34;&#34;&#34;
-        return self.__series
-
-    @property
-    def series_tree(self) -&gt; SeriesTreeMethods:
-        &#34;&#34;&#34;Operations related to the visual series database tree structure&#34;&#34;&#34;
-        return self.__series_tree
-
-    @property
-    def api_url(self):
-        return self.__api_url
-
-    @property
-    def authorization_url(self):
-        return self.__authorization_url
-
-    @property
-    def token_endpoint(self):
-        return self.__token_endpoint
-
-    @property
-    def auth2_session(self):
-        return self.__auth2_session
-
-    def __init__(
-        self,
-        client_id: str,
-        client_secret: str,
-        *scopes: Scope,
-        api_url: str = API_URL_DEFAULT,
-        authorization_url: str = API_URL_DEFAULT,
-        test_auth2_session: Any = None
-    ) -&gt; None:
-        self.__token_endpoint: Optional[str] = None
-
-        if not authorization_url.endswith(&#34;/&#34;):
-            authorization_url = authorization_url + &#34;/&#34;
-        self.__authorization_url = authorization_url
-
-        if not api_url.endswith(&#34;/&#34;):
-            api_url = api_url + &#34;/&#34;
-        self.__api_url = api_url
-
-        scopes_str_list = list(map(lambda s: s.value, scopes))
-        if test_auth2_session is None:
-            self.__auth2_session = OAuth2Session(client_id, client_secret, scope=scopes_str_list)
-        else:
-            self.__auth2_session = test_auth2_session
-
-        self.__metadata = MetadataMethods(self)
-        self.__search = SearchMethods(self)
-        self.__series = SeriesMethods(self)
-        self.__series_tree = SeriesTreeMethods(self)
-
-    def close(self) -&gt; None:
-        self.auth2_session.close()
-
-    def fetch_token(self) -&gt; None:
-        if self.token_endpoint is None:
-            self.__token_endpoint = self.discovery(self.authorization_url)
-        self.auth2_session.fetch_token(self.token_endpoint)
-
-    def get(self, url: str, params: dict = None) -&gt; &#34;Response&#34;:
-        def http():
-            return self.auth2_session.get(url=self.api_url + url, params=params)
-
-        return self.__if_status_code_401_fetch_token_and_retry(http)
-
-    def get_or_raise(self, url: str, params: dict = None) -&gt; &#34;Response&#34;:
-        response = self.get(url, params)
-        if response.status_code != 200:
-            raise SessionHttpException(response)
-        return response
-
-    def post(self, url: str, params: dict = None, json: object = None) -&gt; &#34;Response&#34;:
-        def http():
-            return self.auth2_session.post(url=self.api_url + url, params=params, json=json)
-
-        return self.__if_status_code_401_fetch_token_and_retry(http)
-
-    def post_or_raise(self, url: str, params: dict = None, json: object = None) -&gt; &#34;Response&#34;:
-        response = self.post(url, params, json)
-        if response.status_code != 200:
-            raise SessionHttpException(response)
-        return response
-
-    def discovery(self, url: str) -&gt; str:
-        response = self.auth2_session.request(&#34;get&#34;, url + &#34;.well-known/openid-configuration&#34;, True)
-        if response.status_code != 200:
-            raise Exception(&#34;discovery Exception, status code is not 200&#34;)
-
-        try:
-            json: Optional[dict] = response.json()
-        except BaseException as base_exception:
-            raise Exception(&#34;discovery Exception, not valid json.&#34;) from base_exception
-
-        if not isinstance(json, dict):
-            raise Exception(&#34;discovery Exception, no root obj in json.&#34;)
-
-        token_endpoint: Optional[str] = json.get(&#34;token_endpoint&#34;)
-        if token_endpoint is None:
-            raise Exception(&#34;discovery Exception, token_endpoint in root obj.&#34;)
-
-        return token_endpoint
-
-    def __if_status_code_401_fetch_token_and_retry(
-        self, http: Callable[[], &#34;Response&#34;]
-    ) -&gt; &#34;Response&#34;:
-        try:
-            response = http()
-        except InvalidTokenError:
-            self.fetch_token()
-            return http()
-        if response.status_code == 401:
-            self.fetch_token()
-            response = http()
-        return response</code></pre>
-</details>
 <h3>Instance variables</h3>
 <dl>
 <dt id="macrobond_financial.web.session.Session.api_url"><code class="name">var <span class="ident">api_url</span></code></dt>
 <dd>
 <div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@property
-def api_url(self):
-    return self.__api_url</code></pre>
-</details>
 </dd>
 <dt id="macrobond_financial.web.session.Session.auth2_session"><code class="name">var <span class="ident">auth2_session</span></code></dt>
 <dd>
 <div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@property
-def auth2_session(self):
-    return self.__auth2_session</code></pre>
-</details>
 </dd>
 <dt id="macrobond_financial.web.session.Session.authorization_url"><code class="name">var <span class="ident">authorization_url</span></code></dt>
 <dd>
 <div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@property
-def authorization_url(self):
-    return self.__authorization_url</code></pre>
-</details>
 </dd>
 <dt id="macrobond_financial.web.session.Session.metadata"><code class="name">var <span class="ident">metadata</span> : <a title="macrobond_financial.web.web_types.metadata_methods.MetadataMethods" href="web_types/metadata_methods.html#macrobond_financial.web.web_types.metadata_methods.MetadataMethods">MetadataMethods</a></code></dt>
 <dd>
 <div class="desc"><p>Metadata operations</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@property
-def metadata(self) -&gt; MetadataMethods:
-    &#34;&#34;&#34;Metadata operations&#34;&#34;&#34;
-    return self.__metadata</code></pre>
-</details>
 </dd>
 <dt id="macrobond_financial.web.session.Session.search"><code class="name">var <span class="ident">search</span> : <a title="macrobond_financial.web.web_types.search_methods.SearchMethods" href="web_types/search_methods.html#macrobond_financial.web.web_types.search_methods.SearchMethods">SearchMethods</a></code></dt>
 <dd>
 <div class="desc"><p>Search for time series and other entites</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@property
-def search(self) -&gt; SearchMethods:
-    &#34;&#34;&#34;Search for time series and other entites&#34;&#34;&#34;
-    return self.__search</code></pre>
-</details>
 </dd>
 <dt id="macrobond_financial.web.session.Session.series"><code class="name">var <span class="ident">series</span> : <a title="macrobond_financial.web.web_types.series_methods.SeriesMethods" href="web_types/series_methods.html#macrobond_financial.web.web_types.series_methods.SeriesMethods">SeriesMethods</a></code></dt>
 <dd>
 <div class="desc"><p>Time series and entity operations</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@property
-def series(self) -&gt; SeriesMethods:
-    &#34;&#34;&#34;Time series and entity operations&#34;&#34;&#34;
-    return self.__series</code></pre>
-</details>
 </dd>
 <dt id="macrobond_financial.web.session.Session.series_tree"><code class="name">var <span class="ident">series_tree</span> : <a title="macrobond_financial.web.web_types.series_tree_methods.SeriesTreeMethods" href="web_types/series_tree_methods.html#macrobond_financial.web.web_types.series_tree_methods.SeriesTreeMethods">SeriesTreeMethods</a></code></dt>
 <dd>
 <div class="desc"><p>Operations related to the visual series database tree structure</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@property
-def series_tree(self) -&gt; SeriesTreeMethods:
-    &#34;&#34;&#34;Operations related to the visual series database tree structure&#34;&#34;&#34;
-    return self.__series_tree</code></pre>
-</details>
 </dd>
 <dt id="macrobond_financial.web.session.Session.token_endpoint"><code class="name">var <span class="ident">token_endpoint</span></code></dt>
 <dd>
 <div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@property
-def token_endpoint(self):
-    return self.__token_endpoint</code></pre>
-</details>
 </dd>
 </dl>
 <h3>Methods</h3>
@@ -444,121 +79,48 @@ def token_endpoint(self):
 </code></dt>
 <dd>
 <div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def close(self) -&gt; None:
-    self.auth2_session.close()</code></pre>
-</details>
 </dd>
 <dt id="macrobond_financial.web.session.Session.discovery"><code class="name flex">
 <span>def <span class="ident">discovery</span></span>(<span>self, url: str) ‑> str</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def discovery(self, url: str) -&gt; str:
-    response = self.auth2_session.request(&#34;get&#34;, url + &#34;.well-known/openid-configuration&#34;, True)
-    if response.status_code != 200:
-        raise Exception(&#34;discovery Exception, status code is not 200&#34;)
-
-    try:
-        json: Optional[dict] = response.json()
-    except BaseException as base_exception:
-        raise Exception(&#34;discovery Exception, not valid json.&#34;) from base_exception
-
-    if not isinstance(json, dict):
-        raise Exception(&#34;discovery Exception, no root obj in json.&#34;)
-
-    token_endpoint: Optional[str] = json.get(&#34;token_endpoint&#34;)
-    if token_endpoint is None:
-        raise Exception(&#34;discovery Exception, token_endpoint in root obj.&#34;)
-
-    return token_endpoint</code></pre>
-</details>
 </dd>
 <dt id="macrobond_financial.web.session.Session.fetch_token"><code class="name flex">
 <span>def <span class="ident">fetch_token</span></span>(<span>self) ‑> None</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def fetch_token(self) -&gt; None:
-    if self.token_endpoint is None:
-        self.__token_endpoint = self.discovery(self.authorization_url)
-    self.auth2_session.fetch_token(self.token_endpoint)</code></pre>
-</details>
 </dd>
 <dt id="macrobond_financial.web.session.Session.get"><code class="name flex">
-<span>def <span class="ident">get</span></span>(<span>self, url: str, params: dict = None) ‑> Response</span>
+<span>def <span class="ident">get</span></span>(<span>self, url: str, params: dict = None, stream=False) ‑> Response</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def get(self, url: str, params: dict = None) -&gt; &#34;Response&#34;:
-    def http():
-        return self.auth2_session.get(url=self.api_url + url, params=params)
-
-    return self.__if_status_code_401_fetch_token_and_retry(http)</code></pre>
-</details>
 </dd>
 <dt id="macrobond_financial.web.session.Session.get_or_raise"><code class="name flex">
-<span>def <span class="ident">get_or_raise</span></span>(<span>self, url: str, params: dict = None) ‑> Response</span>
+<span>def <span class="ident">get_or_raise</span></span>(<span>self, url: str, params: dict = None, non_error_status: Sequence[int] = None, stream=False) ‑> Response</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def get_or_raise(self, url: str, params: dict = None) -&gt; &#34;Response&#34;:
-    response = self.get(url, params)
-    if response.status_code != 200:
-        raise SessionHttpException(response)
-    return response</code></pre>
-</details>
 </dd>
 <dt id="macrobond_financial.web.session.Session.post"><code class="name flex">
-<span>def <span class="ident">post</span></span>(<span>self, url: str, params: dict = None, json: object = None) ‑> Response</span>
+<span>def <span class="ident">post</span></span>(<span>self, url: str, params: dict = None, json: object = None, stream=False) ‑> Response</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def post(self, url: str, params: dict = None, json: object = None) -&gt; &#34;Response&#34;:
-    def http():
-        return self.auth2_session.post(url=self.api_url + url, params=params, json=json)
-
-    return self.__if_status_code_401_fetch_token_and_retry(http)</code></pre>
-</details>
 </dd>
 <dt id="macrobond_financial.web.session.Session.post_or_raise"><code class="name flex">
-<span>def <span class="ident">post_or_raise</span></span>(<span>self, url: str, params: dict = None, json: object = None) ‑> Response</span>
+<span>def <span class="ident">post_or_raise</span></span>(<span>self, url: str, params: dict = None, json: object = None, non_error_status: Sequence[int] = None, stream=False) ‑> Response</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def post_or_raise(self, url: str, params: dict = None, json: object = None) -&gt; &#34;Response&#34;:
-    response = self.post(url, params, json)
-    if response.status_code != 200:
-        raise SessionHttpException(response)
-    return response</code></pre>
-</details>
+</dd>
+<dt id="macrobond_financial.web.session.Session.raise_on_error"><code class="name flex">
+<span>def <span class="ident">raise_on_error</span></span>(<span>self, response: Response, non_error_status: Sequence[int] = None)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
 </dd>
 </dl>
 </dd>
@@ -592,6 +154,7 @@ def token_endpoint(self):
 <li><code><a title="macrobond_financial.web.session.Session.metadata" href="#macrobond_financial.web.session.Session.metadata">metadata</a></code></li>
 <li><code><a title="macrobond_financial.web.session.Session.post" href="#macrobond_financial.web.session.Session.post">post</a></code></li>
 <li><code><a title="macrobond_financial.web.session.Session.post_or_raise" href="#macrobond_financial.web.session.Session.post_or_raise">post_or_raise</a></code></li>
+<li><code><a title="macrobond_financial.web.session.Session.raise_on_error" href="#macrobond_financial.web.session.Session.raise_on_error">raise_on_error</a></code></li>
 <li><code><a title="macrobond_financial.web.session.Session.search" href="#macrobond_financial.web.session.Session.search">search</a></code></li>
 <li><code><a title="macrobond_financial.web.session.Session.series" href="#macrobond_financial.web.session.Session.series">series</a></code></li>
 <li><code><a title="macrobond_financial.web.session.Session.series_tree" href="#macrobond_financial.web.session.Session.series_tree">series_tree</a></code></li>

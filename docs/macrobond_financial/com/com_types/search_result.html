@@ -22,30 +22,6 @@
 <h1 class="title">Module <code>macrobond_financial.com.com_types.search_result</code></h1>
 </header>
 <section id="section-intro">
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python"># -*- coding: utf-8 -*-
-
-# pylint: disable = invalid-name , missing-module-docstring
-
-from typing import List
-
-from .entity import Entity
-
-
-class SearchResult:
-    &#34;&#34;&#34;&#39;Interface for the Macrobond search result.&#34;&#34;&#34;
-
-    @property
-    def Entities(self) -&gt; List[Entity]:
-        &#34;&#34;&#34;The entities returned from search.&#34;&#34;&#34;
-
-    @property
-    def IsTruncated(self) -&gt; bool:
-        &#34;&#34;&#34;A boolean that shows whether the result was too large and is truncated.&#34;&#34;&#34;</code></pre>
-</details>
 </section>
 <section>
 </section>
@@ -61,46 +37,15 @@ class SearchResult:
 </code></dt>
 <dd>
 <div class="desc"><p>'Interface for the Macrobond search result.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">class SearchResult:
-    &#34;&#34;&#34;&#39;Interface for the Macrobond search result.&#34;&#34;&#34;
-
-    @property
-    def Entities(self) -&gt; List[Entity]:
-        &#34;&#34;&#34;The entities returned from search.&#34;&#34;&#34;
-
-    @property
-    def IsTruncated(self) -&gt; bool:
-        &#34;&#34;&#34;A boolean that shows whether the result was too large and is truncated.&#34;&#34;&#34;</code></pre>
-</details>
 <h3>Instance variables</h3>
 <dl>
 <dt id="macrobond_financial.com.com_types.search_result.SearchResult.Entities"><code class="name">var <span class="ident">Entities</span> : List[<a title="macrobond_financial.com.com_types.entity.Entity" href="entity.html#macrobond_financial.com.com_types.entity.Entity">Entity</a>]</code></dt>
 <dd>
 <div class="desc"><p>The entities returned from search.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@property
-def Entities(self) -&gt; List[Entity]:
-    &#34;&#34;&#34;The entities returned from search.&#34;&#34;&#34;</code></pre>
-</details>
 </dd>
 <dt id="macrobond_financial.com.com_types.search_result.SearchResult.IsTruncated"><code class="name">var <span class="ident">IsTruncated</span> : bool</code></dt>
 <dd>
 <div class="desc"><p>A boolean that shows whether the result was too large and is truncated.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@property
-def IsTruncated(self) -&gt; bool:
-    &#34;&#34;&#34;A boolean that shows whether the result was too large and is truncated.&#34;&#34;&#34;</code></pre>
-</details>
 </dd>
 </dl>
 </dd>

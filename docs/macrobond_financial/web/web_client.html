@@ -22,113 +22,6 @@
 <h1 class="title">Module <code>macrobond_financial.web.web_client</code></h1>
 </header>
 <section id="section-intro">
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python"># -*- coding: utf-8 -*-
-
-from typing import Optional, List
-
-from macrobond_financial.common import Client
-
-from .session import Session, API_URL_DEFAULT, AUTHORIZATION_URL_DEFAULT
-from .scope import Scope
-from .web_api import WebApi
-
-DEFAULT_SERVICE_NAME = AUTHORIZATION_URL_DEFAULT
-
-_keyring_import_error: Optional[ImportError] = None
-try:
-    import keyring as _keyring  # type: ignore
-except ImportError as ex:
-    _keyring_import_error = ex
-
-
-class WebClient(Client[&#34;WebApi&#34;]):
-    &#34;&#34;&#34;
-    WebClient to get data from the web
-
-    Parameters
-    ----------
-    client_id : str
-        record that failed processing
-
-    client_secret : str
-        record that failed processing
-
-    scopes : List[str], optional
-        record that failed processing
-
-    api_url : str, optional
-        record that failed processing
-
-    authorization_url : str, optional
-        record that failed processing
-
-    Returns
-    -------
-    WebClient
-        WebClient instance
-
-    Examples
-    -------
-    ```python
-    with WebClient(&#39;client id&#39;, &#39;client secret&#39;) as api:
-        # use the api here
-    ```
-    &#34;&#34;&#34;
-
-    def __init__(
-        self,
-        client_id: str = None,
-        client_secret: str = None,
-        scopes: List[Scope] = None,
-        api_url: str = API_URL_DEFAULT,
-        authorization_url: str = AUTHORIZATION_URL_DEFAULT,
-        service_name: str = DEFAULT_SERVICE_NAME,
-    ) -&gt; None:
-        super().__init__()
-
-        if client_secret is None:
-            if _keyring_import_error:
-                raise _keyring_import_error
-
-            credential = _keyring.get_credential(service_name, &#34;&#34;)
-
-            if credential is None:
-                keyring_name = str(_keyring.get_keyring())
-                raise ValueError(&#34;can not find the key in keyring &#34; + keyring_name)
-
-            if client_id is None:
-                client_id = credential.username
-
-            client_secret = credential.password
-        else:
-            if client_id is None:
-                raise ValueError(&#34;client_id is None&#34;)
-
-        if scopes is None:
-            scopes = []
-
-        self.__api: Optional[&#34;WebApi&#34;] = None
-        self.__session = Session(
-            client_id, client_secret, *scopes, api_url=api_url, authorization_url=authorization_url
-        )
-
-    @property
-    def is_open(self) -&gt; bool:
-        return bool(self.__api)
-
-    def open(self) -&gt; &#34;WebApi&#34;:
-        if self.__api is None:
-            self.__session.fetch_token()
-            self.__api = WebApi(self.__session)
-        return self.__api
-
-    def close(self) -&gt; None:
-        self.__session.close()</code></pre>
-</details>
 </section>
 <section>
 </section>
@@ -167,94 +60,6 @@ class WebClient(Client[&#34;WebApi&#34;]):
 <pre><code class="language-python">with WebClient('client id', 'client secret') as api:
     # use the api here
 </code></pre></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">class WebClient(Client[&#34;WebApi&#34;]):
-    &#34;&#34;&#34;
-    WebClient to get data from the web
-
-    Parameters
-    ----------
-    client_id : str
-        record that failed processing
-
-    client_secret : str
-        record that failed processing
-
-    scopes : List[str], optional
-        record that failed processing
-
-    api_url : str, optional
-        record that failed processing
-
-    authorization_url : str, optional
-        record that failed processing
-
-    Returns
-    -------
-    WebClient
-        WebClient instance
-
-    Examples
-    -------
-    ```python
-    with WebClient(&#39;client id&#39;, &#39;client secret&#39;) as api:
-        # use the api here
-    ```
-    &#34;&#34;&#34;
-
-    def __init__(
-        self,
-        client_id: str = None,
-        client_secret: str = None,
-        scopes: List[Scope] = None,
-        api_url: str = API_URL_DEFAULT,
-        authorization_url: str = AUTHORIZATION_URL_DEFAULT,
-        service_name: str = DEFAULT_SERVICE_NAME,
-    ) -&gt; None:
-        super().__init__()
-
-        if client_secret is None:
-            if _keyring_import_error:
-                raise _keyring_import_error
-
-            credential = _keyring.get_credential(service_name, &#34;&#34;)
-
-            if credential is None:
-                keyring_name = str(_keyring.get_keyring())
-                raise ValueError(&#34;can not find the key in keyring &#34; + keyring_name)
-
-            if client_id is None:
-                client_id = credential.username
-
-            client_secret = credential.password
-        else:
-            if client_id is None:
-                raise ValueError(&#34;client_id is None&#34;)
-
-        if scopes is None:
-            scopes = []
-
-        self.__api: Optional[&#34;WebApi&#34;] = None
-        self.__session = Session(
-            client_id, client_secret, *scopes, api_url=api_url, authorization_url=authorization_url
-        )
-
-    @property
-    def is_open(self) -&gt; bool:
-        return bool(self.__api)
-
-    def open(self) -&gt; &#34;WebApi&#34;:
-        if self.__api is None:
-            self.__session.fetch_token()
-            self.__api = WebApi(self.__session)
-        return self.__api
-
-    def close(self) -&gt; None:
-        self.__session.close()</code></pre>
-</details>
 <h3>Ancestors</h3>
 <ul class="hlist">
 <li><a title="macrobond_financial.common.client.Client" href="../common/client.html#macrobond_financial.common.client.Client">Client</a></li>
@@ -266,14 +71,6 @@ class WebClient(Client[&#34;WebApi&#34;]):
 <dt id="macrobond_financial.web.web_client.WebClient.is_open"><code class="name">var <span class="ident">is_open</span> : bool</code></dt>
 <dd>
 <div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@property
-def is_open(self) -&gt; bool:
-    return bool(self.__api)</code></pre>
-</details>
 </dd>
 </dl>
 <h3>Methods</h3>
@@ -283,29 +80,12 @@ def is_open(self) -&gt; bool:
 </code></dt>
 <dd>
 <div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def close(self) -&gt; None:
-    self.__session.close()</code></pre>
-</details>
 </dd>
 <dt id="macrobond_financial.web.web_client.WebClient.open"><code class="name flex">
 <span>def <span class="ident">open</span></span>(<span>self) ‑> <a title="macrobond_financial.web.web_api.WebApi" href="web_api.html#macrobond_financial.web.web_api.WebApi">WebApi</a></span>
 </code></dt>
 <dd>
 <div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def open(self) -&gt; &#34;WebApi&#34;:
-    if self.__api is None:
-        self.__session.fetch_token()
-        self.__api = WebApi(self.__session)
-    return self.__api</code></pre>
-</details>
 </dd>
 </dl>
 </dd>

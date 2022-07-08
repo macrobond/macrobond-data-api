@@ -1,16 +1,10 @@
 # -*- coding: utf-8 -*-
 
-from datetime import datetime, timezone
-from typing import (
-    TYPE_CHECKING,
-    Any,
-    Dict,
-    List,
-    Optional,
-    Union,
-    Tuple,
-    cast,
-)
+from datetime import datetime
+from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union, Tuple, cast, Callable, Sequence
+
+import ijson  # type: ignore
+from dateutil import parser  # type: ignore
 
 from macrobond_financial.common import Api
 from macrobond_financial.common.types import SearchResult, SeriesEntry
@@ -35,22 +29,28 @@ from macrobond_financial.common.types import (
     UnifiedSerie,
     GetAllVintageSeriesResult,
 )
+from ._response_stream import _ResponseStream
+from .series_with_vintages import SeriesWithVintages
+from .subscription_list import (
+    SubscriptionList,
+    SubscriptionBody,
+    SubscriptionListItem,
+)
 
-from .session import ProblemDetailsException
+from .session import Session, ProblemDetailsException
 
 if TYPE_CHECKING:  # pragma: no cover
-    from .session import Session
-
     from macrobond_financial.common.types import SearchFilter, StartOrEndPoint
 
     from .web_types import (
-        SearchFilter as WebSearchFilter,
-        SearchRequest,
         UnifiedSeriesRequest,
         UnifiedSeriesEntry,
         SeriesWithRevisionsInfoResponse,
         VintageSeriesResponse,
+        SeriesWithVintagesResponse,
+        RevisionHistoryRequest,
     )
+    from .web_types.search import SearchRequest, SearchFilter as WebSearchFilter
 
     from .web_types import SeriesResponse, EntityResponse
 
@@ -60,24 +60,16 @@ __pdoc__ = {
 }
 
 
-# TODO: @mb-jp impove , can we use a standard lib for this ?
-# https://stackoverflow.com/questions/127803/how-do-i-parse-an-iso-8601-formatted-date
-
-
-def _str_to_datetime_z(datetime_str: str) -> datetime:
-    return datetime.strptime(datetime_str, "%Y-%m-%dT%H:%M:%SZ").replace(tzinfo=timezone.utc)
-
-
-def _optional_str_to_datetime_z(datetime_str: Optional[str]) -> Optional[datetime]:
-    return _str_to_datetime_z(datetime_str) if datetime_str else None
-
-
-def _str_to_datetime(datetime_str: str) -> datetime:
-    return datetime.strptime(datetime_str, "%Y-%m-%dT%H:%M:%S").replace(tzinfo=timezone.utc)
-
-
 def _optional_str_to_datetime(datetime_str: Optional[str]) -> Optional[datetime]:
-    return _str_to_datetime(datetime_str) if datetime_str else None
+    return parser.parse(datetime_str) if datetime_str else None
+
+
+def _optional_str_to_datetime_no_utc(datetime_str: str) -> Optional[datetime]:
+    return parser.parse(datetime_str, ignoretz=True) if datetime_str else None
+
+
+def _str_to_datetime_no_utc(datetime_str: str) -> datetime:
+    return parser.parse(datetime_str, ignoretz=True)
 
 
 def _create_entity(response: "EntityResponse", name: str) -> Entity:
@@ -97,7 +89,7 @@ def _create_series(response: "SeriesResponse", name: str) -> Series:
 
     dates = tuple(
         map(
-            lambda s: datetime.strptime(s, "%Y-%m-%dT%H:%M:%S").replace(tzinfo=timezone.utc),
+            _str_to_datetime_no_utc,
             cast(List[str], response["dates"]),
         )
     )
@@ -112,12 +104,12 @@ def _create_series(response: "SeriesResponse", name: str) -> Series:
 
 
 class WebApi(Api):
-    def __init__(self, session: "Session") -> None:
+    def __init__(self, session: Session) -> None:
         super().__init__()
         self.__session = session
 
     @property
-    def session(self) -> "Session":
+    def session(self) -> Session:
         return self.__session
 
     # metadata
@@ -188,11 +180,11 @@ class WebApi(Api):
                     tuple(),
                 )
 
-            time_stamp_of_first_revision = _optional_str_to_datetime_z(
+            time_stamp_of_first_revision = _optional_str_to_datetime(
                 serie.get("timeStampOfFirstRevision")
             )
 
-            time_stamp_of_last_revision = _optional_str_to_datetime_z(
+            time_stamp_of_last_revision = _optional_str_to_datetime(
                 serie.get("timeStampOfLastRevision")
             )
 
@@ -200,7 +192,7 @@ class WebApi(Api):
             if stores_revisions:
                 vintage_time_stamps = tuple(
                     map(
-                        _str_to_datetime_z,
+                        parser.parse,
                         serie["vintageTimeStamps"],
                     )
                 )
@@ -237,7 +229,7 @@ class WebApi(Api):
             metadata = cast(Dict[str, Any], response["metadata"])
 
             revision_time_stamp = cast(str, metadata.get("RevisionTimeStamp"))
-            if not revision_time_stamp or time != _str_to_datetime_z(revision_time_stamp):
+            if not revision_time_stamp or time != parser.parse(revision_time_stamp):
                 raise ValueError("Invalid time")
 
             values: Tuple[Optional[float], ...] = tuple(
@@ -247,7 +239,7 @@ class WebApi(Api):
                 )
             )
 
-            dates = tuple(map(_str_to_datetime, cast(List[str], response["dates"])))
+            dates = tuple(map(_str_to_datetime_no_utc, cast(List[str], response["dates"])))
 
             return VintageSeries(series_name, None, metadata, values, dates)
 
@@ -311,13 +303,133 @@ class WebApi(Api):
         return list(
             map(
                 lambda x: SeriesObservationHistory(
-                    _str_to_datetime(x["observationDate"]),
+                    parser.parse(x["observationDate"]),
                     tuple(map(lambda v: float(v) if v else None, x["values"])),
-                    tuple(map(_optional_str_to_datetime_z, x["timeStamps"])),
+                    tuple(map(parser.parser, x["timeStamps"])),
                 ),
                 response,
             )
         )
+
+    # web onley
+    def get_subscription_list(self, if_modified_since: datetime = None) -> SubscriptionList:
+        return SubscriptionList(self.session.series.get_subscription_list(if_modified_since))
+
+    # web onley
+    def get_subscription_list_iterative(
+        self,
+        body_callback: Callable[[SubscriptionBody], Optional[bool]],
+        items_callback: Callable[[List[SubscriptionListItem]], Optional[bool]],
+        if_modified_since: datetime = None,
+    ) -> None:
+
+        time_stamp_for_if_modified_since: Optional[datetime] = None
+        download_full_list_on_or_after: Optional[datetime] = None
+        state = -1
+
+        params = {}
+
+        if if_modified_since:
+            params["ifModifiedSince"] = if_modified_since.isoformat()
+
+        with self.__session.get(
+            "v1/series/getsubscriptionlist", params=params, stream=True
+        ) as response:
+            self.__session.raise_on_error(response)
+            stream = _ResponseStream(response.iter_content())
+            ijson_parse = ijson.parse(stream)
+            for prefix, event, value in ijson_parse:
+                if prefix == "timeStampForIfModifiedSince":
+                    if event != "string":
+                        raise Exception("bad format: timeStampForIfModifiedSince is not a string")
+                    time_stamp_for_if_modified_since = parser.parse(value)
+                elif prefix == "downloadFullListOnOrAfter":
+                    if event != "string":
+                        raise Exception("bad format: downloadFullListOnOrAfter is not a string")
+                    download_full_list_on_or_after = parser.parse(value)
+                elif prefix == "state":
+                    if event != "number":
+                        raise Exception("bad format: state is not a number")
+                    state = value
+                elif event == "start_array":
+                    if prefix != "entities":
+                        raise Exception(
+                            "bad format: event start_array do not have a prefix of entities"
+                        )
+                    break
+
+            if state == -1:
+                raise Exception("bad format: state was not found")
+            if time_stamp_for_if_modified_since is None:
+                raise Exception("bad format: timeStampForIfModifiedSince was not found")
+            if download_full_list_on_or_after is None:
+                raise Exception("bad format: downloadFullListOnOrAfter was not found")
+
+            if (
+                body_callback(
+                    SubscriptionBody(
+                        time_stamp_for_if_modified_since, download_full_list_on_or_after, state
+                    )
+                )
+                is False
+            ):
+                return
+
+            name = ""
+            modified: Optional[datetime] = None
+            items: List[SubscriptionListItem] = []
+
+            for prefix, event, value in ijson_parse:
+                if event == "end_map":
+                    if name == "":
+                        raise Exception("bad format: name was not found")
+                    if modified is None:
+                        raise Exception("bad format: modified was not found")
+                    items.append(SubscriptionListItem(name, modified))
+                    name = ""
+                    modified = None
+                    if len(items) == 200:
+                        if items_callback(items) is False:
+                            return
+                        items = []
+                elif event == "end_array":
+                    break
+                elif prefix == "entities.item.name":
+                    if event != "string":
+                        raise Exception("bad format: entities.item.name is not a string")
+                    name = value
+                elif prefix == "entities.item.modified":
+                    if event != "string":
+                        raise Exception("bad format: entities.item.modified is not a string")
+                    modified = parser.parse(value)
+
+            if len(items) != 0:
+                items_callback(items)
+
+    def get_fetch_all_vintageseries(
+        self,
+        callback: Callable[[SeriesWithVintages], None],
+        requests: Sequence["RevisionHistoryRequest"],
+    ) -> None:
+        start_index = 0
+        batch_size = 200
+
+        while True:
+            end_index = start_index + batch_size
+            requests_subset = requests[start_index:end_index]
+            if len(requests_subset) == 0:
+                break
+            start_index = end_index
+
+            with self.__session.post(
+                "v1/series/fetchallvintageseries", json=requests_subset, stream=True
+            ) as response:
+                self.__session.raise_on_error(response)
+                stream = _ResponseStream(response.iter_content())
+                ijson_items = ijson.items(stream, "item")
+                item: "SeriesWithVintagesResponse"
+                for item in ijson_items:
+                    callback(SeriesWithVintages(item))
 
     # Search
 
@@ -431,7 +543,7 @@ class WebApi(Api):
 
         str_dates = response.get("dates")
         if str_dates:
-            dates = tuple(map(_str_to_datetime, str_dates))
+            dates = tuple(map(_str_to_datetime_no_utc, str_dates))
         else:
             dates = tuple()
 

@@ -71,6 +71,17 @@ class MetadataAttributeInformation:
     """
     # fmt: on
 
+    __slots__ = (
+        "name",
+        "description",
+        "comment",
+        "value_type",
+        "uses_value_list",
+        "can_list_values",
+        "can_have_multiple_values",
+        "is_database_entity",
+    )
+
     name: str
     description: str
     comment: Optional[str]

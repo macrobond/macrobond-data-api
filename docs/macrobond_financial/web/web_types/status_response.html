@@ -22,44 +22,6 @@
 <h1 class="title">Module <code>macrobond_financial.web.web_types.status_response</code></h1>
 </header>
 <section id="section-intro">
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python"># -*- coding: utf-8 -*-
-
-# pylint: disable = missing-module-docstring
-
-from typing import Optional
-from enum import IntFlag
-from typing_extensions import TypedDict
-
-
-class ResponseErrorCode(IntFlag):
-    &#34;&#34;&#34;Response Error Codes&#34;&#34;&#34;
-
-    NOT_MODIFIED = 304
-    &#34;&#34;&#34;The item was not modified and is not included in the response&#34;&#34;&#34;
-
-    NOT_FOUND = 404
-    &#34;&#34;&#34;The item was not found&#34;&#34;&#34;
-
-    FORBIDDEN = 403
-    &#34;&#34;&#34;Access to the item was denied&#34;&#34;&#34;
-
-    OTHER = 500
-    &#34;&#34;&#34;There was an error and it is described in the error text&#34;&#34;&#34;
-
-
-class StatusResponse(TypedDict):
-    &#34;&#34;&#34;A status response&#34;&#34;&#34;
-
-    errorText: Optional[str]
-    &#34;&#34;&#34;The error text if there was an error or not specified if there was no error&#34;&#34;&#34;
-
-    errorCode: Optional[ResponseErrorCode]
-    &#34;&#34;&#34;Set if there was an error and not specified if there was no error&#34;&#34;&#34;</code></pre>
-</details>
 </section>
 <section>
 </section>
@@ -76,25 +38,6 @@ class StatusResponse(TypedDict):
 </code></dt>
 <dd>
 <div class="desc"><p>Response Error Codes</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">class ResponseErrorCode(IntFlag):
-    &#34;&#34;&#34;Response Error Codes&#34;&#34;&#34;
-
-    NOT_MODIFIED = 304
-    &#34;&#34;&#34;The item was not modified and is not included in the response&#34;&#34;&#34;
-
-    NOT_FOUND = 404
-    &#34;&#34;&#34;The item was not found&#34;&#34;&#34;
-
-    FORBIDDEN = 403
-    &#34;&#34;&#34;Access to the item was denied&#34;&#34;&#34;
-
-    OTHER = 500
-    &#34;&#34;&#34;There was an error and it is described in the error text&#34;&#34;&#34;</code></pre>
-</details>
 <h3>Ancestors</h3>
 <ul class="hlist">
 <li>enum.IntFlag</li>
@@ -128,19 +71,6 @@ class StatusResponse(TypedDict):
 </code></dt>
 <dd>
 <div class="desc"><p>A status response</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">class StatusResponse(TypedDict):
-    &#34;&#34;&#34;A status response&#34;&#34;&#34;
-
-    errorText: Optional[str]
-    &#34;&#34;&#34;The error text if there was an error or not specified if there was no error&#34;&#34;&#34;
-
-    errorCode: Optional[ResponseErrorCode]
-    &#34;&#34;&#34;Set if there was an error and not specified if there was no error&#34;&#34;&#34;</code></pre>
-</details>
 <h3>Ancestors</h3>
 <ul class="hlist">
 <li>builtins.dict</li>

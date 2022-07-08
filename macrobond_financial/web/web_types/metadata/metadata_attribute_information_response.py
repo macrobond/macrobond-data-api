@@ -6,7 +6,7 @@ from typing import Optional, List
 from enum import IntFlag
 from typing_extensions import TypedDict
 
-from ...common.enums import MetadataAttributeType
+from ....common.enums import MetadataAttributeType
 
 
 class MetadataAttributeTypeRestriction(IntFlag):

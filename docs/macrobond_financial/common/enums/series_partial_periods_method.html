@@ -22,38 +22,6 @@
 <h1 class="title">Module <code>macrobond_financial.common.enums.series_partial_periods_method</code></h1>
 </header>
 <section id="section-intro">
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python"># -*- coding: utf-8 -*-
-
-# pylint: disable= missing-module-docstring
-
-from enum import IntEnum
-
-
-class SeriesPartialPeriodsMethod(IntEnum):
-    &#34;&#34;&#34;Type of partial period method when converting to lower frequency.&#34;&#34;&#34;
-
-    NONE = 0
-    &#34;&#34;&#34;Do not include partial periods.&#34;&#34;&#34;
-
-    AUTO = 1
-    &#34;&#34;&#34;Determine the method based on the series meta data.&#34;&#34;&#34;
-
-    REPEAT_LAST_VALUE = 2
-    &#34;&#34;&#34;Fill up the partial period by repeating the last value.&#34;&#34;&#34;
-
-    FLOW_CURRENT_SUM = 3
-    &#34;&#34;&#34;Fill up the partial period with the average of the incomplete period.&#34;&#34;&#34;
-
-    PAST_RATE_OF_CHANGE = 4
-    &#34;&#34;&#34;Use the rate of change from the previous year to extend the partial period.&#34;&#34;&#34;
-
-    ZERO = 5
-    &#34;&#34;&#34;Fill up the partial period with zeroes.&#34;&#34;&#34;</code></pre>
-</details>
 </section>
 <section>
 </section>
@@ -70,31 +38,6 @@ class SeriesPartialPeriodsMethod(IntEnum):
 </code></dt>
 <dd>
 <div class="desc"><p>Type of partial period method when converting to lower frequency.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">class SeriesPartialPeriodsMethod(IntEnum):
-    &#34;&#34;&#34;Type of partial period method when converting to lower frequency.&#34;&#34;&#34;
-
-    NONE = 0
-    &#34;&#34;&#34;Do not include partial periods.&#34;&#34;&#34;
-
-    AUTO = 1
-    &#34;&#34;&#34;Determine the method based on the series meta data.&#34;&#34;&#34;
-
-    REPEAT_LAST_VALUE = 2
-    &#34;&#34;&#34;Fill up the partial period by repeating the last value.&#34;&#34;&#34;
-
-    FLOW_CURRENT_SUM = 3
-    &#34;&#34;&#34;Fill up the partial period with the average of the incomplete period.&#34;&#34;&#34;
-
-    PAST_RATE_OF_CHANGE = 4
-    &#34;&#34;&#34;Use the rate of change from the previous year to extend the partial period.&#34;&#34;&#34;
-
-    ZERO = 5
-    &#34;&#34;&#34;Fill up the partial period with zeroes.&#34;&#34;&#34;</code></pre>
-</details>
 <h3>Ancestors</h3>
 <ul class="hlist">
 <li>enum.IntEnum</li>

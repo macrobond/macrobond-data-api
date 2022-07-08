@@ -7,6 +7,16 @@ if TYPE_CHECKING:  # pragma: no cover
 
 
 class SearchFilter:
+
+    __slots__ = (
+        "text",
+        "entity_types",
+        "must_have_values",
+        "must_not_have_values",
+        "must_have_attributes",
+        "must_not_have_attributes",
+    )
+
     def __init__(
         self,
         text: str = None,

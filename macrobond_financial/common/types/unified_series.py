@@ -32,6 +32,8 @@ class UnifiedSeriesDict(TypedDict):
 class UnifiedSerie:
     """Interface for a Macrobond time series."""
 
+    __slots__ = ("name", "error_message", "metadata", "values")
+
     name: str
     error_message: str
     metadata: Dict[str, Any]
@@ -88,6 +90,8 @@ class UnifiedSerie:
 
 
 class UnifiedSeries(List[UnifiedSerie]):
+
+    __slots__ = ("dates",)
 
     dates: Tuple[datetime, ...]
 

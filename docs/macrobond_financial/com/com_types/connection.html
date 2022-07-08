@@ -22,39 +22,6 @@
 <h1 class="title">Module <code>macrobond_financial.com.com_types.connection</code></h1>
 </header>
 <section id="section-intro">
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python"># -*- coding: utf-8 -*-
-
-# pylint: disable=invalid-name, missing-module-docstring
-
-from typing import Tuple
-
-from .database import Database
-
-
-class Connection:
-    &#34;&#34;&#34;Interface for a Macrobond connection.&#34;&#34;&#34;
-
-    @property
-    def Database(self) -&gt; Database:
-        &#34;&#34;&#34;This property returns a reference to the database interface.&#34;&#34;&#34;
-
-    @property
-    def Version(self) -&gt; Tuple[int]:
-        &#34;&#34;&#34;
-        Version Returns an array of three values for the version of the installed API.
-        For example, for the version 1.23.3 it will return [1, 23, 3].
-        &#34;&#34;&#34;
-
-    def Close(self) -&gt; None:
-        &#34;&#34;&#34;
-        Free all resources used by the Macrobond API. Opening and closing sessions can be slow,
-        so it is usually not a good idea to open and close them for each request
-        &#34;&#34;&#34;</code></pre>
-</details>
 </section>
 <section>
 </section>
@@ -70,59 +37,16 @@ class Connection:
 </code></dt>
 <dd>
 <div class="desc"><p>Interface for a Macrobond connection.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">class Connection:
-    &#34;&#34;&#34;Interface for a Macrobond connection.&#34;&#34;&#34;
-
-    @property
-    def Database(self) -&gt; Database:
-        &#34;&#34;&#34;This property returns a reference to the database interface.&#34;&#34;&#34;
-
-    @property
-    def Version(self) -&gt; Tuple[int]:
-        &#34;&#34;&#34;
-        Version Returns an array of three values for the version of the installed API.
-        For example, for the version 1.23.3 it will return [1, 23, 3].
-        &#34;&#34;&#34;
-
-    def Close(self) -&gt; None:
-        &#34;&#34;&#34;
-        Free all resources used by the Macrobond API. Opening and closing sessions can be slow,
-        so it is usually not a good idea to open and close them for each request
-        &#34;&#34;&#34;</code></pre>
-</details>
 <h3>Instance variables</h3>
 <dl>
 <dt id="macrobond_financial.com.com_types.connection.Connection.Database"><code class="name">var <span class="ident">Database</span> : <a title="macrobond_financial.com.com_types.database.Database" href="database.html#macrobond_financial.com.com_types.database.Database">Database</a></code></dt>
 <dd>
 <div class="desc"><p>This property returns a reference to the database interface.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@property
-def Database(self) -&gt; Database:
-    &#34;&#34;&#34;This property returns a reference to the database interface.&#34;&#34;&#34;</code></pre>
-</details>
 </dd>
 <dt id="macrobond_financial.com.com_types.connection.Connection.Version"><code class="name">var <span class="ident">Version</span> : Tuple[int]</code></dt>
 <dd>
 <div class="desc"><p>Version Returns an array of three values for the version of the installed API.
 For example, for the version 1.23.3 it will return [1, 23, 3].</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@property
-def Version(self) -&gt; Tuple[int]:
-    &#34;&#34;&#34;
-    Version Returns an array of three values for the version of the installed API.
-    For example, for the version 1.23.3 it will return [1, 23, 3].
-    &#34;&#34;&#34;</code></pre>
-</details>
 </dd>
 </dl>
 <h3>Methods</h3>
@@ -133,16 +57,6 @@ def Version(self) -&gt; Tuple[int]:
 <dd>
 <div class="desc"><p>Free all resources used by the Macrobond API. Opening and closing sessions can be slow,
 so it is usually not a good idea to open and close them for each request</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def Close(self) -&gt; None:
-    &#34;&#34;&#34;
-    Free all resources used by the Macrobond API. Opening and closing sessions can be slow,
-    so it is usually not a good idea to open and close them for each request
-    &#34;&#34;&#34;</code></pre>
-</details>
 </dd>
 </dl>
 </dd>

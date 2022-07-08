@@ -22,59 +22,6 @@
 <h1 class="title">Module <code>macrobond_financial.common.enums.series_weekdays</code></h1>
 </header>
 <section id="section-intro">
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python"># -*- coding: utf-8 -*-
-
-# pylint: disable=invalid-name , missing-module-docstring
-
-from enum import IntFlag
-
-
-class SeriesWeekdays(IntFlag):
-    &#34;&#34;&#34;A bitmask for the weekday used in a Macrobond daily time series.&#34;&#34;&#34;
-
-    SUNDAY = 1 &lt;&lt; 0
-    &#34;&#34;&#34;Sunday.&#34;&#34;&#34;
-
-    MONDAY = 1 &lt;&lt; 1
-    &#34;&#34;&#34;Monday.&#34;&#34;&#34;
-
-    TUESDAY = 1 &lt;&lt; 2
-    &#34;&#34;&#34;Tuesday.&#34;&#34;&#34;
-
-    WEDNESDAY = 1 &lt;&lt; 3
-    &#34;&#34;&#34;Wednesday.&#34;&#34;&#34;
-
-    THURSDAY = 1 &lt;&lt; 4
-    &#34;&#34;&#34;Thursday.&#34;&#34;&#34;
-
-    FRIDAY = 1 &lt;&lt; 5
-    &#34;&#34;&#34;Friday.&#34;&#34;&#34;
-
-    SATURDAY = 1 &lt;&lt; 6
-    &#34;&#34;&#34;Saturday.&#34;&#34;&#34;
-
-    FULL_WEEK = MONDAY | TUESDAY | WEDNESDAY | THURSDAY | FRIDAY | SATURDAY | SUNDAY
-    &#34;&#34;&#34;All days of the week.&#34;&#34;&#34;
-
-    MONDAY_TO_FRIDAY = MONDAY | TUESDAY | WEDNESDAY | THURSDAY | FRIDAY
-    &#34;&#34;&#34;Standard five day week.&#34;&#34;&#34;
-
-    SATURDAY_TO_THURSDAY = MONDAY | TUESDAY | WEDNESDAY | THURSDAY | SATURDAY | SUNDAY
-    &#34;&#34;&#34;Saturday to Thursday, weekend on Friday.&#34;&#34;&#34;
-
-    SATURDAY_TO_WEDNESDAY = SATURDAY | SUNDAY | MONDAY | TUESDAY | WEDNESDAY
-    &#34;&#34;&#34;Saturday to Wednesday daymask, weekend on Thursday and Friday.&#34;&#34;&#34;
-
-    SUNDAY_TO_THURSDAY = SUNDAY | MONDAY | TUESDAY | WEDNESDAY | THURSDAY
-    &#34;&#34;&#34;Sunday to Thursday daymask, weekend on Friday and Saturday.&#34;&#34;&#34;
-
-    MONDAY_TO_THURSDAY_AND_SATURDAY = SATURDAY | MONDAY | TUESDAY | WEDNESDAY | THURSDAY
-    &#34;&#34;&#34;Monday to Thursday and Saturday, weekend on Friday and Sunday.&#34;&#34;&#34;</code></pre>
-</details>
 </section>
 <section>
 </section>
@@ -91,52 +38,6 @@ class SeriesWeekdays(IntFlag):
 </code></dt>
 <dd>
 <div class="desc"><p>A bitmask for the weekday used in a Macrobond daily time series.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">class SeriesWeekdays(IntFlag):
-    &#34;&#34;&#34;A bitmask for the weekday used in a Macrobond daily time series.&#34;&#34;&#34;
-
-    SUNDAY = 1 &lt;&lt; 0
-    &#34;&#34;&#34;Sunday.&#34;&#34;&#34;
-
-    MONDAY = 1 &lt;&lt; 1
-    &#34;&#34;&#34;Monday.&#34;&#34;&#34;
-
-    TUESDAY = 1 &lt;&lt; 2
-    &#34;&#34;&#34;Tuesday.&#34;&#34;&#34;
-
-    WEDNESDAY = 1 &lt;&lt; 3
-    &#34;&#34;&#34;Wednesday.&#34;&#34;&#34;
-
-    THURSDAY = 1 &lt;&lt; 4
-    &#34;&#34;&#34;Thursday.&#34;&#34;&#34;
-
-    FRIDAY = 1 &lt;&lt; 5
-    &#34;&#34;&#34;Friday.&#34;&#34;&#34;
-
-    SATURDAY = 1 &lt;&lt; 6
-    &#34;&#34;&#34;Saturday.&#34;&#34;&#34;
-
-    FULL_WEEK = MONDAY | TUESDAY | WEDNESDAY | THURSDAY | FRIDAY | SATURDAY | SUNDAY
-    &#34;&#34;&#34;All days of the week.&#34;&#34;&#34;
-
-    MONDAY_TO_FRIDAY = MONDAY | TUESDAY | WEDNESDAY | THURSDAY | FRIDAY
-    &#34;&#34;&#34;Standard five day week.&#34;&#34;&#34;
-
-    SATURDAY_TO_THURSDAY = MONDAY | TUESDAY | WEDNESDAY | THURSDAY | SATURDAY | SUNDAY
-    &#34;&#34;&#34;Saturday to Thursday, weekend on Friday.&#34;&#34;&#34;
-
-    SATURDAY_TO_WEDNESDAY = SATURDAY | SUNDAY | MONDAY | TUESDAY | WEDNESDAY
-    &#34;&#34;&#34;Saturday to Wednesday daymask, weekend on Thursday and Friday.&#34;&#34;&#34;
-
-    SUNDAY_TO_THURSDAY = SUNDAY | MONDAY | TUESDAY | WEDNESDAY | THURSDAY
-    &#34;&#34;&#34;Sunday to Thursday daymask, weekend on Friday and Saturday.&#34;&#34;&#34;
-
-    MONDAY_TO_THURSDAY_AND_SATURDAY = SATURDAY | MONDAY | TUESDAY | WEDNESDAY | THURSDAY
-    &#34;&#34;&#34;Monday to Thursday and Saturday, weekend on Friday and Sunday.&#34;&#34;&#34;</code></pre>
-</details>
 <h3>Ancestors</h3>
 <ul class="hlist">
 <li>enum.IntFlag</li>

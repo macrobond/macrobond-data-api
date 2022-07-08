@@ -22,50 +22,6 @@
 <h1 class="title">Module <code>macrobond_financial.common.enums.series_frequency</code></h1>
 </header>
 <section id="section-intro">
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python"># -*- coding: utf-8 -*-
-
-# pylint: disable=invalid-name , missing-module-docstring
-
-from enum import IntFlag
-
-
-class SeriesFrequency(IntFlag):
-    &#34;&#34;&#34;The series frequency. This must match SeriesCalendarFrequency.&#34;&#34;&#34;
-
-    ANNUAL = 1
-    &#34;&#34;&#34;Once a year.&#34;&#34;&#34;
-
-    SEMIANNUAL = 2
-    &#34;&#34;&#34;Once in half a year.&#34;&#34;&#34;
-
-    QUADMONTHLY = 3
-    &#34;&#34;&#34;Once in 4 months.&#34;&#34;&#34;
-
-    QUARTERLY = 4
-    &#34;&#34;&#34;Once a quarter.&#34;&#34;&#34;
-
-    BIMONTHLY = 5
-    &#34;&#34;&#34;Once every 2 months.&#34;&#34;&#34;
-
-    MONTHLY = 6
-    &#34;&#34;&#34;Once a month.&#34;&#34;&#34;
-
-    WEEKLY = 7
-    &#34;&#34;&#34;Once a week.&#34;&#34;&#34;
-
-    DAILY = 8
-    &#34;&#34;&#34;Once a day.&#34;&#34;&#34;
-
-    LOWEST = 100
-    &#34;&#34;&#34;The lowest frequency.&#34;&#34;&#34;
-
-    HIGHEST = 101
-    &#34;&#34;&#34;The highest frequency.&#34;&#34;&#34;</code></pre>
-</details>
 </section>
 <section>
 </section>
@@ -82,43 +38,6 @@ class SeriesFrequency(IntFlag):
 </code></dt>
 <dd>
 <div class="desc"><p>The series frequency. This must match SeriesCalendarFrequency.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">class SeriesFrequency(IntFlag):
-    &#34;&#34;&#34;The series frequency. This must match SeriesCalendarFrequency.&#34;&#34;&#34;
-
-    ANNUAL = 1
-    &#34;&#34;&#34;Once a year.&#34;&#34;&#34;
-
-    SEMIANNUAL = 2
-    &#34;&#34;&#34;Once in half a year.&#34;&#34;&#34;
-
-    QUADMONTHLY = 3
-    &#34;&#34;&#34;Once in 4 months.&#34;&#34;&#34;
-
-    QUARTERLY = 4
-    &#34;&#34;&#34;Once a quarter.&#34;&#34;&#34;
-
-    BIMONTHLY = 5
-    &#34;&#34;&#34;Once every 2 months.&#34;&#34;&#34;
-
-    MONTHLY = 6
-    &#34;&#34;&#34;Once a month.&#34;&#34;&#34;
-
-    WEEKLY = 7
-    &#34;&#34;&#34;Once a week.&#34;&#34;&#34;
-
-    DAILY = 8
-    &#34;&#34;&#34;Once a day.&#34;&#34;&#34;
-
-    LOWEST = 100
-    &#34;&#34;&#34;The lowest frequency.&#34;&#34;&#34;
-
-    HIGHEST = 101
-    &#34;&#34;&#34;The highest frequency.&#34;&#34;&#34;</code></pre>
-</details>
 <h3>Ancestors</h3>
 <ul class="hlist">
 <li>enum.IntFlag</li>

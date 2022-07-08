@@ -22,36 +22,6 @@
 <h1 class="title">Module <code>macrobond_financial.web.web_types.series_observation_history_response</code></h1>
 </header>
 <section id="section-intro">
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python"># -*- coding: utf-8 -*-
-
-# pylint: disable = missing-module-docstring
-
-from typing import List, Optional
-from typing_extensions import TypedDict
-
-
-class SeriesObservationHistoryResponse(TypedDict):
-    &#34;&#34;&#34;The history of changes of an observation&#34;&#34;&#34;
-
-    observationDate: str
-    &#34;&#34;&#34;The date of the observation&#34;&#34;&#34;
-
-    values: List[Optional[float]]
-    &#34;&#34;&#34;
-    The historical values of the observation or an empty list if
-    there are no recorded values for the specified date.
-    &#34;&#34;&#34;
-
-    timeStamps: List[Optional[str]]
-    &#34;&#34;&#34;
-    A list of timestamps of when the historical values were recorded.
-    The first timestamp may be null if the time of the original is unknown.
-    &#34;&#34;&#34;</code></pre>
-</details>
 </section>
 <section>
 </section>
@@ -68,28 +38,6 @@ class SeriesObservationHistoryResponse(TypedDict):
 </code></dt>
 <dd>
 <div class="desc"><p>The history of changes of an observation</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">class SeriesObservationHistoryResponse(TypedDict):
-    &#34;&#34;&#34;The history of changes of an observation&#34;&#34;&#34;
-
-    observationDate: str
-    &#34;&#34;&#34;The date of the observation&#34;&#34;&#34;
-
-    values: List[Optional[float]]
-    &#34;&#34;&#34;
-    The historical values of the observation or an empty list if
-    there are no recorded values for the specified date.
-    &#34;&#34;&#34;
-
-    timeStamps: List[Optional[str]]
-    &#34;&#34;&#34;
-    A list of timestamps of when the historical values were recorded.
-    The first timestamp may be null if the time of the original is unknown.
-    &#34;&#34;&#34;</code></pre>
-</details>
 <h3>Ancestors</h3>
 <ul class="hlist">
 <li>builtins.dict</li>

@@ -24,6 +24,16 @@ class RevisionInfoDict(TypedDict, total=False):
 
 class RevisionInfo:
 
+    __slots__ = (
+        "name",
+        "error_message",
+        "stores_revisions",
+        "has_revisions",
+        "time_stamp_of_first_revision",
+        "time_stamp_of_last_revision",
+        "vintage_time_stamps",
+    )
+
     name: str
     error_message: str
     stores_revisions: bool

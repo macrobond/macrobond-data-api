@@ -17,6 +17,12 @@ SeriesObservationHistoryColumns = List[SeriesObservationHistoryColumnsLiterals]
 class SeriesObservationHistory:
     """The history of changes of an observation"""
 
+    __slots__ = (
+        "observation_date",
+        "values",
+        "time_stamps",
+    )
+
     observation_date: datetime
     values: Tuple[Optional[float], ...]
     time_stamps: Tuple[Optional[datetime], ...]

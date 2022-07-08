@@ -22,71 +22,6 @@
 <h1 class="title">Module <code>macrobond_financial.common.enums.series_to_higher_frequency_method</code></h1>
 </header>
 <section id="section-intro">
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python"># -*- coding: utf-8 -*-
-
-# pylint: disable= missing-module-docstring
-
-from enum import IntEnum
-
-
-class SeriesToHigherFrequencyMethod(IntEnum):
-    &#34;&#34;&#34;Methods for converting to higer frequency.&#34;&#34;&#34;
-
-    AUTO = 0
-    &#34;&#34;&#34;Determine the method based on the series classification.&#34;&#34;&#34;
-
-    SAME = 1
-    &#34;&#34;&#34;
-    Duplicate the lower frequency value for each of the higher frequency
-    series positions.
-    &#34;&#34;&#34;
-
-    DISTRIBUTE = 2
-    &#34;&#34;&#34;
-    Distribute the lower frequency value into equal sized parts for each
-    of the higher frequency series positions.
-    &#34;&#34;&#34;
-
-    PERCENTAGE_CHANGE = 3
-    &#34;&#34;&#34;
-    Distribute the percentage change so that the product of the higher frequency
-    observations - 100, is the same.
-    &#34;&#34;&#34;
-
-    LINEAR_INTERPOLATION = 4
-    &#34;&#34;&#34;
-    Use a linear interpolation between each pair of lower frequency values
-    to fill in each of the higher frequency values.
-    &#34;&#34;&#34;
-
-    PULSE = 5
-    &#34;&#34;&#34;
-    Sets the value for the first observation in the period range and the other
-    values to &#34;missing&#34;.
-    &#34;&#34;&#34;
-
-    QUADRATIC_DISTRIBUTION = 6
-    &#34;&#34;&#34;
-    Use a quadratic interpolation that optimize the area under the lower
-    frequency values to fill in the higher frequency values.
-    &#34;&#34;&#34;
-
-    CUBIC_INTERPOLATION = 7
-    &#34;&#34;&#34;
-    Use a cubic interpolation that optimize the area under the lower
-    frequency values to fill in the higher frequency values.
-    &#34;&#34;&#34;
-
-    CONDITIONAL_PERCENTAGE_CHANGE = 8
-    &#34;&#34;&#34;
-    Distribute the percentage change so that the product of the higher frequency
-    observations - 100, is the same, but only if pp100 is set on the series.
-    &#34;&#34;&#34;</code></pre>
-</details>
 </section>
 <section>
 </section>
@@ -103,64 +38,6 @@ class SeriesToHigherFrequencyMethod(IntEnum):
 </code></dt>
 <dd>
 <div class="desc"><p>Methods for converting to higer frequency.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">class SeriesToHigherFrequencyMethod(IntEnum):
-    &#34;&#34;&#34;Methods for converting to higer frequency.&#34;&#34;&#34;
-
-    AUTO = 0
-    &#34;&#34;&#34;Determine the method based on the series classification.&#34;&#34;&#34;
-
-    SAME = 1
-    &#34;&#34;&#34;
-    Duplicate the lower frequency value for each of the higher frequency
-    series positions.
-    &#34;&#34;&#34;
-
-    DISTRIBUTE = 2
-    &#34;&#34;&#34;
-    Distribute the lower frequency value into equal sized parts for each
-    of the higher frequency series positions.
-    &#34;&#34;&#34;
-
-    PERCENTAGE_CHANGE = 3
-    &#34;&#34;&#34;
-    Distribute the percentage change so that the product of the higher frequency
-    observations - 100, is the same.
-    &#34;&#34;&#34;
-
-    LINEAR_INTERPOLATION = 4
-    &#34;&#34;&#34;
-    Use a linear interpolation between each pair of lower frequency values
-    to fill in each of the higher frequency values.
-    &#34;&#34;&#34;
-
-    PULSE = 5
-    &#34;&#34;&#34;
-    Sets the value for the first observation in the period range and the other
-    values to &#34;missing&#34;.
-    &#34;&#34;&#34;
-
-    QUADRATIC_DISTRIBUTION = 6
-    &#34;&#34;&#34;
-    Use a quadratic interpolation that optimize the area under the lower
-    frequency values to fill in the higher frequency values.
-    &#34;&#34;&#34;
-
-    CUBIC_INTERPOLATION = 7
-    &#34;&#34;&#34;
-    Use a cubic interpolation that optimize the area under the lower
-    frequency values to fill in the higher frequency values.
-    &#34;&#34;&#34;
-
-    CONDITIONAL_PERCENTAGE_CHANGE = 8
-    &#34;&#34;&#34;
-    Distribute the percentage change so that the product of the higher frequency
-    observations - 100, is the same, but only if pp100 is set on the series.
-    &#34;&#34;&#34;</code></pre>
-</details>
 <h3>Ancestors</h3>
 <ul class="hlist">
 <li>enum.IntEnum</li>

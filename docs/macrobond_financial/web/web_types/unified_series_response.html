@@ -22,29 +22,6 @@
 <h1 class="title">Module <code>macrobond_financial.web.web_types.unified_series_response</code></h1>
 </header>
 <section id="section-intro">
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python"># -*- coding: utf-8 -*-
-
-# pylint: disable = missing-module-docstring
-
-from typing import List, Optional
-from typing_extensions import TypedDict
-
-from .values_response import ValuesResponse
-
-
-class UnifiedSeriesResponse(TypedDict):
-    &#34;&#34;&#34;Response from a unified series request&#34;&#34;&#34;
-
-    dates: Optional[List[str]]
-    &#34;&#34;&#34;The dates of the series or not specified if there were only errors&#34;&#34;&#34;
-
-    series: List[ValuesResponse]
-    &#34;&#34;&#34;The list of series responses in the same order as in the request&#34;&#34;&#34;</code></pre>
-</details>
 </section>
 <section>
 </section>
@@ -61,19 +38,6 @@ class UnifiedSeriesResponse(TypedDict):
 </code></dt>
 <dd>
 <div class="desc"><p>Response from a unified series request</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">class UnifiedSeriesResponse(TypedDict):
-    &#34;&#34;&#34;Response from a unified series request&#34;&#34;&#34;
-
-    dates: Optional[List[str]]
-    &#34;&#34;&#34;The dates of the series or not specified if there were only errors&#34;&#34;&#34;
-
-    series: List[ValuesResponse]
-    &#34;&#34;&#34;The list of series responses in the same order as in the request&#34;&#34;&#34;</code></pre>
-</details>
 <h3>Ancestors</h3>
 <ul class="hlist">
 <li>builtins.dict</li>

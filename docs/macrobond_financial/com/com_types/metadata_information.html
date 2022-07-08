@@ -22,109 +22,6 @@
 <h1 class="title">Module <code>macrobond_financial.com.com_types.metadata_information</code></h1>
 </header>
 <section id="section-intro">
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python"># -*- coding: utf-8 -*-
-
-# pylint: disable = invalid-name , missing-module-docstring
-
-from typing import List, Optional
-
-from enum import IntEnum
-
-
-class MetadataValueType(IntEnum):
-    &#34;&#34;&#34;The type of a metadata value. These values corresponds to the COM VARIANT data types.&#34;&#34;&#34;
-
-    INT = 3
-    &#34;&#34;&#34;A 32-bit signed integer. VT_I4.&#34;&#34;&#34;
-
-    DOUBLE = 5
-    &#34;&#34;&#34;A 64-bit floating point number. VT_R8.&#34;&#34;&#34;
-
-    DATE = 7
-    &#34;&#34;&#34;A date. VT_DATE.&#34;&#34;&#34;
-
-    STRING = 8
-    &#34;&#34;&#34;A unicode string. VT_BSTR.&#34;&#34;&#34;
-
-    BOOL = 11
-    &#34;&#34;&#34;A boolean value where -1 is True and 0 is False. VT_BOOL.&#34;&#34;&#34;
-
-
-class MetadataValueInformation:
-    &#34;&#34;&#34;Interface for a metadata value in the Macrobond database.&#34;&#34;&#34;
-
-    @property
-    def Value(self) -&gt; object:
-        &#34;&#34;&#34;The value of the metadata.&#34;&#34;&#34;
-
-    @property
-    def Description(self) -&gt; str:
-        &#34;&#34;&#34;The description of the metadata value.&#34;&#34;&#34;
-
-    @property
-    def Comment(self) -&gt; Optional[str]:
-        &#34;&#34;&#34;The comment about the metadata value.&#34;&#34;&#34;
-
-
-class MetadataInformation:
-    &#34;&#34;&#34;Interface for a type of metadata in the Macrobond database.&#34;&#34;&#34;
-
-    @property
-    def Name(self) -&gt; str:
-        &#34;&#34;&#34;The name of the metadata.&#34;&#34;&#34;
-
-    @property
-    def Description(self) -&gt; str:
-        &#34;&#34;&#34;The description of the metadata.&#34;&#34;&#34;
-
-    @property
-    def Comment(self) -&gt; str:
-        &#34;&#34;&#34;The comment about the metadata.&#34;&#34;&#34;
-
-    @property
-    def UsesValueList(self) -&gt; bool:
-        &#34;&#34;&#34;Returns True if this type of metadata has a list of possible values.&#34;&#34;&#34;
-
-    @property
-    def ValueType(self) -&gt; MetadataValueType:
-        &#34;&#34;&#34;The datatype that corresponds directly to the COM VT_* values.&#34;&#34;&#34;
-
-    @property
-    def CanHaveMultipleValues(self) -&gt; bool:
-        &#34;&#34;&#34;
-        If True then this type of metadata can have multiple
-        values in a metadata collection.
-        &#34;&#34;&#34;
-
-    @property
-    def IsDatabaseEntity(self) -&gt; bool:
-        &#34;&#34;&#34;
-        If True then this type of metadata is an entity that can be retrieved from the database.
-        &#34;&#34;&#34;
-
-    @property
-    def CanListValues(self) -&gt; bool:
-        &#34;&#34;&#34;
-        If True then the values of this type of metadata can be
-        listen using the ListAllValues function.
-        &#34;&#34;&#34;
-
-    def GetValuePresentationText(self, value: object) -&gt; str:
-        &#34;&#34;&#34;Format the value as a text.&#34;&#34;&#34;
-
-    def GetValueInformation(self, value: object) -&gt; MetadataValueInformation:
-        &#34;&#34;&#34;Get detailed information of a value when this type of metadata uses a list of values.&#34;&#34;&#34;
-
-    def ListAllValues(self) -&gt; List[MetadataValueInformation]:
-        &#34;&#34;&#34;Get a list of possible values for this type of metadata if it uses a list of values.&#34;&#34;&#34;
-
-    def ArrangeValues(self, values: object) -&gt; List[object]:
-        &#34;&#34;&#34;Get a list of possible values for this type of metadata if it uses a list of values.&#34;&#34;&#34;</code></pre>
-</details>
 </section>
 <section>
 </section>
@@ -140,172 +37,41 @@ class MetadataInformation:
 </code></dt>
 <dd>
 <div class="desc"><p>Interface for a type of metadata in the Macrobond database.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">class MetadataInformation:
-    &#34;&#34;&#34;Interface for a type of metadata in the Macrobond database.&#34;&#34;&#34;
-
-    @property
-    def Name(self) -&gt; str:
-        &#34;&#34;&#34;The name of the metadata.&#34;&#34;&#34;
-
-    @property
-    def Description(self) -&gt; str:
-        &#34;&#34;&#34;The description of the metadata.&#34;&#34;&#34;
-
-    @property
-    def Comment(self) -&gt; str:
-        &#34;&#34;&#34;The comment about the metadata.&#34;&#34;&#34;
-
-    @property
-    def UsesValueList(self) -&gt; bool:
-        &#34;&#34;&#34;Returns True if this type of metadata has a list of possible values.&#34;&#34;&#34;
-
-    @property
-    def ValueType(self) -&gt; MetadataValueType:
-        &#34;&#34;&#34;The datatype that corresponds directly to the COM VT_* values.&#34;&#34;&#34;
-
-    @property
-    def CanHaveMultipleValues(self) -&gt; bool:
-        &#34;&#34;&#34;
-        If True then this type of metadata can have multiple
-        values in a metadata collection.
-        &#34;&#34;&#34;
-
-    @property
-    def IsDatabaseEntity(self) -&gt; bool:
-        &#34;&#34;&#34;
-        If True then this type of metadata is an entity that can be retrieved from the database.
-        &#34;&#34;&#34;
-
-    @property
-    def CanListValues(self) -&gt; bool:
-        &#34;&#34;&#34;
-        If True then the values of this type of metadata can be
-        listen using the ListAllValues function.
-        &#34;&#34;&#34;
-
-    def GetValuePresentationText(self, value: object) -&gt; str:
-        &#34;&#34;&#34;Format the value as a text.&#34;&#34;&#34;
-
-    def GetValueInformation(self, value: object) -&gt; MetadataValueInformation:
-        &#34;&#34;&#34;Get detailed information of a value when this type of metadata uses a list of values.&#34;&#34;&#34;
-
-    def ListAllValues(self) -&gt; List[MetadataValueInformation]:
-        &#34;&#34;&#34;Get a list of possible values for this type of metadata if it uses a list of values.&#34;&#34;&#34;
-
-    def ArrangeValues(self, values: object) -&gt; List[object]:
-        &#34;&#34;&#34;Get a list of possible values for this type of metadata if it uses a list of values.&#34;&#34;&#34;</code></pre>
-</details>
 <h3>Instance variables</h3>
 <dl>
 <dt id="macrobond_financial.com.com_types.metadata_information.MetadataInformation.CanHaveMultipleValues"><code class="name">var <span class="ident">CanHaveMultipleValues</span> : bool</code></dt>
 <dd>
 <div class="desc"><p>If True then this type of metadata can have multiple
 values in a metadata collection.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@property
-def CanHaveMultipleValues(self) -&gt; bool:
-    &#34;&#34;&#34;
-    If True then this type of metadata can have multiple
-    values in a metadata collection.
-    &#34;&#34;&#34;</code></pre>
-</details>
 </dd>
 <dt id="macrobond_financial.com.com_types.metadata_information.MetadataInformation.CanListValues"><code class="name">var <span class="ident">CanListValues</span> : bool</code></dt>
 <dd>
 <div class="desc"><p>If True then the values of this type of metadata can be
 listen using the ListAllValues function.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@property
-def CanListValues(self) -&gt; bool:
-    &#34;&#34;&#34;
-    If True then the values of this type of metadata can be
-    listen using the ListAllValues function.
-    &#34;&#34;&#34;</code></pre>
-</details>
 </dd>
 <dt id="macrobond_financial.com.com_types.metadata_information.MetadataInformation.Comment"><code class="name">var <span class="ident">Comment</span> : str</code></dt>
 <dd>
 <div class="desc"><p>The comment about the metadata.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@property
-def Comment(self) -&gt; str:
-    &#34;&#34;&#34;The comment about the metadata.&#34;&#34;&#34;</code></pre>
-</details>
 </dd>
 <dt id="macrobond_financial.com.com_types.metadata_information.MetadataInformation.Description"><code class="name">var <span class="ident">Description</span> : str</code></dt>
 <dd>
 <div class="desc"><p>The description of the metadata.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@property
-def Description(self) -&gt; str:
-    &#34;&#34;&#34;The description of the metadata.&#34;&#34;&#34;</code></pre>
-</details>
 </dd>
 <dt id="macrobond_financial.com.com_types.metadata_information.MetadataInformation.IsDatabaseEntity"><code class="name">var <span class="ident">IsDatabaseEntity</span> : bool</code></dt>
 <dd>
 <div class="desc"><p>If True then this type of metadata is an entity that can be retrieved from the database.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@property
-def IsDatabaseEntity(self) -&gt; bool:
-    &#34;&#34;&#34;
-    If True then this type of metadata is an entity that can be retrieved from the database.
-    &#34;&#34;&#34;</code></pre>
-</details>
 </dd>
 <dt id="macrobond_financial.com.com_types.metadata_information.MetadataInformation.Name"><code class="name">var <span class="ident">Name</span> : str</code></dt>
 <dd>
 <div class="desc"><p>The name of the metadata.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@property
-def Name(self) -&gt; str:
-    &#34;&#34;&#34;The name of the metadata.&#34;&#34;&#34;</code></pre>
-</details>
 </dd>
 <dt id="macrobond_financial.com.com_types.metadata_information.MetadataInformation.UsesValueList"><code class="name">var <span class="ident">UsesValueList</span> : bool</code></dt>
 <dd>
 <div class="desc"><p>Returns True if this type of metadata has a list of possible values.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@property
-def UsesValueList(self) -&gt; bool:
-    &#34;&#34;&#34;Returns True if this type of metadata has a list of possible values.&#34;&#34;&#34;</code></pre>
-</details>
 </dd>
 <dt id="macrobond_financial.com.com_types.metadata_information.MetadataInformation.ValueType"><code class="name">var <span class="ident">ValueType</span> : <a title="macrobond_financial.com.com_types.metadata_information.MetadataValueType" href="#macrobond_financial.com.com_types.metadata_information.MetadataValueType">MetadataValueType</a></code></dt>
 <dd>
 <div class="desc"><p>The datatype that corresponds directly to the COM VT_* values.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@property
-def ValueType(self) -&gt; MetadataValueType:
-    &#34;&#34;&#34;The datatype that corresponds directly to the COM VT_* values.&#34;&#34;&#34;</code></pre>
-</details>
 </dd>
 </dl>
 <h3>Methods</h3>
@@ -315,52 +81,24 @@ def ValueType(self) -&gt; MetadataValueType:
 </code></dt>
 <dd>
 <div class="desc"><p>Get a list of possible values for this type of metadata if it uses a list of values.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def ArrangeValues(self, values: object) -&gt; List[object]:
-    &#34;&#34;&#34;Get a list of possible values for this type of metadata if it uses a list of values.&#34;&#34;&#34;</code></pre>
-</details>
 </dd>
 <dt id="macrobond_financial.com.com_types.metadata_information.MetadataInformation.GetValueInformation"><code class="name flex">
 <span>def <span class="ident">GetValueInformation</span></span>(<span>self, value: object) ‑> <a title="macrobond_financial.com.com_types.metadata_information.MetadataValueInformation" href="#macrobond_financial.com.com_types.metadata_information.MetadataValueInformation">MetadataValueInformation</a></span>
 </code></dt>
 <dd>
 <div class="desc"><p>Get detailed information of a value when this type of metadata uses a list of values.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def GetValueInformation(self, value: object) -&gt; MetadataValueInformation:
-    &#34;&#34;&#34;Get detailed information of a value when this type of metadata uses a list of values.&#34;&#34;&#34;</code></pre>
-</details>
 </dd>
 <dt id="macrobond_financial.com.com_types.metadata_information.MetadataInformation.GetValuePresentationText"><code class="name flex">
 <span>def <span class="ident">GetValuePresentationText</span></span>(<span>self, value: object) ‑> str</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Format the value as a text.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def GetValuePresentationText(self, value: object) -&gt; str:
-    &#34;&#34;&#34;Format the value as a text.&#34;&#34;&#34;</code></pre>
-</details>
 </dd>
 <dt id="macrobond_financial.com.com_types.metadata_information.MetadataInformation.ListAllValues"><code class="name flex">
 <span>def <span class="ident">ListAllValues</span></span>(<span>self) ‑> List[<a title="macrobond_financial.com.com_types.metadata_information.MetadataValueInformation" href="#macrobond_financial.com.com_types.metadata_information.MetadataValueInformation">MetadataValueInformation</a>]</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Get a list of possible values for this type of metadata if it uses a list of values.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def ListAllValues(self) -&gt; List[MetadataValueInformation]:
-    &#34;&#34;&#34;Get a list of possible values for this type of metadata if it uses a list of values.&#34;&#34;&#34;</code></pre>
-</details>
 </dd>
 </dl>
 </dd>
@@ -369,62 +107,19 @@ def ValueType(self) -&gt; MetadataValueType:
 </code></dt>
 <dd>
 <div class="desc"><p>Interface for a metadata value in the Macrobond database.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">class MetadataValueInformation:
-    &#34;&#34;&#34;Interface for a metadata value in the Macrobond database.&#34;&#34;&#34;
-
-    @property
-    def Value(self) -&gt; object:
-        &#34;&#34;&#34;The value of the metadata.&#34;&#34;&#34;
-
-    @property
-    def Description(self) -&gt; str:
-        &#34;&#34;&#34;The description of the metadata value.&#34;&#34;&#34;
-
-    @property
-    def Comment(self) -&gt; Optional[str]:
-        &#34;&#34;&#34;The comment about the metadata value.&#34;&#34;&#34;</code></pre>
-</details>
 <h3>Instance variables</h3>
 <dl>
 <dt id="macrobond_financial.com.com_types.metadata_information.MetadataValueInformation.Comment"><code class="name">var <span class="ident">Comment</span> : Optional[str]</code></dt>
 <dd>
 <div class="desc"><p>The comment about the metadata value.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@property
-def Comment(self) -&gt; Optional[str]:
-    &#34;&#34;&#34;The comment about the metadata value.&#34;&#34;&#34;</code></pre>
-</details>
 </dd>
 <dt id="macrobond_financial.com.com_types.metadata_information.MetadataValueInformation.Description"><code class="name">var <span class="ident">Description</span> : str</code></dt>
 <dd>
 <div class="desc"><p>The description of the metadata value.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@property
-def Description(self) -&gt; str:
-    &#34;&#34;&#34;The description of the metadata value.&#34;&#34;&#34;</code></pre>
-</details>
 </dd>
 <dt id="macrobond_financial.com.com_types.metadata_information.MetadataValueInformation.Value"><code class="name">var <span class="ident">Value</span> : object</code></dt>
 <dd>
 <div class="desc"><p>The value of the metadata.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@property
-def Value(self) -&gt; object:
-    &#34;&#34;&#34;The value of the metadata.&#34;&#34;&#34;</code></pre>
-</details>
 </dd>
 </dl>
 </dd>
@@ -434,28 +129,6 @@ def Value(self) -&gt; object:
 </code></dt>
 <dd>
 <div class="desc"><p>The type of a metadata value. These values corresponds to the COM VARIANT data types.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">class MetadataValueType(IntEnum):
-    &#34;&#34;&#34;The type of a metadata value. These values corresponds to the COM VARIANT data types.&#34;&#34;&#34;
-
-    INT = 3
-    &#34;&#34;&#34;A 32-bit signed integer. VT_I4.&#34;&#34;&#34;
-
-    DOUBLE = 5
-    &#34;&#34;&#34;A 64-bit floating point number. VT_R8.&#34;&#34;&#34;
-
-    DATE = 7
-    &#34;&#34;&#34;A date. VT_DATE.&#34;&#34;&#34;
-
-    STRING = 8
-    &#34;&#34;&#34;A unicode string. VT_BSTR.&#34;&#34;&#34;
-
-    BOOL = 11
-    &#34;&#34;&#34;A boolean value where -1 is True and 0 is False. VT_BOOL.&#34;&#34;&#34;</code></pre>
-</details>
 <h3>Ancestors</h3>
 <ul class="hlist">
 <li>enum.IntEnum</li>

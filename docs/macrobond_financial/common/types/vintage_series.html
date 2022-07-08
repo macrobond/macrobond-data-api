@@ -22,37 +22,6 @@
 <h1 class="title">Module <code>macrobond_financial.common.types.vintage_series</code></h1>
 </header>
 <section id="section-intro">
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python"># -*- coding: utf-8 -*-
-
-from datetime import datetime, timezone
-
-from typing import List
-from typing_extensions import Literal
-
-from .series import Series, SeriesColumnsLiterals
-
-
-VintageSeriesColumns = List[Literal[SeriesColumnsLiterals, &#34;VintageTimeStamp&#34;, &#34;TimesOfChange&#34;]]
-
-
-class VintageSeries(Series):
-    @property
-    def revision_time_stamp(self) -&gt; datetime:
-        &#34;&#34;&#34;The name of the entity.&#34;&#34;&#34;
-        revision_time_stamp = self.metadata[&#34;RevisionTimeStamp&#34;]
-        if isinstance(revision_time_stamp, list):
-            revision_time_stamp = revision_time_stamp[0]
-
-        if isinstance(revision_time_stamp, str):
-            return datetime.strptime(revision_time_stamp, &#34;%Y-%m-%dT%H:%M:%SZ&#34;).replace(
-                tzinfo=timezone.utc
-            )
-        return revision_time_stamp</code></pre>
-</details>
 </section>
 <section>
 </section>
@@ -69,24 +38,6 @@ class VintageSeries(Series):
 </code></dt>
 <dd>
 <div class="desc"><p>Interface for a Macrobond time series.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">class VintageSeries(Series):
-    @property
-    def revision_time_stamp(self) -&gt; datetime:
-        &#34;&#34;&#34;The name of the entity.&#34;&#34;&#34;
-        revision_time_stamp = self.metadata[&#34;RevisionTimeStamp&#34;]
-        if isinstance(revision_time_stamp, list):
-            revision_time_stamp = revision_time_stamp[0]
-
-        if isinstance(revision_time_stamp, str):
-            return datetime.strptime(revision_time_stamp, &#34;%Y-%m-%dT%H:%M:%SZ&#34;).replace(
-                tzinfo=timezone.utc
-            )
-        return revision_time_stamp</code></pre>
-</details>
 <h3>Ancestors</h3>
 <ul class="hlist">
 <li><a title="macrobond_financial.common.types.series.Series" href="series.html#macrobond_financial.common.types.series.Series">Series</a></li>
@@ -94,40 +45,29 @@ class VintageSeries(Series):
 </ul>
 <h3>Instance variables</h3>
 <dl>
+<dt id="macrobond_financial.common.types.vintage_series.VintageSeries.dates"><code class="name">var <span class="ident">dates</span> : Tuple[datetime.datetime, ...]</code></dt>
+<dd>
+<div class="desc"><p>Return an attribute of instance, which is of type owner.</p></div>
+</dd>
 <dt id="macrobond_financial.common.types.vintage_series.VintageSeries.revision_time_stamp"><code class="name">var <span class="ident">revision_time_stamp</span> : datetime.datetime</code></dt>
 <dd>
 <div class="desc"><p>The name of the entity.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@property
-def revision_time_stamp(self) -&gt; datetime:
-    &#34;&#34;&#34;The name of the entity.&#34;&#34;&#34;
-    revision_time_stamp = self.metadata[&#34;RevisionTimeStamp&#34;]
-    if isinstance(revision_time_stamp, list):
-        revision_time_stamp = revision_time_stamp[0]
-
-    if isinstance(revision_time_stamp, str):
-        return datetime.strptime(revision_time_stamp, &#34;%Y-%m-%dT%H:%M:%SZ&#34;).replace(
-            tzinfo=timezone.utc
-        )
-    return revision_time_stamp</code></pre>
-</details>
+</dd>
+<dt id="macrobond_financial.common.types.vintage_series.VintageSeries.values"><code class="name">var <span class="ident">values</span> : Tuple[Optional[float], ...]</code></dt>
+<dd>
+<div class="desc"><p>Return an attribute of instance, which is of type owner.</p></div>
 </dd>
 </dl>
 <h3>Inherited members</h3>
 <ul class="hlist">
 <li><code><b><a title="macrobond_financial.common.types.series.Series" href="series.html#macrobond_financial.common.types.series.Series">Series</a></b></code>:
 <ul class="hlist">
-<li><code><a title="macrobond_financial.common.types.series.Series.dates" href="series.html#macrobond_financial.common.types.series.Series.dates">dates</a></code></li>
 <li><code><a title="macrobond_financial.common.types.series.Series.entity_type" href="entity.html#macrobond_financial.common.types.entity.Entity.entity_type">entity_type</a></code></li>
 <li><code><a title="macrobond_financial.common.types.series.Series.error_message" href="entity.html#macrobond_financial.common.types.entity.Entity.error_message">error_message</a></code></li>
 <li><code><a title="macrobond_financial.common.types.series.Series.metadata" href="entity.html#macrobond_financial.common.types.entity.Entity.metadata">metadata</a></code></li>
 <li><code><a title="macrobond_financial.common.types.series.Series.name" href="entity.html#macrobond_financial.common.types.entity.Entity.name">name</a></code></li>
 <li><code><a title="macrobond_financial.common.types.series.Series.primary_name" href="entity.html#macrobond_financial.common.types.entity.Entity.primary_name">primary_name</a></code></li>
 <li><code><a title="macrobond_financial.common.types.series.Series.title" href="entity.html#macrobond_financial.common.types.entity.Entity.title">title</a></code></li>
-<li><code><a title="macrobond_financial.common.types.series.Series.values" href="series.html#macrobond_financial.common.types.series.Series.values">values</a></code></li>
 </ul>
 </li>
 </ul>
@@ -151,7 +91,9 @@ def revision_time_stamp(self) -&gt; datetime:
 <li>
 <h4><code><a title="macrobond_financial.common.types.vintage_series.VintageSeries" href="#macrobond_financial.common.types.vintage_series.VintageSeries">VintageSeries</a></code></h4>
 <ul class="">
+<li><code><a title="macrobond_financial.common.types.vintage_series.VintageSeries.dates" href="#macrobond_financial.common.types.vintage_series.VintageSeries.dates">dates</a></code></li>
 <li><code><a title="macrobond_financial.common.types.vintage_series.VintageSeries.revision_time_stamp" href="#macrobond_financial.common.types.vintage_series.VintageSeries.revision_time_stamp">revision_time_stamp</a></code></li>
+<li><code><a title="macrobond_financial.common.types.vintage_series.VintageSeries.values" href="#macrobond_financial.common.types.vintage_series.VintageSeries.values">values</a></code></li>
 </ul>
 </li>
 </ul>

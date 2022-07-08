@@ -22,74 +22,6 @@
 <h1 class="title">Module <code>macrobond_financial.common.types.search_filter</code></h1>
 </header>
 <section id="section-intro">
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python"># -*- coding: utf-8 -*-
-
-from typing import Dict, Sequence, Union, TYPE_CHECKING
-
-if TYPE_CHECKING:  # pragma: no cover
-    from pandas import DataFrame, _typing as pandas_typing  # type: ignore
-
-
-class SearchFilter:
-    def __init__(
-        self,
-        text: str = None,
-        entity_types: Union[Sequence[str], str] = None,
-        must_have_values: Dict[str, object] = None,
-        must_not_have_values: Dict[str, object] = None,
-        must_have_attributes: Union[Sequence[str], str] = None,
-        must_not_have_attributes: Union[Sequence[str], str] = None,
-    ) -&gt; None:
-        &#34;&#34;&#34;
-        Specification of a search filter.
-
-        Parameters
-        ----------
-        text: str
-            Optional set of keywords separated by space.
-        must_have_values: Dict[str, object]
-            Optional dictionary of values that must be present in the entity metadata.
-            The value can be a single value or an array of values. If there are several values
-            for an attribute, it means that either of them must be present.
-        must_not_have_values: Dict[str, object]
-            Optional dictionary of values that must not be present in the entity metadata.
-            The value can be a single value or an array of values.
-        must_have_attributes: Union[Sequence[str], str]
-            Optional set of attributes that must be present in the entity metadata.
-            The value can be a single value or a sequence of values.
-        must_not_have_attributes: Union[Sequence[str], str]
-            Optional set of attributes that must no be present in the entity metadata.
-            The value can be a single value or a sequence of values.
-        &#34;&#34;&#34;
-        self.text = text
-
-        if isinstance(entity_types, str):
-            self.entity_types: Sequence[str] = [entity_types]
-        else:
-            self.entity_types = entity_types if entity_types else []
-
-        self.must_have_values: Dict[str, object] = must_have_values if must_have_values else {}
-
-        self.must_not_have_values: Dict[str, object] = (
-            must_not_have_values if must_not_have_values else {}
-        )
-
-        if isinstance(must_have_attributes, str):
-            self.must_have_attributes: Sequence[str] = [must_have_attributes]
-        else:
-            self.must_have_attributes = must_have_attributes if must_have_attributes else []
-
-        if isinstance(must_not_have_attributes, str):
-            self.must_not_have_attributes: Sequence[str] = [must_not_have_attributes]
-        else:
-            self.must_not_have_attributes = (
-                must_not_have_attributes if must_not_have_attributes else []
-            )</code></pre>
-</details>
 </section>
 <section>
 </section>
@@ -124,66 +56,33 @@ The value can be a single value or a sequence of values.</dd>
 <dd>Optional set of attributes that must no be present in the entity metadata.
 The value can be a single value or a sequence of values.</dd>
 </dl></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">class SearchFilter:
-    def __init__(
-        self,
-        text: str = None,
-        entity_types: Union[Sequence[str], str] = None,
-        must_have_values: Dict[str, object] = None,
-        must_not_have_values: Dict[str, object] = None,
-        must_have_attributes: Union[Sequence[str], str] = None,
-        must_not_have_attributes: Union[Sequence[str], str] = None,
-    ) -&gt; None:
-        &#34;&#34;&#34;
-        Specification of a search filter.
-
-        Parameters
-        ----------
-        text: str
-            Optional set of keywords separated by space.
-        must_have_values: Dict[str, object]
-            Optional dictionary of values that must be present in the entity metadata.
-            The value can be a single value or an array of values. If there are several values
-            for an attribute, it means that either of them must be present.
-        must_not_have_values: Dict[str, object]
-            Optional dictionary of values that must not be present in the entity metadata.
-            The value can be a single value or an array of values.
-        must_have_attributes: Union[Sequence[str], str]
-            Optional set of attributes that must be present in the entity metadata.
-            The value can be a single value or a sequence of values.
-        must_not_have_attributes: Union[Sequence[str], str]
-            Optional set of attributes that must no be present in the entity metadata.
-            The value can be a single value or a sequence of values.
-        &#34;&#34;&#34;
-        self.text = text
-
-        if isinstance(entity_types, str):
-            self.entity_types: Sequence[str] = [entity_types]
-        else:
-            self.entity_types = entity_types if entity_types else []
-
-        self.must_have_values: Dict[str, object] = must_have_values if must_have_values else {}
-
-        self.must_not_have_values: Dict[str, object] = (
-            must_not_have_values if must_not_have_values else {}
-        )
-
-        if isinstance(must_have_attributes, str):
-            self.must_have_attributes: Sequence[str] = [must_have_attributes]
-        else:
-            self.must_have_attributes = must_have_attributes if must_have_attributes else []
-
-        if isinstance(must_not_have_attributes, str):
-            self.must_not_have_attributes: Sequence[str] = [must_not_have_attributes]
-        else:
-            self.must_not_have_attributes = (
-                must_not_have_attributes if must_not_have_attributes else []
-            )</code></pre>
-</details>
+<h3>Instance variables</h3>
+<dl>
+<dt id="macrobond_financial.common.types.search_filter.SearchFilter.entity_types"><code class="name">var <span class="ident">entity_types</span></code></dt>
+<dd>
+<div class="desc"><p>Return an attribute of instance, which is of type owner.</p></div>
+</dd>
+<dt id="macrobond_financial.common.types.search_filter.SearchFilter.must_have_attributes"><code class="name">var <span class="ident">must_have_attributes</span></code></dt>
+<dd>
+<div class="desc"><p>Return an attribute of instance, which is of type owner.</p></div>
+</dd>
+<dt id="macrobond_financial.common.types.search_filter.SearchFilter.must_have_values"><code class="name">var <span class="ident">must_have_values</span></code></dt>
+<dd>
+<div class="desc"><p>Return an attribute of instance, which is of type owner.</p></div>
+</dd>
+<dt id="macrobond_financial.common.types.search_filter.SearchFilter.must_not_have_attributes"><code class="name">var <span class="ident">must_not_have_attributes</span></code></dt>
+<dd>
+<div class="desc"><p>Return an attribute of instance, which is of type owner.</p></div>
+</dd>
+<dt id="macrobond_financial.common.types.search_filter.SearchFilter.must_not_have_values"><code class="name">var <span class="ident">must_not_have_values</span></code></dt>
+<dd>
+<div class="desc"><p>Return an attribute of instance, which is of type owner.</p></div>
+</dd>
+<dt id="macrobond_financial.common.types.search_filter.SearchFilter.text"><code class="name">var <span class="ident">text</span></code></dt>
+<dd>
+<div class="desc"><p>Return an attribute of instance, which is of type owner.</p></div>
+</dd>
+</dl>
 </dd>
 </dl>
 </section>
@@ -203,6 +102,14 @@ The value can be a single value or a sequence of values.</dd>
 <ul>
 <li>
 <h4><code><a title="macrobond_financial.common.types.search_filter.SearchFilter" href="#macrobond_financial.common.types.search_filter.SearchFilter">SearchFilter</a></code></h4>
+<ul class="">
+<li><code><a title="macrobond_financial.common.types.search_filter.SearchFilter.entity_types" href="#macrobond_financial.common.types.search_filter.SearchFilter.entity_types">entity_types</a></code></li>
+<li><code><a title="macrobond_financial.common.types.search_filter.SearchFilter.must_have_attributes" href="#macrobond_financial.common.types.search_filter.SearchFilter.must_have_attributes">must_have_attributes</a></code></li>
+<li><code><a title="macrobond_financial.common.types.search_filter.SearchFilter.must_have_values" href="#macrobond_financial.common.types.search_filter.SearchFilter.must_have_values">must_have_values</a></code></li>
+<li><code><a title="macrobond_financial.common.types.search_filter.SearchFilter.must_not_have_attributes" href="#macrobond_financial.common.types.search_filter.SearchFilter.must_not_have_attributes">must_not_have_attributes</a></code></li>
+<li><code><a title="macrobond_financial.common.types.search_filter.SearchFilter.must_not_have_values" href="#macrobond_financial.common.types.search_filter.SearchFilter.must_not_have_values">must_not_have_values</a></code></li>
+<li><code><a title="macrobond_financial.common.types.search_filter.SearchFilter.text" href="#macrobond_financial.common.types.search_filter.SearchFilter.text">text</a></code></li>
+</ul>
 </li>
 </ul>
 </li>

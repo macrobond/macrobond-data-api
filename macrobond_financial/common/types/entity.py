@@ -17,6 +17,8 @@ EntityColumns = List[EntityColumnsLiterals]
 class Entity:
     """Interface for a database Macrobond entity."""
 
+    __slots__ = ("name", "error_message", "metadata")
+
     name: str
     error_message: str
     metadata: Dict[str, Any]
@@ -48,6 +50,11 @@ class Entity:
         if isinstance(entity_type, list):
             entity_type = entity_type[0]
         return entity_type
+
+    @property
+    def is_discontinued(self) -> bool:
+        entity_state = self.metadata.get("EntityState")
+        return entity_state is not None and entity_state != 0
 
     def __init__(
         self,

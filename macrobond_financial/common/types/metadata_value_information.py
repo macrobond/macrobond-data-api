@@ -12,10 +12,8 @@ from typing_extensions import TypedDict, Literal
 
 from .._get_pandas import _get_pandas
 
-
 if TYPE_CHECKING:  # pragma: no cover
     from pandas import DataFrame, _typing as pandas_typing  # type: ignore
-
 
 MetadataValueInformationColumns = List[Literal["attribute_name", "value", "description", "comment"]]
 
@@ -43,6 +41,8 @@ class MetadataValueInformationItem:
     """
     Contains information about one metadata attribute value.
     """
+
+    __slots__ = ("attribute_name", "value", "description", "comment")
 
     attribute_name: str
     value: Any

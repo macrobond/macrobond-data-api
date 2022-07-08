@@ -22,30 +22,6 @@
 <h1 class="title">Module <code>macrobond_financial.web.web_types.entity_request</code></h1>
 </header>
 <section id="section-intro">
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python"># -*- coding: utf-8 -*-
-
-# pylint: disable = missing-module-docstring
-
-from typing import Optional
-from typing_extensions import TypedDict
-
-
-class EntityRequest(TypedDict, total=False):
-    &#34;&#34;&#34;Request of an entity and an optional timestamp of last modification&#34;&#34;&#34;
-
-    name: str
-    &#34;&#34;&#34;The name of the entity&#34;&#34;&#34;
-
-    ifModifiedSince: Optional[str]
-    &#34;&#34;&#34;
-    If specified, the enitity will only be returned if modified since the specified time.
-    If not, the ErrorCode field of the response will be NotModified (304).
-    &#34;&#34;&#34;</code></pre>
-</details>
 </section>
 <section>
 </section>
@@ -62,22 +38,6 @@ class EntityRequest(TypedDict, total=False):
 </code></dt>
 <dd>
 <div class="desc"><p>Request of an entity and an optional timestamp of last modification</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">class EntityRequest(TypedDict, total=False):
-    &#34;&#34;&#34;Request of an entity and an optional timestamp of last modification&#34;&#34;&#34;
-
-    name: str
-    &#34;&#34;&#34;The name of the entity&#34;&#34;&#34;
-
-    ifModifiedSince: Optional[str]
-    &#34;&#34;&#34;
-    If specified, the enitity will only be returned if modified since the specified time.
-    If not, the ErrorCode field of the response will be NotModified (304).
-    &#34;&#34;&#34;</code></pre>
-</details>
 <h3>Ancestors</h3>
 <ul class="hlist">
 <li>builtins.dict</li>

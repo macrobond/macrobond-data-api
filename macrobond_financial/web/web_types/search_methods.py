@@ -6,11 +6,13 @@ from typing import cast, List, Dict, TYPE_CHECKING
 
 if TYPE_CHECKING:  # pragma: no cover
     from ..session import Session
-    from .search_response import SearchResponse
-    from .search_request import SearchRequest
-    from .search_for_display_response import SearchForDisplayResponse
-    from .search_for_display_request import SearchForDisplayRequest
-    from .item_listing_response import ItemListingResponse
+    from .search import (
+        SearchResponse,
+        SearchRequest,
+        SearchForDisplayResponse,
+        SearchForDisplayRequest,
+        ItemListingResponse,
+    )
 
 
 class SearchMethods:

@@ -61,7 +61,7 @@ def _fill_metadata_from_entity(com_entity: "ComEntity") -> Dict[str, Any]:
     return ret
 
 
-def _datetime_to_datetime(dates: Sequence[datetime]) -> Tuple[datetime, ...]:
+def _datetime_to_datetime_utc(dates: Sequence[datetime]) -> Tuple[datetime, ...]:
     return tuple(
         map(
             lambda x: datetime(
@@ -73,6 +73,23 @@ def _datetime_to_datetime(dates: Sequence[datetime]) -> Tuple[datetime, ...]:
                 x.second,
                 x.microsecond,
                 timezone.utc,
+            ),
+            dates,
+        )
+    )
+
+
+def _datetime_to_datetime(dates: Sequence[datetime]) -> Tuple[datetime, ...]:
+    return tuple(
+        map(
+            lambda x: datetime(
+                x.year,
+                x.month,
+                x.day,
+                x.hour,
+                x.minute,
+                x.second,
+                x.microsecond,
             ),
             dates,
         )
@@ -216,7 +233,7 @@ class ComApi(Api):
                     tuple(),
                 )
 
-            vintage_time_stamps = _datetime_to_datetime(serie.GetVintageDates())
+            vintage_time_stamps = _datetime_to_datetime_utc(serie.GetVintageDates())
 
             time_stamp_of_first_revision = vintage_time_stamps[0] if serie.HasRevisions else None
             time_stamp_of_last_revision = vintage_time_stamps[-1] if serie.HasRevisions else None

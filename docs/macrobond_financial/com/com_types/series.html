@@ -22,70 +22,6 @@
 <h1 class="title">Module <code>macrobond_financial.com.com_types.series</code></h1>
 </header>
 <section id="section-intro">
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python"># -*- coding: utf-8 -*-
-
-# pylint: disable = invalid-name , missing-module-docstring
-
-from typing import List, Tuple, Optional
-from datetime import datetime
-
-from .entity import Entity
-from .metadata import Metadata
-
-
-class Series(Entity):
-    &#34;&#34;&#34;Interface for a Macrobond time series.&#34;&#34;&#34;
-
-    @property
-    def Values(self) -&gt; Tuple[Optional[float], ...]:
-        &#34;&#34;&#34;The values of the series.&#34;&#34;&#34;
-
-    @property
-    def DatesAtStartOfPeriod(self) -&gt; Tuple[datetime, ...]:
-        &#34;&#34;&#34;The dates of of the observations at the start of each period.&#34;&#34;&#34;
-
-    @property
-    def DatesAtEndOfPeriod(self) -&gt; Tuple[datetime, ...]:
-        &#34;&#34;&#34;The dates of of the observations at the end of each period.&#34;&#34;&#34;
-
-    @property
-    def ForecastFlags(self) -&gt; List[bool]:
-        &#34;&#34;&#34;A vector with a flag for each value indicating if this is a forecast or not.&#34;&#34;&#34;
-
-    @property
-    def StartDate(self) -&gt; datetime:
-        &#34;&#34;&#34;The start date.&#34;&#34;&#34;
-
-    @property
-    def EndDate(self) -&gt; datetime:
-        &#34;&#34;&#34;The end date.&#34;&#34;&#34;
-
-    @property
-    def Frequency(self) -&gt; int:
-        &#34;&#34;&#34;The calendar frequency.&#34;&#34;&#34;
-
-    @property
-    def Weekdays(self) -&gt; int:
-        &#34;&#34;&#34;The days of the week used for daily series.&#34;&#34;&#34;
-
-    @property
-    def TypicalObservationCountPerYear(self) -&gt; float:
-        &#34;&#34;&#34;The typical number of observations per year.&#34;&#34;&#34;
-
-    @property
-    def ValuesMetadata(self) -&gt; List[Metadata]:
-        &#34;&#34;&#34;Get the meta data for the values.&#34;&#34;&#34;
-
-    def GetValueAtDate(self, dateTime: datetime) -&gt; float:
-        &#34;&#34;&#34;Get the value at or preceding a specific date.&#34;&#34;&#34;
-
-    def GetIndexAtDate(self, dateTime: datetime) -&gt; int:
-        &#34;&#34;&#34;Get the index in the value vector at the specified date. Zero based.&#34;&#34;&#34;</code></pre>
-</details>
 </section>
 <section>
 </section>
@@ -101,59 +37,6 @@ class Series(Entity):
 </code></dt>
 <dd>
 <div class="desc"><p>Interface for a Macrobond time series.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">class Series(Entity):
-    &#34;&#34;&#34;Interface for a Macrobond time series.&#34;&#34;&#34;
-
-    @property
-    def Values(self) -&gt; Tuple[Optional[float], ...]:
-        &#34;&#34;&#34;The values of the series.&#34;&#34;&#34;
-
-    @property
-    def DatesAtStartOfPeriod(self) -&gt; Tuple[datetime, ...]:
-        &#34;&#34;&#34;The dates of of the observations at the start of each period.&#34;&#34;&#34;
-
-    @property
-    def DatesAtEndOfPeriod(self) -&gt; Tuple[datetime, ...]:
-        &#34;&#34;&#34;The dates of of the observations at the end of each period.&#34;&#34;&#34;
-
-    @property
-    def ForecastFlags(self) -&gt; List[bool]:
-        &#34;&#34;&#34;A vector with a flag for each value indicating if this is a forecast or not.&#34;&#34;&#34;
-
-    @property
-    def StartDate(self) -&gt; datetime:
-        &#34;&#34;&#34;The start date.&#34;&#34;&#34;
-
-    @property
-    def EndDate(self) -&gt; datetime:
-        &#34;&#34;&#34;The end date.&#34;&#34;&#34;
-
-    @property
-    def Frequency(self) -&gt; int:
-        &#34;&#34;&#34;The calendar frequency.&#34;&#34;&#34;
-
-    @property
-    def Weekdays(self) -&gt; int:
-        &#34;&#34;&#34;The days of the week used for daily series.&#34;&#34;&#34;
-
-    @property
-    def TypicalObservationCountPerYear(self) -&gt; float:
-        &#34;&#34;&#34;The typical number of observations per year.&#34;&#34;&#34;
-
-    @property
-    def ValuesMetadata(self) -&gt; List[Metadata]:
-        &#34;&#34;&#34;Get the meta data for the values.&#34;&#34;&#34;
-
-    def GetValueAtDate(self, dateTime: datetime) -&gt; float:
-        &#34;&#34;&#34;Get the value at or preceding a specific date.&#34;&#34;&#34;
-
-    def GetIndexAtDate(self, dateTime: datetime) -&gt; int:
-        &#34;&#34;&#34;Get the index in the value vector at the specified date. Zero based.&#34;&#34;&#34;</code></pre>
-</details>
 <h3>Ancestors</h3>
 <ul class="hlist">
 <li><a title="macrobond_financial.com.com_types.entity.Entity" href="entity.html#macrobond_financial.com.com_types.entity.Entity">Entity</a></li>
@@ -163,122 +46,42 @@ class Series(Entity):
 <dt id="macrobond_financial.com.com_types.series.Series.DatesAtEndOfPeriod"><code class="name">var <span class="ident">DatesAtEndOfPeriod</span> : Tuple[datetime.datetime, ...]</code></dt>
 <dd>
 <div class="desc"><p>The dates of of the observations at the end of each period.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@property
-def DatesAtEndOfPeriod(self) -&gt; Tuple[datetime, ...]:
-    &#34;&#34;&#34;The dates of of the observations at the end of each period.&#34;&#34;&#34;</code></pre>
-</details>
 </dd>
 <dt id="macrobond_financial.com.com_types.series.Series.DatesAtStartOfPeriod"><code class="name">var <span class="ident">DatesAtStartOfPeriod</span> : Tuple[datetime.datetime, ...]</code></dt>
 <dd>
 <div class="desc"><p>The dates of of the observations at the start of each period.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@property
-def DatesAtStartOfPeriod(self) -&gt; Tuple[datetime, ...]:
-    &#34;&#34;&#34;The dates of of the observations at the start of each period.&#34;&#34;&#34;</code></pre>
-</details>
 </dd>
 <dt id="macrobond_financial.com.com_types.series.Series.EndDate"><code class="name">var <span class="ident">EndDate</span> : datetime.datetime</code></dt>
 <dd>
 <div class="desc"><p>The end date.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@property
-def EndDate(self) -&gt; datetime:
-    &#34;&#34;&#34;The end date.&#34;&#34;&#34;</code></pre>
-</details>
 </dd>
 <dt id="macrobond_financial.com.com_types.series.Series.ForecastFlags"><code class="name">var <span class="ident">ForecastFlags</span> : List[bool]</code></dt>
 <dd>
 <div class="desc"><p>A vector with a flag for each value indicating if this is a forecast or not.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@property
-def ForecastFlags(self) -&gt; List[bool]:
-    &#34;&#34;&#34;A vector with a flag for each value indicating if this is a forecast or not.&#34;&#34;&#34;</code></pre>
-</details>
 </dd>
 <dt id="macrobond_financial.com.com_types.series.Series.Frequency"><code class="name">var <span class="ident">Frequency</span> : int</code></dt>
 <dd>
 <div class="desc"><p>The calendar frequency.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@property
-def Frequency(self) -&gt; int:
-    &#34;&#34;&#34;The calendar frequency.&#34;&#34;&#34;</code></pre>
-</details>
 </dd>
 <dt id="macrobond_financial.com.com_types.series.Series.StartDate"><code class="name">var <span class="ident">StartDate</span> : datetime.datetime</code></dt>
 <dd>
 <div class="desc"><p>The start date.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@property
-def StartDate(self) -&gt; datetime:
-    &#34;&#34;&#34;The start date.&#34;&#34;&#34;</code></pre>
-</details>
 </dd>
 <dt id="macrobond_financial.com.com_types.series.Series.TypicalObservationCountPerYear"><code class="name">var <span class="ident">TypicalObservationCountPerYear</span> : float</code></dt>
 <dd>
 <div class="desc"><p>The typical number of observations per year.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@property
-def TypicalObservationCountPerYear(self) -&gt; float:
-    &#34;&#34;&#34;The typical number of observations per year.&#34;&#34;&#34;</code></pre>
-</details>
 </dd>
 <dt id="macrobond_financial.com.com_types.series.Series.Values"><code class="name">var <span class="ident">Values</span> : Tuple[Optional[float], ...]</code></dt>
 <dd>
 <div class="desc"><p>The values of the series.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@property
-def Values(self) -&gt; Tuple[Optional[float], ...]:
-    &#34;&#34;&#34;The values of the series.&#34;&#34;&#34;</code></pre>
-</details>
 </dd>
 <dt id="macrobond_financial.com.com_types.series.Series.ValuesMetadata"><code class="name">var <span class="ident">ValuesMetadata</span> : List[<a title="macrobond_financial.com.com_types.metadata.Metadata" href="metadata.html#macrobond_financial.com.com_types.metadata.Metadata">Metadata</a>]</code></dt>
 <dd>
 <div class="desc"><p>Get the meta data for the values.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@property
-def ValuesMetadata(self) -&gt; List[Metadata]:
-    &#34;&#34;&#34;Get the meta data for the values.&#34;&#34;&#34;</code></pre>
-</details>
 </dd>
 <dt id="macrobond_financial.com.com_types.series.Series.Weekdays"><code class="name">var <span class="ident">Weekdays</span> : int</code></dt>
 <dd>
 <div class="desc"><p>The days of the week used for daily series.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@property
-def Weekdays(self) -&gt; int:
-    &#34;&#34;&#34;The days of the week used for daily series.&#34;&#34;&#34;</code></pre>
-</details>
 </dd>
 </dl>
 <h3>Methods</h3>
@@ -288,26 +91,12 @@ def Weekdays(self) -&gt; int:
 </code></dt>
 <dd>
 <div class="desc"><p>Get the index in the value vector at the specified date. Zero based.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def GetIndexAtDate(self, dateTime: datetime) -&gt; int:
-    &#34;&#34;&#34;Get the index in the value vector at the specified date. Zero based.&#34;&#34;&#34;</code></pre>
-</details>
 </dd>
 <dt id="macrobond_financial.com.com_types.series.Series.GetValueAtDate"><code class="name flex">
 <span>def <span class="ident">GetValueAtDate</span></span>(<span>self, dateTime: datetime.datetime) ‑> float</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Get the value at or preceding a specific date.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def GetValueAtDate(self, dateTime: datetime) -&gt; float:
-    &#34;&#34;&#34;Get the value at or preceding a specific date.&#34;&#34;&#34;</code></pre>
-</details>
 </dd>
 </dl>
 <h3>Inherited members</h3>

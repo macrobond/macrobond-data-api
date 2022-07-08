@@ -13,6 +13,16 @@ from macrobond_financial.common.enums import (
 
 
 class SeriesEntry:
+
+    __slots__ = (
+        "name",
+        "vintage",
+        "missing_value_method",
+        "to_lowerfrequency_method",
+        "to_higherfrequency_method",
+        "partial_periods_method",
+    )
+
     def __init__(
         self,
         name: str,

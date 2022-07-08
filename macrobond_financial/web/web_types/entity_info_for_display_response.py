@@ -6,10 +6,9 @@ from typing import List, Optional
 from typing_extensions import TypedDict
 
 
-from .metadata_attribute_information_response import (
-    MetadataAttributeType,
-    MetadataAttributeTypeRestriction,
-)
+from .metadata import MetadataAttributeTypeRestriction
+
+from ...common.enums import MetadataAttributeType
 
 
 class EntityInfoForDisplayItem(TypedDict):
@@ -31,7 +30,7 @@ class EntityInfoForDisplayItem(TypedDict):
     """The item value"""
 
 
-class EntityNameWithTimeStamp(TypedDict):
+class EntityInfoForDisplayGroup(TypedDict):
     # pylint: disable = missing-class-docstring
 
     description: str
@@ -47,5 +46,5 @@ class EntityNameWithTimeStamp(TypedDict):
 class EntityInfoForDisplayResponse(TypedDict):
     """Entity search response with metadata displayed for presentation purposes"""
 
-    groups: List["EntityNameWithTimeStamp"]
+    groups: List["EntityInfoForDisplayGroup"]
     """A list of information groups"""

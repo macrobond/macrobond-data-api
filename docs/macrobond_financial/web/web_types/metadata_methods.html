@@ -22,104 +22,6 @@
 <h1 class="title">Module <code>macrobond_financial.web.web_types.metadata_methods</code></h1>
 </header>
 <section id="section-intro">
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python"># -*- coding: utf-8 -*-
-
-from typing import List, cast, Tuple, TYPE_CHECKING
-
-if TYPE_CHECKING:  # pragma: no cover
-    from ..session import Session
-    from .metadata_attribute_information_response import (
-        MetadataAttributeInformationResponse,
-    )
-    from .metadata_value_information_response import MetadataValueInformationResponse
-
-
-class MetadataMethods:
-    &#34;&#34;&#34;Metadata operations&#34;&#34;&#34;
-
-    def __init__(self, session: &#34;Session&#34;) -&gt; None:
-        self.__session = session
-
-    # Get /v1/metadata/getattributeinformation
-    def get_attribute_information(
-        self, *attribute_names: str
-    ) -&gt; List[&#34;MetadataAttributeInformationResponse&#34;]:
-        &#34;&#34;&#34;
-        Get information about metadata attributes.
-        The result will be in the same order as the request.
-
-        OAuth scope: macrobond_web_api.read_mb
-
-        Codes:
-            200 The operation was successful.
-
-            401 Unauthorized. Missing, invalid or expired access token.
-
-            403 Forbidden. Not authorized.
-
-            404 At least one attribute was not found.
-
-        &#34;&#34;&#34;
-        response = self.__session.get_or_raise(
-            &#34;v1/metadata/getattributeinformation&#34;, params={&#34;n&#34;: attribute_names}
-        )
-        return cast(List[&#34;MetadataAttributeInformationResponse&#34;], response.json())
-
-    # Get /v1/metadata/getvalueinformation
-    def get_value_information(
-        self, *metadata_value: Tuple[str, str]
-    ) -&gt; &#34;MetadataValueInformationResponse&#34;:
-        &#34;&#34;&#34;
-        Get information about metadata values.
-        The result will be in the same order as the request.
-
-        OAuth scope: macrobond_web_api.read_mb
-
-        Codes:
-            200 The operation was successful.
-
-            400 Malformed request.
-
-            401 Unauthorized. Missing, invalid or expired access token.
-
-            403 Forbidden. Not authorized.
-
-            404 At least one attribute or value was not found.
-        &#34;&#34;&#34;
-        response = self.__session.get_or_raise(
-            &#34;v1/metadata/getvalueinformation&#34;,
-            params={&#34;v&#34;: list(map(lambda x: x[0] + &#34;,&#34; + x[1], metadata_value))},
-        )
-        return cast(&#34;MetadataValueInformationResponse&#34;, response.json())
-
-    # Get /v1/metadata/listattributevalues
-    def list_attribute_values(self, attribute_name: str) -&gt; &#34;MetadataValueInformationResponse&#34;:
-        &#34;&#34;&#34;
-        List all metadata attribute values.
-        The attribute must have the property canListValues.
-
-        OAuth scope: macrobond_web_api.read_mb
-
-        Codes:
-            200 The operation was successful.
-
-            400 Values cannot be listed for the attribute.
-
-            401 Unauthorized. Missing, invalid or expired access token.
-
-            403 Forbidden. Not authorized.
-
-            404 The attribute was not found.
-        &#34;&#34;&#34;
-        response = self.__session.get_or_raise(
-            &#34;v1/metadata/listattributevalues&#34;, params={&#34;n&#34;: attribute_name}
-        )
-        return cast(&#34;MetadataValueInformationResponse&#34;, response.json())</code></pre>
-</details>
 </section>
 <section>
 </section>
@@ -136,92 +38,6 @@ class MetadataMethods:
 </code></dt>
 <dd>
 <div class="desc"><p>Metadata operations</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">class MetadataMethods:
-    &#34;&#34;&#34;Metadata operations&#34;&#34;&#34;
-
-    def __init__(self, session: &#34;Session&#34;) -&gt; None:
-        self.__session = session
-
-    # Get /v1/metadata/getattributeinformation
-    def get_attribute_information(
-        self, *attribute_names: str
-    ) -&gt; List[&#34;MetadataAttributeInformationResponse&#34;]:
-        &#34;&#34;&#34;
-        Get information about metadata attributes.
-        The result will be in the same order as the request.
-
-        OAuth scope: macrobond_web_api.read_mb
-
-        Codes:
-            200 The operation was successful.
-
-            401 Unauthorized. Missing, invalid or expired access token.
-
-            403 Forbidden. Not authorized.
-
-            404 At least one attribute was not found.
-
-        &#34;&#34;&#34;
-        response = self.__session.get_or_raise(
-            &#34;v1/metadata/getattributeinformation&#34;, params={&#34;n&#34;: attribute_names}
-        )
-        return cast(List[&#34;MetadataAttributeInformationResponse&#34;], response.json())
-
-    # Get /v1/metadata/getvalueinformation
-    def get_value_information(
-        self, *metadata_value: Tuple[str, str]
-    ) -&gt; &#34;MetadataValueInformationResponse&#34;:
-        &#34;&#34;&#34;
-        Get information about metadata values.
-        The result will be in the same order as the request.
-
-        OAuth scope: macrobond_web_api.read_mb
-
-        Codes:
-            200 The operation was successful.
-
-            400 Malformed request.
-
-            401 Unauthorized. Missing, invalid or expired access token.
-
-            403 Forbidden. Not authorized.
-
-            404 At least one attribute or value was not found.
-        &#34;&#34;&#34;
-        response = self.__session.get_or_raise(
-            &#34;v1/metadata/getvalueinformation&#34;,
-            params={&#34;v&#34;: list(map(lambda x: x[0] + &#34;,&#34; + x[1], metadata_value))},
-        )
-        return cast(&#34;MetadataValueInformationResponse&#34;, response.json())
-
-    # Get /v1/metadata/listattributevalues
-    def list_attribute_values(self, attribute_name: str) -&gt; &#34;MetadataValueInformationResponse&#34;:
-        &#34;&#34;&#34;
-        List all metadata attribute values.
-        The attribute must have the property canListValues.
-
-        OAuth scope: macrobond_web_api.read_mb
-
-        Codes:
-            200 The operation was successful.
-
-            400 Values cannot be listed for the attribute.
-
-            401 Unauthorized. Missing, invalid or expired access token.
-
-            403 Forbidden. Not authorized.
-
-            404 The attribute was not found.
-        &#34;&#34;&#34;
-        response = self.__session.get_or_raise(
-            &#34;v1/metadata/listattributevalues&#34;, params={&#34;n&#34;: attribute_name}
-        )
-        return cast(&#34;MetadataValueInformationResponse&#34;, response.json())</code></pre>
-</details>
 <h3>Methods</h3>
 <dl>
 <dt id="macrobond_financial.web.web_types.metadata_methods.MetadataMethods.get_attribute_information"><code class="name flex">
@@ -236,34 +52,6 @@ The result will be in the same order as the request.</p>
 <p>401 Unauthorized. Missing, invalid or expired access token.</p>
 <p>403 Forbidden. Not authorized.</p>
 <p>404 At least one attribute was not found.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def get_attribute_information(
-    self, *attribute_names: str
-) -&gt; List[&#34;MetadataAttributeInformationResponse&#34;]:
-    &#34;&#34;&#34;
-    Get information about metadata attributes.
-    The result will be in the same order as the request.
-
-    OAuth scope: macrobond_web_api.read_mb
-
-    Codes:
-        200 The operation was successful.
-
-        401 Unauthorized. Missing, invalid or expired access token.
-
-        403 Forbidden. Not authorized.
-
-        404 At least one attribute was not found.
-
-    &#34;&#34;&#34;
-    response = self.__session.get_or_raise(
-        &#34;v1/metadata/getattributeinformation&#34;, params={&#34;n&#34;: attribute_names}
-    )
-    return cast(List[&#34;MetadataAttributeInformationResponse&#34;], response.json())</code></pre>
-</details>
 </dd>
 <dt id="macrobond_financial.web.web_types.metadata_methods.MetadataMethods.get_value_information"><code class="name flex">
 <span>def <span class="ident">get_value_information</span></span>(<span>self, *metadata_value: Tuple[str, str]) ‑> MetadataValueInformationResponse</span>
@@ -278,36 +66,6 @@ The result will be in the same order as the request.</p>
 <p>401 Unauthorized. Missing, invalid or expired access token.</p>
 <p>403 Forbidden. Not authorized.</p>
 <p>404 At least one attribute or value was not found.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def get_value_information(
-    self, *metadata_value: Tuple[str, str]
-) -&gt; &#34;MetadataValueInformationResponse&#34;:
-    &#34;&#34;&#34;
-    Get information about metadata values.
-    The result will be in the same order as the request.
-
-    OAuth scope: macrobond_web_api.read_mb
-
-    Codes:
-        200 The operation was successful.
-
-        400 Malformed request.
-
-        401 Unauthorized. Missing, invalid or expired access token.
-
-        403 Forbidden. Not authorized.
-
-        404 At least one attribute or value was not found.
-    &#34;&#34;&#34;
-    response = self.__session.get_or_raise(
-        &#34;v1/metadata/getvalueinformation&#34;,
-        params={&#34;v&#34;: list(map(lambda x: x[0] + &#34;,&#34; + x[1], metadata_value))},
-    )
-    return cast(&#34;MetadataValueInformationResponse&#34;, response.json())</code></pre>
-</details>
 </dd>
 <dt id="macrobond_financial.web.web_types.metadata_methods.MetadataMethods.list_attribute_values"><code class="name flex">
 <span>def <span class="ident">list_attribute_values</span></span>(<span>self, attribute_name: str) ‑> MetadataValueInformationResponse</span>
@@ -322,33 +80,6 @@ The attribute must have the property canListValues.</p>
 <p>401 Unauthorized. Missing, invalid or expired access token.</p>
 <p>403 Forbidden. Not authorized.</p>
 <p>404 The attribute was not found.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def list_attribute_values(self, attribute_name: str) -&gt; &#34;MetadataValueInformationResponse&#34;:
-    &#34;&#34;&#34;
-    List all metadata attribute values.
-    The attribute must have the property canListValues.
-
-    OAuth scope: macrobond_web_api.read_mb
-
-    Codes:
-        200 The operation was successful.
-
-        400 Values cannot be listed for the attribute.
-
-        401 Unauthorized. Missing, invalid or expired access token.
-
-        403 Forbidden. Not authorized.
-
-        404 The attribute was not found.
-    &#34;&#34;&#34;
-    response = self.__session.get_or_raise(
-        &#34;v1/metadata/listattributevalues&#34;, params={&#34;n&#34;: attribute_name}
-    )
-    return cast(&#34;MetadataValueInformationResponse&#34;, response.json())</code></pre>
-</details>
 </dd>
 </dl>
 </dd>

@@ -6,13 +6,13 @@ from typing import List, Union, cast, TYPE_CHECKING
 
 if TYPE_CHECKING:  # pragma: no cover
     from ..session import Session
-    from .series_tree_node_response import (
+    from .series_tree import (
         SeriesTreeNodeLeaf,
         SeriesTreeNodeBranchRef,
         SeriesTreeNodeBranch,
+        SeriesTreeListingResponse,
+        SeriesTreeLocationPart,
     )
-    from .series_tree_listing_response import SeriesTreeListingResponse
-    from .series_tree_location_part import SeriesTreeLocationPart
 
 
 class SeriesTreeMethods:

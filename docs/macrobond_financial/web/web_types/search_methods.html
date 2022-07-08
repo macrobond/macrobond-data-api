@@ -22,141 +22,6 @@
 <h1 class="title">Module <code>macrobond_financial.web.web_types.search_methods</code></h1>
 </header>
 <section id="section-intro">
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python"># -*- coding: utf-8 -*-
-
-# pylint: disable = missing-module-docstring
-
-from typing import cast, List, Dict, TYPE_CHECKING
-
-if TYPE_CHECKING:  # pragma: no cover
-    from ..session import Session
-    from .search_response import SearchResponse
-    from .search_request import SearchRequest
-    from .search_for_display_response import SearchForDisplayResponse
-    from .search_for_display_request import SearchForDisplayRequest
-    from .item_listing_response import ItemListingResponse
-
-
-class SearchMethods:
-    &#34;&#34;&#34;Search for time series and other entites&#34;&#34;&#34;
-
-    def __init__(self, session: &#34;Session&#34;) -&gt; None:
-        self.__session = session
-
-    # get /entities
-    def get_entities(
-        self,
-        entity_type: List[str] = None,
-        text: str = None,
-        include_discontinued: bool = None,
-        _filter: Dict[str, str] = None,
-        no_meta_data: bool = None,
-    ) -&gt; &#34;SearchResponse&#34;:
-        &#34;&#34;&#34;
-        Search for time series and other entites matching attribute values.
-        If the same attribute name is specified more than once,
-        then entities matching any of them will be included. If the value is *,
-        any value will match. If ! is specified before an attribute name,
-        entities matching the value will be excluded instead of included.
-
-        OAuth scope: macrobond_web_api.search_mb
-
-        Codes:
-            200 The operation was successful.
-
-            400 Request failed.
-
-            401 Unauthorized. Missing, invalid or expired access token.
-
-            403 Forbidden. Not authorized.
-
-            404 At least one attribute was not found.
-        &#34;&#34;&#34;
-
-        params = {
-            &#34;entityType&#34;: entity_type,
-            &#34;text&#34;: text,
-            &#34;filter&#34;: _filter,
-        }
-
-        if no_meta_data:
-            params[&#34;noMetaData&#34;] = &#34;true&#34; if no_meta_data else &#34;false&#34;
-
-        if include_discontinued:
-            params[&#34;includeDiscontinued&#34;] = &#34;true&#34; if include_discontinued else &#34;false&#34;
-
-        response = self.__session.get_or_raise(&#34;v1/search/entities&#34;, params=params)
-
-        return cast(&#34;SearchResponse&#34;, response.json())
-
-    # post /entities
-    def post_entities(self, request: &#34;SearchRequest&#34;) -&gt; &#34;SearchResponse&#34;:
-        &#34;&#34;&#34;
-        Search for time series and other entites matching attribute values.
-
-        OAuth scope: macrobond_web_api.search_mb
-
-        Codes:
-            200 The operation was successful.
-
-            400 Request failed.
-
-            401 Unauthorized. Missing, invalid or expired access token.
-
-            403 Forbidden. Not authorized.
-
-            404 At least one attribute was not found.
-        &#34;&#34;&#34;
-        response = self.__session.post_or_raise(&#34;v1/search/entities&#34;, json=request)
-        return cast(&#34;SearchResponse&#34;, response.json())
-
-    def filter_lists(self, entity_type: str) -&gt; List[&#34;ItemListingResponse&#34;]:
-        &#34;&#34;&#34;
-        Get a structured list of all saved filter lists of the specified type.
-
-        OAuth scope: macrobond_web_api.read_structure or macrobond_web_api.search_mb
-
-        Codes:
-            200 The operation was successful.
-
-            400 Request failed.
-
-            401 Unauthorized. Missing, invalid or expired access token.
-
-            403 Forbidden. Not authorized.
-        &#34;&#34;&#34;
-        response = self.__session.get_or_raise(
-            &#34;v1/search/filterlists&#34;, params={&#34;entityType&#34;: entity_type}
-        )
-        return cast(List[&#34;ItemListingResponse&#34;], response.json())
-
-    def entities_for_display(
-        self, request: &#34;SearchForDisplayRequest&#34;
-    ) -&gt; &#34;SearchForDisplayResponse&#34;:
-        &#34;&#34;&#34;
-        Search for time series and other entites matching attribute values and return the
-        selected metadata formatted for presentation purposes.
-
-        OAuth scope: macrobond_web_api.read_structure
-
-        Codes:
-            200 The operation was successful.
-
-            400 Request failed.
-
-            401 Unauthorized. Missing, invalid or expired access token.
-
-            403 Forbidden. Not authorized.
-
-            404 At least one attribute was not found.
-        &#34;&#34;&#34;
-        response = self.__session.post_or_raise(&#34;v1/search/entitiesfordisplay&#34;, json=request)
-        return cast(&#34;SearchForDisplayResponse&#34;, response.json())</code></pre>
-</details>
 </section>
 <section>
 </section>
@@ -173,126 +38,6 @@ class SearchMethods:
 </code></dt>
 <dd>
 <div class="desc"><p>Search for time series and other entites</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">class SearchMethods:
-    &#34;&#34;&#34;Search for time series and other entites&#34;&#34;&#34;
-
-    def __init__(self, session: &#34;Session&#34;) -&gt; None:
-        self.__session = session
-
-    # get /entities
-    def get_entities(
-        self,
-        entity_type: List[str] = None,
-        text: str = None,
-        include_discontinued: bool = None,
-        _filter: Dict[str, str] = None,
-        no_meta_data: bool = None,
-    ) -&gt; &#34;SearchResponse&#34;:
-        &#34;&#34;&#34;
-        Search for time series and other entites matching attribute values.
-        If the same attribute name is specified more than once,
-        then entities matching any of them will be included. If the value is *,
-        any value will match. If ! is specified before an attribute name,
-        entities matching the value will be excluded instead of included.
-
-        OAuth scope: macrobond_web_api.search_mb
-
-        Codes:
-            200 The operation was successful.
-
-            400 Request failed.
-
-            401 Unauthorized. Missing, invalid or expired access token.
-
-            403 Forbidden. Not authorized.
-
-            404 At least one attribute was not found.
-        &#34;&#34;&#34;
-
-        params = {
-            &#34;entityType&#34;: entity_type,
-            &#34;text&#34;: text,
-            &#34;filter&#34;: _filter,
-        }
-
-        if no_meta_data:
-            params[&#34;noMetaData&#34;] = &#34;true&#34; if no_meta_data else &#34;false&#34;
-
-        if include_discontinued:
-            params[&#34;includeDiscontinued&#34;] = &#34;true&#34; if include_discontinued else &#34;false&#34;
-
-        response = self.__session.get_or_raise(&#34;v1/search/entities&#34;, params=params)
-
-        return cast(&#34;SearchResponse&#34;, response.json())
-
-    # post /entities
-    def post_entities(self, request: &#34;SearchRequest&#34;) -&gt; &#34;SearchResponse&#34;:
-        &#34;&#34;&#34;
-        Search for time series and other entites matching attribute values.
-
-        OAuth scope: macrobond_web_api.search_mb
-
-        Codes:
-            200 The operation was successful.
-
-            400 Request failed.
-
-            401 Unauthorized. Missing, invalid or expired access token.
-
-            403 Forbidden. Not authorized.
-
-            404 At least one attribute was not found.
-        &#34;&#34;&#34;
-        response = self.__session.post_or_raise(&#34;v1/search/entities&#34;, json=request)
-        return cast(&#34;SearchResponse&#34;, response.json())
-
-    def filter_lists(self, entity_type: str) -&gt; List[&#34;ItemListingResponse&#34;]:
-        &#34;&#34;&#34;
-        Get a structured list of all saved filter lists of the specified type.
-
-        OAuth scope: macrobond_web_api.read_structure or macrobond_web_api.search_mb
-
-        Codes:
-            200 The operation was successful.
-
-            400 Request failed.
-
-            401 Unauthorized. Missing, invalid or expired access token.
-
-            403 Forbidden. Not authorized.
-        &#34;&#34;&#34;
-        response = self.__session.get_or_raise(
-            &#34;v1/search/filterlists&#34;, params={&#34;entityType&#34;: entity_type}
-        )
-        return cast(List[&#34;ItemListingResponse&#34;], response.json())
-
-    def entities_for_display(
-        self, request: &#34;SearchForDisplayRequest&#34;
-    ) -&gt; &#34;SearchForDisplayResponse&#34;:
-        &#34;&#34;&#34;
-        Search for time series and other entites matching attribute values and return the
-        selected metadata formatted for presentation purposes.
-
-        OAuth scope: macrobond_web_api.read_structure
-
-        Codes:
-            200 The operation was successful.
-
-            400 Request failed.
-
-            401 Unauthorized. Missing, invalid or expired access token.
-
-            403 Forbidden. Not authorized.
-
-            404 At least one attribute was not found.
-        &#34;&#34;&#34;
-        response = self.__session.post_or_raise(&#34;v1/search/entitiesfordisplay&#34;, json=request)
-        return cast(&#34;SearchForDisplayResponse&#34;, response.json())</code></pre>
-</details>
 <h3>Methods</h3>
 <dl>
 <dt id="macrobond_financial.web.web_types.search_methods.SearchMethods.entities_for_display"><code class="name flex">
@@ -308,36 +53,9 @@ selected metadata formatted for presentation purposes.</p>
 <p>401 Unauthorized. Missing, invalid or expired access token.</p>
 <p>403 Forbidden. Not authorized.</p>
 <p>404 At least one attribute was not found.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def entities_for_display(
-    self, request: &#34;SearchForDisplayRequest&#34;
-) -&gt; &#34;SearchForDisplayResponse&#34;:
-    &#34;&#34;&#34;
-    Search for time series and other entites matching attribute values and return the
-    selected metadata formatted for presentation purposes.
-
-    OAuth scope: macrobond_web_api.read_structure
-
-    Codes:
-        200 The operation was successful.
-
-        400 Request failed.
-
-        401 Unauthorized. Missing, invalid or expired access token.
-
-        403 Forbidden. Not authorized.
-
-        404 At least one attribute was not found.
-    &#34;&#34;&#34;
-    response = self.__session.post_or_raise(&#34;v1/search/entitiesfordisplay&#34;, json=request)
-    return cast(&#34;SearchForDisplayResponse&#34;, response.json())</code></pre>
-</details>
 </dd>
 <dt id="macrobond_financial.web.web_types.search_methods.SearchMethods.filter_lists"><code class="name flex">
-<span>def <span class="ident">filter_lists</span></span>(<span>self, entity_type: str) ‑> List[<a title="macrobond_financial.web.web_types.item_listing_response.ItemListingResponse" href="item_listing_response.html#macrobond_financial.web.web_types.item_listing_response.ItemListingResponse">ItemListingResponse</a>]</span>
+<span>def <span class="ident">filter_lists</span></span>(<span>self, entity_type: str) ‑> List[<a title="macrobond_financial.web.web_types.search.item_listing_response.ItemListingResponse" href="search/item_listing_response.html#macrobond_financial.web.web_types.search.item_listing_response.ItemListingResponse">ItemListingResponse</a>]</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Get a structured list of all saved filter lists of the specified type.</p>
@@ -347,30 +65,6 @@ selected metadata formatted for presentation purposes.</p>
 <p>400 Request failed.</p>
 <p>401 Unauthorized. Missing, invalid or expired access token.</p>
 <p>403 Forbidden. Not authorized.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def filter_lists(self, entity_type: str) -&gt; List[&#34;ItemListingResponse&#34;]:
-    &#34;&#34;&#34;
-    Get a structured list of all saved filter lists of the specified type.
-
-    OAuth scope: macrobond_web_api.read_structure or macrobond_web_api.search_mb
-
-    Codes:
-        200 The operation was successful.
-
-        400 Request failed.
-
-        401 Unauthorized. Missing, invalid or expired access token.
-
-        403 Forbidden. Not authorized.
-    &#34;&#34;&#34;
-    response = self.__session.get_or_raise(
-        &#34;v1/search/filterlists&#34;, params={&#34;entityType&#34;: entity_type}
-    )
-    return cast(List[&#34;ItemListingResponse&#34;], response.json())</code></pre>
-</details>
 </dd>
 <dt id="macrobond_financial.web.web_types.search_methods.SearchMethods.get_entities"><code class="name flex">
 <span>def <span class="ident">get_entities</span></span>(<span>self, entity_type: List[str] = None, text: str = None, include_discontinued: bool = None, no_meta_data: bool = None) ‑> SearchResponse</span>
@@ -388,55 +82,6 @@ entities matching the value will be excluded instead of included.</p>
 <p>401 Unauthorized. Missing, invalid or expired access token.</p>
 <p>403 Forbidden. Not authorized.</p>
 <p>404 At least one attribute was not found.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def get_entities(
-    self,
-    entity_type: List[str] = None,
-    text: str = None,
-    include_discontinued: bool = None,
-    _filter: Dict[str, str] = None,
-    no_meta_data: bool = None,
-) -&gt; &#34;SearchResponse&#34;:
-    &#34;&#34;&#34;
-    Search for time series and other entites matching attribute values.
-    If the same attribute name is specified more than once,
-    then entities matching any of them will be included. If the value is *,
-    any value will match. If ! is specified before an attribute name,
-    entities matching the value will be excluded instead of included.
-
-    OAuth scope: macrobond_web_api.search_mb
-
-    Codes:
-        200 The operation was successful.
-
-        400 Request failed.
-
-        401 Unauthorized. Missing, invalid or expired access token.
-
-        403 Forbidden. Not authorized.
-
-        404 At least one attribute was not found.
-    &#34;&#34;&#34;
-
-    params = {
-        &#34;entityType&#34;: entity_type,
-        &#34;text&#34;: text,
-        &#34;filter&#34;: _filter,
-    }
-
-    if no_meta_data:
-        params[&#34;noMetaData&#34;] = &#34;true&#34; if no_meta_data else &#34;false&#34;
-
-    if include_discontinued:
-        params[&#34;includeDiscontinued&#34;] = &#34;true&#34; if include_discontinued else &#34;false&#34;
-
-    response = self.__session.get_or_raise(&#34;v1/search/entities&#34;, params=params)
-
-    return cast(&#34;SearchResponse&#34;, response.json())</code></pre>
-</details>
 </dd>
 <dt id="macrobond_financial.web.web_types.search_methods.SearchMethods.post_entities"><code class="name flex">
 <span>def <span class="ident">post_entities</span></span>(<span>self, request: SearchRequest) ‑> SearchResponse</span>
@@ -450,30 +95,6 @@ entities matching the value will be excluded instead of included.</p>
 <p>401 Unauthorized. Missing, invalid or expired access token.</p>
 <p>403 Forbidden. Not authorized.</p>
 <p>404 At least one attribute was not found.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def post_entities(self, request: &#34;SearchRequest&#34;) -&gt; &#34;SearchResponse&#34;:
-    &#34;&#34;&#34;
-    Search for time series and other entites matching attribute values.
-
-    OAuth scope: macrobond_web_api.search_mb
-
-    Codes:
-        200 The operation was successful.
-
-        400 Request failed.
-
-        401 Unauthorized. Missing, invalid or expired access token.
-
-        403 Forbidden. Not authorized.
-
-        404 At least one attribute was not found.
-    &#34;&#34;&#34;
-    response = self.__session.post_or_raise(&#34;v1/search/entities&#34;, json=request)
-    return cast(&#34;SearchResponse&#34;, response.json())</code></pre>
-</details>
 </dd>
 </dl>
 </dd>

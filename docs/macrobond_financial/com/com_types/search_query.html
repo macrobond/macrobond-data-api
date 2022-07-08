@@ -22,45 +22,6 @@
 <h1 class="title">Module <code>macrobond_financial.com.com_types.search_query</code></h1>
 </header>
 <section id="section-intro">
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python"># -*- coding: utf-8 -*-
-
-# pylint: disable = invalid-name , missing-module-docstring
-
-
-class SearchQuery:
-    &#34;&#34;&#34;Interface for the Macrobond search query.&#34;&#34;&#34;
-
-    @property
-    def Text(self) -&gt; str:
-        &#34;&#34;&#34;The free text search property.&#34;&#34;&#34;
-
-    @Text.setter
-    def Text(self, new_text: str):
-        &#34;&#34;&#34;The free text search property.&#34;&#34;&#34;
-
-    @property
-    def IncludeDiscontinued(self) -&gt; bool:
-        &#34;&#34;&#34;If to include discontinued series, false by default.&#34;&#34;&#34;
-
-    @IncludeDiscontinued.setter
-    def IncludeDiscontinued(self, new_include_discontinued: bool):
-        &#34;&#34;&#34;If to include discontinued series, false by default.&#34;&#34;&#34;
-
-    def SetEntityTypeFilter(self, entity_types: object) -&gt; None:
-        &#34;&#34;&#34;Add an entity type filter.&#34;&#34;&#34;
-
-    def AddAttributeFilter(self, attribute_name: str, include: bool = True) -&gt; None:
-        &#34;&#34;&#34;Add an attribute filter.&#34;&#34;&#34;
-
-    def AddAttributeValueFilter(
-        self, attribute_name: str, attribute_values: object, include: bool = True
-    ) -&gt; None:
-        &#34;&#34;&#34;Add an attribute value filter.&#34;&#34;&#34;</code></pre>
-</details>
 </section>
 <section>
 </section>
@@ -76,65 +37,15 @@ class SearchQuery:
 </code></dt>
 <dd>
 <div class="desc"><p>Interface for the Macrobond search query.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">class SearchQuery:
-    &#34;&#34;&#34;Interface for the Macrobond search query.&#34;&#34;&#34;
-
-    @property
-    def Text(self) -&gt; str:
-        &#34;&#34;&#34;The free text search property.&#34;&#34;&#34;
-
-    @Text.setter
-    def Text(self, new_text: str):
-        &#34;&#34;&#34;The free text search property.&#34;&#34;&#34;
-
-    @property
-    def IncludeDiscontinued(self) -&gt; bool:
-        &#34;&#34;&#34;If to include discontinued series, false by default.&#34;&#34;&#34;
-
-    @IncludeDiscontinued.setter
-    def IncludeDiscontinued(self, new_include_discontinued: bool):
-        &#34;&#34;&#34;If to include discontinued series, false by default.&#34;&#34;&#34;
-
-    def SetEntityTypeFilter(self, entity_types: object) -&gt; None:
-        &#34;&#34;&#34;Add an entity type filter.&#34;&#34;&#34;
-
-    def AddAttributeFilter(self, attribute_name: str, include: bool = True) -&gt; None:
-        &#34;&#34;&#34;Add an attribute filter.&#34;&#34;&#34;
-
-    def AddAttributeValueFilter(
-        self, attribute_name: str, attribute_values: object, include: bool = True
-    ) -&gt; None:
-        &#34;&#34;&#34;Add an attribute value filter.&#34;&#34;&#34;</code></pre>
-</details>
 <h3>Instance variables</h3>
 <dl>
 <dt id="macrobond_financial.com.com_types.search_query.SearchQuery.IncludeDiscontinued"><code class="name">var <span class="ident">IncludeDiscontinued</span> : bool</code></dt>
 <dd>
 <div class="desc"><p>If to include discontinued series, false by default.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@property
-def IncludeDiscontinued(self) -&gt; bool:
-    &#34;&#34;&#34;If to include discontinued series, false by default.&#34;&#34;&#34;</code></pre>
-</details>
 </dd>
 <dt id="macrobond_financial.com.com_types.search_query.SearchQuery.Text"><code class="name">var <span class="ident">Text</span> : str</code></dt>
 <dd>
 <div class="desc"><p>The free text search property.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@property
-def Text(self) -&gt; str:
-    &#34;&#34;&#34;The free text search property.&#34;&#34;&#34;</code></pre>
-</details>
 </dd>
 </dl>
 <h3>Methods</h3>
@@ -144,41 +55,18 @@ def Text(self) -&gt; str:
 </code></dt>
 <dd>
 <div class="desc"><p>Add an attribute filter.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def AddAttributeFilter(self, attribute_name: str, include: bool = True) -&gt; None:
-    &#34;&#34;&#34;Add an attribute filter.&#34;&#34;&#34;</code></pre>
-</details>
 </dd>
 <dt id="macrobond_financial.com.com_types.search_query.SearchQuery.AddAttributeValueFilter"><code class="name flex">
 <span>def <span class="ident">AddAttributeValueFilter</span></span>(<span>self, attribute_name: str, attribute_values: object, include: bool = True) ‑> None</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Add an attribute value filter.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def AddAttributeValueFilter(
-    self, attribute_name: str, attribute_values: object, include: bool = True
-) -&gt; None:
-    &#34;&#34;&#34;Add an attribute value filter.&#34;&#34;&#34;</code></pre>
-</details>
 </dd>
 <dt id="macrobond_financial.com.com_types.search_query.SearchQuery.SetEntityTypeFilter"><code class="name flex">
 <span>def <span class="ident">SetEntityTypeFilter</span></span>(<span>self, entity_types: object) ‑> None</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Add an entity type filter.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def SetEntityTypeFilter(self, entity_types: object) -&gt; None:
-    &#34;&#34;&#34;Add an entity type filter.&#34;&#34;&#34;</code></pre>
-</details>
 </dd>
 </dl>
 </dd>

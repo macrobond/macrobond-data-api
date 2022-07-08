@@ -22,83 +22,6 @@
 <h1 class="title">Module <code>macrobond_financial.common.types.series_observation_history</code></h1>
 </header>
 <section id="section-intro">
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python"># -*- coding: utf-8 -*-
-
-from datetime import datetime
-from typing import Any, Dict, List, Optional, TYPE_CHECKING, Tuple
-from typing_extensions import Literal
-
-from .._get_pandas import _get_pandas
-
-if TYPE_CHECKING:  # pragma: no cover
-    from pandas import Series, DataFrame  # type: ignore
-
-SeriesObservationHistoryColumnsLiterals = Literal[&#34;ObservationDate&#34;, &#34;Values&#34;, &#34;TimeStamps&#34;]
-
-SeriesObservationHistoryColumns = List[SeriesObservationHistoryColumnsLiterals]
-
-
-class SeriesObservationHistory:
-    &#34;&#34;&#34;The history of changes of an observation&#34;&#34;&#34;
-
-    observation_date: datetime
-    values: Tuple[Optional[float], ...]
-    time_stamps: Tuple[Optional[datetime], ...]
-
-    def __init__(
-        self,
-        observation_date: datetime,
-        values: Tuple[Optional[float], ...],
-        time_stamps: Tuple[Optional[datetime], ...],
-    ) -&gt; None:
-        self.observation_date = observation_date
-        &#34;&#34;&#34;The date of the observation&#34;&#34;&#34;
-
-        self.values = values
-        &#34;&#34;&#34;
-        The historical values of the observation or an empty tuple if
-        there are no recorded values for the specified date.
-        &#34;&#34;&#34;
-
-        self.time_stamps = time_stamps
-        &#34;&#34;&#34;
-        A tuple of timestamps of when the historical values were recorded.
-        The first timestamp may be null if the time of the original is unknown.
-        &#34;&#34;&#34;
-
-    def to_dict(self) -&gt; Dict[str, Any]:
-        return {
-            &#34;ObservationDate&#34;: self.observation_date,
-            &#34;Values&#34;: self.values,
-            &#34;TimeStamps&#34;: self.time_stamps,
-        }
-
-    def to_pd_data_frame(self) -&gt; &#34;DataFrame&#34;:
-        pandas = _get_pandas()
-        return pandas.DataFrame({&#34;values&#34;: self.values}, self.time_stamps)
-
-    def to_pd_series(self, name: str = None) -&gt; &#34;Series&#34;:
-        pandas = _get_pandas()
-        name = name if name else str(self.observation_date)
-        return pandas.Series(self.values, self.time_stamps, name=name)
-
-    def __repr__(self):
-        return f&#34;{self.__class__.__name__} observation_date: {self.observation_date}&#34;
-
-    def __eq__(self, other):
-        if not isinstance(other, SeriesObservationHistory):
-            return NotImplemented
-
-        return self is other or (
-            self.observation_date == other.observation_date
-            and self.values == other.values
-            and self.time_stamps == other.time_stamps
-        )</code></pre>
-</details>
 </section>
 <section>
 </section>
@@ -115,67 +38,6 @@ class SeriesObservationHistory:
 </code></dt>
 <dd>
 <div class="desc"><p>The history of changes of an observation</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">class SeriesObservationHistory:
-    &#34;&#34;&#34;The history of changes of an observation&#34;&#34;&#34;
-
-    observation_date: datetime
-    values: Tuple[Optional[float], ...]
-    time_stamps: Tuple[Optional[datetime], ...]
-
-    def __init__(
-        self,
-        observation_date: datetime,
-        values: Tuple[Optional[float], ...],
-        time_stamps: Tuple[Optional[datetime], ...],
-    ) -&gt; None:
-        self.observation_date = observation_date
-        &#34;&#34;&#34;The date of the observation&#34;&#34;&#34;
-
-        self.values = values
-        &#34;&#34;&#34;
-        The historical values of the observation or an empty tuple if
-        there are no recorded values for the specified date.
-        &#34;&#34;&#34;
-
-        self.time_stamps = time_stamps
-        &#34;&#34;&#34;
-        A tuple of timestamps of when the historical values were recorded.
-        The first timestamp may be null if the time of the original is unknown.
-        &#34;&#34;&#34;
-
-    def to_dict(self) -&gt; Dict[str, Any]:
-        return {
-            &#34;ObservationDate&#34;: self.observation_date,
-            &#34;Values&#34;: self.values,
-            &#34;TimeStamps&#34;: self.time_stamps,
-        }
-
-    def to_pd_data_frame(self) -&gt; &#34;DataFrame&#34;:
-        pandas = _get_pandas()
-        return pandas.DataFrame({&#34;values&#34;: self.values}, self.time_stamps)
-
-    def to_pd_series(self, name: str = None) -&gt; &#34;Series&#34;:
-        pandas = _get_pandas()
-        name = name if name else str(self.observation_date)
-        return pandas.Series(self.values, self.time_stamps, name=name)
-
-    def __repr__(self):
-        return f&#34;{self.__class__.__name__} observation_date: {self.observation_date}&#34;
-
-    def __eq__(self, other):
-        if not isinstance(other, SeriesObservationHistory):
-            return NotImplemented
-
-        return self is other or (
-            self.observation_date == other.observation_date
-            and self.values == other.values
-            and self.time_stamps == other.time_stamps
-        )</code></pre>
-</details>
 <h3>Instance variables</h3>
 <dl>
 <dt id="macrobond_financial.common.types.series_observation_history.SeriesObservationHistory.observation_date"><code class="name">var <span class="ident">observation_date</span> : datetime.datetime</code></dt>
@@ -200,46 +62,18 @@ there are no recorded values for the specified date.</p></div>
 </code></dt>
 <dd>
 <div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def to_dict(self) -&gt; Dict[str, Any]:
-    return {
-        &#34;ObservationDate&#34;: self.observation_date,
-        &#34;Values&#34;: self.values,
-        &#34;TimeStamps&#34;: self.time_stamps,
-    }</code></pre>
-</details>
 </dd>
 <dt id="macrobond_financial.common.types.series_observation_history.SeriesObservationHistory.to_pd_data_frame"><code class="name flex">
 <span>def <span class="ident">to_pd_data_frame</span></span>(<span>self) ‑> DataFrame</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def to_pd_data_frame(self) -&gt; &#34;DataFrame&#34;:
-    pandas = _get_pandas()
-    return pandas.DataFrame({&#34;values&#34;: self.values}, self.time_stamps)</code></pre>
-</details>
 </dd>
 <dt id="macrobond_financial.common.types.series_observation_history.SeriesObservationHistory.to_pd_series"><code class="name flex">
 <span>def <span class="ident">to_pd_series</span></span>(<span>self, name: str = None) ‑> Series</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def to_pd_series(self, name: str = None) -&gt; &#34;Series&#34;:
-    pandas = _get_pandas()
-    name = name if name else str(self.observation_date)
-    return pandas.Series(self.values, self.time_stamps, name=name)</code></pre>
-</details>
 </dd>
 </dl>
 </dd>

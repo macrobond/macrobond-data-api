@@ -22,62 +22,6 @@
 <h1 class="title">Module <code>macrobond_financial.com.com_types.series_with_revisions</code></h1>
 </header>
 <section id="section-intro">
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python"># -*- coding: utf-8 -*-
-
-# pylint: disable = invalid-name , missing-module-docstring
-
-from datetime import datetime
-from typing import List
-
-from .series import Series
-
-
-class SeriesWithRevisions:
-    &#34;&#34;&#34;Interface for a Macrobond series with revisions.&#34;&#34;&#34;
-
-    @property
-    def IsError(self) -&gt; bool:
-        &#34;&#34;&#34;Gets a value indicating whether the series request resulted in an error.&#34;&#34;&#34;
-
-    @property
-    def ErrorMessage(self) -&gt; str:
-        &#34;&#34;&#34;Gets the error message.&#34;&#34;&#34;
-
-    @property
-    def HasRevisions(self) -&gt; bool:
-        &#34;&#34;&#34;Check is there are any revisions.&#34;&#34;&#34;
-
-    @property
-    def StoresRevisions(self) -&gt; bool:
-        &#34;&#34;&#34;Check if underlying series stores revisions.&#34;&#34;&#34;
-
-    @property
-    def TimeOfLastRevision(self) -&gt; datetime:
-        &#34;&#34;&#34;Get the time of the last revision.&#34;&#34;&#34;
-
-    @property
-    def Head(self) -&gt; Series:
-        &#34;&#34;&#34;Get the series with the latest revisions.&#34;&#34;&#34;
-
-    def GetNthRelease(self, n: int) -&gt; Series:
-        &#34;&#34;&#34;Get the series at the specified release.&#34;&#34;&#34;
-
-    def GetVintage(self, date: datetime) -&gt; Series:
-        &#34;&#34;&#34;Get the series at the specified time.&#34;&#34;&#34;
-
-    def GetVintageDates(self) -&gt; List[datetime]:
-        &#34;&#34;&#34;Get the times for all revisions.&#34;&#34;&#34;
-
-    def GetObservationHistory(self, pointInTime: datetime) -&gt; Series:
-        &#34;&#34;&#34;Get the values over time for a specific point in time.&#34;&#34;&#34;
-
-    def GetCompleteHistory(self) -&gt; List[Series]:
-        &#34;&#34;&#34;Get all the revisions as a separate complete series.&#34;&#34;&#34;</code></pre>
-</details>
 </section>
 <section>
 </section>
@@ -93,125 +37,31 @@ class SeriesWithRevisions:
 </code></dt>
 <dd>
 <div class="desc"><p>Interface for a Macrobond series with revisions.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">class SeriesWithRevisions:
-    &#34;&#34;&#34;Interface for a Macrobond series with revisions.&#34;&#34;&#34;
-
-    @property
-    def IsError(self) -&gt; bool:
-        &#34;&#34;&#34;Gets a value indicating whether the series request resulted in an error.&#34;&#34;&#34;
-
-    @property
-    def ErrorMessage(self) -&gt; str:
-        &#34;&#34;&#34;Gets the error message.&#34;&#34;&#34;
-
-    @property
-    def HasRevisions(self) -&gt; bool:
-        &#34;&#34;&#34;Check is there are any revisions.&#34;&#34;&#34;
-
-    @property
-    def StoresRevisions(self) -&gt; bool:
-        &#34;&#34;&#34;Check if underlying series stores revisions.&#34;&#34;&#34;
-
-    @property
-    def TimeOfLastRevision(self) -&gt; datetime:
-        &#34;&#34;&#34;Get the time of the last revision.&#34;&#34;&#34;
-
-    @property
-    def Head(self) -&gt; Series:
-        &#34;&#34;&#34;Get the series with the latest revisions.&#34;&#34;&#34;
-
-    def GetNthRelease(self, n: int) -&gt; Series:
-        &#34;&#34;&#34;Get the series at the specified release.&#34;&#34;&#34;
-
-    def GetVintage(self, date: datetime) -&gt; Series:
-        &#34;&#34;&#34;Get the series at the specified time.&#34;&#34;&#34;
-
-    def GetVintageDates(self) -&gt; List[datetime]:
-        &#34;&#34;&#34;Get the times for all revisions.&#34;&#34;&#34;
-
-    def GetObservationHistory(self, pointInTime: datetime) -&gt; Series:
-        &#34;&#34;&#34;Get the values over time for a specific point in time.&#34;&#34;&#34;
-
-    def GetCompleteHistory(self) -&gt; List[Series]:
-        &#34;&#34;&#34;Get all the revisions as a separate complete series.&#34;&#34;&#34;</code></pre>
-</details>
 <h3>Instance variables</h3>
 <dl>
 <dt id="macrobond_financial.com.com_types.series_with_revisions.SeriesWithRevisions.ErrorMessage"><code class="name">var <span class="ident">ErrorMessage</span> : str</code></dt>
 <dd>
 <div class="desc"><p>Gets the error message.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@property
-def ErrorMessage(self) -&gt; str:
-    &#34;&#34;&#34;Gets the error message.&#34;&#34;&#34;</code></pre>
-</details>
 </dd>
 <dt id="macrobond_financial.com.com_types.series_with_revisions.SeriesWithRevisions.HasRevisions"><code class="name">var <span class="ident">HasRevisions</span> : bool</code></dt>
 <dd>
 <div class="desc"><p>Check is there are any revisions.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@property
-def HasRevisions(self) -&gt; bool:
-    &#34;&#34;&#34;Check is there are any revisions.&#34;&#34;&#34;</code></pre>
-</details>
 </dd>
 <dt id="macrobond_financial.com.com_types.series_with_revisions.SeriesWithRevisions.Head"><code class="name">var <span class="ident">Head</span> : <a title="macrobond_financial.com.com_types.series.Series" href="series.html#macrobond_financial.com.com_types.series.Series">Series</a></code></dt>
 <dd>
 <div class="desc"><p>Get the series with the latest revisions.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@property
-def Head(self) -&gt; Series:
-    &#34;&#34;&#34;Get the series with the latest revisions.&#34;&#34;&#34;</code></pre>
-</details>
 </dd>
 <dt id="macrobond_financial.com.com_types.series_with_revisions.SeriesWithRevisions.IsError"><code class="name">var <span class="ident">IsError</span> : bool</code></dt>
 <dd>
 <div class="desc"><p>Gets a value indicating whether the series request resulted in an error.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@property
-def IsError(self) -&gt; bool:
-    &#34;&#34;&#34;Gets a value indicating whether the series request resulted in an error.&#34;&#34;&#34;</code></pre>
-</details>
 </dd>
 <dt id="macrobond_financial.com.com_types.series_with_revisions.SeriesWithRevisions.StoresRevisions"><code class="name">var <span class="ident">StoresRevisions</span> : bool</code></dt>
 <dd>
 <div class="desc"><p>Check if underlying series stores revisions.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@property
-def StoresRevisions(self) -&gt; bool:
-    &#34;&#34;&#34;Check if underlying series stores revisions.&#34;&#34;&#34;</code></pre>
-</details>
 </dd>
 <dt id="macrobond_financial.com.com_types.series_with_revisions.SeriesWithRevisions.TimeOfLastRevision"><code class="name">var <span class="ident">TimeOfLastRevision</span> : datetime.datetime</code></dt>
 <dd>
 <div class="desc"><p>Get the time of the last revision.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@property
-def TimeOfLastRevision(self) -&gt; datetime:
-    &#34;&#34;&#34;Get the time of the last revision.&#34;&#34;&#34;</code></pre>
-</details>
 </dd>
 </dl>
 <h3>Methods</h3>
@@ -221,65 +71,30 @@ def TimeOfLastRevision(self) -&gt; datetime:
 </code></dt>
 <dd>
 <div class="desc"><p>Get all the revisions as a separate complete series.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def GetCompleteHistory(self) -&gt; List[Series]:
-    &#34;&#34;&#34;Get all the revisions as a separate complete series.&#34;&#34;&#34;</code></pre>
-</details>
 </dd>
 <dt id="macrobond_financial.com.com_types.series_with_revisions.SeriesWithRevisions.GetNthRelease"><code class="name flex">
 <span>def <span class="ident">GetNthRelease</span></span>(<span>self, n: int) ‑> <a title="macrobond_financial.com.com_types.series.Series" href="series.html#macrobond_financial.com.com_types.series.Series">Series</a></span>
 </code></dt>
 <dd>
 <div class="desc"><p>Get the series at the specified release.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def GetNthRelease(self, n: int) -&gt; Series:
-    &#34;&#34;&#34;Get the series at the specified release.&#34;&#34;&#34;</code></pre>
-</details>
 </dd>
 <dt id="macrobond_financial.com.com_types.series_with_revisions.SeriesWithRevisions.GetObservationHistory"><code class="name flex">
 <span>def <span class="ident">GetObservationHistory</span></span>(<span>self, pointInTime: datetime.datetime) ‑> <a title="macrobond_financial.com.com_types.series.Series" href="series.html#macrobond_financial.com.com_types.series.Series">Series</a></span>
 </code></dt>
 <dd>
 <div class="desc"><p>Get the values over time for a specific point in time.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def GetObservationHistory(self, pointInTime: datetime) -&gt; Series:
-    &#34;&#34;&#34;Get the values over time for a specific point in time.&#34;&#34;&#34;</code></pre>
-</details>
 </dd>
 <dt id="macrobond_financial.com.com_types.series_with_revisions.SeriesWithRevisions.GetVintage"><code class="name flex">
 <span>def <span class="ident">GetVintage</span></span>(<span>self, date: datetime.datetime) ‑> <a title="macrobond_financial.com.com_types.series.Series" href="series.html#macrobond_financial.com.com_types.series.Series">Series</a></span>
 </code></dt>
 <dd>
 <div class="desc"><p>Get the series at the specified time.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def GetVintage(self, date: datetime) -&gt; Series:
-    &#34;&#34;&#34;Get the series at the specified time.&#34;&#34;&#34;</code></pre>
-</details>
 </dd>
 <dt id="macrobond_financial.com.com_types.series_with_revisions.SeriesWithRevisions.GetVintageDates"><code class="name flex">
 <span>def <span class="ident">GetVintageDates</span></span>(<span>self) ‑> List[datetime.datetime]</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Get the times for all revisions.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def GetVintageDates(self) -&gt; List[datetime]:
-    &#34;&#34;&#34;Get the times for all revisions.&#34;&#34;&#34;</code></pre>
-</details>
 </dd>
 </dl>
 </dd>

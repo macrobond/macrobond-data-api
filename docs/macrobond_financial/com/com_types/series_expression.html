@@ -22,65 +22,6 @@
 <h1 class="title">Module <code>macrobond_financial.com.com_types.series_expression</code></h1>
 </header>
 <section id="section-intro">
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python"># -*- coding: utf-8 -*-
-
-# pylint: disable = invalid-name , missing-module-docstring
-
-from macrobond_financial.common.enums import (
-    SeriesMissingValueMethod,
-    SeriesToLowerFrequencyMethod,
-    SeriesToHigherFrequencyMethod,
-    SeriesPartialPeriodsMethod,
-)
-
-
-class SeriesExpression:
-    &#34;&#34;&#34;Interface for a Macrobond series expression.&#34;&#34;&#34;
-
-    @property
-    def Name(self) -&gt; str:
-        &#34;&#34;&#34;Get the name of the series.&#34;&#34;&#34;
-
-    @Name.setter
-    def Name(self, new_name: str):
-        &#34;&#34;&#34;Set the name of the series.&#34;&#34;&#34;
-
-    @property
-    def MissingValueMethod(self) -&gt; SeriesMissingValueMethod:
-        &#34;&#34;&#34;Get the method for filling in missing values.&#34;&#34;&#34;
-
-    @MissingValueMethod.setter
-    def MissingValueMethod(self, new_missing_value_method: SeriesMissingValueMethod):
-        &#34;&#34;&#34;Set the method for filling in missing values.&#34;&#34;&#34;
-
-    @property
-    def ToLowerFrequencyMethod(self) -&gt; SeriesToLowerFrequencyMethod:
-        &#34;&#34;&#34;Get the method to converting to lower frequency.&#34;&#34;&#34;
-
-    @ToLowerFrequencyMethod.setter
-    def ToLowerFrequencyMethod(self, new_missing_value_method: SeriesToLowerFrequencyMethod):
-        &#34;&#34;&#34;Set the method to converting to lower frequency.&#34;&#34;&#34;
-
-    @property
-    def ToHigherFrequencyMethod(self) -&gt; SeriesToHigherFrequencyMethod:
-        &#34;&#34;&#34;Get the method to converting to higher frequency.&#34;&#34;&#34;
-
-    @ToHigherFrequencyMethod.setter
-    def ToHigherFrequencyMethod(self, new_missing_value_method: SeriesToHigherFrequencyMethod):
-        &#34;&#34;&#34;Set the method to converting to higher frequency.&#34;&#34;&#34;
-
-    @property
-    def PartialPeriodsMethod(self) -&gt; SeriesPartialPeriodsMethod:
-        &#34;&#34;&#34;Get the method to use for converting partial periods to lower frequency.&#34;&#34;&#34;
-
-    @PartialPeriodsMethod.setter
-    def PartialPeriodsMethod(self, new_missing_value_method: SeriesPartialPeriodsMethod):
-        &#34;&#34;&#34;Set the method to use for converting partial periods to lower frequency.&#34;&#34;&#34;</code></pre>
-</details>
 </section>
 <section>
 </section>
@@ -96,114 +37,31 @@ class SeriesExpression:
 </code></dt>
 <dd>
 <div class="desc"><p>Interface for a Macrobond series expression.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">class SeriesExpression:
-    &#34;&#34;&#34;Interface for a Macrobond series expression.&#34;&#34;&#34;
-
-    @property
-    def Name(self) -&gt; str:
-        &#34;&#34;&#34;Get the name of the series.&#34;&#34;&#34;
-
-    @Name.setter
-    def Name(self, new_name: str):
-        &#34;&#34;&#34;Set the name of the series.&#34;&#34;&#34;
-
-    @property
-    def MissingValueMethod(self) -&gt; SeriesMissingValueMethod:
-        &#34;&#34;&#34;Get the method for filling in missing values.&#34;&#34;&#34;
-
-    @MissingValueMethod.setter
-    def MissingValueMethod(self, new_missing_value_method: SeriesMissingValueMethod):
-        &#34;&#34;&#34;Set the method for filling in missing values.&#34;&#34;&#34;
-
-    @property
-    def ToLowerFrequencyMethod(self) -&gt; SeriesToLowerFrequencyMethod:
-        &#34;&#34;&#34;Get the method to converting to lower frequency.&#34;&#34;&#34;
-
-    @ToLowerFrequencyMethod.setter
-    def ToLowerFrequencyMethod(self, new_missing_value_method: SeriesToLowerFrequencyMethod):
-        &#34;&#34;&#34;Set the method to converting to lower frequency.&#34;&#34;&#34;
-
-    @property
-    def ToHigherFrequencyMethod(self) -&gt; SeriesToHigherFrequencyMethod:
-        &#34;&#34;&#34;Get the method to converting to higher frequency.&#34;&#34;&#34;
-
-    @ToHigherFrequencyMethod.setter
-    def ToHigherFrequencyMethod(self, new_missing_value_method: SeriesToHigherFrequencyMethod):
-        &#34;&#34;&#34;Set the method to converting to higher frequency.&#34;&#34;&#34;
-
-    @property
-    def PartialPeriodsMethod(self) -&gt; SeriesPartialPeriodsMethod:
-        &#34;&#34;&#34;Get the method to use for converting partial periods to lower frequency.&#34;&#34;&#34;
-
-    @PartialPeriodsMethod.setter
-    def PartialPeriodsMethod(self, new_missing_value_method: SeriesPartialPeriodsMethod):
-        &#34;&#34;&#34;Set the method to use for converting partial periods to lower frequency.&#34;&#34;&#34;</code></pre>
-</details>
 <h3>Instance variables</h3>
 <dl>
 <dt id="macrobond_financial.com.com_types.series_expression.SeriesExpression.MissingValueMethod"><code class="name">var <span class="ident">MissingValueMethod</span> : <a title="macrobond_financial.common.enums.series_missing_value_method.SeriesMissingValueMethod" href="../../common/enums/series_missing_value_method.html#macrobond_financial.common.enums.series_missing_value_method.SeriesMissingValueMethod">SeriesMissingValueMethod</a></code></dt>
 <dd>
 <div class="desc"><p>Get the method for filling in missing values.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@property
-def MissingValueMethod(self) -&gt; SeriesMissingValueMethod:
-    &#34;&#34;&#34;Get the method for filling in missing values.&#34;&#34;&#34;</code></pre>
-</details>
 </dd>
 <dt id="macrobond_financial.com.com_types.series_expression.SeriesExpression.Name"><code class="name">var <span class="ident">Name</span> : str</code></dt>
 <dd>
 <div class="desc"><p>Get the name of the series.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@property
-def Name(self) -&gt; str:
-    &#34;&#34;&#34;Get the name of the series.&#34;&#34;&#34;</code></pre>
-</details>
 </dd>
 <dt id="macrobond_financial.com.com_types.series_expression.SeriesExpression.PartialPeriodsMethod"><code class="name">var <span class="ident">PartialPeriodsMethod</span> : <a title="macrobond_financial.common.enums.series_partial_periods_method.SeriesPartialPeriodsMethod" href="../../common/enums/series_partial_periods_method.html#macrobond_financial.common.enums.series_partial_periods_method.SeriesPartialPeriodsMethod">SeriesPartialPeriodsMethod</a></code></dt>
 <dd>
 <div class="desc"><p>Get the method to use for converting partial periods to lower frequency.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@property
-def PartialPeriodsMethod(self) -&gt; SeriesPartialPeriodsMethod:
-    &#34;&#34;&#34;Get the method to use for converting partial periods to lower frequency.&#34;&#34;&#34;</code></pre>
-</details>
 </dd>
 <dt id="macrobond_financial.com.com_types.series_expression.SeriesExpression.ToHigherFrequencyMethod"><code class="name">var <span class="ident">ToHigherFrequencyMethod</span> : <a title="macrobond_financial.common.enums.series_to_higher_frequency_method.SeriesToHigherFrequencyMethod" href="../../common/enums/series_to_higher_frequency_method.html#macrobond_financial.common.enums.series_to_higher_frequency_method.SeriesToHigherFrequencyMethod">SeriesToHigherFrequencyMethod</a></code></dt>
 <dd>
 <div class="desc"><p>Get the method to converting to higher frequency.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@property
-def ToHigherFrequencyMethod(self) -&gt; SeriesToHigherFrequencyMethod:
-    &#34;&#34;&#34;Get the method to converting to higher frequency.&#34;&#34;&#34;</code></pre>
-</details>
 </dd>
 <dt id="macrobond_financial.com.com_types.series_expression.SeriesExpression.ToLowerFrequencyMethod"><code class="name">var <span class="ident">ToLowerFrequencyMethod</span> : <a title="macrobond_financial.common.enums.series_to_lower_frequency_method.SeriesToLowerFrequencyMethod" href="../../common/enums/series_to_lower_frequency_method.html#macrobond_financial.common.enums.series_to_lower_frequency_method.SeriesToLowerFrequencyMethod">SeriesToLowerFrequencyMethod</a></code></dt>
 <dd>
 <div class="desc"><p>Get the method to converting to lower frequency.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@property
-def ToLowerFrequencyMethod(self) -&gt; SeriesToLowerFrequencyMethod:
-    &#34;&#34;&#34;Get the method to converting to lower frequency.&#34;&#34;&#34;</code></pre>
-</details>
+</dd>
+<dt id="macrobond_financial.com.com_types.series_expression.SeriesExpression.Vintage"><code class="name">var <span class="ident">Vintage</span> : Optional[datetime.datetime]</code></dt>
+<dd>
+<div class="desc"><p>Get the vintage date of the series.</p></div>
 </dd>
 </dl>
 </dd>
@@ -231,6 +89,7 @@ def ToLowerFrequencyMethod(self) -&gt; SeriesToLowerFrequencyMethod:
 <li><code><a title="macrobond_financial.com.com_types.series_expression.SeriesExpression.PartialPeriodsMethod" href="#macrobond_financial.com.com_types.series_expression.SeriesExpression.PartialPeriodsMethod">PartialPeriodsMethod</a></code></li>
 <li><code><a title="macrobond_financial.com.com_types.series_expression.SeriesExpression.ToHigherFrequencyMethod" href="#macrobond_financial.com.com_types.series_expression.SeriesExpression.ToHigherFrequencyMethod">ToHigherFrequencyMethod</a></code></li>
 <li><code><a title="macrobond_financial.com.com_types.series_expression.SeriesExpression.ToLowerFrequencyMethod" href="#macrobond_financial.com.com_types.series_expression.SeriesExpression.ToLowerFrequencyMethod">ToLowerFrequencyMethod</a></code></li>
+<li><code><a title="macrobond_financial.com.com_types.series_expression.SeriesExpression.Vintage" href="#macrobond_financial.com.com_types.series_expression.SeriesExpression.Vintage">Vintage</a></code></li>
 </ul>
 </li>
 </ul>

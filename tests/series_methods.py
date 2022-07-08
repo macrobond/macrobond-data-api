@@ -137,24 +137,30 @@ def get_one_entity(test: TestCase, api: Api) -> None:
     test.assertEqual(dict_series["Name"], "usgdp")
     test.assertEqual(dict_series["metadata.Class"], "stock")
 
+    # test is_discontinued
+
+    test.assertTrue(api.get_one_entity("uslama9621").is_discontinued)
+
+    test.assertFalse(api.get_one_entity("usgdp").is_discontinued)
+
 
 def get_entities(test: TestCase, api: Api) -> None:
-    series = api.get_entities("usgdp", "uscpi", "noseries!", raise_error=False)
+    entities = api.get_entities("usgdp", "uscpi", "noseries!", raise_error=False)
 
     # test.assertEqual(series[0].name, 'usgdp', 'name')
-    test.assertEqual(series[0].primary_name, "usnaac0169", "primary_name")
-    test.assertFalse(series[0].is_error, "is_error")
-    test.assertEqual(series[0].error_message, "", "error_message")
+    test.assertEqual(entities[0].primary_name, "usnaac0169", "primary_name")
+    test.assertFalse(entities[0].is_error, "is_error")
+    test.assertEqual(entities[0].error_message, "", "error_message")
 
     # test.assertEqual(series[1].name, 'uscpi', 'name')
-    test.assertEqual(series[1].primary_name, "uspric2156", "primary_name")
-    test.assertFalse(series[1].is_error, "is_error")
-    test.assertEqual(series[1].error_message, "", "error_message")
+    test.assertEqual(entities[1].primary_name, "uspric2156", "primary_name")
+    test.assertFalse(entities[1].is_error, "is_error")
+    test.assertEqual(entities[1].error_message, "", "error_message")
 
     # test.assertEqual(series[2].name, 'noseries!', 'name')
     # test.assertEqual(series[2].primary_name, '', 'primary_name')
-    test.assertTrue(series[2].is_error, "is_error")
-    test.assertEqual(series[2].error_message, "Not found", "error_message")
+    test.assertTrue(entities[2].is_error, "is_error")
+    test.assertEqual(entities[2].error_message, "Not found", "error_message")
 
     # test raise_get_entities_error=True
 

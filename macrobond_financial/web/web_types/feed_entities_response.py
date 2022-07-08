@@ -25,10 +25,24 @@ class FeedEntitiesResponse(TypedDict):
     in the next request to get incremental updates.
     """
 
-    truncated: bool
+    downloadFullListOnOrAfter: str
     """
-    Indicates if the list of entities is complete.
-    If the list of feedable items is too long, all entities will not be included.
+    Recommended earliest next time to request a full list 
+    by omitting timeStampForIfModifiedSince.
+    """
+
+    state: int
+    """
+    The state of this list.
+
+    0 = FullListing (A complete listing of all series. 
+    Make another request for full data at some point after timestamp in downloadFullListOnOrAfter.)
+
+    1 = UpToDate (The list contains all updates since the specified start date. 
+    Wait 15 minutes before making another request where timeStampForIfModifiedSince is used.)
+
+    2 = Incomplete (The list might not contain all updates.
+    Wait one minute and then use the timeStampForIfModifiedSince in an a new request.)
     """
 
     entities: List["EntityNameWithTimeStamp"]

@@ -101,22 +101,24 @@ class Session:
             self.__token_endpoint = self.discovery(self.authorization_url)
         self.auth2_session.fetch_token(self.token_endpoint)
 
-    def get(self, url: str, params: dict = None) -> "Response":
+    def get(self, url: str, params: dict = None, stream=False) -> "Response":
         def http():
-            return self.auth2_session.get(url=self.api_url + url, params=params)
+            return self.auth2_session.get(url=self.api_url + url, params=params, stream=stream)
 
         return self.__if_status_code_401_fetch_token_and_retry(http)
 
     def get_or_raise(
-        self, url: str, params: dict = None, non_error_status: Sequence[int] = None
+        self, url: str, params: dict = None, non_error_status: Sequence[int] = None, stream=False
     ) -> "Response":
-        response = self.get(url, params)
-        self._raise_on_error(response, non_error_status)
+        response = self.get(url, params, stream=stream)
+        self.raise_on_error(response, non_error_status)
         return response
 
-    def post(self, url: str, params: dict = None, json: object = None) -> "Response":
+    def post(self, url: str, params: dict = None, json: object = None, stream=False) -> "Response":
         def http():
-            return self.auth2_session.post(url=self.api_url + url, params=params, json=json)
+            return self.auth2_session.post(
+                url=self.api_url + url, params=params, json=json, stream=stream
+            )
 
         return self.__if_status_code_401_fetch_token_and_retry(http)
 
@@ -126,12 +128,13 @@ class Session:
         params: dict = None,
         json: object = None,
         non_error_status: Sequence[int] = None,
+        stream=False,
     ) -> "Response":
-        response = self.post(url, params, json)
-        self._raise_on_error(response, non_error_status)
+        response = self.post(url, params, json, stream=stream)
+        self.raise_on_error(response, non_error_status)
         return response
 
-    def _raise_on_error(self, response: "Response", non_error_status: Sequence[int] = None) -> None:
+    def raise_on_error(self, response: "Response", non_error_status: Sequence[int] = None) -> None:
         if non_error_status is None:
             non_error_status = [200]
 

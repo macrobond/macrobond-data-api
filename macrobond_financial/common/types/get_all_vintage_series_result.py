@@ -12,6 +12,9 @@ if TYPE_CHECKING:  # pragma: no cover
 
 
 class GetAllVintageSeriesResult(List[Series]):
+
+    __slots__ = ("series_name",)
+
     series_name: str
 
     def __init__(

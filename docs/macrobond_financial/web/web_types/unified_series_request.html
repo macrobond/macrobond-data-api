@@ -22,102 +22,6 @@
 <h1 class="title">Module <code>macrobond_financial.web.web_types.unified_series_request</code></h1>
 </header>
 <section id="section-intro">
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python"># -*- coding: utf-8 -*-
-
-# pylint: disable = missing-module-docstring
-
-from typing import List, Optional
-from typing_extensions import TypedDict
-
-from macrobond_financial.common.enums import (
-    SeriesWeekdays,
-    SeriesFrequency,
-    CalendarDateMode,
-    CalendarMergeMode,
-    SeriesMissingValueMethod,
-    SeriesToLowerFrequencyMethod,
-    SeriesToHigherFrequencyMethod,
-    SeriesPartialPeriodsMethod,
-)
-
-
-class UnifiedSeriesEntry(TypedDict):
-    &#34;&#34;&#34;Request of a list of series converted to the same calendar&#34;&#34;&#34;
-
-    name: str
-    &#34;&#34;&#34;The name of the series.&#34;&#34;&#34;
-
-    missingValueMethod: Optional[SeriesMissingValueMethod]
-    &#34;&#34;&#34;The method for filling in missing values. The default is the automatic method.&#34;&#34;&#34;
-
-    toLowerFrequencyMethod: Optional[SeriesToLowerFrequencyMethod]
-    &#34;&#34;&#34;The method to converting to lower frequency.  The default is the automatic method.&#34;&#34;&#34;
-
-    toHigherFrequencyMethod: Optional[SeriesToHigherFrequencyMethod]
-    &#34;&#34;&#34;The method to converting to higher frequency. The default is the automatic method.&#34;&#34;&#34;
-
-    partialPeriodsMethod: Optional[SeriesPartialPeriodsMethod]
-    &#34;&#34;&#34;
-    The method to use for converting partial periods to lower frequency.
-    The default is not to extend the series.
-    &#34;&#34;&#34;
-
-
-class UnifiedSeriesRequest(TypedDict, total=False):
-    &#34;&#34;&#34;Request of a list of series converted to the same calendar&#34;&#34;&#34;
-
-    frequency: Optional[SeriesFrequency]
-    &#34;&#34;&#34;
-    The frequency to convert all series to.
-    The default is to convert to the highest frequency of the series in the request.
-    &#34;&#34;&#34;
-
-    weekdays: Optional[SeriesWeekdays]
-    &#34;&#34;&#34;The days of the week used for daily series. The default is Monday to Friday.&#34;&#34;&#34;
-
-    calendarMergeMode: Optional[CalendarMergeMode]
-    &#34;&#34;&#34;
-    The merge mode determines how the series calendars are used when forming the new
-    shared calendar.
-    The default is to use all observations that are in any calendar.
-    &#34;&#34;&#34;
-
-    currency: Optional[str]
-    &#34;&#34;&#34;The currency to use for currency conversion or omitted for no conversion.&#34;&#34;&#34;
-
-    startDateMode: Optional[CalendarDateMode]
-    &#34;&#34;&#34;
-    The start date mode determines how the start date is calculated.
-    By default the mode is to start when there is data in any series.
-    &#34;&#34;&#34;
-
-    startPoint: Optional[str]
-    &#34;&#34;&#34;
-    The start point. By default, this is determined by the startDateMode.
-    It can be a date on the format yyyy-mm-dd or a number of observations relative the end of
-    the series.
-    &#34;&#34;&#34;
-
-    endDateMode: Optional[CalendarDateMode]
-    &#34;&#34;&#34;
-    The end date mode determines how the end date is calculated.
-    By default the mode is to end when there is no data in any series.
-    &#34;&#34;&#34;
-
-    endPoint: Optional[str]
-    &#34;&#34;&#34;
-    The end point. By default, this is determined by the endDateMode.
-    It can be a date on the format yyyy-mm-dd or a number of observations relative the
-    end of the series.
-    &#34;&#34;&#34;
-
-    seriesEntries: List[UnifiedSeriesEntry]
-    &#34;&#34;&#34;The list of series entries that defines the series to request.&#34;&#34;&#34;</code></pre>
-</details>
 </section>
 <section>
 </section>
@@ -134,31 +38,6 @@ class UnifiedSeriesRequest(TypedDict, total=False):
 </code></dt>
 <dd>
 <div class="desc"><p>Request of a list of series converted to the same calendar</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">class UnifiedSeriesEntry(TypedDict):
-    &#34;&#34;&#34;Request of a list of series converted to the same calendar&#34;&#34;&#34;
-
-    name: str
-    &#34;&#34;&#34;The name of the series.&#34;&#34;&#34;
-
-    missingValueMethod: Optional[SeriesMissingValueMethod]
-    &#34;&#34;&#34;The method for filling in missing values. The default is the automatic method.&#34;&#34;&#34;
-
-    toLowerFrequencyMethod: Optional[SeriesToLowerFrequencyMethod]
-    &#34;&#34;&#34;The method to converting to lower frequency.  The default is the automatic method.&#34;&#34;&#34;
-
-    toHigherFrequencyMethod: Optional[SeriesToHigherFrequencyMethod]
-    &#34;&#34;&#34;The method to converting to higher frequency. The default is the automatic method.&#34;&#34;&#34;
-
-    partialPeriodsMethod: Optional[SeriesPartialPeriodsMethod]
-    &#34;&#34;&#34;
-    The method to use for converting partial periods to lower frequency.
-    The default is not to extend the series.
-    &#34;&#34;&#34;</code></pre>
-</details>
 <h3>Ancestors</h3>
 <ul class="hlist">
 <li>builtins.dict</li>
@@ -187,6 +66,10 @@ The default is not to extend the series.</p></div>
 <div class="desc"><p>The method to converting to lower frequency.
 The default is the automatic method.</p></div>
 </dd>
+<dt id="macrobond_financial.web.web_types.unified_series_request.UnifiedSeriesEntry.vintage"><code class="name">var <span class="ident">vintage</span> : Optional[str]</code></dt>
+<dd>
+<div class="desc"><p>The vintage of the series. The default is the latest version of the series.</p></div>
+</dd>
 </dl>
 </dd>
 <dt id="macrobond_financial.web.web_types.unified_series_request.UnifiedSeriesRequest"><code class="flex name class">
@@ -195,61 +78,6 @@ The default is the automatic method.</p></div>
 </code></dt>
 <dd>
 <div class="desc"><p>Request of a list of series converted to the same calendar</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">class UnifiedSeriesRequest(TypedDict, total=False):
-    &#34;&#34;&#34;Request of a list of series converted to the same calendar&#34;&#34;&#34;
-
-    frequency: Optional[SeriesFrequency]
-    &#34;&#34;&#34;
-    The frequency to convert all series to.
-    The default is to convert to the highest frequency of the series in the request.
-    &#34;&#34;&#34;
-
-    weekdays: Optional[SeriesWeekdays]
-    &#34;&#34;&#34;The days of the week used for daily series. The default is Monday to Friday.&#34;&#34;&#34;
-
-    calendarMergeMode: Optional[CalendarMergeMode]
-    &#34;&#34;&#34;
-    The merge mode determines how the series calendars are used when forming the new
-    shared calendar.
-    The default is to use all observations that are in any calendar.
-    &#34;&#34;&#34;
-
-    currency: Optional[str]
-    &#34;&#34;&#34;The currency to use for currency conversion or omitted for no conversion.&#34;&#34;&#34;
-
-    startDateMode: Optional[CalendarDateMode]
-    &#34;&#34;&#34;
-    The start date mode determines how the start date is calculated.
-    By default the mode is to start when there is data in any series.
-    &#34;&#34;&#34;
-
-    startPoint: Optional[str]
-    &#34;&#34;&#34;
-    The start point. By default, this is determined by the startDateMode.
-    It can be a date on the format yyyy-mm-dd or a number of observations relative the end of
-    the series.
-    &#34;&#34;&#34;
-
-    endDateMode: Optional[CalendarDateMode]
-    &#34;&#34;&#34;
-    The end date mode determines how the end date is calculated.
-    By default the mode is to end when there is no data in any series.
-    &#34;&#34;&#34;
-
-    endPoint: Optional[str]
-    &#34;&#34;&#34;
-    The end point. By default, this is determined by the endDateMode.
-    It can be a date on the format yyyy-mm-dd or a number of observations relative the
-    end of the series.
-    &#34;&#34;&#34;
-
-    seriesEntries: List[UnifiedSeriesEntry]
-    &#34;&#34;&#34;The list of series entries that defines the series to request.&#34;&#34;&#34;</code></pre>
-</details>
 <h3>Ancestors</h3>
 <ul class="hlist">
 <li>builtins.dict</li>
@@ -327,6 +155,7 @@ the series.</p></div>
 <li><code><a title="macrobond_financial.web.web_types.unified_series_request.UnifiedSeriesEntry.partialPeriodsMethod" href="#macrobond_financial.web.web_types.unified_series_request.UnifiedSeriesEntry.partialPeriodsMethod">partialPeriodsMethod</a></code></li>
 <li><code><a title="macrobond_financial.web.web_types.unified_series_request.UnifiedSeriesEntry.toHigherFrequencyMethod" href="#macrobond_financial.web.web_types.unified_series_request.UnifiedSeriesEntry.toHigherFrequencyMethod">toHigherFrequencyMethod</a></code></li>
 <li><code><a title="macrobond_financial.web.web_types.unified_series_request.UnifiedSeriesEntry.toLowerFrequencyMethod" href="#macrobond_financial.web.web_types.unified_series_request.UnifiedSeriesEntry.toLowerFrequencyMethod">toLowerFrequencyMethod</a></code></li>
+<li><code><a title="macrobond_financial.web.web_types.unified_series_request.UnifiedSeriesEntry.vintage" href="#macrobond_financial.web.web_types.unified_series_request.UnifiedSeriesEntry.vintage">vintage</a></code></li>
 </ul>
 </li>
 <li>

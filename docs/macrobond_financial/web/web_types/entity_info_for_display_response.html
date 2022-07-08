@@ -22,62 +22,6 @@
 <h1 class="title">Module <code>macrobond_financial.web.web_types.entity_info_for_display_response</code></h1>
 </header>
 <section id="section-intro">
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python"># -*- coding: utf-8 -*-
-
-# pylint: disable = missing-module-docstring
-
-from typing import List, Optional
-from typing_extensions import TypedDict
-
-
-from .metadata_attribute_information_response import (
-    MetadataAttributeType,
-    MetadataAttributeTypeRestriction,
-)
-
-
-class EntityInfoForDisplayItem(TypedDict):
-    # pylint: disable = missing-class-docstring
-
-    description: str
-    &#34;&#34;&#34;Description of the item&#34;&#34;&#34;
-
-    comment: Optional[str]
-    &#34;&#34;&#34;The comment of the metadata value&#34;&#34;&#34;
-
-    valueType: MetadataAttributeType
-    &#34;&#34;&#34;The value type of the metadata attribute&#34;&#34;&#34;
-
-    valueRestriction: Optional[MetadataAttributeTypeRestriction]
-    &#34;&#34;&#34;Restriction on the value type&#34;&#34;&#34;
-
-    value: object
-    &#34;&#34;&#34;The item value&#34;&#34;&#34;
-
-
-class EntityNameWithTimeStamp(TypedDict):
-    # pylint: disable = missing-class-docstring
-
-    description: str
-    &#34;&#34;&#34;Heading of the group&#34;&#34;&#34;
-
-    title: Optional[str]
-    &#34;&#34;&#34;Title of the group&#34;&#34;&#34;
-
-    items: List[EntityInfoForDisplayItem]
-    &#34;&#34;&#34;List of information items&#34;&#34;&#34;
-
-
-class EntityInfoForDisplayResponse(TypedDict):
-    &#34;&#34;&#34;Entity search response with metadata displayed for presentation purposes&#34;&#34;&#34;
-
-    groups: List[&#34;EntityNameWithTimeStamp&#34;]
-    &#34;&#34;&#34;A list of information groups&#34;&#34;&#34;</code></pre>
-</details>
 </section>
 <section>
 </section>
@@ -88,6 +32,47 @@ class EntityInfoForDisplayResponse(TypedDict):
 <section>
 <h2 class="section-title" id="header-classes">Classes</h2>
 <dl>
+<dt id="macrobond_financial.web.web_types.entity_info_for_display_response.EntityInfoForDisplayGroup"><code class="flex name class">
+<span>class <span class="ident">EntityInfoForDisplayGroup</span></span>
+<span>(</span><span>*args, **kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>dict() -&gt; new empty dictionary
+dict(mapping) -&gt; new dictionary initialized from a mapping object's
+(key, value) pairs
+dict(iterable) -&gt; new dictionary initialized as if via:
+d = {}
+for k, v in iterable:
+d[k] = v
+dict(**kwargs) -&gt; new dictionary initialized with the name=value pairs
+in the keyword argument list.
+For example:
+dict(one=1, two=2)</p></div>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>builtins.dict</li>
+</ul>
+<h3>Class variables</h3>
+<dl>
+<dt id="macrobond_financial.web.web_types.entity_info_for_display_response.EntityInfoForDisplayGroup.description"><code class="name">var <span class="ident">description</span> : str</code></dt>
+<dd>
+<div class="desc"><p>Heading of the group</p></div>
+</dd>
+<dt id="macrobond_financial.web.web_types.entity_info_for_display_response.EntityInfoForDisplayGroup.title"><code class="name">var <span class="ident">title</span> : Optional[str]</code></dt>
+<dd>
+<div class="desc"><p>Title of the group</p></div>
+</dd>
+</dl>
+<h3>Methods</h3>
+<dl>
+<dt id="macrobond_financial.web.web_types.entity_info_for_display_response.EntityInfoForDisplayGroup.items"><code class="name flex">
+<span>def <span class="ident">items</span></span>(<span>...) ‑> List[<a title="macrobond_financial.web.web_types.entity_info_for_display_response.EntityInfoForDisplayItem" href="#macrobond_financial.web.web_types.entity_info_for_display_response.EntityInfoForDisplayItem">EntityInfoForDisplayItem</a>]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>D.items() -&gt; a set-like object providing a view on D's items</p></div>
+</dd>
+</dl>
+</dd>
 <dt id="macrobond_financial.web.web_types.entity_info_for_display_response.EntityInfoForDisplayItem"><code class="flex name class">
 <span>class <span class="ident">EntityInfoForDisplayItem</span></span>
 <span>(</span><span>*args, **kwargs)</span>
@@ -104,28 +89,6 @@ dict(**kwargs) -&gt; new dictionary initialized with the name=value pairs
 in the keyword argument list.
 For example:
 dict(one=1, two=2)</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">class EntityInfoForDisplayItem(TypedDict):
-    # pylint: disable = missing-class-docstring
-
-    description: str
-    &#34;&#34;&#34;Description of the item&#34;&#34;&#34;
-
-    comment: Optional[str]
-    &#34;&#34;&#34;The comment of the metadata value&#34;&#34;&#34;
-
-    valueType: MetadataAttributeType
-    &#34;&#34;&#34;The value type of the metadata attribute&#34;&#34;&#34;
-
-    valueRestriction: Optional[MetadataAttributeTypeRestriction]
-    &#34;&#34;&#34;Restriction on the value type&#34;&#34;&#34;
-
-    value: object
-    &#34;&#34;&#34;The item value&#34;&#34;&#34;</code></pre>
-</details>
 <h3>Ancestors</h3>
 <ul class="hlist">
 <li>builtins.dict</li>
@@ -144,7 +107,7 @@ dict(one=1, two=2)</p></div>
 <dd>
 <div class="desc"><p>The item value</p></div>
 </dd>
-<dt id="macrobond_financial.web.web_types.entity_info_for_display_response.EntityInfoForDisplayItem.valueRestriction"><code class="name">var <span class="ident">valueRestriction</span> : Optional[<a title="macrobond_financial.web.web_types.metadata_attribute_information_response.MetadataAttributeTypeRestriction" href="metadata_attribute_information_response.html#macrobond_financial.web.web_types.metadata_attribute_information_response.MetadataAttributeTypeRestriction">MetadataAttributeTypeRestriction</a>]</code></dt>
+<dt id="macrobond_financial.web.web_types.entity_info_for_display_response.EntityInfoForDisplayItem.valueRestriction"><code class="name">var <span class="ident">valueRestriction</span> : Optional[<a title="macrobond_financial.web.web_types.metadata.metadata_attribute_information_response.MetadataAttributeTypeRestriction" href="metadata/metadata_attribute_information_response.html#macrobond_financial.web.web_types.metadata.metadata_attribute_information_response.MetadataAttributeTypeRestriction">MetadataAttributeTypeRestriction</a>]</code></dt>
 <dd>
 <div class="desc"><p>Restriction on the value type</p></div>
 </dd>
@@ -160,82 +123,15 @@ dict(one=1, two=2)</p></div>
 </code></dt>
 <dd>
 <div class="desc"><p>Entity search response with metadata displayed for presentation purposes</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">class EntityInfoForDisplayResponse(TypedDict):
-    &#34;&#34;&#34;Entity search response with metadata displayed for presentation purposes&#34;&#34;&#34;
-
-    groups: List[&#34;EntityNameWithTimeStamp&#34;]
-    &#34;&#34;&#34;A list of information groups&#34;&#34;&#34;</code></pre>
-</details>
 <h3>Ancestors</h3>
 <ul class="hlist">
 <li>builtins.dict</li>
 </ul>
 <h3>Class variables</h3>
 <dl>
-<dt id="macrobond_financial.web.web_types.entity_info_for_display_response.EntityInfoForDisplayResponse.groups"><code class="name">var <span class="ident">groups</span> : List[<a title="macrobond_financial.web.web_types.entity_info_for_display_response.EntityNameWithTimeStamp" href="#macrobond_financial.web.web_types.entity_info_for_display_response.EntityNameWithTimeStamp">EntityNameWithTimeStamp</a>]</code></dt>
+<dt id="macrobond_financial.web.web_types.entity_info_for_display_response.EntityInfoForDisplayResponse.groups"><code class="name">var <span class="ident">groups</span> : List[<a title="macrobond_financial.web.web_types.entity_info_for_display_response.EntityInfoForDisplayGroup" href="#macrobond_financial.web.web_types.entity_info_for_display_response.EntityInfoForDisplayGroup">EntityInfoForDisplayGroup</a>]</code></dt>
 <dd>
 <div class="desc"><p>A list of information groups</p></div>
-</dd>
-</dl>
-</dd>
-<dt id="macrobond_financial.web.web_types.entity_info_for_display_response.EntityNameWithTimeStamp"><code class="flex name class">
-<span>class <span class="ident">EntityNameWithTimeStamp</span></span>
-<span>(</span><span>*args, **kwargs)</span>
-</code></dt>
-<dd>
-<div class="desc"><p>dict() -&gt; new empty dictionary
-dict(mapping) -&gt; new dictionary initialized from a mapping object's
-(key, value) pairs
-dict(iterable) -&gt; new dictionary initialized as if via:
-d = {}
-for k, v in iterable:
-d[k] = v
-dict(**kwargs) -&gt; new dictionary initialized with the name=value pairs
-in the keyword argument list.
-For example:
-dict(one=1, two=2)</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">class EntityNameWithTimeStamp(TypedDict):
-    # pylint: disable = missing-class-docstring
-
-    description: str
-    &#34;&#34;&#34;Heading of the group&#34;&#34;&#34;
-
-    title: Optional[str]
-    &#34;&#34;&#34;Title of the group&#34;&#34;&#34;
-
-    items: List[EntityInfoForDisplayItem]
-    &#34;&#34;&#34;List of information items&#34;&#34;&#34;</code></pre>
-</details>
-<h3>Ancestors</h3>
-<ul class="hlist">
-<li>builtins.dict</li>
-</ul>
-<h3>Class variables</h3>
-<dl>
-<dt id="macrobond_financial.web.web_types.entity_info_for_display_response.EntityNameWithTimeStamp.description"><code class="name">var <span class="ident">description</span> : str</code></dt>
-<dd>
-<div class="desc"><p>Heading of the group</p></div>
-</dd>
-<dt id="macrobond_financial.web.web_types.entity_info_for_display_response.EntityNameWithTimeStamp.title"><code class="name">var <span class="ident">title</span> : Optional[str]</code></dt>
-<dd>
-<div class="desc"><p>Title of the group</p></div>
-</dd>
-</dl>
-<h3>Methods</h3>
-<dl>
-<dt id="macrobond_financial.web.web_types.entity_info_for_display_response.EntityNameWithTimeStamp.items"><code class="name flex">
-<span>def <span class="ident">items</span></span>(<span>...) ‑> List[<a title="macrobond_financial.web.web_types.entity_info_for_display_response.EntityInfoForDisplayItem" href="#macrobond_financial.web.web_types.entity_info_for_display_response.EntityInfoForDisplayItem">EntityInfoForDisplayItem</a>]</span>
-</code></dt>
-<dd>
-<div class="desc"><p>D.items() -&gt; a set-like object providing a view on D's items</p></div>
 </dd>
 </dl>
 </dd>
@@ -256,6 +152,14 @@ dict(one=1, two=2)</p></div>
 <li><h3><a href="#header-classes">Classes</a></h3>
 <ul>
 <li>
+<h4><code><a title="macrobond_financial.web.web_types.entity_info_for_display_response.EntityInfoForDisplayGroup" href="#macrobond_financial.web.web_types.entity_info_for_display_response.EntityInfoForDisplayGroup">EntityInfoForDisplayGroup</a></code></h4>
+<ul class="">
+<li><code><a title="macrobond_financial.web.web_types.entity_info_for_display_response.EntityInfoForDisplayGroup.description" href="#macrobond_financial.web.web_types.entity_info_for_display_response.EntityInfoForDisplayGroup.description">description</a></code></li>
+<li><code><a title="macrobond_financial.web.web_types.entity_info_for_display_response.EntityInfoForDisplayGroup.items" href="#macrobond_financial.web.web_types.entity_info_for_display_response.EntityInfoForDisplayGroup.items">items</a></code></li>
+<li><code><a title="macrobond_financial.web.web_types.entity_info_for_display_response.EntityInfoForDisplayGroup.title" href="#macrobond_financial.web.web_types.entity_info_for_display_response.EntityInfoForDisplayGroup.title">title</a></code></li>
+</ul>
+</li>
+<li>
 <h4><code><a title="macrobond_financial.web.web_types.entity_info_for_display_response.EntityInfoForDisplayItem" href="#macrobond_financial.web.web_types.entity_info_for_display_response.EntityInfoForDisplayItem">EntityInfoForDisplayItem</a></code></h4>
 <ul class="">
 <li><code><a title="macrobond_financial.web.web_types.entity_info_for_display_response.EntityInfoForDisplayItem.comment" href="#macrobond_financial.web.web_types.entity_info_for_display_response.EntityInfoForDisplayItem.comment">comment</a></code></li>
@@ -269,14 +173,6 @@ dict(one=1, two=2)</p></div>
 <h4><code><a title="macrobond_financial.web.web_types.entity_info_for_display_response.EntityInfoForDisplayResponse" href="#macrobond_financial.web.web_types.entity_info_for_display_response.EntityInfoForDisplayResponse">EntityInfoForDisplayResponse</a></code></h4>
 <ul class="">
 <li><code><a title="macrobond_financial.web.web_types.entity_info_for_display_response.EntityInfoForDisplayResponse.groups" href="#macrobond_financial.web.web_types.entity_info_for_display_response.EntityInfoForDisplayResponse.groups">groups</a></code></li>
-</ul>
-</li>
-<li>
-<h4><code><a title="macrobond_financial.web.web_types.entity_info_for_display_response.EntityNameWithTimeStamp" href="#macrobond_financial.web.web_types.entity_info_for_display_response.EntityNameWithTimeStamp">EntityNameWithTimeStamp</a></code></h4>
-<ul class="">
-<li><code><a title="macrobond_financial.web.web_types.entity_info_for_display_response.EntityNameWithTimeStamp.description" href="#macrobond_financial.web.web_types.entity_info_for_display_response.EntityNameWithTimeStamp.description">description</a></code></li>
-<li><code><a title="macrobond_financial.web.web_types.entity_info_for_display_response.EntityNameWithTimeStamp.items" href="#macrobond_financial.web.web_types.entity_info_for_display_response.EntityNameWithTimeStamp.items">items</a></code></li>
-<li><code><a title="macrobond_financial.web.web_types.entity_info_for_display_response.EntityNameWithTimeStamp.title" href="#macrobond_financial.web.web_types.entity_info_for_display_response.EntityNameWithTimeStamp.title">title</a></code></li>
 </ul>
 </li>
 </ul>

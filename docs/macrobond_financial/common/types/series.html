@@ -22,83 +22,6 @@
 <h1 class="title">Module <code>macrobond_financial.common.types.series</code></h1>
 </header>
 <section id="section-intro">
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python"># -*- coding: utf-8 -*-
-
-from datetime import datetime
-
-from typing import Any, Dict, Tuple, Optional, List, cast, TYPE_CHECKING
-from typing_extensions import Literal
-
-from .entity import Entity, EntityColumnsLiterals
-
-from .._get_pandas import _get_pandas
-
-SeriesColumnsLiterals = Literal[EntityColumnsLiterals, &#34;Values&#34;, &#34;Dates&#34;]
-
-SeriesColumns = List[SeriesColumnsLiterals]
-
-if TYPE_CHECKING:  # pragma: no cover
-    from pandas import Series as PdSeries  # type: ignore
-
-
-class Series(Entity):
-    &#34;&#34;&#34;Interface for a Macrobond time series.&#34;&#34;&#34;
-
-    values: Tuple[Optional[float], ...]
-    dates: Tuple[datetime, ...]
-
-    def __init__(
-        self,
-        name: str,
-        error_message: Optional[str],
-        metadata: Optional[Dict[str, Any]],
-        values: Optional[Tuple[Optional[float], ...]],
-        dates: Optional[Tuple[datetime, ...]],
-    ) -&gt; None:
-        super().__init__(name, error_message, metadata)
-
-        self.values = ...  # type: ignore
-        &#34;&#34;&#34;values&#34;&#34;&#34;
-        self.dates = ...  # type: ignore
-        &#34;&#34;&#34;dates&#34;&#34;&#34;
-
-        if values is None:
-            self.values = tuple()
-            self.dates = tuple()
-        else:
-            self.values = values
-            self.dates = cast(Tuple[datetime, ...], dates)
-
-    def to_dict(self) -&gt; Dict[str, Any]:
-        if self.is_error:
-            return {
-                &#34;Name&#34;: self.name,
-                &#34;ErrorMessage&#34;: self.error_message,
-            }
-        ret = {
-            &#34;Name&#34;: self.name,
-            &#34;Values&#34;: self.values,
-            &#34;Dates&#34;: self.dates,
-        }
-        self._add_metadata(ret)
-        return ret
-
-    def values_to_pd_series(self, name: str = None) -&gt; &#34;PdSeries&#34;:
-        pandas = _get_pandas()
-        name = name if name else self.name
-        return pandas.Series(self.values, self.dates, name=name)
-
-    def __eq__(self, other):
-        return self is other or (
-            isinstance(other, Series)
-            and self.error_message == other.error_message
-            and self.metadata == other.metadata
-        )</code></pre>
-</details>
 </section>
 <section>
 </section>
@@ -115,64 +38,6 @@ class Series(Entity):
 </code></dt>
 <dd>
 <div class="desc"><p>Interface for a Macrobond time series.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">class Series(Entity):
-    &#34;&#34;&#34;Interface for a Macrobond time series.&#34;&#34;&#34;
-
-    values: Tuple[Optional[float], ...]
-    dates: Tuple[datetime, ...]
-
-    def __init__(
-        self,
-        name: str,
-        error_message: Optional[str],
-        metadata: Optional[Dict[str, Any]],
-        values: Optional[Tuple[Optional[float], ...]],
-        dates: Optional[Tuple[datetime, ...]],
-    ) -&gt; None:
-        super().__init__(name, error_message, metadata)
-
-        self.values = ...  # type: ignore
-        &#34;&#34;&#34;values&#34;&#34;&#34;
-        self.dates = ...  # type: ignore
-        &#34;&#34;&#34;dates&#34;&#34;&#34;
-
-        if values is None:
-            self.values = tuple()
-            self.dates = tuple()
-        else:
-            self.values = values
-            self.dates = cast(Tuple[datetime, ...], dates)
-
-    def to_dict(self) -&gt; Dict[str, Any]:
-        if self.is_error:
-            return {
-                &#34;Name&#34;: self.name,
-                &#34;ErrorMessage&#34;: self.error_message,
-            }
-        ret = {
-            &#34;Name&#34;: self.name,
-            &#34;Values&#34;: self.values,
-            &#34;Dates&#34;: self.dates,
-        }
-        self._add_metadata(ret)
-        return ret
-
-    def values_to_pd_series(self, name: str = None) -&gt; &#34;PdSeries&#34;:
-        pandas = _get_pandas()
-        name = name if name else self.name
-        return pandas.Series(self.values, self.dates, name=name)
-
-    def __eq__(self, other):
-        return self is other or (
-            isinstance(other, Series)
-            and self.error_message == other.error_message
-            and self.metadata == other.metadata
-        )</code></pre>
-</details>
 <h3>Ancestors</h3>
 <ul class="hlist">
 <li><a title="macrobond_financial.common.types.entity.Entity" href="entity.html#macrobond_financial.common.types.entity.Entity">Entity</a></li>
@@ -199,39 +64,12 @@ class Series(Entity):
 </code></dt>
 <dd>
 <div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def to_dict(self) -&gt; Dict[str, Any]:
-    if self.is_error:
-        return {
-            &#34;Name&#34;: self.name,
-            &#34;ErrorMessage&#34;: self.error_message,
-        }
-    ret = {
-        &#34;Name&#34;: self.name,
-        &#34;Values&#34;: self.values,
-        &#34;Dates&#34;: self.dates,
-    }
-    self._add_metadata(ret)
-    return ret</code></pre>
-</details>
 </dd>
 <dt id="macrobond_financial.common.types.series.Series.values_to_pd_series"><code class="name flex">
 <span>def <span class="ident">values_to_pd_series</span></span>(<span>self, name: str = None) ‑> PdSeries</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def values_to_pd_series(self, name: str = None) -&gt; &#34;PdSeries&#34;:
-    pandas = _get_pandas()
-    name = name if name else self.name
-    return pandas.Series(self.values, self.dates, name=name)</code></pre>
-</details>
 </dd>
 </dl>
 <h3>Inherited members</h3>

@@ -22,162 +22,6 @@
 <h1 class="title">Module <code>macrobond_financial.com.com_types.series_request</code></h1>
 </header>
 <section id="section-intro">
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python"># -*- coding: utf-8 -*-
-
-# pylint: disable = invalid-name missing-module-docstring
-
-from typing import Union, Tuple
-from datetime import datetime
-
-from macrobond_financial.common.enums import CalendarMergeMode, CalendarDateMode
-
-from .series_expression import SeriesExpression
-
-
-class SeriesRequest:
-    &#34;&#34;&#34;Interface for a Macrobond series request.&#34;&#34;&#34;
-
-    @property
-    def AddedSeries(self) -&gt; Tuple[SeriesExpression]:
-        &#34;&#34;&#34;A list of the added series.&#34;&#34;&#34;
-
-    @property
-    def Frequency(self) -&gt; int:
-        &#34;&#34;&#34;
-        The frequency that all series will be converted to.
-        The default value is ‘Highest’, which means that all series will be converted to the
-        same frequency as the series with the highest frequency.
-        &#34;&#34;&#34;
-
-    @Frequency.setter
-    def Frequency(self, new_series_frequency: int):
-        &#34;&#34;&#34;
-        The frequency that all series will be converted to.
-        The default value is ‘Highest’, which means that all series will be converted to the
-        same frequency as the series with the highest frequency.
-        &#34;&#34;&#34;
-
-    @property
-    def CalendarMergeMode(self) -&gt; CalendarMergeMode:
-        &#34;&#34;&#34;
-        Determines how to handle points in time that are not available in one or more series.
-        The default value is ‘AvailibleInAny’
-        &#34;&#34;&#34;
-
-    @CalendarMergeMode.setter
-    def CalendarMergeMode(self, new_calendar_merge_mode: CalendarMergeMode):
-        &#34;&#34;&#34;
-        Determines how to handle points in time that are not available in one or more series.
-        The default value is ‘AvailibleInAny’
-        &#34;&#34;&#34;
-
-    @property
-    def Weekdays(self) -&gt; int:
-        &#34;&#34;&#34;
-        This determines what days of the week that are used when the resulting frequency
-        is Daily and the CalendarMergeMode is ‘FullCalendar’.
-        &#34;&#34;&#34;
-
-    @Weekdays.setter
-    def Weekdays(self, new_week_days: int):
-        &#34;&#34;&#34;
-        This determines what days of the week that are used when the resulting frequency
-        is Daily and the CalendarMergeMode is ‘FullCalendar’.
-        &#34;&#34;&#34;
-
-    @property
-    def Currency(self) -&gt; str:
-        &#34;&#34;&#34;
-        The currency code based on the three letter IS 4217 codes that will be used to convert
-        any series expressed in currency units.
-        The default is an empty string, which means that no currency conversion will be done.
-        There is a list of the supported currencies on a Currencies List web page.
-        &#34;&#34;&#34;
-
-    @Currency.setter
-    def Currency(self, new_currency: str):
-        &#34;&#34;&#34;
-        The currency code based on the three letter IS 4217 codes that will be used to convert
-        any series expressed in currency units.
-        The default is an empty string, which means that no currency conversion will be done.
-        There is a list of the supported currencies on a Currencies List web page.
-        &#34;&#34;&#34;
-
-    @property
-    def StartDateMode(self) -&gt; CalendarDateMode:
-        &#34;&#34;&#34;
-        Determines if the automatic start of the series is at the first point when there
-        is data in any series or the first point where there is data in all series.
-        The default is ‘DataInAnySeries’. This setting is not used when the StartDate property
-        is set to an absolute point in time.
-        &#34;&#34;&#34;
-
-    @StartDateMode.setter
-    def StartDateMode(self, new_start_date_mode: CalendarDateMode):
-        &#34;&#34;&#34;
-        Determines if the automatic start of the series is at the first point when there is
-        data in any series or the first point where there is data in all series.
-        The default is ‘DataInAnySeries’. This setting is not used when the StartDate
-        property is set to an absolute point in time.
-        &#34;&#34;&#34;
-
-    @property
-    def StartDate(self) -&gt; Union[None, datetime, str]:
-        &#34;&#34;&#34;
-        This specifies the start date used for all the series in the request.
-        The value can be empty, a specific date or a string representing a point in time
-        as described below.
-        If it is empty or a relative reference, the StartDateMode will be used to
-        determine the start.
-        &#34;&#34;&#34;
-
-    @StartDate.setter
-    def StartDate(self, new_start_date: Union[None, datetime, str]):
-        &#34;&#34;&#34;
-        This specifies the start date used for all the series in the request.
-        The value can be empty, a specific date or a string representing a point in time
-        as described below.
-        If it is empty or a relative reference, the StartDateMode will be used to
-        determine the start.
-        &#34;&#34;&#34;
-
-    @property
-    def EndDateMode(self) -&gt; CalendarDateMode:
-        &#34;&#34;&#34;
-        Determines if the automatic end of the series is at the last point when there
-        is data in any series or the last point where there is data in all series.
-        The default is ‘DataInAnySeries’.
-        This setting is not used when the EndDate property is set to an absolute point in time.
-        &#34;&#34;&#34;
-
-    @EndDateMode.setter
-    def EndDateMode(self, new_end_date_mode: CalendarDateMode):
-        &#34;&#34;&#34;
-        Determines if the automatic end of the series is at the last point when there is
-        data in any series or the last point where there is data in all series.
-        The default is ‘DataInAnySeries’.
-        This setting is not used when the EndDate property is set to an absolute point in time.
-        &#34;&#34;&#34;
-
-    @property
-    def EndDate(self) -&gt; Union[None, datetime, str]:
-        &#34;&#34;&#34;The end date.&#34;&#34;&#34;
-
-    @EndDate.setter
-    def EndDate(self, new_end_date: Union[None, datetime, str]):
-        &#34;&#34;&#34;The end date.&#34;&#34;&#34;
-
-    def AddSeries(self, name: str) -&gt; SeriesExpression:
-        &#34;&#34;&#34;
-        Add a series to the list of series to request. You can optionally use the returned
-        interface to do further configurations, such as methods for missing
-        value and frequency conversion.
-        &#34;&#34;&#34;</code></pre>
-</details>
 </section>
 <section>
 </section>
@@ -193,179 +37,16 @@ class SeriesRequest:
 </code></dt>
 <dd>
 <div class="desc"><p>Interface for a Macrobond series request.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">class SeriesRequest:
-    &#34;&#34;&#34;Interface for a Macrobond series request.&#34;&#34;&#34;
-
-    @property
-    def AddedSeries(self) -&gt; Tuple[SeriesExpression]:
-        &#34;&#34;&#34;A list of the added series.&#34;&#34;&#34;
-
-    @property
-    def Frequency(self) -&gt; int:
-        &#34;&#34;&#34;
-        The frequency that all series will be converted to.
-        The default value is ‘Highest’, which means that all series will be converted to the
-        same frequency as the series with the highest frequency.
-        &#34;&#34;&#34;
-
-    @Frequency.setter
-    def Frequency(self, new_series_frequency: int):
-        &#34;&#34;&#34;
-        The frequency that all series will be converted to.
-        The default value is ‘Highest’, which means that all series will be converted to the
-        same frequency as the series with the highest frequency.
-        &#34;&#34;&#34;
-
-    @property
-    def CalendarMergeMode(self) -&gt; CalendarMergeMode:
-        &#34;&#34;&#34;
-        Determines how to handle points in time that are not available in one or more series.
-        The default value is ‘AvailibleInAny’
-        &#34;&#34;&#34;
-
-    @CalendarMergeMode.setter
-    def CalendarMergeMode(self, new_calendar_merge_mode: CalendarMergeMode):
-        &#34;&#34;&#34;
-        Determines how to handle points in time that are not available in one or more series.
-        The default value is ‘AvailibleInAny’
-        &#34;&#34;&#34;
-
-    @property
-    def Weekdays(self) -&gt; int:
-        &#34;&#34;&#34;
-        This determines what days of the week that are used when the resulting frequency
-        is Daily and the CalendarMergeMode is ‘FullCalendar’.
-        &#34;&#34;&#34;
-
-    @Weekdays.setter
-    def Weekdays(self, new_week_days: int):
-        &#34;&#34;&#34;
-        This determines what days of the week that are used when the resulting frequency
-        is Daily and the CalendarMergeMode is ‘FullCalendar’.
-        &#34;&#34;&#34;
-
-    @property
-    def Currency(self) -&gt; str:
-        &#34;&#34;&#34;
-        The currency code based on the three letter IS 4217 codes that will be used to convert
-        any series expressed in currency units.
-        The default is an empty string, which means that no currency conversion will be done.
-        There is a list of the supported currencies on a Currencies List web page.
-        &#34;&#34;&#34;
-
-    @Currency.setter
-    def Currency(self, new_currency: str):
-        &#34;&#34;&#34;
-        The currency code based on the three letter IS 4217 codes that will be used to convert
-        any series expressed in currency units.
-        The default is an empty string, which means that no currency conversion will be done.
-        There is a list of the supported currencies on a Currencies List web page.
-        &#34;&#34;&#34;
-
-    @property
-    def StartDateMode(self) -&gt; CalendarDateMode:
-        &#34;&#34;&#34;
-        Determines if the automatic start of the series is at the first point when there
-        is data in any series or the first point where there is data in all series.
-        The default is ‘DataInAnySeries’. This setting is not used when the StartDate property
-        is set to an absolute point in time.
-        &#34;&#34;&#34;
-
-    @StartDateMode.setter
-    def StartDateMode(self, new_start_date_mode: CalendarDateMode):
-        &#34;&#34;&#34;
-        Determines if the automatic start of the series is at the first point when there is
-        data in any series or the first point where there is data in all series.
-        The default is ‘DataInAnySeries’. This setting is not used when the StartDate
-        property is set to an absolute point in time.
-        &#34;&#34;&#34;
-
-    @property
-    def StartDate(self) -&gt; Union[None, datetime, str]:
-        &#34;&#34;&#34;
-        This specifies the start date used for all the series in the request.
-        The value can be empty, a specific date or a string representing a point in time
-        as described below.
-        If it is empty or a relative reference, the StartDateMode will be used to
-        determine the start.
-        &#34;&#34;&#34;
-
-    @StartDate.setter
-    def StartDate(self, new_start_date: Union[None, datetime, str]):
-        &#34;&#34;&#34;
-        This specifies the start date used for all the series in the request.
-        The value can be empty, a specific date or a string representing a point in time
-        as described below.
-        If it is empty or a relative reference, the StartDateMode will be used to
-        determine the start.
-        &#34;&#34;&#34;
-
-    @property
-    def EndDateMode(self) -&gt; CalendarDateMode:
-        &#34;&#34;&#34;
-        Determines if the automatic end of the series is at the last point when there
-        is data in any series or the last point where there is data in all series.
-        The default is ‘DataInAnySeries’.
-        This setting is not used when the EndDate property is set to an absolute point in time.
-        &#34;&#34;&#34;
-
-    @EndDateMode.setter
-    def EndDateMode(self, new_end_date_mode: CalendarDateMode):
-        &#34;&#34;&#34;
-        Determines if the automatic end of the series is at the last point when there is
-        data in any series or the last point where there is data in all series.
-        The default is ‘DataInAnySeries’.
-        This setting is not used when the EndDate property is set to an absolute point in time.
-        &#34;&#34;&#34;
-
-    @property
-    def EndDate(self) -&gt; Union[None, datetime, str]:
-        &#34;&#34;&#34;The end date.&#34;&#34;&#34;
-
-    @EndDate.setter
-    def EndDate(self, new_end_date: Union[None, datetime, str]):
-        &#34;&#34;&#34;The end date.&#34;&#34;&#34;
-
-    def AddSeries(self, name: str) -&gt; SeriesExpression:
-        &#34;&#34;&#34;
-        Add a series to the list of series to request. You can optionally use the returned
-        interface to do further configurations, such as methods for missing
-        value and frequency conversion.
-        &#34;&#34;&#34;</code></pre>
-</details>
 <h3>Instance variables</h3>
 <dl>
 <dt id="macrobond_financial.com.com_types.series_request.SeriesRequest.AddedSeries"><code class="name">var <span class="ident">AddedSeries</span> : Tuple[<a title="macrobond_financial.com.com_types.series_expression.SeriesExpression" href="series_expression.html#macrobond_financial.com.com_types.series_expression.SeriesExpression">SeriesExpression</a>]</code></dt>
 <dd>
 <div class="desc"><p>A list of the added series.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@property
-def AddedSeries(self) -&gt; Tuple[SeriesExpression]:
-    &#34;&#34;&#34;A list of the added series.&#34;&#34;&#34;</code></pre>
-</details>
 </dd>
 <dt id="macrobond_financial.com.com_types.series_request.SeriesRequest.CalendarMergeMode"><code class="name">var <span class="ident">CalendarMergeMode</span> : <a title="macrobond_financial.common.enums.calendar_merge_mode.CalendarMergeMode" href="../../common/enums/calendar_merge_mode.html#macrobond_financial.common.enums.calendar_merge_mode.CalendarMergeMode">CalendarMergeMode</a></code></dt>
 <dd>
 <div class="desc"><p>Determines how to handle points in time that are not available in one or more series.
 The default value is ‘AvailibleInAny’</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@property
-def CalendarMergeMode(self) -&gt; CalendarMergeMode:
-    &#34;&#34;&#34;
-    Determines how to handle points in time that are not available in one or more series.
-    The default value is ‘AvailibleInAny’
-    &#34;&#34;&#34;</code></pre>
-</details>
 </dd>
 <dt id="macrobond_financial.com.com_types.series_request.SeriesRequest.Currency"><code class="name">var <span class="ident">Currency</span> : str</code></dt>
 <dd>
@@ -373,31 +54,10 @@ def CalendarMergeMode(self) -&gt; CalendarMergeMode:
 any series expressed in currency units.
 The default is an empty string, which means that no currency conversion will be done.
 There is a list of the supported currencies on a Currencies List web page.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@property
-def Currency(self) -&gt; str:
-    &#34;&#34;&#34;
-    The currency code based on the three letter IS 4217 codes that will be used to convert
-    any series expressed in currency units.
-    The default is an empty string, which means that no currency conversion will be done.
-    There is a list of the supported currencies on a Currencies List web page.
-    &#34;&#34;&#34;</code></pre>
-</details>
 </dd>
 <dt id="macrobond_financial.com.com_types.series_request.SeriesRequest.EndDate"><code class="name">var <span class="ident">EndDate</span> : Union[None, datetime.datetime, str]</code></dt>
 <dd>
 <div class="desc"><p>The end date.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@property
-def EndDate(self) -&gt; Union[None, datetime, str]:
-    &#34;&#34;&#34;The end date.&#34;&#34;&#34;</code></pre>
-</details>
 </dd>
 <dt id="macrobond_financial.com.com_types.series_request.SeriesRequest.EndDateMode"><code class="name">var <span class="ident">EndDateMode</span> : <a title="macrobond_financial.common.enums.calendar_date_mode.CalendarDateMode" href="../../common/enums/calendar_date_mode.html#macrobond_financial.common.enums.calendar_date_mode.CalendarDateMode">CalendarDateMode</a></code></dt>
 <dd>
@@ -405,37 +65,12 @@ def EndDate(self) -&gt; Union[None, datetime, str]:
 is data in any series or the last point where there is data in all series.
 The default is ‘DataInAnySeries’.
 This setting is not used when the EndDate property is set to an absolute point in time.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@property
-def EndDateMode(self) -&gt; CalendarDateMode:
-    &#34;&#34;&#34;
-    Determines if the automatic end of the series is at the last point when there
-    is data in any series or the last point where there is data in all series.
-    The default is ‘DataInAnySeries’.
-    This setting is not used when the EndDate property is set to an absolute point in time.
-    &#34;&#34;&#34;</code></pre>
-</details>
 </dd>
 <dt id="macrobond_financial.com.com_types.series_request.SeriesRequest.Frequency"><code class="name">var <span class="ident">Frequency</span> : int</code></dt>
 <dd>
 <div class="desc"><p>The frequency that all series will be converted to.
 The default value is ‘Highest’, which means that all series will be converted to the
 same frequency as the series with the highest frequency.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@property
-def Frequency(self) -&gt; int:
-    &#34;&#34;&#34;
-    The frequency that all series will be converted to.
-    The default value is ‘Highest’, which means that all series will be converted to the
-    same frequency as the series with the highest frequency.
-    &#34;&#34;&#34;</code></pre>
-</details>
 </dd>
 <dt id="macrobond_financial.com.com_types.series_request.SeriesRequest.StartDate"><code class="name">var <span class="ident">StartDate</span> : Union[None, datetime.datetime, str]</code></dt>
 <dd>
@@ -444,20 +79,6 @@ The value can be empty, a specific date or a string representing a point in time
 as described below.
 If it is empty or a relative reference, the StartDateMode will be used to
 determine the start.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@property
-def StartDate(self) -&gt; Union[None, datetime, str]:
-    &#34;&#34;&#34;
-    This specifies the start date used for all the series in the request.
-    The value can be empty, a specific date or a string representing a point in time
-    as described below.
-    If it is empty or a relative reference, the StartDateMode will be used to
-    determine the start.
-    &#34;&#34;&#34;</code></pre>
-</details>
 </dd>
 <dt id="macrobond_financial.com.com_types.series_request.SeriesRequest.StartDateMode"><code class="name">var <span class="ident">StartDateMode</span> : <a title="macrobond_financial.common.enums.calendar_date_mode.CalendarDateMode" href="../../common/enums/calendar_date_mode.html#macrobond_financial.common.enums.calendar_date_mode.CalendarDateMode">CalendarDateMode</a></code></dt>
 <dd>
@@ -465,35 +86,11 @@ def StartDate(self) -&gt; Union[None, datetime, str]:
 is data in any series or the first point where there is data in all series.
 The default is ‘DataInAnySeries’. This setting is not used when the StartDate property
 is set to an absolute point in time.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@property
-def StartDateMode(self) -&gt; CalendarDateMode:
-    &#34;&#34;&#34;
-    Determines if the automatic start of the series is at the first point when there
-    is data in any series or the first point where there is data in all series.
-    The default is ‘DataInAnySeries’. This setting is not used when the StartDate property
-    is set to an absolute point in time.
-    &#34;&#34;&#34;</code></pre>
-</details>
 </dd>
 <dt id="macrobond_financial.com.com_types.series_request.SeriesRequest.Weekdays"><code class="name">var <span class="ident">Weekdays</span> : int</code></dt>
 <dd>
 <div class="desc"><p>This determines what days of the week that are used when the resulting frequency
 is Daily and the CalendarMergeMode is ‘FullCalendar’.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@property
-def Weekdays(self) -&gt; int:
-    &#34;&#34;&#34;
-    This determines what days of the week that are used when the resulting frequency
-    is Daily and the CalendarMergeMode is ‘FullCalendar’.
-    &#34;&#34;&#34;</code></pre>
-</details>
 </dd>
 </dl>
 <h3>Methods</h3>
@@ -505,17 +102,6 @@ def Weekdays(self) -&gt; int:
 <div class="desc"><p>Add a series to the list of series to request. You can optionally use the returned
 interface to do further configurations, such as methods for missing
 value and frequency conversion.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def AddSeries(self, name: str) -&gt; SeriesExpression:
-    &#34;&#34;&#34;
-    Add a series to the list of series to request. You can optionally use the returned
-    interface to do further configurations, such as methods for missing
-    value and frequency conversion.
-    &#34;&#34;&#34;</code></pre>
-</details>
 </dd>
 </dl>
 </dd>
