@@ -37,7 +37,7 @@
 <span>(</span><span>name: str, error_message: Optional[str], metadata: Optional[Dict[str, Any]])</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Interface for a database Macrobond entity.</p></div>
+<div class="desc"><p>Represents a Macrobond entity.</p></div>
 <h3>Subclasses</h3>
 <ul class="hlist">
 <li><a title="macrobond_financial.common.types.series.Series" href="series.html#macrobond_financial.common.types.series.Series">Series</a></li>
@@ -50,11 +50,11 @@
 </dd>
 <dt id="macrobond_financial.common.types.entity.Entity.error_message"><code class="name">var <span class="ident">error_message</span> : str</code></dt>
 <dd>
-<div class="desc"><p>error_message</p></div>
+<div class="desc"><p>Contains an error message if is_error is True.</p></div>
 </dd>
 <dt id="macrobond_financial.common.types.entity.Entity.is_discontinued"><code class="name">var <span class="ident">is_discontinued</span> : bool</code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>Returns True if the entity is discontinued and no longer updated.</p></div>
 </dd>
 <dt id="macrobond_financial.common.types.entity.Entity.is_error"><code class="name">var <span class="ident">is_error</span> : bool</code></dt>
 <dd>
@@ -62,15 +62,16 @@
 </dd>
 <dt id="macrobond_financial.common.types.entity.Entity.metadata"><code class="name">var <span class="ident">metadata</span> : Dict[str, Any]</code></dt>
 <dd>
-<div class="desc"><p>metadata</p></div>
+<div class="desc"><p>The metadata of the entity.</p></div>
 </dd>
 <dt id="macrobond_financial.common.types.entity.Entity.name"><code class="name">var <span class="ident">name</span> : str</code></dt>
 <dd>
-<div class="desc"><p>name</p></div>
+<div class="desc"><p>The name of the requested entity.</p></div>
 </dd>
 <dt id="macrobond_financial.common.types.entity.Entity.primary_name"><code class="name">var <span class="ident">primary_name</span> : str</code></dt>
 <dd>
-<div class="desc"><p>The primary name of the entity.</p></div>
+<div class="desc"><p>The primary name of the entity.<br>
+This can be different from the name requested if an alias was used in the request.</p></div>
 </dd>
 <dt id="macrobond_financial.common.types.entity.Entity.title"><code class="name">var <span class="ident">title</span> : str</code></dt>
 <dd>
@@ -83,7 +84,7 @@
 <span>def <span class="ident">metadata_to_pd_series</span></span>(<span>self, name: str = None) ‑> Series</span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>Returns a Pandas series containing all the metadata.</p></div>
 </dd>
 <dt id="macrobond_financial.common.types.entity.Entity.to_dict"><code class="name flex">
 <span>def <span class="ident">to_dict</span></span>(<span>self) ‑> Dict[str, Any]</span>
