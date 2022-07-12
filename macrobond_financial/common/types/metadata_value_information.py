@@ -6,7 +6,6 @@ from typing import (
     List,
     TYPE_CHECKING,
     Sequence,
-    cast,
 )
 from typing_extensions import TypedDict, Literal
 
@@ -71,7 +70,12 @@ class MetadataValueInformationItem:
 
     def to_dict(self) -> TypedDictMetadataValueInformation:
         """The information represented as a dictionary"""
-        return cast(TypedDictMetadataValueInformation, vars(self))
+        return {
+            "attribute_name": self.attribute_name,
+            "value": self.value,
+            "description": self.description,
+            "comment": self.comment,
+        }
 
     def __repr__(self):
         return (

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from typing import List
-from unittest import skip
+from unittest import skip  # type: ignore[attr-defined]
 from macrobond_financial.web import (
     SubscriptionBody,
     SubscriptionListItem,

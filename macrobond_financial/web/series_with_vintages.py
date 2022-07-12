@@ -1,9 +1,13 @@
 # -*- coding: utf-8 -*-
 
+from datetime import datetime
 from typing import Optional, Dict, Any, List
-from dateutil import parser  # type: ignore
 
 from .web_types import VintageValuesResponse, SeriesWithVintagesResponse
+
+
+def _parse_date(date_text: str) -> datetime:
+    return datetime(int(date_text[0:4]), int(date_text[5:7]), int(date_text[8:10]))
 
 
 class VintageValues:
@@ -14,7 +18,7 @@ class VintageValues:
     vintage_time_stamp: Optional[str]
     """The time when this version of the series was recorded"""
 
-    dates: List[str]
+    dates: List[datetime]
     """The dates of the vintage series."""
 
     values: List[Optional[float]]
@@ -22,7 +26,11 @@ class VintageValues:
 
     def __init__(self, vintage_values: VintageValuesResponse) -> None:
         self.vintage_time_stamp = vintage_values.get("vintageTimeStamp")
-        self.dates = list(map(parser.parse, vintage_values["dates"]))
+
+        # old
+        # self.dates = list(map(parser.parse, vintage_values["dates"]))
+        self.dates = list(map(_parse_date, vintage_values["dates"]))
+
         self.values = list(
             map(
                 lambda x: float(x) if x else None,
@@ -65,12 +73,27 @@ class SeriesWithVintages:
     The value should be from the metadata LastRevisionAdjustmentTimeStamp of the previous response.
     """
 
+    @property
+    def primary_name(self) -> str:
+        """The primary name of the entity."""
+        if self.metadata is None:
+            return ""
+        prim_name = self.metadata["PrimName"]
+        if isinstance(prim_name, list):
+            prim_name = prim_name[0]
+        return prim_name
+
     def __init__(self, response: SeriesWithVintagesResponse) -> None:
         self.error_text = response.get("errorText")
         self.error_code = response.get("errorCode")
         self.metadata = response.get("metadata")
+        self.vintages = []
         vintages = response.get("vintages")
         self.vintages = list(map(VintageValues, vintages)) if vintages else []
 
     def __repr__(self):
-        return f"SeriesWithVintages error_text: {self.error_text}, error_code: {self.error_code}"
+        return (
+            f"SeriesWithVintages primary_name: {self.primary_name}, "
+            + f"error_text: {self.error_text}, error_code: {self.error_code}, "
+            + f"vintages: {len(self.vintages)}"
+        )

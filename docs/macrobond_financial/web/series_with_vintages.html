@@ -57,6 +57,10 @@
 <dd>
 <div class="desc"><p>The time when this version of the series was recorded</p></div>
 </dd>
+<dt id="macrobond_financial.web.series_with_vintages.SeriesWithVintages.primary_name"><code class="name">var <span class="ident">primary_name</span> : str</code></dt>
+<dd>
+<div class="desc"><p>The primary name of the entity.</p></div>
+</dd>
 <dt id="macrobond_financial.web.series_with_vintages.SeriesWithVintages.vintages"><code class="name">var <span class="ident">vintages</span> : List[<a title="macrobond_financial.web.series_with_vintages.VintageValues" href="#macrobond_financial.web.series_with_vintages.VintageValues">VintageValues</a>]</code></dt>
 <dd>
 <div class="desc"><p>If specified, incremental updates can be return. PartialContent (206) will be returned in
@@ -73,7 +77,7 @@ The value should be from the metadata LastRevisionAdjustmentTimeStamp of the pre
 <div class="desc"><p>A time series with times of change</p></div>
 <h3>Instance variables</h3>
 <dl>
-<dt id="macrobond_financial.web.series_with_vintages.VintageValues.dates"><code class="name">var <span class="ident">dates</span> : List[str]</code></dt>
+<dt id="macrobond_financial.web.series_with_vintages.VintageValues.dates"><code class="name">var <span class="ident">dates</span> : List[datetime.datetime]</code></dt>
 <dd>
 <div class="desc"><p>The dates of the vintage series.</p></div>
 </dd>
@@ -109,6 +113,7 @@ The value should be from the metadata LastRevisionAdjustmentTimeStamp of the pre
 <li><code><a title="macrobond_financial.web.series_with_vintages.SeriesWithVintages.error_code" href="#macrobond_financial.web.series_with_vintages.SeriesWithVintages.error_code">error_code</a></code></li>
 <li><code><a title="macrobond_financial.web.series_with_vintages.SeriesWithVintages.error_text" href="#macrobond_financial.web.series_with_vintages.SeriesWithVintages.error_text">error_text</a></code></li>
 <li><code><a title="macrobond_financial.web.series_with_vintages.SeriesWithVintages.metadata" href="#macrobond_financial.web.series_with_vintages.SeriesWithVintages.metadata">metadata</a></code></li>
+<li><code><a title="macrobond_financial.web.series_with_vintages.SeriesWithVintages.primary_name" href="#macrobond_financial.web.series_with_vintages.SeriesWithVintages.primary_name">primary_name</a></code></li>
 <li><code><a title="macrobond_financial.web.series_with_vintages.SeriesWithVintages.vintages" href="#macrobond_financial.web.series_with_vintages.SeriesWithVintages.vintages">vintages</a></code></li>
 </ul>
 </li>

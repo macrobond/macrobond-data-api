@@ -2,18 +2,34 @@
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "set up dev environment",
+            "label": "py set up dev environment",
             "type": "shell",
             "command": "py",
             "args": [ "-3.7" , "scripts\\set_up_dev_environment.py"],
-            "problemMatcher": [],
+            "problemMatcher": []
         },
         {
-            "label": "unittest",
+            "label": "pypy set up dev environment",
+            "type": "shell",
+            "command": "pypy",
+            "args": ["scripts\\set_up_dev_environment.py"],
+            "problemMatcher": [],
+            "icon": {"color": "terminal.ansiYellow" },
+        },
+        {
+            "label": "py unittest",
             "type": "shell",
             "command": "py",
-                "args": ["-3.7" ,"scripts\\unittest.py"],
+            "args": ["-3.7" ,"scripts\\unittest.py"],
             "problemMatcher": []
+        },
+        {
+            "label": "pypy unittest",
+            "type": "shell",
+            "command": "pypy",
+                "args": ["scripts\\unittest.py"],
+            "problemMatcher": [],
+            "icon": {"color": "terminal.ansiYellow" }
         },
         {
             "label": "pylint",
@@ -66,11 +82,19 @@
             }
         },
         {
-            "label": "coverage",
+            "label": "py coverage",
             "type": "shell",
             "command": "py",
             "args": ["-3.7" ,"scripts\\coverage.py"],
             "problemMatcher": []
+        },
+        {
+            "label": "pypy coverage",
+            "type": "shell",
+            "command": "pypy",
+            "args": [ "scripts\\coverage.py"],
+            "problemMatcher": [],
+            "icon": {"color": "terminal.ansiYellow" }
         },
         {
             "label": "build",

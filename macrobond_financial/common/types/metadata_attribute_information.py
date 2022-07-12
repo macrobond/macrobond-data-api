@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
-
-from typing import Optional, cast, List, TYPE_CHECKING
+from typing import Optional, List, TYPE_CHECKING
 from typing_extensions import TypedDict, Literal
 
 from .._get_pandas import _get_pandas
@@ -133,7 +132,16 @@ class MetadataAttributeInformation:
 
     def to_dict(self) -> TypedDictMetadataAttributeInformation:
         """The information represented as a dictionary"""
-        return cast(TypedDictMetadataAttributeInformation, vars(self))
+        return {
+            "name": self.name,
+            "description": self.description,
+            "comment": self.comment,
+            "value_type": self.value_type,
+            "uses_value_list": self.uses_value_list,
+            "can_list_values": self.can_list_values,
+            "can_have_multiple_values": self.can_have_multiple_values,
+            "is_database_entity": self.is_database_entity,
+        }
 
     def to_pd_data_frame(self) -> "DataFrame":
         """The information represented as a Pandas DataFrame"""

@@ -2,7 +2,7 @@
 
 
 from datetime import datetime
-from typing import Tuple, TYPE_CHECKING, Optional, cast
+from typing import Tuple, TYPE_CHECKING, Optional
 
 from typing_extensions import TypedDict
 
@@ -74,7 +74,15 @@ class RevisionInfo:
         """vintage_time_stamps"""
 
     def to_dict(self) -> RevisionInfoDict:
-        return cast(RevisionInfoDict, vars(self))
+        return {
+            "name": self.name,
+            "error_message": self.error_message,
+            "stores_revisions": self.stores_revisions,
+            "has_revisions": self.has_revisions,
+            "time_stamp_of_first_revision": self.time_stamp_of_first_revision,
+            "time_stamp_of_last_revision": self.time_stamp_of_last_revision,
+            "vintage_time_stamps": self.vintage_time_stamps,
+        }
 
     def to_pd_data_frame(self) -> "DataFrame":
         pandas = _get_pandas()

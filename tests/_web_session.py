@@ -32,7 +32,7 @@ class WebSession(TestCase):
 
         self.assertEqual(response.status_code, 200)
 
-        mock.get.assert_called_with(url="/", params=None)
+        mock.get.assert_called_with(url="/", params=None, stream=False)
 
     def test_retry(self) -> None:
 
@@ -48,7 +48,7 @@ class WebSession(TestCase):
 
         self.assertEqual(response.status_code, 200)
 
-        mock.get.assert_called_with(url="/", params=None)
+        mock.get.assert_called_with(url="/", params=None, stream=False)
         mock.request.assert_called_with("get", "/.well-known/openid-configuration", True)
         mock.fetch_token.assert_called_with("")
 
@@ -68,7 +68,7 @@ class WebSession(TestCase):
 
         self.assertEqual(ex.args[0], "discovery Exception, status code is not 200")
 
-        mock.get.assert_called_with(url="/", params=None)
+        mock.get.assert_called_with(url="/", params=None, stream=False)
 
         mock.request.assert_called_with("get", "/.well-known/openid-configuration", True)
 
@@ -88,7 +88,7 @@ class WebSession(TestCase):
 
         self.assertEqual(ex.args[0], "discovery Exception, not valid json.")
 
-        mock.get.assert_called_with(url="/", params=None)
+        mock.get.assert_called_with(url="/", params=None, stream=False)
 
         mock.request.assert_called_with("get", "/.well-known/openid-configuration", True)
 
@@ -108,7 +108,7 @@ class WebSession(TestCase):
 
         self.assertEqual(ex.args[0], "discovery Exception, no root obj in json.")
 
-        mock.get.assert_called_with(url="/", params=None)
+        mock.get.assert_called_with(url="/", params=None, stream=False)
 
         mock.request.assert_called_with("get", "/.well-known/openid-configuration", True)
 
@@ -128,6 +128,6 @@ class WebSession(TestCase):
 
         self.assertEqual(ex.args[0], "discovery Exception, token_endpoint in root obj.")
 
-        mock.get.assert_called_with(url="/", params=None)
+        mock.get.assert_called_with(url="/", params=None, stream=False)
 
         mock.request.assert_called_with("get", "/.well-known/openid-configuration", True)
