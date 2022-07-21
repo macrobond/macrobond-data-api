@@ -12,6 +12,9 @@ if TYPE_CHECKING:  # pragma: no cover
 
 
 class GetAllVintageSeriesResult(List[Series]):
+    """
+    The result of downloading all vintagesof a time series.
+    """
 
     __slots__ = ("series_name",)
 
@@ -29,11 +32,14 @@ class GetAllVintageSeriesResult(List[Series]):
     @property
     def series(self) -> List[Series]:
         """
-        A sequence of the metadata of the entities found.
+        A sequence of time series corresponding to the vintages.
         """
         return list(self)
 
     def to_pd_data_frame(self) -> "DataFrame":
+        """
+        Return the result as a Pandas DataFrame.
+        """
         pandas = _get_pandas()
         data = list(map(lambda s: s.values_to_pd_series(), self))
         data_frame = pandas.concat(data, axis=1, keys=[s.name for s in self])
@@ -41,6 +47,9 @@ class GetAllVintageSeriesResult(List[Series]):
         return data_frame
 
     def to_dict(self) -> Dict[str, Any]:
+        """
+        Return the result as a dictionary.
+        """
         return {
             "series_name": self.series_name,
             "series": tuple(map(lambda x: x.to_dict(), self)),
