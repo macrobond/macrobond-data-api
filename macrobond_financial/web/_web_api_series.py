@@ -21,6 +21,8 @@ from macrobond_financial.common.types import (
     UnifiedSerie,
 )
 
+from .session import Session
+
 if TYPE_CHECKING:  # pragma: no cover
     from .web_api import WebApi
 
@@ -51,16 +53,20 @@ def _str_to_datetime_no_utc(datetime_str: str) -> datetime:
     return parser.parse(datetime_str, ignoretz=True)
 
 
-def _create_entity(response: "EntityResponse", name: str) -> Entity:
+def _create_entity(response: "EntityResponse", name: str, session: Session) -> Entity:
     error_text = response.get("errorText")
 
     if error_text:
         return Entity(name, error_text, None)
 
-    return Entity(name, None, cast(Dict[str, Any], response["metadata"]))
+    metadata = session._create_metadata(  # pylint: disable=protected-access
+        cast(Dict[str, Any], response["metadata"])
+    )
+
+    return Entity(name, None, cast(Dict[str, Any], metadata))
 
 
-def _create_series(response: "SeriesResponse", name: str) -> Series:
+def _create_series(response: "SeriesResponse", name: str, session: Session) -> Series:
     error_text = response.get("errorText")
 
     if error_text:
@@ -72,14 +78,20 @@ def _create_series(response: "SeriesResponse", name: str) -> Series:
             cast(List[str], response["dates"]),
         )
     )
+
     values = tuple(
         map(
             lambda x: float(x) if x else None,
             cast(List[Optional[float]], response["values"]),
         )
     )
+
+    metadata = session._create_metadata(  # pylint: disable=protected-access
+        cast(Dict[str, Any], response["metadata"])
+    )
+
     # values = cast(Tuple[Optional[float]], response["values"])
-    return Series(name, "", cast(Dict[str, Any], response["metadata"]), values, dates)
+    return Series(name, "", metadata, values, dates)
 
 
 def get_one_series(self: "WebApi", series_name: str, raise_error: bool = None) -> Series:
@@ -88,7 +100,7 @@ def get_one_series(self: "WebApi", series_name: str, raise_error: bool = None) -
 
 def get_series(self, *series_names: str, raise_error: bool = None) -> List[Series]:
     response = self.session.series.fetch_series(*series_names)
-    series = list(map(_create_series, response, series_names))
+    series = list(map(lambda x, y: _create_series(x, y, self.session), response, series_names))
     GetEntitiesError.raise_if(
         self.raise_error if raise_error is None else raise_error,
         map(
@@ -106,7 +118,7 @@ def get_one_entity(self: "WebApi", entity_name: str, raise_error: bool = None) -
 
 def get_entities(self: "WebApi", *entity_names: str, raise_error: bool = None) -> List[Entity]:
     response = self.session.series.fetch_entities(*entity_names)
-    entitys = list(map(_create_entity, response, entity_names))
+    entitys = list(map(lambda x, y: _create_entity(x, y, self.session), response, entity_names))
     GetEntitiesError.raise_if(
         self.raise_error if raise_error is None else raise_error,
         map(
@@ -184,7 +196,11 @@ def get_unified_series(
                     cast(List[Optional[float]], one_series["values"]),
                 )
             )
-            metadata = cast(Dict[str, Any], one_series["metadata"])
+
+            metadata = self.session._create_metadata(  # pylint: disable=protected-access
+                cast(Dict[str, Any], one_series["metadata"])
+            )
+
             series.append(UnifiedSerie(name, "", metadata, values))
 
     ret = UnifiedSeries(series, dates)

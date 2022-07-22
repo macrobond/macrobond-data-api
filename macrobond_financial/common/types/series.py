@@ -2,7 +2,7 @@
 
 from datetime import datetime
 
-from typing import Any, Dict, Tuple, Optional, List, cast, TYPE_CHECKING
+from typing import Any, Dict, Tuple, Optional, List, cast, MutableMapping, TYPE_CHECKING
 from typing_extensions import Literal
 
 from .entity import Entity, EntityColumnsLiterals
@@ -20,10 +20,7 @@ if TYPE_CHECKING:  # pragma: no cover
 class Series(Entity):
     """Interface for a Macrobond time series."""
 
-    __slots__ = (
-        "values",
-        "dates"
-    )
+    __slots__ = ("values", "dates")
 
     values: Tuple[Optional[float], ...]
     dates: Tuple[datetime, ...]
@@ -32,7 +29,7 @@ class Series(Entity):
         self,
         name: str,
         error_message: Optional[str],
-        metadata: Optional[Dict[str, Any]],
+        metadata: Optional[MutableMapping[str, Any]],
         values: Optional[Tuple[Optional[float], ...]],
         dates: Optional[Tuple[datetime, ...]],
     ) -> None:

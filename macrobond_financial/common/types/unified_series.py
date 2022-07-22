@@ -7,6 +7,7 @@ from typing import (
     Sequence,
     Tuple,
     Optional,
+    MutableMapping,
     TYPE_CHECKING,
 )
 
@@ -36,7 +37,7 @@ class UnifiedSerie:
 
     name: str
     error_message: str
-    metadata: Dict[str, Any]
+    metadata: MutableMapping[str, Any]
     values: Tuple[Optional[float], ...]
 
     @property
@@ -47,7 +48,7 @@ class UnifiedSerie:
         self,
         name: str,
         error_message: str,
-        metadata: Dict[str, Any],
+        metadata: MutableMapping[str, Any],
         values: Tuple[Optional[float], ...],
     ) -> None:
         self.name = name

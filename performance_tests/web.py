@@ -1,5 +1,5 @@
 from time import perf_counter
-
+import cProfile
 from macrobond_financial.web import WebClient, create_revision_history_request, SeriesWithVintages
 
 
@@ -14,11 +14,28 @@ def test_get_fetch_all_vintageseries(*names: str) -> None:
             _callback,
             list(map(create_revision_history_request, names)),
         )
+    time = perf_counter() - start_timmer
+    print(f"{str(len(names)):5} {f'{time:0.4f}':11}{time / len(names):0.5f}")
 
-    print(f"{str(len(names)):5} {perf_counter() - start_timmer:0.4f}")
+
+def test_get_fetch_all_vintageseries_cProfile(*names: str) -> None:
+    def _callback(_: SeriesWithVintages):  # pylint: disable=unused-argument
+        ...
+
+    with WebClient() as api:
+        api.get_one_entity("usgdp")
+        start_timmer = perf_counter()
+        with cProfile.Profile() as pr:
+            api.get_fetch_all_vintageseries(
+                _callback,
+                list(map(create_revision_history_request, names)),
+            )
+            pr.print_stats(True)
+            print(f"{str(len(names)):5} {perf_counter() - start_timmer:0.4f}")
 
 
 if __name__ == "__main__":
+    # test_get_fetch_all_vintageseries_cProfile(*list(map(lambda _: "usgdp", range(1))))
     for x in range(2, 40, 3):
         test_get_fetch_all_vintageseries(*list(map(lambda _: "usgdp", range(x))))
 

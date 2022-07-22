@@ -14,6 +14,8 @@ from .web_types import (
 )
 
 from .scope import Scope
+from ._metadata_directory import _MetadataTypeDirectory
+from ._metadata import _Metadata
 
 API_URL_DEFAULT = "https://api.macrobondfinancial.com/"
 AUTHORIZATION_URL_DEFAULT = "https://apiauth.macrobondfinancial.com/mbauth/"
@@ -93,8 +95,11 @@ class Session:
         self.__series = SeriesMethods(self)
         self.__series_tree = SeriesTreeMethods(self)
 
+        self._metadata_type_directory = _MetadataTypeDirectory(self)
+
     def close(self) -> None:
         self.auth2_session.close()
+        self._metadata_type_directory.close()
 
     def fetch_token(self) -> None:
         if self.token_endpoint is None:
@@ -182,3 +187,6 @@ class Session:
             self.fetch_token()
             response = http()
         return response
+
+    def _create_metadata(self, metadata: dict) -> _Metadata:
+        return _Metadata(metadata, self._metadata_type_directory)

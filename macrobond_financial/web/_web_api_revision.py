@@ -14,7 +14,7 @@ from macrobond_financial.common.types import (
     GetAllVintageSeriesResult,
 )
 
-from .session import ProblemDetailsException
+from .session import ProblemDetailsException, Session
 
 if TYPE_CHECKING:  # pragma: no cover
     from .web_api import WebApi
@@ -32,7 +32,7 @@ def _str_to_datetime_no_utc(datetime_str: str) -> datetime:
     return parser.parse(datetime_str, ignoretz=True)
 
 
-def _create_series(response: "SeriesResponse", name: str) -> Series:
+def _create_series(response: "SeriesResponse", name: str, session: Session) -> Series:
     error_text = response.get("errorText")
 
     if error_text:
@@ -44,14 +44,20 @@ def _create_series(response: "SeriesResponse", name: str) -> Series:
             cast(List[str], response["dates"]),
         )
     )
+
     values = tuple(
         map(
             lambda x: float(x) if x else None,
             cast(List[Optional[float]], response["values"]),
         )
     )
+
+    metadata = session._create_metadata(  # pylint: disable=protected-access
+        cast(Dict[str, Any], response["metadata"])
+    )
+
     # values = cast(Tuple[Optional[float]], response["values"])
-    return Series(name, "", cast(Dict[str, Any], response["metadata"]), values, dates)
+    return Series(name, "", cast(Dict[str, Any], metadata), values, dates)
 
 
 def get_revision_info(
@@ -117,10 +123,13 @@ def get_vintage_series(
         if error_message:
             return VintageSeries(series_name, error_message, None, None, None)
 
-        metadata = cast(Dict[str, Any], response["metadata"])
+        metadata = self.session._create_metadata(  # pylint: disable=protected-access
+            cast(Dict[str, Any], response["metadata"])
+        )
 
         revision_time_stamp = cast(str, metadata.get("RevisionTimeStamp"))
-        if not revision_time_stamp or time != parser.parse(revision_time_stamp):
+
+        if not revision_time_stamp or time != revision_time_stamp:
             raise ValueError("Invalid time")
 
         values: Tuple[Optional[float], ...] = tuple(
@@ -157,7 +166,7 @@ def get_nth_release(
 ) -> List[Series]:
     response = self.session.series.fetch_nth_release_series(nth, *series_names)
 
-    series = list(map(_create_series, response, series_names))
+    series = list(map(lambda x, y: _create_series(x, y, self.session), response, series_names))
 
     GetEntitiesError.raise_if(
         self.raise_error if raise_error is None else raise_error,
@@ -173,14 +182,14 @@ def get_nth_release(
 
 def get_all_vintage_series(self: "WebApi", series_name: str) -> GetAllVintageSeriesResult:
     try:
-        response = self.session.series.fetch_all_vintage_series(series_name)
+        response = self.session.series.get_fetch_all_vintage_series(series_name)
     except ProblemDetailsException as ex:
         if ex.status == 404:
             raise ValueError("Series not found: " + series_name) from ex
         raise ex
 
     return GetAllVintageSeriesResult(
-        list(map(lambda x: _create_series(x, series_name), response)), series_name
+        list(map(lambda x: _create_series(x, series_name, self.session), response)), series_name
     )
 
 

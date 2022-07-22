@@ -5,6 +5,7 @@ Definitions of common types used in the API.
 """
 
 from .search_result import SearchResult
+from .search_result_long import SearchResultLong
 from .start_or_end_point import StartOrEndPoint
 from .series_entry import SeriesEntry
 from .search_filter import SearchFilter

@@ -34,7 +34,7 @@
 <dl>
 <dt id="macrobond_financial.common.types.entity.Entity"><code class="flex name class">
 <span>class <span class="ident">Entity</span></span>
-<span>(</span><span>name: str, error_message: Optional[str], metadata: Optional[Dict[str, Any]])</span>
+<span>(</span><span>name: str, error_message: Optional[str], metadata: Optional[MutableMapping[str, Any]])</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Represents a Macrobond entity.</p></div>
@@ -60,7 +60,7 @@
 <dd>
 <div class="desc"></div>
 </dd>
-<dt id="macrobond_financial.common.types.entity.Entity.metadata"><code class="name">var <span class="ident">metadata</span> : Dict[str, Any]</code></dt>
+<dt id="macrobond_financial.common.types.entity.Entity.metadata"><code class="name">var <span class="ident">metadata</span> : MutableMapping[str, Any]</code></dt>
 <dd>
 <div class="desc"><p>The metadata of the entity.</p></div>
 </dd>
@@ -70,7 +70,7 @@
 </dd>
 <dt id="macrobond_financial.common.types.entity.Entity.primary_name"><code class="name">var <span class="ident">primary_name</span> : str</code></dt>
 <dd>
-<div class="desc"><p>The primary name of the entity.<br>
+<div class="desc"><p>The primary name of the entity.
 This can be different from the name requested if an alias was used in the request.</p></div>
 </dd>
 <dt id="macrobond_financial.common.types.entity.Entity.title"><code class="name">var <span class="ident">title</span> : str</code></dt>

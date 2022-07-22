@@ -29,6 +29,7 @@ class SearchMethods:
         include_discontinued: bool = None,
         _filter: Dict[str, str] = None,
         no_meta_data: bool = None,
+        allow_long_result: bool = None,
     ) -> "SearchResponse":
         """
         Search for time series and other entites matching attribute values.
@@ -62,6 +63,9 @@ class SearchMethods:
 
         if include_discontinued:
             params["includeDiscontinued"] = "true" if include_discontinued else "false"
+
+        if allow_long_result:
+            params["allowLongResult"] = "true" if allow_long_result else "false"
 
         response = self.__session.get_or_raise("v1/search/entities", params=params)
 

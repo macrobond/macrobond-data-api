@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from typing import Any, Dict, List, Optional, TYPE_CHECKING
+from typing import Any, Dict, List, Optional, MutableMapping, TYPE_CHECKING
 from typing_extensions import Literal
 
 from .._get_pandas import _get_pandas
@@ -23,7 +23,7 @@ class Entity:
 
     name: str
     error_message: str
-    metadata: Dict[str, Any]
+    metadata: MutableMapping[str, Any]
 
     @property
     def is_error(self) -> bool:
@@ -32,7 +32,7 @@ class Entity:
     @property
     def primary_name(self) -> str:
         """
-        The primary name of the entity.  
+        The primary name of the entity.
         This can be different from the name requested if an alias was used in the request.
         """
         prim_name = self.metadata["PrimName"]
@@ -66,7 +66,7 @@ class Entity:
         self,
         name: str,
         error_message: Optional[str],
-        metadata: Optional[Dict[str, Any]],
+        metadata: Optional[MutableMapping[str, Any]],
     ) -> None:
         self.name = name
         """The name of the requested entity."""

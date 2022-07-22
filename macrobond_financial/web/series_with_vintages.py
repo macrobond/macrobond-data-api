@@ -3,11 +3,9 @@
 from datetime import datetime
 from typing import Optional, Dict, Any, List
 
+from dateutil import parser  # type: ignore
+
 from .web_types import VintageValuesResponse, SeriesWithVintagesResponse
-
-
-def _parse_date(date_text: str) -> datetime:
-    return datetime(int(date_text[0:4]), int(date_text[5:7]), int(date_text[8:10]))
 
 
 class VintageValues:
@@ -15,7 +13,7 @@ class VintageValues:
 
     __slots__ = ("vintage_time_stamp", "dates", "values")
 
-    vintage_time_stamp: Optional[str]
+    vintage_time_stamp: Optional[datetime]
     """The time when this version of the series was recorded"""
 
     dates: List[datetime]
@@ -25,18 +23,17 @@ class VintageValues:
     """The values of the vintage series. Missing values are represented by null."""
 
     def __init__(self, vintage_values: VintageValuesResponse) -> None:
-        self.vintage_time_stamp = vintage_values.get("vintageTimeStamp")
+        vintage_time_stamp = vintage_values.get("vintageTimeStamp")
+        if vintage_time_stamp:
+            self.vintage_time_stamp = parser.parse(vintage_time_stamp)
+        else:
+            self.vintage_time_stamp = None
 
-        # old
-        # self.dates = list(map(parser.parse, vintage_values["dates"]))
-        self.dates = list(map(_parse_date, vintage_values["dates"]))
+        self.dates = [
+            datetime(int(x[0:4]), int(x[5:7]), int(x[8:10])) for x in vintage_values["dates"]
+        ]
 
-        self.values = list(
-            map(
-                lambda x: float(x) if x else None,
-                vintage_values["values"],
-            )
-        )
+        self.values = [float(x) if x else None for x in vintage_values["values"]]
 
     def __repr__(self):
         return f"VintageValues vintage_time_stamp: {self.vintage_time_stamp}"
@@ -89,7 +86,7 @@ class SeriesWithVintages:
         self.metadata = response.get("metadata")
         self.vintages = []
         vintages = response.get("vintages")
-        self.vintages = list(map(VintageValues, vintages)) if vintages else []
+        self.vintages = [VintageValues(x) for x in vintages] if vintages else []
 
     def __repr__(self):
         return (

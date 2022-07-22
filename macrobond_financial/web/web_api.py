@@ -8,6 +8,7 @@ from dateutil import parser  # type: ignore
 
 from macrobond_financial.common import Api
 
+from macrobond_financial.common.types import SearchResultLong
 
 from .series_with_vintages import SeriesWithVintages
 from .subscription_list import (
@@ -15,8 +16,6 @@ from .subscription_list import (
     SubscriptionBody,
     SubscriptionListItem,
 )
-
-from ._thread_pool import _ThreadPool
 
 from ._web_api_metadata import (
     metadata_list_values,
@@ -47,14 +46,14 @@ from .session import Session
 if TYPE_CHECKING:  # pragma: no cover
     from .web_types import SeriesWithVintagesResponse, RevisionHistoryRequest
 
+    from macrobond_financial.common.types import SearchFilter
+
+    from .web_types.search import SearchRequest, SearchFilter as WebSearchFilter
+
 
 __pdoc__ = {
     "WebApi.__init__": False,
 }
-
-
-def _get_series_with_vintages(data):
-    return SeriesWithVintages(data)
 
 
 def _get_subscription_list_iterative_pars_body(ijson_parse):
@@ -201,24 +200,53 @@ class WebApi(Api):
         start_index = 0
         batch_size = 200
 
-        with _ThreadPool(callback, max_workers=4) as thread_pool:
-            while True:
-                end_index = start_index + batch_size
-                requests_subset = requests[start_index:end_index]
-                if len(requests_subset) == 0:
-                    break
-                start_index = end_index
+        while True:
+            end_index = start_index + batch_size
+            requests_subset = requests[start_index:end_index]
+            if len(requests_subset) == 0:
+                break
+            start_index = end_index
 
-                with self.__session.post(
-                    "v1/series/fetchallvintageseries", json=requests_subset, stream=True
-                ) as response:
-                    self.__session.raise_on_error(response)
-                    ijson_items = ijson.items(response.raw, "item")
-                    item: "SeriesWithVintagesResponse"
-                    for item in ijson_items:
-                        thread_pool.submit(_get_series_with_vintages, item)
+            with self.session.series.post_fetch_all_vintage_series(
+                requests_subset, stream=True
+            ) as response:
+                self.__session.raise_on_error(response)
+                ijson_items = ijson.items(response.raw, "item")
+                item: "SeriesWithVintagesResponse"
+                for item in ijson_items:
+                    callback(SeriesWithVintages(item))
 
     # Search
+
+    def entity_search_multi_filter_long(
+        self,
+        *filters: "SearchFilter",
+        include_discontinued: bool = False,
+    ) -> SearchResultLong:
+        def convert_filter_to_web_filter(_filter: "SearchFilter") -> "WebSearchFilter":
+            return {
+                "text": _filter.text,
+                "entityTypes": list(_filter.entity_types),
+                "mustHaveValues": _filter.must_have_values,
+                "mustNotHaveValues": _filter.must_not_have_values,
+                "mustHaveAttributes": list(_filter.must_have_attributes),
+                "mustNotHaveAttributes": list(_filter.must_not_have_attributes),
+            }
+
+        web_filters = list(map(convert_filter_to_web_filter, filters))
+
+        request: "SearchRequest" = {
+            "filters": web_filters,
+            "includeDiscontinued": include_discontinued,
+            "noMetadata": True,
+            "allowLongResult": True,
+        }
+
+        response = self.session.search.post_entities(request)
+
+        return SearchResultLong(
+            [x["Name"] for x in response["results"]], response.get("isTruncated") is True
+        )
 
     entity_search_multi_filter = entity_search_multi_filter
 

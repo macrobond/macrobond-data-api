@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from typing import Any, MutableMapping, TYPE_CHECKING, List, Sequence
+from typing import TYPE_CHECKING, List, Sequence
 
 from .._get_pandas import _get_pandas
 
@@ -8,7 +8,7 @@ if TYPE_CHECKING:  # pragma: no cover
     from pandas import DataFrame  # type: ignore
 
 
-class SearchResult(List[MutableMapping[str, Any]]):
+class SearchResultLong(List[str]):
     """
     The result of a entity search operation.
     """
@@ -17,7 +17,7 @@ class SearchResult(List[MutableMapping[str, Any]]):
 
     is_truncated: bool
 
-    def __init__(self, entities: Sequence[MutableMapping[str, Any]], is_truncated: bool) -> None:
+    def __init__(self, entities: Sequence[str], is_truncated: bool) -> None:
         super().__init__(entities)
         self.is_truncated = is_truncated
         """
@@ -25,17 +25,14 @@ class SearchResult(List[MutableMapping[str, Any]]):
         """
 
     @property
-    def entities(self) -> List[MutableMapping[str, Any]]:
+    def names(self) -> List[str]:
         """
-        A sequence of the metadata of the entities found.
+        A sequence of the name of the entities found.
         """
         return list(self)
 
     def __repr__(self):
-        return f"SearchResult of {len(self)} entities, is_truncated: {self.is_truncated}"
-
-    def to_dict(self) -> List[MutableMapping[str, Any]]:
-        return list(self)
+        return f"SearchResultLong of {len(self)} entities, is_truncated: {self.is_truncated}"
 
     def to_pd_data_frame(self) -> "DataFrame":
         """

@@ -2,11 +2,12 @@
 
 # pylint: disable = missing-module-docstring
 
-from typing import List, cast, TYPE_CHECKING
+from typing import List, Sequence, cast, TYPE_CHECKING
 
 from datetime import datetime
 
 if TYPE_CHECKING:  # pragma: no cover
+    from requests import Response  # type: ignore
     from ..session import Session
     from .series_response import SeriesResponse
     from .entity_response import EntityResponse
@@ -19,6 +20,7 @@ if TYPE_CHECKING:  # pragma: no cover
     from .entity_info_for_display_response import EntityInfoForDisplayResponse
     from .unified_series_response import UnifiedSeriesResponse
     from .unified_series_request import UnifiedSeriesRequest
+    from .revision_history_request import RevisionHistoryRequest
 
 
 class SeriesMethods:
@@ -136,7 +138,7 @@ class SeriesMethods:
         return cast(List["VintageSeriesResponse"], response.json())
 
     # Get /v1/series/fetchallvintageseries
-    def fetch_all_vintage_series(
+    def get_fetch_all_vintage_series(
         self,
         series_name: str,
         if_modified_since: datetime = None,
@@ -183,6 +185,14 @@ class SeriesMethods:
             params=params,
         )
         return cast(List["VintageSeriesResponse"], response.json())
+
+    # post /v1/series/fetchallvintageseries
+    def post_fetch_all_vintage_series(
+        self, requests: Sequence["RevisionHistoryRequest"], stream=False
+    ) -> "Response":
+        return self.__session.post_or_raise(
+            "v1/series/fetchallvintageseries", json=requests, stream=stream
+        )
 
     # Get /v1/series/fetchnthreleaseseries
     def fetch_nth_release_series(

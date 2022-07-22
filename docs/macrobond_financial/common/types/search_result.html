@@ -34,7 +34,7 @@
 <dl>
 <dt id="macrobond_financial.common.types.search_result.SearchResult"><code class="flex name class">
 <span>class <span class="ident">SearchResult</span></span>
-<span>(</span><span>entities: Sequence[Dict[str, Any]], is_truncated: bool)</span>
+<span>(</span><span>entities: Sequence[MutableMapping[str, Any]], is_truncated: bool)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>The result of a entity search operation.</p></div>
@@ -45,7 +45,7 @@
 </ul>
 <h3>Instance variables</h3>
 <dl>
-<dt id="macrobond_financial.common.types.search_result.SearchResult.entities"><code class="name">var <span class="ident">entities</span> : List[Dict[str, Any]]</code></dt>
+<dt id="macrobond_financial.common.types.search_result.SearchResult.entities"><code class="name">var <span class="ident">entities</span> : List[MutableMapping[str, Any]]</code></dt>
 <dd>
 <div class="desc"><p>A sequence of the metadata of the entities found.</p></div>
 </dd>
@@ -57,7 +57,7 @@
 <h3>Methods</h3>
 <dl>
 <dt id="macrobond_financial.common.types.search_result.SearchResult.to_dict"><code class="name flex">
-<span>def <span class="ident">to_dict</span></span>(<span>self) ‑> List[Dict[str, Any]]</span>
+<span>def <span class="ident">to_dict</span></span>(<span>self) ‑> List[MutableMapping[str, Any]]</span>
 </code></dt>
 <dd>
 <div class="desc"></div>

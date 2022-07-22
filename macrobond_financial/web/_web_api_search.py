@@ -41,4 +41,8 @@ def entity_search_multi_filter(
 
     response = self.session.search.post_entities(request)
 
-    return SearchResult(response["results"], response.get("isTruncated") is True)
+    results = list(
+        map(self.session._create_metadata, response["results"])  # pylint: disable=protected-access
+    )
+
+    return SearchResult(results, response.get("isTruncated") is True)

@@ -3,7 +3,7 @@ import platform
 import sys
 
 from codecs import open as codecs_open
-from setuptools import setup, find_packages
+from setuptools import setup, find_packages  # type: ignore
 
 extras_require = [
     "mypy",
