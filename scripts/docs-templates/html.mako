@@ -369,7 +369,7 @@
     module_list = 'modules' in context.keys()  # Whether we're showing module list in server mode
 %>
 
-% if not module_list and module.name == 'macrobond_financial':
+% if not module_list and module.name == 'macrobond_data_api':
   <%include file="main.mako" args="link=link, show_source=show_source, show_desc=show_desc"/>
 % else:
 

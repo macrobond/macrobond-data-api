@@ -8,13 +8,13 @@ def pdoc3(context: Context) -> None:
     context.python_run(
         "pdoc",
         " --html --template-dir ./scripts/docs-templates "
-        + "--force -o ./docs ./macrobond_financial/",
+        + "--force -o ./docs ./macrobond_data_api/",
         pip_name="pdoc3",
     )
 
-    file_url = os.path.join(
-        os.getcwd(), "docs", "macrobond_financial", "index.html"
-    ).replace("\\", "/")
+    file_url = os.path.join(os.getcwd(), "docs", "macrobond_data_api", "index.html").replace(
+        "\\", "/"
+    )
 
     print("file:///" + file_url)
 

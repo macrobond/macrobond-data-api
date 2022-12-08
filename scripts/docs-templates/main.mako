@@ -86,11 +86,11 @@
             </div>
 
             <div class="col-12 col-md-12 mb-5">
-              <h2>Installing -name- and Supported Versions</h2>
+              <h2>Installing macrobond-data-api and Supported Versions</h2>
               <p class="fs-5">
                 Run comand !!
               </p>
-              <pre style="display: inline;"><code>python -m pip install -name-</code></pre>
+              <pre style="display: inline;"><code>python -m pip install macrobond-data-api</code></pre>
             </div>
 
             <div class="row g-5">

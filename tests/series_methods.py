@@ -2,8 +2,8 @@
 
 from pandas import Series as PdSeries, DataFrame  # type: ignore
 
-from macrobond_financial.common import Api
-from macrobond_financial.common.types import GetEntitiesError, SeriesEntry
+from macrobond_data_api.common import Api
+from macrobond_data_api.common.types import GetEntitiesError, SeriesEntry
 
 from tests.test_common import TestCase
 

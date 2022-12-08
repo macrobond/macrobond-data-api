@@ -2,12 +2,12 @@
 
 from typing import List
 from unittest import skip  # type: ignore[attr-defined]
-from macrobond_financial.web import (
+from macrobond_data_api.web import (
     SubscriptionBody,
     SubscriptionListItem,
     create_revision_history_request,
 )
-from macrobond_financial.common import Api
+from macrobond_data_api.common import Api
 from tests.test_common import TestCase
 
 

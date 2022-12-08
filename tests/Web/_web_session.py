@@ -5,7 +5,7 @@ from typing import Any
 from unittest import TestCase  # type: ignore
 from unittest.mock import Mock
 
-from macrobond_financial.web.session import Session
+from macrobond_data_api.web.session import Session
 
 
 def new_response(status_code: int, json: Any = None, side_effect: Any = None) -> Mock:

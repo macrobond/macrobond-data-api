@@ -3,10 +3,10 @@
 
 from unittest import TestCase  # type: ignore
 
-from macrobond_financial.web import WebClient
-from macrobond_financial.com import ComClient
+from macrobond_data_api.web import WebClient
+from macrobond_data_api.com import ComClient
 
-from macrobond_financial.common.types import SearchFilter
+from macrobond_data_api.common.types import SearchFilter
 
 
 class Metadata(TestCase):

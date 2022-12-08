@@ -11,8 +11,8 @@ import sys
 
 import pandas  # type: ignore
 
-from macrobond_financial.com import ComClient, ComApi
-from macrobond_financial.web import WebClient, WebApi
+from macrobond_data_api.com import ComClient, ComApi
+from macrobond_data_api.web import WebClient, WebApi
 
 
 pandas.set_option("display.max_rows", 500)

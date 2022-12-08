@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
-from macrobond_financial.common import Api
-from macrobond_financial.common.types import SearchFilter, StartOrEndPoint
+from macrobond_data_api.common import Api
+from macrobond_data_api.common.types import SearchFilter, StartOrEndPoint
 
 from tests.test_common import TestCase
 

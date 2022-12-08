@@ -8,9 +8,9 @@ from pandas import Series as PdSeries, DataFrame  # type: ignore
 
 from tests.test_common import TestCase
 
-from macrobond_financial.common.types import GetEntitiesError
+from macrobond_data_api.common.types import GetEntitiesError
 
-from macrobond_financial.common import Api
+from macrobond_data_api.common import Api
 
 
 class Web(TestCase):

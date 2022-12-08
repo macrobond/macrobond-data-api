@@ -2,7 +2,7 @@
 .mypy_cache/
 __pycache__/
 dist/
-macrobond_financial.egg-info/
+macrobond_data_api.egg-info/
 **.dtmp
 build/
 .vs/VSWorkspaceState.json

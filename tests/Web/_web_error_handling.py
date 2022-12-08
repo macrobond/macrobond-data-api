@@ -2,8 +2,8 @@
 from typing import cast
 
 
-from macrobond_financial.web.web_types import ProblemDetailsException
-from macrobond_financial.common.types import SeriesEntry
+from macrobond_data_api.web.web_types import ProblemDetailsException
+from macrobond_data_api.common.types import SeriesEntry
 from tests.test_common import TestCase
 
 

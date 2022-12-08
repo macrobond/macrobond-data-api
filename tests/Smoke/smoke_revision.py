@@ -3,7 +3,7 @@
 from datetime import datetime
 from pandas import Series as PdSeries  # type: ignore
 
-from macrobond_financial.common import Api
+from macrobond_data_api.common import Api
 from tests.test_common import TestCase
 
 

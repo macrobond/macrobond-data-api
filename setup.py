@@ -26,12 +26,12 @@ if platform.python_implementation() != "PyPy":
 
 about = {}  # type: ignore
 here = os.path.abspath(os.path.dirname(__file__))
-with codecs_open(os.path.join(here, "macrobond_financial", "__version__.py"), "r", "utf-8") as f:
+with codecs_open(os.path.join(here, "macrobond_data_api", "__version__.py"), "r", "utf-8") as f:
     exec(f.read(), about)  # pylint: disable=exec-used
 
 setup(
-    name="macrobond_financial",
-    packages=find_packages(include=["macrobond_financial", "macrobond_financial.*"]),
+    name="macrobond-data-api",
+    packages=find_packages(include=["macrobond_data_api", "macrobond_data_api.*"]),
     version=about["__version__"],
     author=about["__author__"],
     author_email=about["__author_email__"],
