@@ -35,6 +35,9 @@ class SearchResult(List[MutableMapping[str, Any]]):
         return f"SearchResult of {len(self)} entities, is_truncated: {self.is_truncated}"
 
     def to_dict(self) -> List[MutableMapping[str, Any]]:
+        """
+        Return the result as a dictionary.
+        """
         return list(self)
 
     def to_pd_data_frame(self) -> "DataFrame":
