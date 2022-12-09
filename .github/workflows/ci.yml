@@ -11,25 +11,22 @@ permissions:
   contents: read
 
 jobs:
-  CI:
+  ci:
 
     runs-on: ubuntu-latest
 
     steps:
-#    - name: Checkout
-#      uses: actions/checkout@v3
-#
-#    - name: Set up Python 3.7
-#      uses: actions/setup-python@v3
-#      with:
-#        python-version: '3.7'
-#
-#    - name: Install dependencies
-#      run: |
-#        python -m pip install --upgrade pip
+    - name: Checkout
+      uses: actions/checkout@v3
 
-    - name: Call Shared
-      uses: ./.github/workflows/shared.yml
+    - name: Set up Python 3.7
+      uses: actions/setup-python@v3
+      with:
+        python-version: '3.7'
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
 
     - name: Mypy
       run: scripts/mypy.py
