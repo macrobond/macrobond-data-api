@@ -17,8 +17,7 @@ if TYPE_CHECKING:  # pragma: no cover
 MetadataValueInformationColumns = List[Literal["attribute_name", "value", "description", "comment"]]
 
 
-# TODO: Perhaps this should be called TypedDictMetadataValueInformationItem?
-class TypedDictMetadataValueInformation(TypedDict):
+class TypedDictMetadataValueInformationItem(TypedDict):
     """
     Contains information about one metadata attribute value.
     """
@@ -68,7 +67,7 @@ class MetadataValueInformationItem:
         pandas = _get_pandas()
         return pandas.DataFrame([self.to_dict()])
 
-    def to_dict(self) -> TypedDictMetadataValueInformation:
+    def to_dict(self) -> TypedDictMetadataValueInformationItem:
         """The information represented as a dictionary"""
         return {
             "attribute_name": self.attribute_name,
@@ -125,7 +124,7 @@ class MetadataValueInformation(List[MetadataValueInformationItem]):
         pandas = _get_pandas()
         return pandas.DataFrame(self.to_dict())
 
-    def to_dict(self) -> List[TypedDictMetadataValueInformation]:
+    def to_dict(self) -> List[TypedDictMetadataValueInformationItem]:
         """The information represented as a dictionary"""
         return list(map(lambda x: x.to_dict(), self))
 

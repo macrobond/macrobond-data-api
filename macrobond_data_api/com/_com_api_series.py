@@ -125,6 +125,7 @@ def get_unified_series(
     end_point: "StartOrEndPoint" = None,
     raise_error: bool = None
 ) -> UnifiedSeries:
+    # pylint: disable=too-many-branches
     request = self.database.CreateUnifiedSeriesRequest()
     for entry_or_name in series_entries:
         if isinstance(entry_or_name, str):
@@ -208,3 +209,4 @@ def get_unified_series(
         raise GetEntitiesError(errors)
 
     return ret
+    # pylint: enable=too-many-branches

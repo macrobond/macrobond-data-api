@@ -26,7 +26,7 @@ from .vintage_series import VintageSeries
 from .metadata_value_information import (
     MetadataValueInformation,
     MetadataValueInformationItem,
-    TypedDictMetadataValueInformation,
+    TypedDictMetadataValueInformationItem,
     MetadataValueInformationColumns,
 )
 
