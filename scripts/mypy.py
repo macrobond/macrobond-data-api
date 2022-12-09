@@ -9,7 +9,7 @@ from context import Context
 
 
 def mypy(context: Context) -> None:
-    context.python_run("mypy", ". --show-error-codes --python-version 3.7 -c")
+    context.python_run("mypy", ". --show-error-codes --python-version 3.7")
 
 
 if __name__ == "__main__":
