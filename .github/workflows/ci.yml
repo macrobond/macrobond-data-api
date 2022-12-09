@@ -29,16 +29,16 @@ jobs:
         python -m pip install --upgrade pip
 
     - name: Mypy
-      run: scripts/mypy.py
+      run: python scripts/mypy.py
 
     - name: Pylint
-      run: scripts/pylint.py
+      run: python scripts/pylint.py
 
     - name: Pycodestyle
-      run: scripts/pycodestyle.py
+      run: python scripts/pycodestyle.py
 
     - name: Pdoc3
-      run: scripts/pdoc3.py
+      run: python scripts/pdoc3.py
     
     - name: Build
-      run: scripts/build_tool.py
+      run: python scripts/build_tool.py
