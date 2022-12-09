@@ -42,6 +42,10 @@ jobs:
       run: |
         python -m pip install --upgrade pip
 
+    - name: Run set_up_dev_environment.py
+      run: |
+        python scripts/set_up_dev_environment.py
+
     - name: Build Pdoc3
       run: |
         python scripts/pdoc3.py
