@@ -28,6 +28,9 @@ jobs:
       run: |
         python -m pip install --upgrade pip
 
+    - name: Black
+      run: python scripts/black_check.py
+
     - name: Mypy
       run: python scripts/mypy.py
 

@@ -4,3 +4,6 @@ build-backend = "setuptools.build_meta"
 
 [tool.mypy]
 no_implicit_optional = false
+
+[tool.black]
+line-length = 100

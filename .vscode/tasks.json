@@ -42,6 +42,26 @@
             }
         },
         {
+            "label": "black check",
+            "type": "shell",
+            "command": "py",
+            "args": ["-3.7" ,"scripts\\black_check.py"],
+            "problemMatcher": [],
+            "presentation": {
+                "clear": true
+            }
+        },
+        {
+            "label": "black",
+            "type": "shell",
+            "command": "py",
+            "args": ["-3.7" ,"scripts\\black.py"],
+            "problemMatcher": [],
+            "presentation": {
+                "clear": true
+            }
+        },
+        {
             "label": "mypy",
             "type": "shell",
             "command": "py",
