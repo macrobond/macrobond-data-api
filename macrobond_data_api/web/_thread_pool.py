@@ -8,13 +8,13 @@ from concurrent.futures import (
 )
 from typing import Callable, Generic, TypeVar, Set, cast
 
-TOut = TypeVar("TOut")
+TypeVarOut = TypeVar("TypeVarOut")
 
 
-class _ThreadPool(Generic[TOut]):
+class _ThreadPool(Generic[TypeVarOut]):
     def __init__(
         self,
-        done_callback: Callable[[TOut], None],
+        done_callback: Callable[[TypeVarOut], None],
         max_workers: int = None,
     ) -> None:
 

@@ -21,7 +21,7 @@ pandas.set_option("display.width", 1000)
 
 
 class TestCase(UnittestTestCase):
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs) -> None:
         super(TestCase, self).__init__(*args, **kwargs)
         self.__com_client: Optional[ComClient] = None
         self.__com_api: Optional[ComApi] = None

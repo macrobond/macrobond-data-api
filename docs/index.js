@@ -1720,27 +1720,27 @@ INDEX=[
 "doc":""
 },
 {
-"ref":"macrobond_data_api.common.types.metadata_value_information.TypedDictMetadataValueInformation",
+"ref":"macrobond_data_api.common.types.metadata_value_information.TypedDictMetadataValueInformationItem",
 "url":34,
 "doc":"Contains information about one metadata attribute value."
 },
 {
-"ref":"macrobond_data_api.common.types.metadata_value_information.TypedDictMetadataValueInformation.attribute_name",
+"ref":"macrobond_data_api.common.types.metadata_value_information.TypedDictMetadataValueInformationItem.attribute_name",
 "url":34,
 "doc":"The name of the metadata attribute"
 },
 {
-"ref":"macrobond_data_api.common.types.metadata_value_information.TypedDictMetadataValueInformation.value",
+"ref":"macrobond_data_api.common.types.metadata_value_information.TypedDictMetadataValueInformationItem.value",
 "url":34,
 "doc":"The value"
 },
 {
-"ref":"macrobond_data_api.common.types.metadata_value_information.TypedDictMetadataValueInformation.description",
+"ref":"macrobond_data_api.common.types.metadata_value_information.TypedDictMetadataValueInformationItem.description",
 "url":34,
 "doc":"The description of the metadata value"
 },
 {
-"ref":"macrobond_data_api.common.types.metadata_value_information.TypedDictMetadataValueInformation.comment",
+"ref":"macrobond_data_api.common.types.metadata_value_information.TypedDictMetadataValueInformationItem.comment",
 "url":34,
 "doc":"The comment of the metadata value"
 },

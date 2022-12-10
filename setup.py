@@ -6,23 +6,29 @@ from codecs import open as codecs_open
 from setuptools import setup, find_packages  # type: ignore
 
 extras_require = [
-    "mypy",
-    "pylint",
-    "pycodestyle",
-    "pdoc3",
-    "build",
-    "coverage",
-    "black[jupyter]",
+    "mypy>=0.991",
+    "pylint>=2.15.8",
+    "pycodestyle>=2.10.0",
+    "pdoc3>=0.10.0",
+    "build>=0.9.0",
+    "coverage>=6.5.0",
+    "black[jupyter]>=22.12.0",
 ]
 
-install_requires = ["keyring", "Authlib", "requests", "python-dateutil", "ijson"]
+install_requires = [
+    "keyring>=23.11.0",
+    "Authlib>=1.2.0",
+    "requests>=2.28.1",
+    "python-dateutil>=2.8.2",
+    "ijson>=3.1.4",
+]
 
 if platform.python_implementation() != "PyPy":
     for extra in ["matplotlib", "statsmodels", "scikit-learn", "pandas"]:
         extras_require.append(extra)
 
     if sys.platform == "win32":
-        install_requires.append("pywin32")
+        install_requires.append("pywin32>=305")
 
 about = {}  # type: ignore
 here = os.path.abspath(os.path.dirname(__file__))

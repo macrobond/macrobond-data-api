@@ -46,9 +46,7 @@ class Context:
         if self.hade_error:
             sys_exit(1)
 
-    def shell_command(
-        self, command: str, ignore_exit_code=False, prefix: str = ""
-    ) -> bool:
+    def shell_command(self, command: str, ignore_exit_code=False, prefix: str = "") -> bool:
         print("shell_command start :" + command)
         exit_code = os.system(prefix + command)
         print("shell_command end :" + command)
@@ -59,19 +57,11 @@ class Context:
             return False
         return True
 
-    def python_run(
-        self, name: Optional[str], *args: str, pip_name: Optional[str] = None
-    ) -> None:
+    def python_run(self, name: Optional[str], *args: str) -> None:
         def run(command: str) -> None:
             self.shell_command(command, prefix='"' + self.python_path + '" ')
 
-        if pip_name is None:
-            pip_name = name
-
         if name is not None:
-            if pip_name is not None:
-                run("-m pip install " + pip_name)
-
             for arg in args:
                 run("-m " + name + " " + arg)
         else:

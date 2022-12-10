@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from datetime import datetime
-from typing import TYPE_CHECKING, List, Optional, Callable, Sequence
+from typing import TYPE_CHECKING, Any, List, Optional, Callable, Sequence, Tuple
 
 import ijson  # type: ignore
 from dateutil import parser  # type: ignore
@@ -56,7 +56,9 @@ __pdoc__ = {
 }
 
 
-def _get_subscription_list_iterative_pars_body(ijson_parse):
+def _get_subscription_list_iterative_pars_body(
+    ijson_parse,
+) -> Tuple[Optional[datetime], Optional[datetime], Any]:
     time_stamp_for_if_modified_since: Optional[datetime] = None
     download_full_list_on_or_after: Optional[datetime] = None
     state = -1
