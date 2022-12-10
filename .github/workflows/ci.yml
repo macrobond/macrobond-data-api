@@ -29,19 +29,29 @@ jobs:
         python -m pip install --upgrade pip
 
     - name: Black
+      continue-on-error: true
       run: python scripts/black_check.py
 
     - name: Mypy
+      continue-on-error: true
       run: python scripts/mypy.py
 
     - name: Pylint
+      continue-on-error: true
       run: python scripts/pylint.py
 
     - name: Pycodestyle
+      continue-on-error: true
       run: python scripts/pycodestyle.py
 
     - name: Pdoc3
+      continue-on-error: true
       run: python scripts/pdoc3.py
     
     - name: Build
+      continue-on-error: true
       run: python scripts/build_tool.py
+      
+    - name: Step To run on failure
+      if: ${{ failure() }}
+      run: exit 1
