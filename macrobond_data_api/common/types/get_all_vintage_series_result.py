@@ -3,7 +3,7 @@
 
 from typing import TYPE_CHECKING, Any, Dict, Sequence, List
 
-from macrobond_data_api.common.types import Series
+from macrobond_data_api.common.types.series import Series
 
 from .._get_pandas import _get_pandas
 
