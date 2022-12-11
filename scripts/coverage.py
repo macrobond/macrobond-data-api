@@ -7,8 +7,7 @@ def coverage(context: Context) -> None:
     context.python_run(
         "coverage",
         "erase",
-        "run --omit=macrobond_data_api/common/enums/**,tests/** -m "
-        + UNITTEST_COMMAND,
+        "run --omit=macrobond_data_api/common/enums/**,tests/** -m " + UNITTEST_COMMAND,
         "html",
         "report -m",
         "erase",
