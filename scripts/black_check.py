@@ -4,7 +4,7 @@ from context import Context
 
 
 def black_check(context: Context) -> None:
-    context.python_run("black", "--check .")
+    context.python_run("black", "--check --diff .")
 
 
 if __name__ == "__main__":
