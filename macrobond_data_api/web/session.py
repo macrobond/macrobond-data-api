@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from typing import Callable, Optional, Any, TYPE_CHECKING, Sequence
+from typing import Callable, Dict, Optional, Any, TYPE_CHECKING, Sequence
 
 from authlib.integrations.requests_client import OAuth2Session  # type: ignore
 from authlib.integrations.base_client.errors import InvalidTokenError  # type: ignore
@@ -17,6 +17,12 @@ from .scope import Scope
 from ._metadata_directory import _MetadataTypeDirectory
 from ._metadata import _Metadata
 
+_socks_import_error: Optional[ImportError] = None
+try:
+    import socks as _  # type: ignore
+except ImportError as ex:
+    _socks_import_error = ex
+
 API_URL_DEFAULT = "https://api.macrobondfinancial.com/"
 AUTHORIZATION_URL_DEFAULT = "https://apiauth.macrobondfinancial.com/mbauth/"
 
@@ -26,6 +32,24 @@ if TYPE_CHECKING:  # pragma: no cover
 __pdoc__ = {
     "Session.__init__": False,
 }
+
+
+def _raise_on_error(response: "Response", non_error_status: Sequence[int] = None) -> None:
+    if non_error_status is None:
+        non_error_status = [200]
+
+    if response.status_code in non_error_status:
+        return
+
+    content_type = response.headers.get("Content-Type")
+    if ["application/json; charset=utf-8", "application/json"].count(content_type) != 0:
+        raise ProblemDetailsException.create_from_response(response)
+
+    macrobond_status = response.headers.get("X-Macrobond-Status")
+    if macrobond_status:
+        raise ProblemDetailsException(response, detail=macrobond_status)
+
+    raise HttpException(response)
 
 
 class Session:
@@ -72,9 +96,23 @@ class Session:
         *scopes: Scope,
         api_url: str = API_URL_DEFAULT,
         authorization_url: str = API_URL_DEFAULT,
+        proxy: str = None,
         test_auth2_session: Any = None
     ) -> None:
+
+        self.__proxies: Optional[Dict[str, str]] = None
+        if proxy:
+            if proxy.lower().startswith("socks5://") and _socks_import_error:
+                raise _socks_import_error
+            self.__proxies = {"https": proxy, "http": proxy}
+
         self.__token_endpoint: Optional[str] = None
+
+        if not authorization_url.lower().startswith("https://"):
+            raise ValueError("authorization_url is not https")
+
+        if not api_url.lower().startswith("https://"):
+            raise ValueError("api_url is not https")
 
         if not authorization_url.endswith("/"):
             authorization_url = authorization_url + "/"
@@ -104,11 +142,13 @@ class Session:
     def fetch_token(self) -> None:
         if self.token_endpoint is None:
             self.__token_endpoint = self.discovery(self.authorization_url)
-        self.auth2_session.fetch_token(self.token_endpoint)
+        self.auth2_session.fetch_token(self.token_endpoint, proxies=self.__proxies)
 
     def get(self, url: str, params: dict = None, stream=False) -> "Response":
         def http():
-            return self.auth2_session.get(url=self.api_url + url, params=params, stream=stream)
+            return self.auth2_session.get(
+                url=self.api_url + url, params=params, stream=stream, proxies=self.__proxies
+            )
 
         return self.__if_status_code_401_fetch_token_and_retry(http)
 
@@ -116,13 +156,17 @@ class Session:
         self, url: str, params: dict = None, non_error_status: Sequence[int] = None, stream=False
     ) -> "Response":
         response = self.get(url, params, stream=stream)
-        self.raise_on_error(response, non_error_status)
+        _raise_on_error(response, non_error_status)
         return response
 
     def post(self, url: str, params: dict = None, json: object = None, stream=False) -> "Response":
         def http():
             return self.auth2_session.post(
-                url=self.api_url + url, params=params, json=json, stream=stream
+                url=self.api_url + url,
+                params=params,
+                json=json,
+                stream=stream,
+                proxies=self.__proxies,
             )
 
         return self.__if_status_code_401_fetch_token_and_retry(http)
@@ -136,28 +180,13 @@ class Session:
         stream=False,
     ) -> "Response":
         response = self.post(url, params, json, stream=stream)
-        self.raise_on_error(response, non_error_status)
+        _raise_on_error(response, non_error_status)
         return response
 
-    def raise_on_error(self, response: "Response", non_error_status: Sequence[int] = None) -> None:
-        if non_error_status is None:
-            non_error_status = [200]
-
-        if response.status_code in non_error_status:
-            return
-
-        content_type = response.headers.get("Content-Type")
-        if ["application/json; charset=utf-8", "application/json"].count(content_type) != 0:
-            raise ProblemDetailsException.create_from_response(response)
-
-        macrobond_status = response.headers.get("X-Macrobond-Status")
-        if macrobond_status:
-            raise ProblemDetailsException(response, detail=macrobond_status)
-
-        raise HttpException(response)
-
     def discovery(self, url: str) -> str:
-        response = self.auth2_session.request("get", url + ".well-known/openid-configuration", True)
+        response = self.auth2_session.request(
+            "get", url + ".well-known/openid-configuration", True, proxies=self.__proxies
+        )
         if response.status_code != 200:
             raise Exception("discovery Exception, status code is not 200")
 

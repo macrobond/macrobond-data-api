@@ -95,7 +95,7 @@
             "label": "pdoc3 server",
             "type": "shell",
             "command": "py",
-            "args": ["-3.7" ,"scripts\\pdoc3server.py"],
+            "args": ["-3.7" ,"scripts\\pdoc3_server.py"],
             "problemMatcher": [],
             "presentation": {
                 "clear": true

@@ -96,7 +96,6 @@
             <div class="row g-5">
                 <div class="col-md-6">
                     <h2>Index</h2>
-                    <%include file="_lunr_search.inc.mako"/>
                     <dl>
                       ${show_submodule(next(filter(lambda x: x.name.endswith("common"), submodules)))}
                       <hr class="col-md-6">

@@ -1,8 +1,10 @@
 .pytest_cache/
 .mypy_cache/
-__pycache__/
-dist/
-macrobond_data_api.egg-info/
 **.dtmp
-build/
-.vs/VSWorkspaceState.json
+__pycache__/
+
+/dist/
+/macrobond_data_api.egg-info/
+/build/
+/.vs/VSWorkspaceState.json
+/docs/build/

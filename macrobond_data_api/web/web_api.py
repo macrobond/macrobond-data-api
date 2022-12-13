@@ -41,7 +41,7 @@ from ._web_api_series import (
 
 from ._web_api_search import entity_search_multi_filter
 
-from .session import Session
+from .session import Session, _raise_on_error
 
 if TYPE_CHECKING:  # pragma: no cover
     from .web_types import SeriesWithVintagesResponse, RevisionHistoryRequest
@@ -166,7 +166,7 @@ class WebApi(Api):
         with self.__session.get(
             "v1/series/getsubscriptionlist", params=params, stream=True
         ) as response:
-            self.__session.raise_on_error(response)
+            _raise_on_error(response)
             ijson_parse = ijson.parse(response.raw)
 
             (
@@ -212,7 +212,7 @@ class WebApi(Api):
             with self.session.series.post_fetch_all_vintage_series(
                 requests_subset, stream=True
             ) as response:
-                self.__session.raise_on_error(response)
+                _raise_on_error(response)
                 ijson_items = ijson.items(response.raw, "item")
                 item: "SeriesWithVintagesResponse"
                 for item in ijson_items:

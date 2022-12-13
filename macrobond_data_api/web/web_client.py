@@ -38,6 +38,11 @@ class WebClient(Client["WebApi"]):
     authorization_url : str, optional
         record that failed processing
 
+    proxy : str, optional
+        For a HTTPS Proxy use 'https://10.10.1.10:1080' or "https://user:pass@10.10.1.10:1080"
+        For a HTTP Proxy use 'http://10.10.1.10:1080' or "http://user:pass@10.10.1.10:1080"
+        For a Socks5 Proxy use 'socks5://user:pass@host:port'
+
     Returns
     -------
     WebClient
@@ -59,6 +64,7 @@ class WebClient(Client["WebApi"]):
         api_url: str = API_URL_DEFAULT,
         authorization_url: str = AUTHORIZATION_URL_DEFAULT,
         service_name: str = DEFAULT_SERVICE_NAME,
+        proxy: str = None,
     ) -> None:
         super().__init__()
 
@@ -85,7 +91,12 @@ class WebClient(Client["WebApi"]):
 
         self.__api: Optional["WebApi"] = None
         self.__session = Session(
-            client_id, client_secret, *scopes, api_url=api_url, authorization_url=authorization_url
+            client_id,
+            client_secret,
+            *scopes,
+            api_url=api_url,
+            authorization_url=authorization_url,
+            proxy=proxy
         )
 
     @property
