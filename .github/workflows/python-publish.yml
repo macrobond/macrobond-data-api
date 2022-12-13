@@ -4,6 +4,9 @@ name: Upload Python Package
 on:
   release:
     types: [published]
+  
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -28,15 +31,19 @@ jobs:
         python-version: '3.7'
 
     - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
+      run: python -m pip install --upgrade pip
 
     - name: Build package
       run: scripts/build.py
 
-    - name: Publish package
-      if: ${{ false }}
-      uses: pypa/gh-action-pypi-publish@27b31702a0e7fc50959f5ad993c78deac1bdfc29
-      with:
-        user: __token__
-        password: ${{ secrets.PYPI_API_TOKEN }}
+#    - name: Publish distribution 📦 to Test PyPI
+#      uses: pypa/gh-action-pypi-publish@release/v1
+#      with:
+#        password: ${{ secrets.TEST_PYPI_API_TOKEN }}
+#        repository_url: https://test.pypi.org/legacy/
+
+#    - name: Publish distribution 📦 to PyPI
+#      if: startsWith(github.ref, 'refs/tags')
+#      uses: pypa/gh-action-pypi-publish@release/v1
+#      with:
+#        password: ${{ secrets.PYPI_API_TOKEN }}
