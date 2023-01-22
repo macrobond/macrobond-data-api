@@ -21,8 +21,8 @@ class SeriesEntry:
         "name",
         "vintage",
         "missing_value_method",
-        "to_lowerfrequency_method",
-        "to_higherfrequency_method",
+        "to_lower_frequency_method",
+        "to_higher_frequency_method",
         "partial_periods_method",
     )
 
@@ -32,8 +32,8 @@ class SeriesEntry:
         name: str,
         vintage: Optional[datetime] = None,
         missing_value_method: SeriesMissingValueMethod = SeriesMissingValueMethod.NONE,
-        to_lowerfrequency_method: SeriesToLowerFrequencyMethod = SeriesToLowerFrequencyMethod.AUTO,
-        to_higherfrequency_method: SeriesToHigherFrequencyMethod = SeriesToHigherFrequencyMethod.AUTO,
+        to_lower_frequency_method: SeriesToLowerFrequencyMethod = SeriesToLowerFrequencyMethod.AUTO,
+        to_higher_frequency_method: SeriesToHigherFrequencyMethod = SeriesToHigherFrequencyMethod.AUTO,
         partial_periods_method: SeriesPartialPeriodsMethod = SeriesPartialPeriodsMethod.NONE,
     ) -> None:
         self.name = name
@@ -48,14 +48,14 @@ class SeriesEntry:
         Should be a value of
         `macrobond_data_api.common.enums.series_missing_value_method.SeriesMissingValueMethod`
         """
-        self.to_lowerfrequency_method = to_lowerfrequency_method
+        self.to_lower_frequency_method = to_lower_frequency_method
         """
         Method to use when converting to a lower frequency.
         Should be a value of
         `macrobond_data_api.common.enums.series_to_lower_frequency_method.SeriesToLowerFrequencyMethod`
         """
 
-        self.to_higherfrequency_method = to_higherfrequency_method
+        self.to_higher_frequency_method = to_higher_frequency_method
         """
         Method to use when converting to a higher frequency.
         Should be a value of

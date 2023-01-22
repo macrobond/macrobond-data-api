@@ -152,8 +152,8 @@ def get_unified_series(
             "vintage": entrie.vintage.isoformat() if entrie.vintage is not None else None,
             "missingValueMethod": entrie.missing_value_method,
             "partialPeriodsMethod": entrie.partial_periods_method,
-            "toLowerFrequencyMethod": entrie.to_lowerfrequency_method,
-            "toHigherFrequencyMethod": entrie.to_higherfrequency_method,
+            "toLowerFrequencyMethod": entrie.to_lower_frequency_method,
+            "toHigherFrequencyMethod": entrie.to_higher_frequency_method,
         }
 
     web_series_entries = list(map(convert_to_unified_series_entry, series_entries))

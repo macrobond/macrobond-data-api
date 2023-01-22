@@ -139,9 +139,9 @@ def get_unified_series(
 
         series_expression.MissingValueMethod = entry.missing_value_method
 
-        series_expression.ToLowerFrequencyMethod = entry.to_lowerfrequency_method
+        series_expression.ToLowerFrequencyMethod = entry.to_lower_frequency_method
 
-        series_expression.ToHigherFrequencyMethod = entry_or_name.to_higherfrequency_method
+        series_expression.ToHigherFrequencyMethod = entry_or_name.to_higher_frequency_method
 
         series_expression.PartialPeriodsMethod = entry_or_name.partial_periods_method
 
