@@ -30,8 +30,11 @@ class UnifiedSeriesDict(TypedDict):
     Series: Tuple[Dict[str, Any], ...]
 
 
-class UnifiedSerie:
-    """Interface for a Macrobond time series."""
+class UnifiedSeries:
+    """
+    Represents a Macrobond time series in the response from
+    `macrobond_data_api.common.api.Api.get_unified_series`.
+    """
 
     __slots__ = ("name", "error_message", "metadata", "values")
 
@@ -42,6 +45,10 @@ class UnifiedSerie:
 
     @property
     def is_error(self) -> bool:
+        """
+        True if there was an error downloading this entity. `Entity.error_message` will
+        contain any error message.
+        """
         return self.error_message != ""
 
     def __init__(
@@ -52,16 +59,16 @@ class UnifiedSerie:
         values: Tuple[Optional[float], ...],
     ) -> None:
         self.name = name
-        """name"""
+        """The name of the requested series."""
 
         self.error_message = error_message
-        """error_message"""
+        """Contains an error message if `UnifiedSerie.is_error` is True."""
 
         self.metadata = metadata
-        """metadata"""
+        """The metadata of the series."""
 
         self.values = values
-        """values"""
+        """The values of the series."""
 
     def to_dict(self) -> Dict[str, Any]:
         if self.is_error:
@@ -82,7 +89,7 @@ class UnifiedSerie:
 
     def __eq__(self, other):
         return self is other or (
-            isinstance(other, UnifiedSerie)
+            isinstance(other, UnifiedSeries)
             and self.name == other.name
             and self.error_message == other.error_message
             and self.values == other.values
@@ -90,7 +97,11 @@ class UnifiedSerie:
         )
 
 
-class UnifiedSeries(List[UnifiedSerie]):
+class UnifiedSeriesList(List[UnifiedSeries]):
+    """
+    The response from
+    `macrobond_data_api.common.api.Api.get_unified_series`.
+    """
 
     __slots__ = ("dates",)
 
@@ -98,20 +109,24 @@ class UnifiedSeries(List[UnifiedSerie]):
 
     @property
     def is_error(self) -> bool:
+        """
+        True if any of the series has an error.
+        """
         return any(self)
 
     @property
-    def series(self) -> List[UnifiedSerie]:
+    def series(self) -> List[UnifiedSeries]:
+        """The list of series"""
         return self
 
     def __init__(
         self,
-        series: Sequence[UnifiedSerie],
+        series: Sequence[UnifiedSeries],
         dates: Tuple[datetime, ...],
     ) -> None:
         super().__init__(series)
         self.dates = dates
-        """dates"""
+        """The dates of the observations"""
 
     def to_dict(self) -> UnifiedSeriesDict:
         return {

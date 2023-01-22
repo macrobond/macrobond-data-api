@@ -18,7 +18,7 @@ if TYPE_CHECKING:  # pragma: no cover
 
 
 class Series(Entity):
-    """Interface for a Macrobond time series."""
+    """Represents a Macrobond time series."""
 
     __slots__ = ("values", "dates")
 

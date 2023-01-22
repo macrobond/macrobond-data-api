@@ -23,6 +23,7 @@ class RevisionInfoDict(TypedDict, total=False):
 
 
 class RevisionInfo:
+    """Information about revisions of a time series."""
 
     __slots__ = (
         "name",
@@ -53,27 +54,30 @@ class RevisionInfo:
         vintage_time_stamps: Tuple[datetime, ...],
     ) -> None:
         self.name = name
-        """name"""
+        """The name of the series"""
 
         self.error_message = error_message
-        """error_message"""
+        """Contains an error message in case of an error."""
 
         self.stores_revisions = stores_revisions
-        """stores_revisions"""
+        """Returns True if revision history is stored for this series."""
 
         self.has_revisions = has_revisions
-        """has_revisions"""
+        """Returns True if any revisions have been stored for this series."""
 
         self.time_stamp_of_first_revision = time_stamp_of_first_revision
-        """time_stamp_of_first_revision"""
+        """The timestamp of the first stored revision."""
 
         self.time_stamp_of_last_revision = time_stamp_of_last_revision
-        """time_stamp_of_last_revision"""
+        """The timestamps of the last strored revision."""
 
         self.vintage_time_stamps = vintage_time_stamps
-        """vintage_time_stamps"""
+        """
+        A tuple with the timestams of all stored revisions in time order with the oldest first.
+        """
 
     def to_dict(self) -> RevisionInfoDict:
+        """Returns a dictionary with the information of the series revisions."""
         return {
             "name": self.name,
             "error_message": self.error_message,
@@ -85,6 +89,7 @@ class RevisionInfo:
         }
 
     def to_pd_data_frame(self) -> "DataFrame":
+        """Returns a Pandas dataframe with the information about the series revisions."""
         pandas = _get_pandas()
         return pandas.DataFrame(self.to_dict())
 

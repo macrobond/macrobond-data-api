@@ -13,9 +13,10 @@ VintageSeriesColumns = List[Literal[SeriesColumnsLiterals, "VintageTimeStamp", "
 
 
 class VintageSeries(Series):
+    """Represtents a vintage series"""
     @property
     def revision_time_stamp(self) -> datetime:
-        """The name of the entity."""
+        """The vintage of the series."""
         revision_time_stamp = self.metadata["RevisionTimeStamp"]
         if isinstance(revision_time_stamp, list):
             revision_time_stamp = revision_time_stamp[0]

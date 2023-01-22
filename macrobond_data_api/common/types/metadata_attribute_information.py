@@ -49,8 +49,8 @@ class TypedDictMetadataAttributeInformation(TypedDict):
 
     can_list_values: bool
     """
-    If True then the values of this type of
-    metadata can be listen using the ListAllValues function
+    If True then the values of this type of metadata can be listed
+    using the `macrobond_data_api.common.api.Api.metadata_list_values` function
     """
 
     can_have_multiple_values: bool
@@ -58,7 +58,8 @@ class TypedDictMetadataAttributeInformation(TypedDict):
 
     is_database_entity: bool
     """
-    If True then this type of metadata is an entity that can be retrieved from the database
+    If True then this type of metadata is an entity that can be retrieved from the database using
+    the `macrobond_data_api.common.api.Api.get_one_entity` function
     """
 
 

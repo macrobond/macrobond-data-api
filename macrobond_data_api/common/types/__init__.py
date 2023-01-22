@@ -16,7 +16,7 @@ from .entity import Entity, EntityColumns
 
 from .unified_series import (
     UnifiedSeries,
-    UnifiedSerie,
+    UnifiedSeriesList,
     UnifiedSeriesDict,
     UnifiedSeriesColumns,
 )

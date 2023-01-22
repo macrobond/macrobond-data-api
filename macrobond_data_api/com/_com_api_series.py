@@ -16,7 +16,7 @@ from macrobond_data_api.common.types import (
     GetEntitiesError,
     Series,
     Entity,
-    UnifiedSerie,
+    UnifiedSeriesList,
     UnifiedSeries,
 )
 
@@ -124,22 +124,22 @@ def get_unified_series(
     start_point: "StartOrEndPoint" = None,
     end_point: "StartOrEndPoint" = None,
     raise_error: bool = None
-) -> UnifiedSeries:
+) -> UnifiedSeriesList:
     # pylint: disable=too-many-branches
     request = self.database.CreateUnifiedSeriesRequest()
     for entry_or_name in series_entries:
         if isinstance(entry_or_name, str):
             entry_or_name = SeriesEntry(entry_or_name)
 
-        entrie = entry_or_name
-        series_expression = request.AddSeries(entrie.name)
+        entry = entry_or_name
+        series_expression = request.AddSeries(entry.name)
 
-        if entrie.vintage:
-            series_expression.Vintage = entrie.vintage
+        if entry.vintage:
+            series_expression.Vintage = entry.vintage
 
-        series_expression.MissingValueMethod = entrie.missing_value_method
+        series_expression.MissingValueMethod = entry.missing_value_method
 
-        series_expression.ToLowerFrequencyMethod = entrie.to_lowerfrequency_method
+        series_expression.ToLowerFrequencyMethod = entry.to_lowerfrequency_method
 
         series_expression.ToHigherFrequencyMethod = entry_or_name.to_higherfrequency_method
 
@@ -169,12 +169,12 @@ def get_unified_series(
     else:
         dates = tuple()
 
-    series: List[UnifiedSerie] = []
+    series: List[UnifiedSeries] = []
 
     for i, com_one_series in enumerate(com_series):
         name = request.AddedSeries[i].Name
         if com_one_series.IsError:
-            series.append(UnifiedSerie(name, com_one_series.ErrorMessage, {}, tuple()))
+            series.append(UnifiedSeries(name, com_one_series.ErrorMessage, {}, tuple()))
             continue
 
         metadata: Dict[str, Any] = {}
@@ -188,7 +188,7 @@ def get_unified_series(
                 metadata[metadata_name] = list(values)
 
         series.append(
-            UnifiedSerie(
+            UnifiedSeries(
                 name,
                 "",
                 metadata,
@@ -201,7 +201,7 @@ def get_unified_series(
             )
         )
 
-    ret = UnifiedSeries(series, dates)
+    ret = UnifiedSeriesList(series, dates)
 
     errors = ret.get_errors()
     raise_error = self.raise_error if raise_error is None else raise_error

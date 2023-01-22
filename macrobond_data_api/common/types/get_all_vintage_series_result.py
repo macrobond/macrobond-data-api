@@ -13,7 +13,7 @@ if TYPE_CHECKING:  # pragma: no cover
 
 class GetAllVintageSeriesResult(List[Series]):
     """
-    The result of downloading all vintagesof a time series.
+    The result of downloading all vintages of a time series.
     """
 
     __slots__ = ("series_name",)
@@ -27,7 +27,7 @@ class GetAllVintageSeriesResult(List[Series]):
     ) -> None:
         super().__init__(series)
         self.series_name = series_name
-        """series_name"""
+        """The name of the requested series."""
 
     @property
     def series(self) -> List[Series]:

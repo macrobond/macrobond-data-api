@@ -18,7 +18,7 @@ from macrobond_data_api.common.types import (
     Series,
     Entity,
     UnifiedSeries,
-    UnifiedSerie,
+    UnifiedSeriesList,
 )
 
 from .session import Session
@@ -140,7 +140,7 @@ def get_unified_series(
     start_point: "StartOrEndPoint" = None,
     end_point: "StartOrEndPoint" = None,
     raise_error: bool = None
-) -> UnifiedSeries:
+) -> UnifiedSeriesList:
     def convert_to_unified_series_entry(
         entry_or_name: Union[SeriesEntry, str]
     ) -> "UnifiedSeriesEntry":
@@ -182,13 +182,13 @@ def get_unified_series(
     else:
         dates = tuple()
 
-    series: List[UnifiedSerie] = []
+    series: List[UnifiedSeries] = []
     for i, one_series in enumerate(response["series"]):
         name = request["seriesEntries"][i]["name"]
         error_text = one_series.get("errorText")
 
         if error_text:
-            series.append(UnifiedSerie(name, error_text, {}, tuple()))
+            series.append(UnifiedSeries(name, error_text, {}, tuple()))
         else:
             values = tuple(
                 map(
@@ -201,9 +201,9 @@ def get_unified_series(
                 cast(Dict[str, Any], one_series["metadata"])
             )
 
-            series.append(UnifiedSerie(name, "", metadata, values))
+            series.append(UnifiedSeries(name, "", metadata, values))
 
-    ret = UnifiedSeries(series, dates)
+    ret = UnifiedSeriesList(series, dates)
 
     errors = ret.get_errors()
     raise_error = self.raise_error if raise_error is None else raise_error

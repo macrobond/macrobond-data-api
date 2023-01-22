@@ -27,6 +27,10 @@ class Entity:
 
     @property
     def is_error(self) -> bool:
+        """
+        True if there was an error downloading this entity. `Entity.error_message` will
+        contain any error message.
+        """
         return self.error_message != ""
 
     @property
@@ -50,7 +54,10 @@ class Entity:
 
     @property
     def entity_type(self) -> str:
-        """The type of the entity."""
+        """
+        The type of the entity.
+        Common types are TimeSeries, Region, Release and Source.
+        """
         entity_type = self.metadata["EntityType"]
         if isinstance(entity_type, list):
             entity_type = entity_type[0]
@@ -72,7 +79,7 @@ class Entity:
         """The name of the requested entity."""
 
         self.error_message = error_message if error_message else ""
-        """Contains an error message if is_error is True."""
+        """Contains an error message if `Entity.is_error` is True."""
 
         self.metadata = metadata if metadata else {}
         """The metadata of the entity."""
@@ -82,6 +89,7 @@ class Entity:
             destination["metadata." + key] = self.metadata[key]
 
     def to_dict(self) -> Dict[str, Any]:
+        """Returns a dictionary containing all the metadata."""
         if self.is_error:
             return {
                 "Name": self.name,

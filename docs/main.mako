@@ -88,7 +88,10 @@
             <div class="col-12 col-md-12 mb-5">
               <h2>Installing macrobond-data-api and Supported Versions</h2>
               <p class="fs-5">
-                Run comand !!
+                Supported versions of Python are currently 3.7 - 3.11.
+              </p>
+              <p class="fs-5">
+                The package is available at PiPy and can be installed using this command:
               </p>
               <pre style="display: inline;"><code>python -m pip install macrobond-data-api</code></pre>
             </div>
@@ -115,8 +118,7 @@
 
                   <div class="col-md-12">
                       <h2>Examples</h2>
-                      <p>Read more detailed instructions and documentation on using or contributing to Bootstrap.</p>
-                      <a href="https://github.com/macrobond/data-api-python/tree/main/examples">linke to Examples</a>
+                      <p>You can find examples how to use the API <a href="https://github.com/macrobond/data-api-python/tree/main/examples">here</a>.</p>
                   </div>
       
                   <div class="col-md-12">

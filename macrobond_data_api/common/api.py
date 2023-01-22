@@ -22,7 +22,7 @@ from .types import (
     VintageSeries,
     Series,
     Entity,
-    UnifiedSeries,
+    UnifiedSeriesList,
     GetAllVintageSeriesResult,
     SeriesObservationHistory,
 )
@@ -197,6 +197,7 @@ class Api(ABC):
         Returns
         -------
         `List[macrobond_data_api.common.types.revision_info.RevisionInfo]`
+        The result is in the sane order as in the request.
         """
 
     @abstractmethod
@@ -204,7 +205,7 @@ class Api(ABC):
         self, time: datetime, *series_names: str, raise_error: bool = None
     ) -> List[VintageSeries]:
         """
-        Fetch a vintage series.
+        Fetch vintage series.
 
         Parameters
         ----------
@@ -219,7 +220,8 @@ class Api(ABC):
 
         Returns
         -------
-        `List[VintageSeries]`
+        `List[macrobond_data_api.common.types.vintage_series.VintageSeries]`
+        The result is in the same order as in the request.
         """
 
     @abstractmethod
@@ -242,7 +244,8 @@ class Api(ABC):
 
         Returns
         -------
-        `List[Series]`
+        `List[macrobond_data_api.common.types.series.Series]`
+        The result is in the same order as in the request.
         """
 
     @abstractmethod
@@ -293,7 +296,7 @@ class Api(ABC):
 
         Returns
         -------
-        `SearchResult`
+        `macrobond_data_api.common.types.search_result.SearchResult`
         """
         return self.entity_search_multi_filter(
             SearchFilter(
@@ -351,7 +354,7 @@ class Api(ABC):
 
         Returns
         -------
-        `Series`
+        `macrobond_data_api.common.types.series.Series`
         """
 
     @abstractmethod
@@ -374,7 +377,8 @@ class Api(ABC):
 
         Returns
         -------
-        `List[Series]`
+        `List[macrobond_data_api.common.types.series.Series]`
+        The result is in the same order as in the request.
         """
 
     @abstractmethod
@@ -396,7 +400,7 @@ class Api(ABC):
 
         Returns
         -------
-        `Entity`
+        `macrobond_data_api.common.types.entity.Entity`
         """
 
     @abstractmethod
@@ -419,7 +423,8 @@ class Api(ABC):
 
         Returns
         -------
-        `List[Entity]`
+        `List[macrobond_data_api.common.types.entity.Entity]`
+        The result is in the same order as in the request.
         """
 
     @abstractmethod
@@ -433,14 +438,14 @@ class Api(ABC):
         start_point: StartOrEndPoint = None,
         end_point: StartOrEndPoint = None,
         raise_error: bool = None
-    ) -> UnifiedSeries:
+    ) -> UnifiedSeriesList:
         # pylint: disable=line-too-long
         """
         Get one or more series and convert them to a common frequency and calendar.
 
         Parameters
         ----------
-        *series_entries : Union[SeriesEntry, str]
+        *series_entries : Union[macrobond_data_api.common.types.series_entry.SeriesEntry, str]
             One or more names of series or
             `macrobond_data_api.common.types.series_entry.SeriesEntry` objects.
         frequency : `macrobond_data_api.common.enums.series_frequency.SeriesFrequency`
@@ -464,6 +469,7 @@ class Api(ABC):
 
         Returns
         -------
-        `UnifiedSeries`
+        `macrobond_data_api.common.types.unified_series.UnifiedSeries`
+        The result is in the same order as in the request.
         """
         # pylint: enable=line-too-long
