@@ -30,7 +30,7 @@ from .metadata_value_information import (
     MetadataValueInformationColumns,
 )
 
-from .get_entitie_error import EntitieErrorInfo, GetEntitiesError
+from .get_entity_error import EntityErrorInfo, GetEntitiesError
 
 from .metadata_attribute_information import (
     TypedDictMetadataAttributeInformation,

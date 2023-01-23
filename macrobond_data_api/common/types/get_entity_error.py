@@ -6,17 +6,27 @@ __pdoc__ = {
 }
 
 
-class EntitieErrorInfo:
+class EntityErrorInfo:
+    """
+    Represents a failed entity retrieval.
+    """
 
     name: str
     error_message: str
 
+    @property
+    def is_error(self) -> bool:
+        """
+        Always returns True since this instance always indicates an error.
+        """
+        return True
+
     def __init__(self, name: str, error_message: str):
         self.name = name
-        """name"""
+        """The name of the entity."""
 
         self.error_message = error_message
-        """error_message"""
+        """Contains the error message."""
 
     def __repr__(self):
         return f"name: {self.name} error_message: {self.error_message}"
@@ -24,20 +34,20 @@ class EntitieErrorInfo:
 
 class GetEntitiesError(Exception):
 
-    entities: List[EntitieErrorInfo]
+    entities: List[EntityErrorInfo]
     message: str
 
     def __init__(
         self,
-        entities: Union[List[EntitieErrorInfo], str, Dict[str, str]],
+        entities: Union[List[EntityErrorInfo], str, Dict[str, str]],
         error_message: str = None,
     ):
-        def get_entities() -> List[EntitieErrorInfo]:
+        def get_entities() -> List[EntityErrorInfo]:
             if isinstance(entities, list):
                 return entities
             if isinstance(entities, dict):
-                return list(map(EntitieErrorInfo, entities.keys(), entities.values()))
-            return [EntitieErrorInfo(entities, cast(str, error_message))]
+                return list(map(EntityErrorInfo, entities.keys(), entities.values()))
+            return [EntityErrorInfo(entities, cast(str, error_message))]
 
         self.entities = get_entities()
         """entities"""
@@ -76,5 +86,5 @@ class GetEntitiesError(Exception):
             )
             if entities_list:
                 raise GetEntitiesError(
-                    list(map(lambda x: EntitieErrorInfo(x[0], x[1]), entities_list))
+                    list(map(lambda x: EntityErrorInfo(x[0], x[1]), entities_list))
                 )

@@ -76,7 +76,7 @@ class Entity:
         metadata: Optional[MutableMapping[str, Any]],
     ) -> None:
         self.name = name
-        """The name of the requested entity."""
+        """The name of the entity."""
 
         self.error_message = error_message if error_message else ""
         """Contains an error message if `Entity.is_error` is True."""
