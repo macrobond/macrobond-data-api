@@ -23,24 +23,30 @@ class WebClient(Client["WebApi"]):
 
     Parameters
     ----------
-    client_id : str
-        record that failed processing
+    client_id : str, optional
+        The client id to use for authentication.
+        If not specified, an attempt is made to get the credentials from the keyring
 
-    client_secret : str
-        record that failed processing
+    client_secret : str, optional
+        The client secret to use for authentication.
+        If not specified, an attempt is made to get the credentials from the keyring
 
     scopes : List[str], optional
-        record that failed processing
+        A list of scopes to request as part of the authorization.
+        If not specified, all available scopes will be requested.
+        The common scopes requires are 'macrobond_web_api.read_mb' and 'macrobond_web_api.search_mb'
 
     api_url : str, optional
-        record that failed processing
+        The URL of the API.
+        If not specified, the default URL will be used, which is what you want in most cases.
 
     authorization_url : str, optional
-        record that failed processing
+        The URL of the authorization server.
+        If not specified, the default URL will be used, which is what you want in most cases.
 
     proxy : str, optional
-        For a HTTPS Proxy use 'https://10.10.1.10:1080' or "https://user:pass@10.10.1.10:1080"
-        For a HTTP Proxy use 'http://10.10.1.10:1080' or "http://user:pass@10.10.1.10:1080"
+        For a HTTPS Proxy use 'https://10.10.1.10:1080' or 'https://user:pass@10.10.1.10:1080'
+        For a HTTP Proxy use 'http://10.10.1.10:1080' or 'http://user:pass@10.10.1.10:1080'
         For a Socks5 Proxy use 'socks5://user:pass@host:port'
 
     Returns
