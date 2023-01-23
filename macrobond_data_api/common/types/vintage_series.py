@@ -14,6 +14,7 @@ VintageSeriesColumns = List[Literal[SeriesColumnsLiterals, "VintageTimeStamp", "
 
 class VintageSeries(Series):
     """Represtents a vintage series"""
+
     @property
     def revision_time_stamp(self) -> datetime:
         """The vintage of the series."""
