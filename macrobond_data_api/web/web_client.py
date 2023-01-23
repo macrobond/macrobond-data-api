@@ -34,7 +34,7 @@ class WebClient(Client["WebApi"]):
     scopes : List[str], optional
         A list of scopes to request as part of the authorization.
         If not specified, all available scopes will be requested.
-        The common scopes requires are 'macrobond_web_api.read_mb' and 'macrobond_web_api.search_mb'
+        The common scopes requires are "macrobond_web_api.read_mb" and "macrobond_web_api.search_mb"
 
     api_url : str, optional
         The URL of the API.
@@ -45,17 +45,22 @@ class WebClient(Client["WebApi"]):
         If not specified, the default URL will be used, which is what you want in most cases.
 
     proxy : str, optional
-        For a HTTPS Proxy use 'https://10.10.1.10:1080' or 'https://user:pass@10.10.1.10:1080'
-        For a HTTP Proxy use 'http://10.10.1.10:1080' or 'http://user:pass@10.10.1.10:1080'
-        For a Socks5 Proxy use 'socks5://user:pass@host:port'
+        For a HTTPS Proxy use `https://10.10.1.10:1080` or `https://user:pass@10.10.1.10:1080`
+        For a HTTP Proxy use `http://10.10.1.10:1080` or `http://user:pass@10.10.1.10:1080`
+        For a Socks5 Proxy use `socks5://user:pass@host:port`
 
     Returns
     -------
     WebClient
-        WebClient instance
+        The WebClient instance
 
     Examples
     -------
+    ```python
+    # use credentials stored in the keyring
+    with WebClient() as api:
+        # use the api here
+    ```
     ```python
     with WebClient('client id', 'client secret') as api:
         # use the api here

@@ -31,12 +31,12 @@ except ImportError:
 
 class ComClient(Client["ComApi"]):
     """
-    ComClient to get data from the web
+    ComClient to get data via the Macrobond desktop API
 
     Returns
     -------
-    WebClient
-        ComClient instance
+    ComClient
+        The ComClient instance
 
     Examples
     -------

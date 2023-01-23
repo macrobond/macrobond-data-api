@@ -36,9 +36,15 @@ class Series(Entity):
         super().__init__(name, error_message, metadata)
 
         self.values = ...  # type: ignore
-        """values"""
+        """
+        The values of the series.
+        The number of values is the same as the number of `Series.dates`. 
+        """
         self.dates = ...  # type: ignore
-        """dates"""
+        """
+        The dates of the periods corresponding to the values
+        The number of dates is the same as the number of `Series.values`. 
+        """
 
         if values is None:
             self.values = tuple()
