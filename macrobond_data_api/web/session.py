@@ -91,8 +91,8 @@ class Session:
 
     def __init__(
         self,
-        client_id: str,
-        client_secret: str,
+        username: str,
+        password: str,
         *scopes: Scope,
         api_url: str = API_URL_DEFAULT,
         authorization_url: str = API_URL_DEFAULT,
@@ -124,7 +124,7 @@ class Session:
 
         scopes_str_list = list(map(lambda s: s.value, scopes))
         if test_auth2_session is None:
-            self.__auth2_session = OAuth2Session(client_id, client_secret, scope=scopes_str_list)
+            self.__auth2_session = OAuth2Session(username, password, scope=scopes_str_list)
         else:
             self.__auth2_session = test_auth2_session
 

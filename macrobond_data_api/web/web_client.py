@@ -23,12 +23,12 @@ class WebClient(Client["WebApi"]):
 
     Parameters
     ----------
-    client_id : str, optional
-        The client id to use for authentication.
+    username : str, optional
+        The username to use for authentication.
         If not specified, an attempt is made to get the credentials from the keyring
 
-    client_secret : str, optional
-        The client secret to use for authentication.
+    password : str, optional
+        The password to use for authentication.
         If not specified, an attempt is made to get the credentials from the keyring
 
     scopes : List[str], optional
@@ -69,8 +69,8 @@ class WebClient(Client["WebApi"]):
 
     def __init__(
         self,
-        client_id: str = None,
-        client_secret: str = None,
+        username: str = None,
+        password: str = None,
         scopes: List[Scope] = None,
         api_url: str = API_URL_DEFAULT,
         authorization_url: str = AUTHORIZATION_URL_DEFAULT,
@@ -79,7 +79,7 @@ class WebClient(Client["WebApi"]):
     ) -> None:
         super().__init__()
 
-        if client_secret is None:
+        if password is None:
             if _keyring_import_error:
                 raise _keyring_import_error
 
@@ -89,21 +89,21 @@ class WebClient(Client["WebApi"]):
                 keyring_name = str(_keyring.get_keyring())
                 raise ValueError("can not find the key in keyring " + keyring_name)
 
-            if client_id is None:
-                client_id = credential.username
+            if username is None:
+                username = credential.username
 
-            client_secret = credential.password
+            password = credential.password
         else:
-            if client_id is None:
-                raise ValueError("client_id is None")
+            if username is None:
+                raise ValueError("username is None")
 
         if scopes is None:
             scopes = []
 
         self.__api: Optional["WebApi"] = None
         self.__session = Session(
-            client_id,
-            client_secret,
+            username,
+            password,
             *scopes,
             api_url=api_url,
             authorization_url=authorization_url,
