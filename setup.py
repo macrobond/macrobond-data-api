@@ -1,9 +1,51 @@
 import os
 import platform
 import sys
+import subprocess
 
-from codecs import open as codecs_open
 from setuptools import setup, find_packages  # type: ignore
+
+AUTHOR = "Macrobond Financial"
+AUTHOR_EMAIL = "support@macrobond.com"
+DESCRIPTION = "Exposes a common API in Python for the Macrobobond Web and Client Data APIs"
+LICENSE = "MIT License"
+URL = "https://github.com/macrobond/macrobond-data-api"
+
+with open("README.md", "r", encoding="utf-8") as fh:
+    LONG_DESCRIPTION = fh.read()
+
+try:
+    version = (
+        subprocess.run(["git", "describe", "--tags"], stdout=subprocess.PIPE, check=True)
+        .stdout.decode("utf-8")
+        .strip()
+    )
+except subprocess.CalledProcessError:
+    version = "0.0.0"  # pylint: disable=invalid-name
+
+if "-" in version:
+    v, i, s = version.split("-")
+    version = v + "+" + i + ".git." + s
+
+print("version: " + version)
+
+assert "-" not in version
+assert "." in version
+
+# fmt: off
+PACKAGE_INFO = '''# -*- coding: utf-8 -*-
+
+__version__ = "''' + version + '''"
+__author__ = "''' + AUTHOR + '''"
+__author_email__ = "''' + AUTHOR_EMAIL + '''"
+__description__ = "''' + DESCRIPTION + '''"
+__license__ = "''' + LICENSE + '''"
+__url__ = "''' + URL + '''"
+'''
+# fmt: on
+
+with open(os.path.join("macrobond_data_api", "__version__.py"), "w+", encoding="utf-8") as fh:
+    fh.write(PACKAGE_INFO)
 
 REQUESTS_VERSION = "2.28.1"
 
@@ -33,20 +75,16 @@ if platform.python_implementation() != "PyPy":
     if sys.platform == "win32":
         install_requires.append("pywin32>=305")
 
-about = {}  # type: ignore
-here = os.path.abspath(os.path.dirname(__file__))
-with codecs_open(os.path.join(here, "macrobond_data_api", "__version__.py"), "r", "utf-8") as f:
-    exec(f.read(), about)  # pylint: disable=exec-used
-
 setup(
     name="macrobond-data-api",
     packages=find_packages(include=["macrobond_data_api", "macrobond_data_api.*"]),
-    version=about["__version__"],
-    author=about["__author__"],
-    author_email=about["__author_email__"],
-    description=about["__description__"],
-    # long_description=attr.__long_description__,
-    url=about["__url__"],
+    version=version,
+    author=AUTHOR,
+    author_email=AUTHOR_EMAIL,
+    description=DESCRIPTION,
+    long_description=LONG_DESCRIPTION,
+    url=URL,
+    # TODO @mb-jp add keywords
     # keywords="sample, example, setuptools",
     # https://pypi.org/classifiers/
     classifiers=[

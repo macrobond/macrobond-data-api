@@ -8,3 +8,4 @@ __pycache__/
 /build/
 /.vs/VSWorkspaceState.json
 /docs/build/
+macrobond_data_api/__version__.py
