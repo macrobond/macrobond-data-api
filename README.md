@@ -1,4 +1,32 @@
-# Macrobond Data API for Python
+<p align="center">
+<img src="https://assets-global.website-files.com/5fe1e5ab342569725c29e137/5fe3570b3d22be662c6a6276_macrobond-logo-white.webp" loading="lazy" aria-roledescription="brand logo" alt="Macrobond logo">
+</p>
+
+<h1 align="center">Macrobond Data API for Python</h1>
+
+<p align="center">
+<a href="https://pypi.org/project/macrobond-data-api/">
+    <img alt="PyPI" src="https://img.shields.io/pypi/v/macrobond-data-api">
+</a>
+<a href="https://pypi.org/project/macrobond-data-api/">
+    <img alt="PyPI" src="https://img.shields.io/pypi/pyversions/macrobond-data-api.svg">
+</a>
+<!--
+<a href="https://github.com/macrobond/macrobond-data-api/actions?query=workflow%3A%22tests%22">
+    <img alt="PyPI" src="https://github.com/macrobond/macrobond-data-api/workflows/tests/badge.svg">
+</a>
+-->
+<a href="https://github.com/macrobond-data-api/black/blob/main/LICENSE">
+    <img alt="License: MIT" src="https://black.readthedocs.io/en/stable/_static/license.svg">
+</a>
+<!--
+<a href="https://pepy.tech/project/macrobond-data-api"><img alt="Downloads" src="https://pepy.tech/badge/macrobond-data-api">
+</a>
+-->
+<a href="https://github.com/psf/black"><img alt="Code style: black" src="https://img.shields.io/badge/code%20style-black-000000.svg">
+</a>
+</p>
+
 
 The Macrobond Data API for Python is used to access the world’s most extensive macroeconomic, aggregate financial and sector database provided by [Macrobond](http://www.macrobond.com).
 Exposes a common API in Python for the [Macrobobond Web](https://help.macrobond.com/technical-information/the-macrobond-web-api-data-feed/) and [Client data](https://help.macrobond.com/technical-information/the-macrobond-api-for-python/) APIs
