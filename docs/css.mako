@@ -311,7 +311,7 @@
     }
     #content {
       width: 70%;
-      max-width: 100ch;
+      max-width: 150ch;
       padding: 3em 4em;
       border-left: 1px solid #ddd;
     }
