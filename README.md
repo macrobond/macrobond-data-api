@@ -1,9 +1,6 @@
 <div align="center">
     <a href="https://www.macrobond.com/">
-        <picture>
-          <source media="(prefers-color-scheme: dark)" srcset="https://macrobond.github.io/macrobond-data-api/assets/Macrobond_logo_White.svg">
-          <img loading="lazy" aria-roledescription="brand logo" alt="Macrobond logo" src="https://macrobond.github.io/macrobond-data-api/assets/Macrobond_logo_Black.svg" width="30%">
-        </picture>
+        <img loading="lazy" aria-roledescription="brand logo" alt="Macrobond logo" src="https://macrobond.github.io/macrobond-data-api/assets/Macrobond_logo_Color.svg" width="30%">
     </a>
 </div>
 
