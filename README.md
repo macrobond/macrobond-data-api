@@ -6,6 +6,8 @@
 
 <h1 align="center">Macrobond Data API for Python</h1>
 
+<h1 align="center">This software is in beta !</h1>
+
 <p align="center">
 <a href="https://pypi.org/project/macrobond-data-api/">
     <img alt="PyPI" src="https://img.shields.io/pypi/v/macrobond-data-api">
@@ -67,6 +69,22 @@ python -m pip install macrobond-data-api
 ```
 
 Macrobond Data API for Python officially supports Python 3.6+.
+
+## Using of system keyring
+
+When using WebClient it is recommended to use the system keyring.
+This can be done easily by running the include script using this command:
+
+```console
+python -c "from macrobond_data_api.util import *; save_credential_to_keyring()"
+```
+
+### Supported keyrings
+
+* macOS [Keychain](https://en.wikipedia.org/wiki/Keychain_%28software%29)
+* Freedesktop [Secret Service](http://standards.freedesktop.org/secret-service/) supports many DE including GNOME (requires [secretstorage](https://pypi.python.org/pypi/secretstorage))
+* KDE4 & KDE5 [KWallet](https://en.wikipedia.org/wiki/KWallet) (requires [dbus](https://pypi.python.org/pypi/dbus-python))
+* [Windows Credential Locker](https://docs.microsoft.com/en-us/windows/uwp/security/credential-locker)
 
 ## Contributing
 

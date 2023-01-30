@@ -96,6 +96,24 @@
               <pre style="display: inline;"><code>python -m pip install macrobond-data-api</code></pre>
             </div>
 
+            <div class="col-12 col-md-12 mb-5">
+              <h2>Using of system keyring</h2>
+              <p class="fs-5">
+                When using WebClient it is recommended to use the system keyring.
+                This can be done easily by running the include script using this command:
+              </p>
+              <pre style="display: inline;"><code>python -c "from macrobond_data_api.util import *; save_credential_to_keyring()"</code></pre>
+            </div>
+            <div class="col-12 col-md-12 mb-5">
+              <h3>Supported keyrings</h3>
+              <ul>
+                <li>macOS <a href="https://en.wikipedia.org/wiki/Keychain_%28software%29">Keychain</a></li>
+                <li>Freedesktop <a href="http://standards.freedesktop.org/secret-service/">Secret Service</a> supports many DE including GNOME (requires <a href="https://pypi.python.org/pypi/secretstorage">secretstorage</a>)</li>
+                <li>KDE4 &amp; KDE5 <a href="https://en.wikipedia.org/wiki/KWallet">KWallet</a> (requires <a href="https://pypi.python.org/pypi/dbus-python">dbus</a>)</li>
+                <li><a href="https://docs.microsoft.com/en-us/windows/uwp/security/credential-locker">Windows Credential Locker</a></li>
+              </ul>
+            </div>
+            
             <div class="row g-5">
                 <div class="col-md-6">
                     <h2>Index</h2>
