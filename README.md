@@ -64,7 +64,7 @@ The API consists of a set of functions in common between the underlying APIs as 
 
 ## Installing macrobond-data-api and Supported Versions
 
-Macrobond Data API for Python is available on PyPI:
+Macrobond Data API for Python is available on [PyPI](https://pypi.org/project/macrobond-data-api/):
 
 ```console
 python -m pip install macrobond-data-api

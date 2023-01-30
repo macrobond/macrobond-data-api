@@ -91,7 +91,7 @@
                 Supported versions of Python are currently 3.7 - 3.11.
               </p>
               <p class="fs-5">
-                The package is available at PiPy and can be installed using this command:
+                The package is available at <a href="https://pypi.org/project/macrobond-data-api/">PiPy</a> and can be installed using this command:
               </p>
               <pre style="display: inline;"><code>python -m pip install macrobond-data-api</code></pre>
             </div>

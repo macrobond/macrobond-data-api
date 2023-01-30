@@ -107,5 +107,6 @@ setup(
     project_urls={
         "Documentation": "https://macrobond.github.io/macrobond-data-api",
         "Source": "https://github.com/macrobond/macrobond-data-api",
+        "Tracker": "https://github.com/macrobond/macrobond-data-api/issues",
     },
 )
