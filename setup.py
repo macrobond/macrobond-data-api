@@ -96,4 +96,8 @@ setup(
     python_requires=">=3.7",
     install_requires=install_requires,
     extras_require={"dev": dev_require, "socks": ["requests[socks]>=" + REQUESTS_VERSION]},
+    project_urls={
+        "Documentation": "https://macrobond.github.io/macrobond-data-api",
+        "Source": "https://github.com/macrobond/macrobond-data-api",
+    },
 )
