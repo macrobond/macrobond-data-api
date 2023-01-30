@@ -1,8 +1,11 @@
-<p align="center">
+<div align="center">
     <a href="https://www.macrobond.com/">
-        <img src="https://assets-global.website-files.com/5fe1e5ab342569725c29e137/5fe3570b3d22be662c6a6276_macrobond-logo-white.webp" loading="lazy" aria-roledescription="brand logo" alt="Macrobond logo">
+        <picture>
+          <source media="(prefers-color-scheme: dark)" srcset="https://macrobond.github.io/macrobond-data-api/assets/Macrobond_logo_White.svg">
+          <img loading="lazy" aria-roledescription="brand logo" alt="Macrobond logo" src="https://macrobond.github.io/macrobond-data-api/assets/Macrobond_logo_Black.svg">
+        </picture>
     </a>
-</p>
+</div>
 
 <h1 align="center">Macrobond Data API for Python</h1>
 
