@@ -12,26 +12,28 @@
 <h1 align="center">This software is in beta !</h1>
 
 <p align="center">
-<a href="https://pypi.org/project/macrobond-data-api/">
-    <img alt="PyPI" src="https://img.shields.io/pypi/v/macrobond-data-api">
-</a>
-<a href="https://pypi.org/project/macrobond-data-api/">
-    <img alt="PyPI" src="https://img.shields.io/pypi/pyversions/macrobond-data-api.svg">
-</a>
-<!--
-<a href="https://github.com/macrobond/macrobond-data-api/actions?query=workflow%3A%22tests%22">
-    <img alt="PyPI" src="https://github.com/macrobond/macrobond-data-api/workflows/tests/badge.svg">
-</a>
--->
-<a href="https://github.com/macrobond-data-api/black/blob/main/LICENSE">
-    <img alt="License: MIT" src="https://black.readthedocs.io/en/stable/_static/license.svg">
-</a>
-<!--
-<a href="https://pepy.tech/project/macrobond-data-api"><img alt="Downloads" src="https://pepy.tech/badge/macrobond-data-api">
-</a>
--->
-<a href="https://github.com/psf/black"><img alt="Code style: black" src="https://img.shields.io/badge/code%20style-black-000000.svg">
-</a>
+    <a href="https://pypi.org/project/macrobond-data-api/">
+        <img alt="PyPI" src="https://img.shields.io/pypi/v/macrobond-data-api">
+    </a>
+    <a href="https://pypi.org/project/macrobond-data-api/">
+        <img alt="PyPI" src="https://img.shields.io/pypi/pyversions/macrobond-data-api.svg">
+    </a>
+    <a href="https://github.com/macrobond/macrobond-data-api/blob/main/LICENSE">
+        <img alt="License: MIT" src="https://black.readthedocs.io/en/stable/_static/license.svg">
+    </a>
+    <a href="https://github.com/psf/black"><img alt="Code style: black" src="https://img.shields.io/badge/code%20style-black-000000.svg">
+    </a>
+    <a href="https://github.com/macrobond/macrobond-data-api/actions/workflows/ci.yml">
+        <img alt="Continuous Integration" src="https://github.com/macrobond/macrobond-data-api/actions/workflows/ci.yml/badge.svg">
+    </a>
+    <!--
+    <a href="https://github.com/macrobond/macrobond-data-api/actions/workflows/deploying-github-pages.yaml">
+        <img alt="Deploy to Github Pages" src="https://github.com/macrobond/macrobond-data-api/actions/workflows/deploying-github-pages.yaml/badge.svg">
+    </a>
+    <a href="https://github.com/macrobond/macrobond-data-api/actions/workflows/deploying-github-pages.yaml">
+        <img alt="Deploy to PyPI" src="https://github.com/macrobond/macrobond-data-api/actions/workflows/python-publish.yml/badge.svg">
+    </a>
+    -->
 </p>
 
 
