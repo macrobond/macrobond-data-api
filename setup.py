@@ -20,8 +20,16 @@ try:
         .stdout.decode("utf-8")
         .strip()
     )
+    print("using tag")
 except subprocess.CalledProcessError:
-    version = "0.0.0"  # pylint: disable=invalid-name
+    FOLDER_NAME = os.path.basename(os.getcwd())
+    if FOLDER_NAME.startswith("macrobond-data-api-"):
+        START_INDEX = len("macrobond-data-api-")
+        version = FOLDER_NAME[START_INDEX:]
+        print("using dir name")
+    else:
+        print("no tag or dir name using default")
+        version = "0.0.0"  # pylint: disable=invalid-name
 
 if "-" in version:
     v, i, s = version.split("-")
