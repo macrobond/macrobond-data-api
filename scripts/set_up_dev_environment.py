@@ -9,7 +9,7 @@ def set_up_dev_environment(context: Context) -> None:
     context.shell_command(
         python_path + " -m pip uninstall macrobond-data-api", ignore_exit_code=True
     )
-    context.shell_command(python_path + " -m pip install -e .[dev]")
+    context.shell_command(python_path + " -m pip install -e .[dev,extra]")
 
 
 if __name__ == "__main__":
