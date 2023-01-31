@@ -82,6 +82,7 @@ setup(
         "python-dateutil>=2.8.2",
         "ijson>=3.1.4",
         "typing_extensions>=4.4.0",
+        "pywin32>=305; os_name=='nt'",
     ],
     extras_require={
         "extra": ["matplotlib", "statsmodels", "scikit-learn", "pandas"],
@@ -94,7 +95,6 @@ setup(
             "coverage>=6.5.0",
             "black[jupyter]>=22.12.0",
             "requests[socks]>=" + REQUESTS_VERSION,
-            "pywin32>=305",
         ],
         "socks": ["requests[socks]>=" + REQUESTS_VERSION],
     },
