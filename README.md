@@ -1,3 +1,4 @@
+<!-- markdownlint-disable -->
 <div align="center">
     <a href="https://www.macrobond.com/">
         <img loading="lazy" aria-roledescription="brand logo" alt="Macrobond logo" src="https://macrobond.github.io/macrobond-data-api/assets/Macrobond_logo_Color.svg" width="30%">
@@ -32,12 +33,17 @@
     </a>
     -->
 </p>
+<!-- markdownlint-enable -->
 
+The Macrobond Data API for Python is used to access the world’s most extensive
+macroeconomic, aggregate financial and sector database provided by [Macrobond](http://www.macrobond.com).
+Exposes a common API in Python for the
+[Macrobobond Web](https://help.macrobond.com/technical-information/the-macrobond-data-web-api-feed/)
+and [Client data](https://help.macrobond.com/technical-information/the-macrobond-api-for-python/)
+APIs
 
-The Macrobond Data API for Python is used to access the world’s most extensive macroeconomic, aggregate financial and sector database provided by [Macrobond](http://www.macrobond.com).
-Exposes a common API in Python for the [Macrobobond Web](https://help.macrobond.com/technical-information/the-macrobond-data-web-api-feed/) and [Client data](https://help.macrobond.com/technical-information/the-macrobond-api-for-python/) APIs
-
-You have to be a licensed user and have a Data+ or data feed user account in order to use the API.
+You have to be a licensed user and have a Data+ or data feed user account in
+order to use the API.
 
 [***API reference***](https://macrobond.github.io/macrobond-data-api/)
 
@@ -59,8 +65,12 @@ with ComClient() as api:
 
 ## Features
 
-The Macrobond Data API for Python uses either the [Macrobond Web REST API](https://help.macrobond.com/technical-information/the-macrobond-data-web-api-feed/) or the [Macrobond Client data API](https://help.macrobond.com/technical-information/the-macrobond-api-for-python/) to obtain time series with values and metadata.
-The API consists of a set of functions in common between the underlying APIs as well as specialized functions unique to each implementation.
+The Macrobond Data API for Python uses either the
+[Macrobond Web REST API](https://help.macrobond.com/technical-information/the-macrobond-data-web-api-feed/)
+or the [Macrobond Client data API](https://help.macrobond.com/technical-information/the-macrobond-api-for-python/)
+to obtain time series with values and metadata.
+The API consists of a set of functions in common between the underlying APIs as
+well as specialized functions unique to each implementation.
 
 ## Installing macrobond-data-api and Supported Versions
 
@@ -84,7 +94,8 @@ python -c "from macrobond_data_api.util import *; save_credential_to_keyring()"
 ### Supported keyrings
 
 * macOS [Keychain](https://en.wikipedia.org/wiki/Keychain_%28software%29)
-* Freedesktop [Secret Service](http://standards.freedesktop.org/secret-service/) supports many DE including GNOME (requires [secretstorage](https://pypi.python.org/pypi/secretstorage))
+* Freedesktop [Secret Service](http://standards.freedesktop.org/secret-service/)
+supports many DE including GNOME (requires [secretstorage](https://pypi.python.org/pypi/secretstorage))
 * KDE4 & KDE5 [KWallet](https://en.wikipedia.org/wiki/KWallet) (requires [dbus](https://pypi.python.org/pypi/dbus-python))
 * [Windows Credential Locker](https://docs.microsoft.com/en-us/windows/uwp/security/credential-locker)
 
