@@ -1,4 +1,4 @@
 # -*- coding: utf-8 -*-
 """
-Exposes a common API in Python for the Macrobobond Web and Client Data APIs
+Exposes a common API in Python for the Macrobond Web and Client Data APIs
 """

@@ -5,7 +5,7 @@ from setuptools import setup, find_packages  # type: ignore
 
 AUTHOR = "Macrobond Financial"
 AUTHOR_EMAIL = "support@macrobond.com"
-DESCRIPTION = "Exposes a common API in Python for the Macrobobond Web and Client Data APIs"
+DESCRIPTION = "Exposes a common API in Python for the Macrobond Web and Client Data APIs"
 LICENSE = "MIT License"
 URL = "https://github.com/macrobond/macrobond-data-api"
 
