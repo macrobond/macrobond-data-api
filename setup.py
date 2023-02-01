@@ -87,13 +87,13 @@ setup(
     extras_require={
         "extra": ["matplotlib", "statsmodels", "scikit-learn", "pandas"],
         "dev": [
-            "mypy>=0.991",
-            "pylint>=2.15.8",
-            "pycodestyle>=2.10.0",
-            "pdoc3>=0.10.0",
+            "mypy==0.991",
+            "pylint==2.15.8",
+            "pycodestyle==2.10.0",
+            "pdoc3==0.10.0",
             "build>=0.9.0",
             "coverage>=6.5.0",
-            "black[jupyter]>=22.12.0",
+            "black[jupyter]==22.12.0",
             "requests[socks]>=" + REQUESTS_VERSION,
         ],
         "socks": ["requests[socks]>=" + REQUESTS_VERSION],

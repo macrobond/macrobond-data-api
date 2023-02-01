@@ -7,6 +7,7 @@
         "**/.mypy_cache": true,
         "dist/": true,
         "macrobond_data_api.egg-info/": true,
+        "macrobond_data_api_python_env/":true,
         "build/": true
     },
     "python.testing.unittestArgs": [

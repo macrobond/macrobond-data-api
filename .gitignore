@@ -9,3 +9,4 @@ __pycache__/
 /.vs/VSWorkspaceState.json
 /docs/build/
 macrobond_data_api/__version__.py
+macrobond_data_api_python_env/

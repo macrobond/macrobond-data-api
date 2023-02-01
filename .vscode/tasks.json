@@ -1,253 +1,109 @@
 {
     "version": "2.0.0",
+    "type": "shell",
+    "command": "${command:python.interpreterPath}",
+    "problemMatcher": [],
     "tasks": [
         {
-            "label": "py set up dev environment",
-            "type": "shell",
-            "command": "py",
+            "label": "set up dev environment",
             "args": [
-                "-3.7",
-                "scripts\\set_up_dev_environment.py"
+                "scripts/set_up_dev_environment.py"
             ],
-            "problemMatcher": [],
-            "linux": {
-                "command": "python3",
-                "args": [
-                    "scripts/set_up_dev_environment.py"
-                ],
-            }
         },
         {
-            "label": "pypy set up dev environment",
-            "type": "shell",
-            "command": "pypy",
-            "args": [
-                "scripts\\set_up_dev_environment.py"
-            ],
-            "problemMatcher": [],
-            "icon": {
-                "color": "terminal.ansiYellow"
-            },
+            "label": "create 3.7 venv macrobond_data_api_python_env",
+            "command": "py -3.7 -m venv macrobond_data_api_python_env"
         },
         {
-            "label": "py unittest",
-            "type": "shell",
-            "command": "py",
-            "args": [
-                "-3.7",
-                "scripts\\unittest.py"
-            ],
-            "problemMatcher": [],
-            "linux": {
-                "command": "python3",
-                "args": [
-                    "scripts/unittest.py"
-                ],
-            }
+            "label": "create 3 venv macrobond_data_api_python_env",
+            "command": "py -3 -m venv macrobond_data_api_python_env"
         },
         {
-            "label": "pypy unittest",
-            "type": "shell",
-            "command": "pypy",
+            "label": "unittest",
             "args": [
-                "scripts\\unittest.py"
+                "scripts/unittest.py"
             ],
-            "problemMatcher": [],
-            "icon": {
-                "color": "terminal.ansiYellow"
-            }
         },
         {
             "label": "pylint",
-            "type": "shell",
-            "command": "py",
             "args": [
-                "-3.7",
-                "scripts\\pylint.py"
+                "scripts/pylint.py"
             ],
-            "problemMatcher": [],
             "presentation": {
                 "clear": true
             },
-            "linux": {
-                "command": "python3",
-                "args": [
-                    "scripts/pylint.py"
-                ],
-            }
         },
         {
             "label": "black check",
-            "type": "shell",
-            "command": "py",
             "args": [
-                "-3.7",
-                "scripts\\black_check.py"
+                "scripts/black_check.py"
             ],
-            "problemMatcher": [],
             "presentation": {
                 "clear": true
             },
-            "linux": {
-                "command": "python3",
-                "args": [
-                    "scripts/black_check.py"
-                ],
-            }
         },
         {
             "label": "black",
-            "type": "shell",
-            "command": "py",
             "args": [
-                "-3.7",
-                "scripts\\black.py"
+                "scripts/black.py"
             ],
-            "problemMatcher": [],
             "presentation": {
                 "clear": true
-            },
-            "linux": {
-                "command": "python3",
-                "args": [
-                    "scripts/black.py"
-                ],
             }
         },
         {
             "label": "mypy",
-            "type": "shell",
-            "command": "py",
             "args": [
-                "-3.7",
-                "scripts\\mypy.py"
+                "scripts/mypy.py"
             ],
-            "problemMatcher": [],
             "presentation": {
                 "clear": true
             },
-            "linux": {
-                "command": "python3",
-                "args": [
-                    "scripts/mypy.py"
-                ],
-            }
         },
         {
             "label": "pycodestyle",
-            "type": "shell",
-            "command": "py",
             "args": [
-                "-3.7",
-                "scripts\\pycodestyle.py"
+                "scripts/pycodestyle.py"
             ],
-            "problemMatcher": [],
             "presentation": {
                 "clear": true
-            },
-            "linux": {
-                "command": "python3",
-                "args": [
-                    "scripts/pycodestyle.py"
-                ],
             }
         },
         {
             "label": "pdoc3",
-            "type": "shell",
-            "command": "py",
             "args": [
-                "-3.7",
-                "scripts\\pdoc3.py"
+                "scripts/pdoc3.py"
             ],
-            "problemMatcher": [],
             "presentation": {
                 "clear": true
-            },
-            "linux": {
-                "command": "python3",
-                "args": [
-                    "scripts/pdoc3.py"
-                ],
             }
         },
         {
             "label": "pdoc3 server",
-            "type": "shell",
-            "command": "py",
             "args": [
-                "-3.7",
-                "scripts\\pdoc3_server.py"
+                "scripts/pdoc3_server.py"
             ],
-            "problemMatcher": [],
             "presentation": {
                 "clear": true
             },
-            "linux": {
-                "command": "python3",
-                "args": [
-                    "scripts/pdoc3_server.py"
-                ],
-            }
         },
         {
             "label": "py coverage",
-            "type": "shell",
-            "command": "py",
             "args": [
-                "-3.7",
-                "scripts\\coverage.py"
+                "scripts/coverage.py"
             ],
-            "problemMatcher": [],
-            "linux": {
-                "command": "python3",
-                "args": [
-                    "scripts/coverage.py"
-                ],
-            }
-        },
-        {
-            "label": "pypy coverage",
-            "type": "shell",
-            "command": "pypy",
-            "args": [
-                "scripts\\coverage.py"
-            ],
-            "problemMatcher": [],
-            "icon": {
-                "color": "terminal.ansiYellow"
-            }
         },
         {
             "label": "build",
-            "type": "shell",
-            "command": "py",
             "args": [
-                "scripts\\build.py"
+                "scripts/build.py"
             ],
-            "problemMatcher": [],
-            "linux": {
-                "command": "python3",
-                "args": [
-                    "scripts/build.py"
-                ],
-            }
         },
         {
             "label": "save credential to keyring",
-            "type": "shell",
-            "command": "py",
             "args": [
-                "-3.7",
-                "macrobond_financial\\util\\save_credential_to_keyring.py"
+                "macrobond_financial/util/save_credential_to_keyring.py"
             ],
-            "problemMatcher": [],
-            "linux": {
-                "command": "python3",
-                "args": [
-                    "macrobond_financial/util/save_credential_to_keyring.py"
-                ],
-            }
         }
     ]
 }

@@ -38,6 +38,7 @@ class Context:
 
         for mef in mefs:
             mef(self)
+        print("python_path: " + self.python_path)
         print("--- shell commands ---")
         for shell_command in self.shell_commands:
             print(str(shell_command))
