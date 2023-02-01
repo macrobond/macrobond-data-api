@@ -16,7 +16,6 @@ if TYPE_CHECKING:  # pragma: no cover
 
 
 class _MetadataType:
-
     __slots__ = ("value_type", "value_restriction")
 
     def __init__(
@@ -30,7 +29,6 @@ class _MetadataType:
 
 
 class _MetadataTypeDirectory:
-
     __slots__ = ("session",)
 
     session: Optional["Session"]

@@ -8,7 +8,6 @@ from tests.test_common import TestCase
 
 class Common(TestCase):
     def test_start_or_end_point(self) -> None:
-
         self.assertEqual(
             repr(StartOrEndPoint.relative_to_observations(-1)),
             "-1 mode:CalendarDateMode.DATA_IN_ANY_SERIES",

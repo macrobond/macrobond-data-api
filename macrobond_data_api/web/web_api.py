@@ -157,7 +157,6 @@ class WebApi(Api):
         items_callback: Callable[[List[SubscriptionListItem]], Optional[bool]],
         if_modified_since: datetime = None,
     ) -> None:
-
         params = {}
 
         if if_modified_since:

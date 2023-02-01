@@ -72,7 +72,6 @@ def get_nth_release_values_is_float(test: TestCase, api: Api) -> None:
 
 
 class Common(TestCase):
-
     # get_revision_info
 
     def test_get_revision_info_to_pd_data_frame(self) -> None:
@@ -178,7 +177,6 @@ class Common(TestCase):
     # get_all_vintage_series
 
     def test_get_all_vintage_series_values_to_pd_series(self) -> None:
-
         # TODO: @mb-jp Needs rework
 
         # time is not included in com

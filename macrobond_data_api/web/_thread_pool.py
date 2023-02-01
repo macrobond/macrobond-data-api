@@ -17,7 +17,6 @@ class _ThreadPool(Generic[TypeVarOut]):
         done_callback: Callable[[TypeVarOut], None],
         max_workers: int = None,
     ) -> None:
-
         if max_workers is None:
             max_workers = os.cpu_count() or 1
         if max_workers <= 0:

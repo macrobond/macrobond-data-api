@@ -12,7 +12,6 @@ from tests.test_common import TestCase
 
 
 def run(test: TestCase, api: Api) -> None:  # pylint: disable=unused-argument
-
     # Get_one_series
     result1 = api.get_one_series("usgdp")
     str(result1.values_to_pd_series())

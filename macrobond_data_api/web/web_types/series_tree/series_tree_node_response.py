@@ -8,7 +8,6 @@ from typing_extensions import TypedDict
 
 
 class SeriesTreeNodeResponse(TypedDict):
-
     nodeType: str
     """The node type. Can be one of 'leaf', 'branch', 'branchref'."""
 

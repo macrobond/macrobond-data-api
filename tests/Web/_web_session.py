@@ -20,7 +20,6 @@ def new_response(status_code: int, json: Any = None, side_effect: Any = None) ->
 
 class WebSession(TestCase):
     def test_get_200(self) -> None:
-
         mock = Mock()
         session = Session("", "", api_url="", authorization_url="", test_auth2_session=mock)
 
@@ -35,7 +34,6 @@ class WebSession(TestCase):
         mock.get.assert_called_with(url="/", params=None, stream=False)
 
     def test_retry(self) -> None:
-
         mock = Mock()
         session = Session("", "", api_url="", authorization_url="", test_auth2_session=mock)
 
@@ -53,7 +51,6 @@ class WebSession(TestCase):
         mock.fetch_token.assert_called_with("")
 
     def test_discovery_error_status_code(self) -> None:
-
         mock = Mock()
         session = Session("", "", api_url="", authorization_url="", test_auth2_session=mock)
 
@@ -73,7 +70,6 @@ class WebSession(TestCase):
         mock.request.assert_called_with("get", "/.well-known/openid-configuration", True)
 
     def test_discovery_error_not_valid_json(self) -> None:
-
         mock = Mock()
         session = Session("", "", api_url="", authorization_url="", test_auth2_session=mock)
 
@@ -93,7 +89,6 @@ class WebSession(TestCase):
         mock.request.assert_called_with("get", "/.well-known/openid-configuration", True)
 
     def test_discovery_error_no_root_obj(self) -> None:
-
         mock = Mock()
         session = Session("", "", api_url="", authorization_url="", test_auth2_session=mock)
 
@@ -113,7 +108,6 @@ class WebSession(TestCase):
         mock.request.assert_called_with("get", "/.well-known/openid-configuration", True)
 
     def test_discovery_error_token_endpoint_in_root_obj(self) -> None:
-
         mock = Mock()
         session = Session("", "", api_url="", authorization_url="", test_auth2_session=mock)
 

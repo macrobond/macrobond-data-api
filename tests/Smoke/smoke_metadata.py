@@ -5,7 +5,6 @@ from tests.test_common import TestCase
 
 
 def run(test: TestCase, api: Api) -> None:  # pylint: disable=unused-argument
-
     # Metadata_list_values
     result1 = api.metadata_list_values("RateType")
     str(result1.to_pd_data_frame())

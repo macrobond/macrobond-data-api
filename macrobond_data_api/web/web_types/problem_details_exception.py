@@ -31,7 +31,6 @@ class ProblemDetailsException(Exception):
         extensions: Dict[str, Optional[Any]] = None,
         errors: Dict[str, List[str]] = None,
     ) -> None:
-
         request = response.request
         super().__init__(
             (

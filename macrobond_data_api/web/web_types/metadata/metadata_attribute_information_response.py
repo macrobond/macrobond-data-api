@@ -10,7 +10,6 @@ from ....common.enums import MetadataAttributeType
 
 
 class MetadataAttributeTypeRestriction(IntFlag):
-
     URL = 1
     """The string is an URL"""
 

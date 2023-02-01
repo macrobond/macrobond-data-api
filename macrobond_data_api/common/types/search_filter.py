@@ -7,7 +7,6 @@ if TYPE_CHECKING:  # pragma: no cover
 
 
 class SearchFilter:
-
     __slots__ = (
         "text",
         "entity_types",

@@ -32,7 +32,6 @@ def get_attribute_information(test: TestCase, api: Api) -> None:
 
 
 def list_values(test: TestCase, api: Api) -> None:
-
     with test.assertRaises(BaseException):
         api.metadata_list_values("__RateType")
 
@@ -41,7 +40,6 @@ def list_values(test: TestCase, api: Api) -> None:
 
 
 def get_value_information(test: TestCase, api: Api) -> None:
-
     with test.assertRaises(ValueError) as context:
         api.metadata_get_value_information(("bad val", "mole"))
     test.assertEqual(

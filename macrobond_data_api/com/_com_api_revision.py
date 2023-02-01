@@ -285,7 +285,6 @@ def get_all_vintage_series(self: "ComApi", series_name: str) -> GetAllVintageSer
 def get_observation_history(
     self: "ComApi", serie_name: str, *times: datetime
 ) -> List[SeriesObservationHistory]:
-
     series_with_revisions = self.database.FetchOneSeriesWithRevisions(serie_name)
 
     if series_with_revisions.IsError:

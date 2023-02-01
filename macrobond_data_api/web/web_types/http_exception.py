@@ -7,7 +7,6 @@ if TYPE_CHECKING:  # pragma: no cover
 
 
 class HttpException(Exception):
-
     response: "Response"
 
     def __init__(self, response: "Response") -> None:

@@ -8,7 +8,6 @@ from tests.test_common import TestCase
 
 
 def run(test: TestCase, api: Api) -> None:  # pylint: disable=unused-argument
-
     # get_revision_info
     result1 = api.get_revision_info("usgdp")[0]
     str(result1.to_pd_data_frame())

@@ -99,7 +99,6 @@ class Session:
         proxy: str = None,
         test_auth2_session: Any = None
     ) -> None:
-
         self.__proxies: Optional[Dict[str, str]] = None
         if proxy:
             if proxy.lower().startswith("socks5://") and _socks_import_error:

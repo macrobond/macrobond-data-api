@@ -33,7 +33,6 @@ class EntityErrorInfo:
 
 
 class GetEntitiesError(Exception):
-
     entities: List[EntityErrorInfo]
     message: str
 

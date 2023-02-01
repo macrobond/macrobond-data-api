@@ -65,7 +65,6 @@ class ComClient(Client["ComApi"]):
             try:
                 connection: "Connection" = _client.Dispatch("Macrobond.Connection")
             except com_error:
-
                 hints: List[str] = []
 
                 sub_key = "CLSID\\{F22A9A5C-E6F2-4FA8-8D1B-E928AB5DDF9B}\\InprocServer32"

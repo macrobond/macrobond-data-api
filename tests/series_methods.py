@@ -221,7 +221,6 @@ def get_unified_series_vintage(test: TestCase, api: Api) -> None:
 
 
 class Common(TestCase):
-
     # get_one_series
 
     def test_get_one_series_values_to_pd_series(self) -> None:
