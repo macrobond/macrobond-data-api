@@ -3,7 +3,7 @@
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:  # pragma: no cover
-    from requests import Response  # type: ignore
+    from requests import Response
 
 
 class HttpException(Exception):

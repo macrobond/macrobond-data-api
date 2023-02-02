@@ -22,7 +22,7 @@ class ItemListingResponse(TypedDict):
     title: str
     """The title of the directory"""
 
-    directories: Optional[List["ItemListingResponse"]]  # type: ignore[misc]
+    directories: Optional[List["ItemListingResponse"]]
     """The list of sub directories if any."""
 
     items: Optional[List[ItemInformation]]

@@ -4,7 +4,7 @@ from typing import Sequence, Optional, TYPE_CHECKING
 
 from datetime import datetime
 
-from dateutil import parser  # type: ignore
+from dateutil import parser
 
 if TYPE_CHECKING:  # pragma: no cover
     from .web_types import FeedEntitiesResponse

@@ -4,7 +4,7 @@ from datetime import datetime
 from typing import TYPE_CHECKING, Any, List, Optional, Callable, Sequence, Tuple
 
 import ijson  # type: ignore
-from dateutil import parser  # type: ignore
+from dateutil import parser
 
 from macrobond_data_api.common import Api
 

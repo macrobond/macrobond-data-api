@@ -3,7 +3,7 @@
 from datetime import datetime
 from typing import Optional, Dict, Any, List
 
-from dateutil import parser  # type: ignore
+from dateutil import parser
 
 from .web_types import VintageValuesResponse, SeriesWithVintagesResponse
 

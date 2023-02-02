@@ -27,7 +27,7 @@ API_URL_DEFAULT = "https://api.macrobondfinancial.com/"
 AUTHORIZATION_URL_DEFAULT = "https://apiauth.macrobondfinancial.com/mbauth/"
 
 if TYPE_CHECKING:  # pragma: no cover
-    from requests import Response  # type: ignore
+    from requests import Response
 
 __pdoc__ = {
     "Session.__init__": False,
@@ -42,7 +42,11 @@ def _raise_on_error(response: "Response", non_error_status: Sequence[int] = None
         return
 
     content_type = response.headers.get("Content-Type")
-    if ["application/json; charset=utf-8", "application/json"].count(content_type) != 0:
+
+    if (
+        not content_type
+        or ["application/json; charset=utf-8", "application/json"].count(content_type) != 0
+    ):
         raise ProblemDetailsException.create_from_response(response)
 
     macrobond_status = response.headers.get("X-Macrobond-Status")

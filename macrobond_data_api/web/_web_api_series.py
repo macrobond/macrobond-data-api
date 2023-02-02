@@ -3,7 +3,7 @@
 from datetime import datetime
 from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union, cast
 
-from dateutil import parser  # type: ignore
+from dateutil import parser
 
 from macrobond_data_api.common.types import SeriesEntry
 

@@ -2,7 +2,7 @@
 
 import sys
 
-from typing import TYPE_CHECKING, List, Optional
+from typing import TYPE_CHECKING, List, Optional, cast
 
 from macrobond_data_api.common import Client
 
@@ -13,18 +13,18 @@ if TYPE_CHECKING:  # pragma: no cover
 
 _win32com_import_error: Optional[ImportError] = None
 try:
-    from win32com import client as _client  # type: ignore
+    from win32com import client as _client
 except ImportError as ex:
     _win32com_import_error = ex
 
 _pywintypes_import_error: Optional[ImportError] = None
 try:
-    from pywintypes import com_error  # type: ignore
+    from pywintypes import com_error
 except ImportError as ex:
     _pywintypes_import_error = ex
 
 try:
-    from winreg import OpenKey, QueryValueEx, HKEY_CLASSES_ROOT, HKEY_CURRENT_USER  # type: ignore
+    from winreg import OpenKey, QueryValueEx, HKEY_CLASSES_ROOT, HKEY_CURRENT_USER
 except ImportError:
     ...
 
@@ -63,7 +63,9 @@ class ComClient(Client["ComApi"]):
 
         if self.__api is None:
             try:
-                connection: "Connection" = _client.Dispatch("Macrobond.Connection")
+                connection: "Connection" = cast(
+                    "Connection", _client.Dispatch("Macrobond.Connection")
+                )
             except com_error:
                 hints: List[str] = []
 
@@ -106,7 +108,6 @@ class ComClient(Client["ComApi"]):
                     print("", file=sys.stderr)
 
                 raise
-
             self.__api = ComApi(connection)
         return self.__api
 

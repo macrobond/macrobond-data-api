@@ -3,7 +3,7 @@
 from datetime import datetime
 from typing import TYPE_CHECKING, Any, Dict, List, Optional, Tuple, cast
 
-from dateutil import parser  # type: ignore
+from dateutil import parser
 
 from macrobond_data_api.common.types import (
     RevisionInfo,
@@ -28,8 +28,12 @@ def _optional_str_to_datetime(datetime_str: Optional[str]) -> Optional[datetime]
     return parser.parse(datetime_str) if datetime_str else None
 
 
-def _str_to_datetime_no_utc(datetime_str: str) -> datetime:
+def _str_to_datetime_ignoretz(datetime_str: str) -> datetime:
     return parser.parse(datetime_str, ignoretz=True)
+
+
+def _optional_str_to_datetime_ignoretz(datetime_str: Optional[str]) -> Optional[datetime]:
+    return parser.parse(datetime_str, ignoretz=True) if datetime_str else None
 
 
 def _create_series(response: "SeriesResponse", name: str, session: Session) -> Series:
@@ -40,7 +44,7 @@ def _create_series(response: "SeriesResponse", name: str, session: Session) -> S
 
     dates = tuple(
         map(
-            _str_to_datetime_no_utc,
+            _str_to_datetime_ignoretz,
             cast(List[str], response["dates"]),
         )
     )
@@ -139,7 +143,7 @@ def get_vintage_series(
             )
         )
 
-        dates = tuple(map(_str_to_datetime_no_utc, cast(List[str], response["dates"])))
+        dates = tuple(map(_str_to_datetime_ignoretz, cast(List[str], response["dates"])))
 
         return VintageSeries(series_name, None, metadata, values, dates)
 
@@ -208,7 +212,7 @@ def get_observation_history(
             lambda x: SeriesObservationHistory(
                 parser.parse(x["observationDate"]),
                 tuple(map(lambda v: float(v) if v else None, x["values"])),
-                tuple(map(parser.parse, x["timeStamps"])),
+                tuple(map(_optional_str_to_datetime_ignoretz, x["timeStamps"])),
             ),
             response,
         )

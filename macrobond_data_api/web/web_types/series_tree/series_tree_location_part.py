@@ -12,5 +12,5 @@ class SeriesTreeLocationPart(TypedDict):
     title: str
     """The title of the location element"""
 
-    child: Optional["SeriesTreeLocationPart"]  # type: ignore[misc]
+    child: Optional["SeriesTreeLocationPart"]
     """The child of the location part"""

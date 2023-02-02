@@ -4,7 +4,7 @@ from datetime import datetime
 from typing import TYPE_CHECKING, Any, Dict, Optional
 
 from json import load as json_load
-from dateutil import parser  # type: ignore
+from dateutil import parser
 
 from ..common.enums import MetadataAttributeType
 from .web_types.metadata import MetadataAttributeTypeRestriction

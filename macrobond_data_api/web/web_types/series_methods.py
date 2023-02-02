@@ -7,7 +7,7 @@ from typing import List, Sequence, cast, TYPE_CHECKING
 from datetime import datetime
 
 if TYPE_CHECKING:  # pragma: no cover
-    from requests import Response  # type: ignore
+    from requests import Response
     from ..session import Session
     from .series_response import SeriesResponse
     from .entity_response import EntityResponse

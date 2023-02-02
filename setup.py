@@ -95,6 +95,10 @@ setup(
             "coverage>=6.5.0",
             "black[jupyter]==23.1.0",
             "requests[socks]>=" + REQUESTS_VERSION,
+            # types
+            "types-pywin32==305.0.0.7",
+            "types-python-dateutil==2.8.19.6",
+            "types-requests==2.28.11.8",
         ],
         "socks": ["requests[socks]>=" + REQUESTS_VERSION],
     },

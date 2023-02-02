@@ -4,7 +4,7 @@ from datetime import datetime
 
 from typing import List
 from typing_extensions import Literal
-from dateutil import parser  # type: ignore
+from dateutil import parser
 
 from .series import Series, SeriesColumnsLiterals
 

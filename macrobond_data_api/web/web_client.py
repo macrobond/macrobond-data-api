@@ -12,7 +12,7 @@ DEFAULT_SERVICE_NAME = AUTHORIZATION_URL_DEFAULT
 
 _keyring_import_error: Optional[ImportError] = None
 try:
-    import keyring as _keyring  # type: ignore
+    import keyring as _keyring
 except ImportError as ex:
     _keyring_import_error = ex
 
