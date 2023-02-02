@@ -208,7 +208,7 @@ def get_observation_history(
             lambda x: SeriesObservationHistory(
                 parser.parse(x["observationDate"]),
                 tuple(map(lambda v: float(v) if v else None, x["values"])),
-                tuple(map(parser.parser, x["timeStamps"])),
+                tuple(map(parser.parse, x["timeStamps"])),
             ),
             response,
         )
