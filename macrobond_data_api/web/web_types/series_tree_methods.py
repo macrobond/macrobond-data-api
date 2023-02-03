@@ -85,6 +85,6 @@ class SeriesTreeMethods:
             403 Forbidden. Not authorized.
         """
         response = self.__session.get_or_raise(
-            "v1/seriestree/findlocations", params={"seriesName ": series_name}
+            "v1/seriestree/findlocations", params={"seriesName": series_name}
         )
         return cast(List["SeriesTreeLocationPart"], response.json())
