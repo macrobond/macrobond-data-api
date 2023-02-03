@@ -150,7 +150,11 @@ class Session:
     def get(self, url: str, params: dict = None, stream=False) -> "Response":
         def http():
             return self.auth2_session.get(
-                url=self.api_url + url, params=params, stream=stream, proxies=self.__proxies
+                url=self.api_url + url,
+                params=params,
+                stream=stream,
+                proxies=self.__proxies,
+                headers={"Accept": "application/json; charset=utf-8"},
             )
 
         return self.__if_status_code_401_fetch_token_and_retry(http)
@@ -170,6 +174,7 @@ class Session:
                 json=json,
                 stream=stream,
                 proxies=self.__proxies,
+                headers={"Accept": "application/json; charset=utf-8"},
             )
 
         return self.__if_status_code_401_fetch_token_and_retry(http)
