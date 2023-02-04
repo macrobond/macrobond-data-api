@@ -6,6 +6,8 @@ from datetime import datetime
 
 from dateutil import parser
 
+from .web_types.subscription_list_state import SubscriptionListState
+
 if TYPE_CHECKING:  # pragma: no cover
     from .web_types import FeedEntitiesResponse
 
@@ -49,25 +51,16 @@ class SubscriptionBody:
     by omitting timeStampForIfModifiedSince.
     """
 
-    state: int
+    state: SubscriptionListState
     """
     The state of this list.
-
-    0 = FullListing (A complete listing of all series. 
-    Make another request for full data at some point after timestamp in downloadFullListOnOrAfter.)
-
-    1 = UpToDate (The list contains all updates since the specified start date. 
-    Wait 15 minutes before making another request where timeStampForIfModifiedSince is used.)
-
-    2 = Incomplete (The list might not contain all updates.
-    Wait one minute and then use the timeStampForIfModifiedSince in an a new request.)
     """
 
     def __init__(
         self,
         time_stamp_for_if_modified_since: datetime,
         download_full_list_on_or_after: Optional[datetime],
-        state: int,
+        state: SubscriptionListState,
     ) -> None:
         self.time_stamp_for_if_modified_since = time_stamp_for_if_modified_since
         self.download_full_list_on_or_after = download_full_list_on_or_after
@@ -86,7 +79,7 @@ class SubscriptionList(Sequence[SubscriptionListItem], SubscriptionBody):
             self,
             parser.parse(response["timeStampForIfModifiedSince"]),
             parser.parse(download_full) if download_full is not None else None,
-            response["state"],
+            SubscriptionListState(response["state"]),
         )
         self.items = list(
             map(

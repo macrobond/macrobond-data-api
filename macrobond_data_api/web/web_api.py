@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from datetime import datetime
-from typing import TYPE_CHECKING, Any, List, Optional, Callable, Sequence, Tuple
+from typing import TYPE_CHECKING, List, Optional, Callable, Sequence, Tuple
 
 import ijson  # type: ignore
 from dateutil import parser
@@ -9,6 +9,8 @@ from dateutil import parser
 from macrobond_data_api.common import Api
 
 from macrobond_data_api.common.types import SearchResultLong
+
+from .web_types.subscription_list_state import SubscriptionListState
 
 from .series_with_vintages import SeriesWithVintages
 from .subscription_list import (
@@ -58,10 +60,10 @@ __pdoc__ = {
 
 def _get_subscription_list_iterative_pars_body(
     ijson_parse,
-) -> Tuple[Optional[datetime], Optional[datetime], Any]:
+) -> Tuple[Optional[datetime], Optional[datetime], Optional[SubscriptionListState]]:
     time_stamp_for_if_modified_since: Optional[datetime] = None
     download_full_list_on_or_after: Optional[datetime] = None
-    state = -1
+    state: Optional[SubscriptionListState] = None
     for prefix, event, value in ijson_parse:
         if prefix == "timeStampForIfModifiedSince":
             if event != "string":
@@ -74,7 +76,7 @@ def _get_subscription_list_iterative_pars_body(
         elif prefix == "state":
             if event != "number":
                 raise Exception("bad format: state is not a number")
-            state = value
+            state = SubscriptionListState(value)
         elif event == "start_array":
             if prefix != "entities":
                 raise Exception("bad format: event start_array do not have a prefix of entities")
@@ -83,8 +85,11 @@ def _get_subscription_list_iterative_pars_body(
 
 
 def _get_subscription_list_iterative_pars_items(
-    ijson_parse, items_callback: Callable[[List[SubscriptionListItem]], Optional[bool]]
-) -> None:
+    ijson_parse,
+    items_callback: Callable[[SubscriptionBody, List[SubscriptionListItem]], Optional[bool]],
+    buffer_size: int,
+    body: SubscriptionBody,
+) -> bool:
     name = ""
     modified: Optional[datetime] = None
     items: List[SubscriptionListItem] = []
@@ -98,9 +103,9 @@ def _get_subscription_list_iterative_pars_items(
             items.append(SubscriptionListItem(name, modified))
             name = ""
             modified = None
-            if len(items) == 200:
-                if items_callback(items) is False:
-                    return
+            if len(items) == buffer_size:
+                if items_callback(body, items) is False:
+                    return False
                 items = []
         elif event == "end_array":
             break
@@ -114,7 +119,8 @@ def _get_subscription_list_iterative_pars_items(
             modified = parser.parse(value)
 
     if len(items) != 0:
-        items_callback(items)
+        return items_callback(body, items) is not False
+    return True
 
 
 class WebApi(Api):
@@ -154,10 +160,12 @@ class WebApi(Api):
     def get_subscription_list_iterative(
         self,
         body_callback: Callable[[SubscriptionBody], Optional[bool]],
-        items_callback: Callable[[List[SubscriptionListItem]], Optional[bool]],
+        items_callback: Callable[[SubscriptionBody, List[SubscriptionListItem]], Optional[bool]],
         if_modified_since: datetime = None,
-    ) -> None:
+        buffer_size=200,
+    ) -> Optional[SubscriptionBody]:
         params = {}
+        body: Optional[SubscriptionBody] = None
 
         if if_modified_since:
             params["ifModifiedSince"] = if_modified_since.isoformat()
@@ -174,24 +182,25 @@ class WebApi(Api):
                 state,
             ) = _get_subscription_list_iterative_pars_body(ijson_parse)
 
-            if state == -1:
+            if state is None:
                 raise Exception("bad format: state was not found")
             if time_stamp_for_if_modified_since is None:
                 raise Exception("bad format: timeStampForIfModifiedSince was not found")
-            if download_full_list_on_or_after is None:
+            if not if_modified_since and download_full_list_on_or_after is None:
                 raise Exception("bad format: downloadFullListOnOrAfter was not found")
 
-            if (
-                body_callback(
-                    SubscriptionBody(
-                        time_stamp_for_if_modified_since, download_full_list_on_or_after, state
-                    )
-                )
-                is False
-            ):
-                return
+            body = SubscriptionBody(
+                time_stamp_for_if_modified_since, download_full_list_on_or_after, state
+            )
+            if body_callback(body) is False:
+                return None
 
-            _get_subscription_list_iterative_pars_items(ijson_parse, items_callback)
+            if _get_subscription_list_iterative_pars_items(
+                ijson_parse, items_callback, buffer_size, body
+            ):
+                return None
+
+            return body
 
     def get_fetch_all_vintageseries(
         self,

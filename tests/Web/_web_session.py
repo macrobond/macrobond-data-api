@@ -24,7 +24,11 @@ class WebSession(TestCase):
     def test_get_200(self) -> None:
         mock = Mock()
         session = Session(
-            "", "", api_url="https://", authorization_url="https://", test_auth2_session=mock
+            "",
+            "",
+            api_url="https://",
+            authorization_url="https://",
+            test_auth2_session=mock,
         )
 
         mock.get.return_value = new_response(200)

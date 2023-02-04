@@ -58,6 +58,7 @@ class Web(TestCase):
             return True
 
         def empty_method_2(
+            body: SubscriptionBody,  # pylint: disable=unused-argument
             items: List[SubscriptionListItem],  # pylint: disable=unused-argument
         ) -> bool:
             return True

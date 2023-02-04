@@ -25,3 +25,18 @@ class SubscriptionListState(IntEnum):
     The list might not contain all updates.
     Wait one minute and then use the timeStampForIfModifiedSince in an a new request.
     """
+
+    def __repr__(self):
+        if self == self.FULL_LISTING:
+            return f"SubscriptionList State {int(self)}, A complete listing of all series."
+
+        if self == self.UP_TO_DATE:
+            return (
+                f"SubscriptionList State {int(self)},"
+                + " The list contains all updates since the specified start date."
+            )
+
+        if self == self.INCOMPLETE:
+            return f"SubscriptionList State {int(self)}, The list might not contain all updates."
+
+        return f"SubscriptionList State {int(self)}"

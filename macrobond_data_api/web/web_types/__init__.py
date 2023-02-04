@@ -50,3 +50,5 @@ from .revision_history_request import RevisionHistoryRequest
 from .series_with_vintages_response import SeriesWithVintagesResponse
 
 from .vintage_values_response import VintageValuesResponse
+
+from .subscription_list_state import SubscriptionListState
