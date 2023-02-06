@@ -11,13 +11,11 @@ from macrobond_data_api.common import Api
 from macrobond_data_api.common.types import SearchResultLong
 
 from .web_types.subscription_list_state import SubscriptionListState
+from .web_types.subscription_list_item import SubscriptionListItem
+from .web_types.subscription_list import SubscriptionList
+from .web_types.subscription_body import SubscriptionBody
 
 from .series_with_vintages import SeriesWithVintages
-from .subscription_list import (
-    SubscriptionList,
-    SubscriptionBody,
-    SubscriptionListItem,
-)
 
 from ._web_api_metadata import (
     metadata_list_values,
@@ -195,8 +193,11 @@ class WebApi(Api):
             if body_callback(body) is False:
                 return None
 
-            if _get_subscription_list_iterative_pars_items(
-                ijson_parse, items_callback, buffer_size, body
+            if (
+                _get_subscription_list_iterative_pars_items(
+                    ijson_parse, items_callback, buffer_size, body
+                )
+                is False
             ):
                 return None
 
