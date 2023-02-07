@@ -132,12 +132,12 @@ class UnifiedSeriesList(Sequence[UnifiedSeries]):
         }
 
     def get_errors(self) -> Dict[str, str]:
-        return {e.name: e.error_message for e in filter(lambda x: x.is_error, self)}
+        return {e.name: e.error_message for e in self if e.is_error}
 
     def to_pd_data_frame(self) -> "DataFrame":
         import pandas  # pylint: disable=import-outside-toplevel
 
-        return pandas.DataFrame(dict(map(lambda kv: (kv.name, kv.values), self)), self.dates)
+        return pandas.DataFrame({kv.name: kv.values for kv in self}, self.dates)
 
     def __repr__(self):
         names = ", ".join(map(lambda x: x.name, self))
