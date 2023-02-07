@@ -283,13 +283,13 @@ def get_all_vintage_series(self: "ComApi", series_name: str) -> GetAllVintageSer
 
 
 def get_observation_history(
-    self: "ComApi", serie_name: str, *times: datetime
+    self: "ComApi", series_name: str, *times: datetime
 ) -> List[SeriesObservationHistory]:
-    series_with_revisions = self.database.FetchOneSeriesWithRevisions(serie_name)
+    series_with_revisions = self.database.FetchOneSeriesWithRevisions(series_name)
 
     if series_with_revisions.IsError:
         if series_with_revisions.ErrorMessage == "Not found":
-            raise ValueError("Not found " + serie_name)
+            raise ValueError("Not found " + series_name)
         raise Exception(series_with_revisions.ErrorMessage)
 
     def to_obj(time: datetime) -> SeriesObservationHistory:

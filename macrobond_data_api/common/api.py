@@ -211,7 +211,7 @@ class Api(ABC):
         ----------
         time : datetime
             The time of the vintage to return.
-        series_name : str
+        series_names : str
             One or more names of series.
         raise_error : bool
             If True, accessing the resulting series raises a GetEntitiesError.
@@ -250,13 +250,37 @@ class Api(ABC):
 
     @abstractmethod
     def get_all_vintage_series(self, series_name: str) -> GetAllVintageSeriesResult:
-        ...
+        """
+        Get all vintages of a series.
+
+        Parameters
+        ----------
+        series_name : str
+            The name of the series.
+
+        Returns
+        -------
+        `macrobond_data_api.common.types.get_all_vintage_series_result.GetAllVintageSeriesResult`
+        """
 
     @abstractmethod
     def get_observation_history(
-        self, serie_name: str, *times: datetime
+        self, series_name: str, *times: datetime
     ) -> List[SeriesObservationHistory]:
-        ...
+        """
+        Get the revision of an observation.
+
+        Parameters
+        ----------
+        series_name : str
+            The name of the series.
+        times : datetime
+            One or more timestamps.
+
+        Returns
+        -------
+        `List[macrobond_data_api.common.types.series_observation_history.SeriesObservationHistory]`
+        """
 
     # Search
 

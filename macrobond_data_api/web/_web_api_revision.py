@@ -198,10 +198,10 @@ def get_all_vintage_series(self: "WebApi", series_name: str) -> GetAllVintageSer
 
 
 def get_observation_history(
-    self: "WebApi", serie_name: str, *times: datetime
+    self: "WebApi", series_name: str, *times: datetime
 ) -> List[SeriesObservationHistory]:
     try:
-        response = self.session.series.fetch_observation_history(serie_name, list(times))
+        response = self.session.series.fetch_observation_history(series_name, list(times))
     except ProblemDetailsException as ex:
         if ex.status == 404:
             raise Exception(ex.detail) from ex
