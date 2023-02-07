@@ -1,7 +1,5 @@
 from typing import TYPE_CHECKING, List, Sequence
 
-from .._get_pandas import _get_pandas
-
 if TYPE_CHECKING:  # pragma: no cover
     from pandas import DataFrame  # type: ignore
 
@@ -36,5 +34,6 @@ class SearchResultLong(List[str]):
         """
         Return the result as a `DataFrame`.
         """
-        pandas = _get_pandas()
+        import pandas  # pylint: disable=import-outside-toplevel
+
         return pandas.DataFrame(self)

@@ -2,8 +2,6 @@ from datetime import datetime
 from typing import Any, Dict, List, Optional, TYPE_CHECKING, Tuple
 from typing_extensions import Literal
 
-from .._get_pandas import _get_pandas
-
 if TYPE_CHECKING:  # pragma: no cover
     from pandas import Series, DataFrame  # type: ignore
 
@@ -54,11 +52,13 @@ class SeriesObservationHistory:
         }
 
     def to_pd_data_frame(self) -> "DataFrame":
-        pandas = _get_pandas()
+        import pandas  # pylint: disable=import-outside-toplevel
+
         return pandas.DataFrame({"values": self.values}, self.time_stamps)
 
     def to_pd_series(self, name: str = None) -> "Series":
-        pandas = _get_pandas()
+        import pandas  # pylint: disable=import-outside-toplevel
+
         name = name if name else str(self.observation_date)
         return pandas.Series(self.values, self.time_stamps, name=name)
 

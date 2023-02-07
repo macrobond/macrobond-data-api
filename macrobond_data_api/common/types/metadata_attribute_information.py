@@ -1,8 +1,6 @@
 from typing import Optional, List, TYPE_CHECKING
 from typing_extensions import TypedDict, Literal
 
-from .._get_pandas import _get_pandas
-
 if TYPE_CHECKING:  # pragma: no cover
     from pandas import DataFrame  # type: ignore
     from ..enums import MetadataAttributeType
@@ -144,7 +142,8 @@ class MetadataAttributeInformation:
 
     def to_pd_data_frame(self) -> "DataFrame":
         """The information represented as a Pandas DataFrame"""
-        pandas = _get_pandas()
+        import pandas  # pylint: disable=import-outside-toplevel
+
         return pandas.DataFrame([self.to_dict()])
 
     def __repr__(self):

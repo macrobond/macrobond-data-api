@@ -3,8 +3,6 @@ from typing import Tuple, TYPE_CHECKING, Optional
 
 from typing_extensions import TypedDict
 
-from .._get_pandas import _get_pandas
-
 if TYPE_CHECKING:  # pragma: no cover
     from pandas import DataFrame  # type: ignore
 
@@ -87,7 +85,8 @@ class RevisionInfo:
 
     def to_pd_data_frame(self) -> "DataFrame":
         """Returns a Pandas dataframe with the information about the series revisions."""
-        pandas = _get_pandas()
+        import pandas  # pylint: disable=import-outside-toplevel
+
         return pandas.DataFrame(self.to_dict())
 
     def __repr__(self):

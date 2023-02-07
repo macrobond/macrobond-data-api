@@ -5,8 +5,6 @@ from typing import TYPE_CHECKING, Any, Dict, Sequence, List
 
 from macrobond_data_api.common.types.series import Series
 
-from .._get_pandas import _get_pandas
-
 if TYPE_CHECKING:  # pragma: no cover
     from pandas import DataFrame  # type: ignore
 
@@ -40,7 +38,8 @@ class GetAllVintageSeriesResult(List[Series]):
         """
         Return the result as a Pandas DataFrame.
         """
-        pandas = _get_pandas()
+        import pandas  # pylint: disable=import-outside-toplevel
+
         data = list(map(lambda s: s.values_to_pd_series(), self))
         data_frame = pandas.concat(data, axis=1, keys=[s.name for s in self])
         data_frame = data_frame.sort_index()

@@ -1,8 +1,6 @@
 from typing import Any, Dict, List, Optional, MutableMapping, TYPE_CHECKING
 from typing_extensions import Literal
 
-from .._get_pandas import _get_pandas
-
 if TYPE_CHECKING:  # pragma: no cover
     from pandas import Series, DataFrame  # type: ignore
 
@@ -100,7 +98,8 @@ class Entity:
 
     def metadata_to_pd_series(self, name: str = None) -> "Series":
         """Returns a Pandas series containing all the metadata."""
-        pandas = _get_pandas()
+        import pandas  # pylint: disable=import-outside-toplevel
+
         name = name if name else self.name
         return pandas.Series(self.metadata.values(), self.metadata.keys(), name=name)
 

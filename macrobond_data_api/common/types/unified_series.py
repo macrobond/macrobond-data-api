@@ -13,8 +13,6 @@ from datetime import datetime
 from typing_extensions import Literal, TypedDict
 
 
-from .._get_pandas import _get_pandas
-
 UnifiedSeriesColumnsLiterals = Literal["Dates", "Series"]
 
 UnifiedSeriesColumns = List[UnifiedSeriesColumnsLiterals]
@@ -136,7 +134,8 @@ class UnifiedSeriesList(List[UnifiedSeries]):
         return {e.name: e.error_message for e in filter(lambda x: x.is_error, self)}
 
     def to_pd_data_frame(self) -> "DataFrame":
-        pandas = _get_pandas()
+        import pandas  # pylint: disable=import-outside-toplevel
+
         return pandas.DataFrame(dict(map(lambda kv: (kv.name, kv.values), self)), self.dates)
 
     def __repr__(self):

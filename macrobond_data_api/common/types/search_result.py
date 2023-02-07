@@ -1,7 +1,5 @@
 from typing import Any, MutableMapping, TYPE_CHECKING, List, Sequence
 
-from .._get_pandas import _get_pandas
-
 if TYPE_CHECKING:  # pragma: no cover
     from pandas import DataFrame  # type: ignore
 
@@ -42,5 +40,6 @@ class SearchResult(List[MutableMapping[str, Any]]):
         """
         Return the result as a `DataFrame`.
         """
-        pandas = _get_pandas()
+        import pandas  # pylint: disable=import-outside-toplevel
+
         return pandas.DataFrame(self)

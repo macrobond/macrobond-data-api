@@ -5,7 +5,6 @@ from typing_extensions import Literal
 
 from .entity import Entity, EntityColumnsLiterals
 
-from .._get_pandas import _get_pandas
 
 SeriesColumnsLiterals = Literal[EntityColumnsLiterals, "Values", "Dates"]
 
@@ -66,7 +65,8 @@ class Series(Entity):
         return ret
 
     def values_to_pd_series(self, name: str = None) -> "PdSeries":
-        pandas = _get_pandas()
+        import pandas  # pylint: disable=import-outside-toplevel
+
         name = name if name else self.name
         return pandas.Series(self.values, self.dates, name=name)
 
