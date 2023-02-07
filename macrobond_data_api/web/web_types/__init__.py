@@ -52,3 +52,7 @@ from .series_with_vintages_response import SeriesWithVintagesResponse
 from .vintage_values_response import VintageValuesResponse
 
 from .subscription_list_state import SubscriptionListState
+
+from .subscription_list_item import SubscriptionListItem
+
+from .subscription_body import SubscriptionBody

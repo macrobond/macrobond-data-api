@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-from .subscription_list import SubscriptionList, SubscriptionListItem, SubscriptionBody
 from .series_with_vintages import SeriesWithVintages, VintageValues
 from .scope import Scope
 from .web_api import WebApi
