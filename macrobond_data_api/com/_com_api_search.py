@@ -1,4 +1,4 @@
-from typing import Any, Dict, List, TYPE_CHECKING
+from typing import Any, Dict, List, TYPE_CHECKING, MutableMapping
 
 from macrobond_data_api.common.types import SearchResult
 
@@ -61,5 +61,7 @@ def entity_search_multi_filter(
 
     result = self.database.Search(querys)
 
-    entities = list(map(_fill_metadata_from_entity, result.Entities))
+    entities: List[MutableMapping[str, Any]] = list(
+        map(_fill_metadata_from_entity, result.Entities)
+    )
     return SearchResult(entities, result.IsTruncated)

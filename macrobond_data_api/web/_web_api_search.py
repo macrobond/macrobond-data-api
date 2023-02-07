@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any, List, MutableMapping
 
 from macrobond_data_api.common.types import SearchResult
 
@@ -39,7 +39,7 @@ def entity_search_multi_filter(
 
     response = self.session.search.post_entities(request)
 
-    results = list(
+    results: List[MutableMapping[str, Any]] = list(
         map(self.session._create_metadata, response["results"])  # pylint: disable=protected-access
     )
 

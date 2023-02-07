@@ -91,7 +91,7 @@ class MetadataValueInformationItem:
         )
 
 
-class MetadataValueInformation(List[MetadataValueInformationItem]):
+class MetadataValueInformation(Sequence[MetadataValueInformationItem]):
     # fmt: off
     """
     The result of a call to `macrobond_data_api.common.api.Api.metadata_get_value_information`.  
@@ -99,20 +99,19 @@ class MetadataValueInformation(List[MetadataValueInformationItem]):
     """
     # fmt: on
 
-    attribute_name: str
+    __slots__ = ("attribute_name", "entities")
 
-    @property
-    def entities(self) -> List[MetadataValueInformationItem]:
-        """entities"""
-        return list(self)
+    entities: Sequence[MetadataValueInformationItem]
+    attribute_name: str
 
     def __init__(
         self,
-        items: Sequence[MetadataValueInformationItem],
+        entities: Sequence[MetadataValueInformationItem],
         attribute_name: str,
     ) -> None:
-        super().__init__(items)
-
+        super().__init__()
+        self.entities = entities
+        """entities"""
         self.attribute_name = attribute_name
         """The name of the metadata attribute"""
 
@@ -130,3 +129,9 @@ class MetadataValueInformation(List[MetadataValueInformationItem]):
         return (
             f"MetadataValueInformation of {len(self)} items, attribute_name: {self.attribute_name}"
         )
+
+    def __getitem__(self, key):
+        return self.entities[key]
+
+    def __len__(self) -> int:
+        return len(self.entities)

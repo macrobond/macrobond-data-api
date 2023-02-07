@@ -1,7 +1,7 @@
 # get_all_vintage_series_result
 
 
-from typing import TYPE_CHECKING, Any, Dict, Sequence, List
+from typing import TYPE_CHECKING, Any, Dict, Sequence
 
 from macrobond_data_api.common.types.series import Series
 
@@ -9,13 +9,14 @@ if TYPE_CHECKING:  # pragma: no cover
     from pandas import DataFrame  # type: ignore
 
 
-class GetAllVintageSeriesResult(List[Series]):
+class GetAllVintageSeriesResult(Sequence[Series]):
     """
     The result of downloading all vintages of a time series.
     """
 
-    __slots__ = ("series_name",)
+    __slots__ = ("series", "series_name")
 
+    series: Sequence[Series]
     series_name: str
 
     def __init__(
@@ -23,16 +24,11 @@ class GetAllVintageSeriesResult(List[Series]):
         series: Sequence[Series],
         series_name: str,
     ) -> None:
-        super().__init__(series)
+        super().__init__()
+        self.series = series
+        """A sequence of time series corresponding to the vintages."""
         self.series_name = series_name
         """The name of the requested series."""
-
-    @property
-    def series(self) -> List[Series]:
-        """
-        A sequence of time series corresponding to the vintages.
-        """
-        return list(self)
 
     def to_pd_data_frame(self) -> "DataFrame":
         """
@@ -56,3 +52,9 @@ class GetAllVintageSeriesResult(List[Series]):
 
     def __repr__(self):
         return "GetAllVintageSeriesResult series_name: " + self.series_name
+
+    def __getitem__(self, key):
+        return self.series[key]
+
+    def __len__(self) -> int:
+        return len(self.series)

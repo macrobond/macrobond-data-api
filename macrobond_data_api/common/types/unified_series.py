@@ -93,14 +93,18 @@ class UnifiedSeries:
         )
 
 
-class UnifiedSeriesList(List[UnifiedSeries]):
+class UnifiedSeriesList(Sequence[UnifiedSeries]):
     """
     The response from
     `macrobond_data_api.common.api.Api.get_unified_series`.
     """
 
-    __slots__ = ("dates",)
+    __slots__ = (
+        "series",
+        "dates",
+    )
 
+    series: Sequence[UnifiedSeries]
     dates: Tuple[datetime, ...]
 
     @property
@@ -110,17 +114,14 @@ class UnifiedSeriesList(List[UnifiedSeries]):
         """
         return any(self)
 
-    @property
-    def series(self) -> List[UnifiedSeries]:
-        """The list of series"""
-        return self
-
     def __init__(
         self,
         series: Sequence[UnifiedSeries],
         dates: Tuple[datetime, ...],
     ) -> None:
-        super().__init__(series)
+        super().__init__()
+        self.series = series
+        """The list of series"""
         self.dates = dates
         """The dates of the observations"""
 
@@ -141,3 +142,9 @@ class UnifiedSeriesList(List[UnifiedSeries]):
     def __repr__(self):
         names = ", ".join(map(lambda x: x.name, self))
         return f"UnifiedSeries series: ({names})"
+
+    def __getitem__(self, key):
+        return self.series[key]
+
+    def __len__(self) -> int:
+        return len(self.series)

@@ -4,28 +4,26 @@ if TYPE_CHECKING:  # pragma: no cover
     from pandas import DataFrame  # type: ignore
 
 
-class SearchResult(List[MutableMapping[str, Any]]):
+class SearchResult(Sequence[MutableMapping[str, Any]]):
     """
     The result of a entity search operation.
     """
 
-    __slots__ = ("is_truncated",)
+    __slots__ = ("entities", "is_truncated")
 
+    entities: Sequence[MutableMapping[str, Any]]
     is_truncated: bool
 
     def __init__(self, entities: Sequence[MutableMapping[str, Any]], is_truncated: bool) -> None:
-        super().__init__(entities)
+        super().__init__()
+        self.entities = entities
+        """
+        A sequence of the metadata of the entities found.
+        """
         self.is_truncated = is_truncated
         """
         Indicates whether the search result was too long and truncated.
         """
-
-    @property
-    def entities(self) -> List[MutableMapping[str, Any]]:
-        """
-        A sequence of the metadata of the entities found.
-        """
-        return list(self)
 
     def __repr__(self):
         return f"SearchResult of {len(self)} entities, is_truncated: {self.is_truncated}"
@@ -43,3 +41,9 @@ class SearchResult(List[MutableMapping[str, Any]]):
         import pandas  # pylint: disable=import-outside-toplevel
 
         return pandas.DataFrame(self)
+
+    def __getitem__(self, key):
+        return self.entities[key]
+
+    def __len__(self) -> int:
+        return len(self.entities)

@@ -4,17 +4,19 @@ if TYPE_CHECKING:  # pragma: no cover
     from pandas import DataFrame  # type: ignore
 
 
-class SearchResultLong(List[str]):
+class SearchResultLong(Sequence[str]):
     """
     The result of a entity search operation.
     """
 
-    __slots__ = ("is_truncated",)
+    __slots__ = ("entities", "is_truncated")
 
+    entities: Sequence[str]
     is_truncated: bool
 
     def __init__(self, entities: Sequence[str], is_truncated: bool) -> None:
-        super().__init__(entities)
+        super().__init__()
+        self.entities = entities
         self.is_truncated = is_truncated
         """
         Indicates whether the search result was too long and truncated.
@@ -37,3 +39,9 @@ class SearchResultLong(List[str]):
         import pandas  # pylint: disable=import-outside-toplevel
 
         return pandas.DataFrame(self)
+
+    def __getitem__(self, key):
+        return self.entities[key]
+
+    def __len__(self) -> int:
+        return len(self.entities)
