@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 from typing import Optional, List, TYPE_CHECKING
 from typing_extensions import TypedDict, Literal
 

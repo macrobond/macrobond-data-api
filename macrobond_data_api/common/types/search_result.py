@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 from typing import Any, MutableMapping, TYPE_CHECKING, List, Sequence
 
 from .._get_pandas import _get_pandas

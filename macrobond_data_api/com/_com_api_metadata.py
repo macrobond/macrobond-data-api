@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 from typing import List, Tuple, TYPE_CHECKING, cast
 
 from macrobond_data_api.common.types import (

@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 # pylint: disable = invalid-name missing-module-docstring
 # mypy: disable_error_code = empty-body
 

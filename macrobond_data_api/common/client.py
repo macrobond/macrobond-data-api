@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """
 Base class for the implementations `macrobond_data_api.web.web_client.WebClient` and
 `macrobond_data_api.com.com_client.ComClient`.

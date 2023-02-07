@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """
 Definitions of common types used in the API.
 """

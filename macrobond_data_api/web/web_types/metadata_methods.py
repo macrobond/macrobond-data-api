@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 from typing import List, cast, Tuple, TYPE_CHECKING
 
 if TYPE_CHECKING:  # pragma: no cover

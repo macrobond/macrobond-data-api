@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 # pylint: disable=invalid-name missing-function-docstring , missing-class-docstring , missing-module-docstring
 
 from unittest import TestCase as UnittestTestCase  # type: ignore

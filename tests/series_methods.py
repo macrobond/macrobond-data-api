@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 from pandas import Series as PdSeries, DataFrame  # type: ignore
 
 from macrobond_data_api.common import Api

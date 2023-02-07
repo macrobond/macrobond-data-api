@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """
 Definitions of common enums used in the API.
 """

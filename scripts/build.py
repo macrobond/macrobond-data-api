@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 from context import Context
 from black_check import black_check
 from mypy import mypy

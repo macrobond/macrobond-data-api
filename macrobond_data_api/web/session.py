@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 from typing import Callable, Dict, Optional, Any, TYPE_CHECKING, Sequence
 
 from authlib.integrations.requests_client import OAuth2Session  # type: ignore

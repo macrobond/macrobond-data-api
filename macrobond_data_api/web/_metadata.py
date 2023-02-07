@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 from typing import TYPE_CHECKING, Any, Dict, Iterator, MutableMapping
 
 if TYPE_CHECKING:  # pragma: no cover

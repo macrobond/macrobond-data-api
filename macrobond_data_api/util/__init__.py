@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """
 Utility methods for Macrobond Data API.
 """

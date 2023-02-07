@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 from datetime import datetime
 
 from typing import Any, Dict, Tuple, Optional, List, cast, MutableMapping, TYPE_CHECKING

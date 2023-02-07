@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 from .item_listing_response import ItemInformation, ItemListingResponse
 
 from .search_for_display_request import SearchForDisplayRequest

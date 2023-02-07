@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 from typing import Any
 
 from unittest import TestCase  # type: ignore

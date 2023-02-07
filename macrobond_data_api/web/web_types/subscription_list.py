@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 from typing import Sequence, TYPE_CHECKING
 
 from dateutil import parser

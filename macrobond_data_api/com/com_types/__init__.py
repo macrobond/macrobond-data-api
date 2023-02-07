@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 from .connection import Connection
 from .database import Database
 from .entity import Entity

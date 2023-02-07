@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 from typing import List
 from unittest import skip  # type: ignore[attr-defined]
 from macrobond_data_api.web import create_revision_history_request

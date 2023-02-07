@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 from .series_with_vintages import SeriesWithVintages, VintageValues
 from .scope import Scope
 from .web_api import WebApi

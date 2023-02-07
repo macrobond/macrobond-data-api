@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 from typing import Any, Dict, List, Optional, MutableMapping, TYPE_CHECKING
 from typing_extensions import Literal
 

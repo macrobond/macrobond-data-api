@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 from macrobond_data_api.common import Api
 from macrobond_data_api.common.types import SearchFilter, StartOrEndPoint
 

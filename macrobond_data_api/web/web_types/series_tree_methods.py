@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 # pylint: disable = missing-module-docstring
 
 from typing import List, Union, cast, TYPE_CHECKING

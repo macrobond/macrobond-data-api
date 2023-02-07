@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 from math import isnan
 from typing import Any, Dict, List, Tuple, Union, TYPE_CHECKING, Sequence
 

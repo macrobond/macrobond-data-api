@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 from typing import Any, Dict, List, TYPE_CHECKING
 
 from macrobond_data_api.common.types import SearchResult

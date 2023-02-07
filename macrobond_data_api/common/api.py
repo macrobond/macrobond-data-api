@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """
 The class `macrobond_data_api.common.api.Api` defines the core methods to interact with the
 Macrobond database.

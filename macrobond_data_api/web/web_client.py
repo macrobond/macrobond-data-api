@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 from typing import Optional, List
 
 from macrobond_data_api.common import Client

@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 from datetime import datetime
 from pandas import Series as PdSeries  # type: ignore
 

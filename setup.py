@@ -39,7 +39,7 @@ assert "-" not in version
 assert "." in version
 
 # fmt: off
-PACKAGE_INFO = '''# -*- coding: utf-8 -*-
+PACKAGE_INFO = '''
 
 __version__ = "''' + version + '''"
 __author__ = "''' + AUTHOR + '''"

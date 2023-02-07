@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 from .metadata_attribute_information_response import (
     MetadataAttributeTypeRestriction,
     MetadataAttributeInformationResponse,

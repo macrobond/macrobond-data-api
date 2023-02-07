@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 from typing import Optional
 
 _pandas_import_error: Optional[ImportError] = None

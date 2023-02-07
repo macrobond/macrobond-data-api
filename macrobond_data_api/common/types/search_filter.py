@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 from typing import Dict, Sequence, Union, TYPE_CHECKING
 
 if TYPE_CHECKING:  # pragma: no cover

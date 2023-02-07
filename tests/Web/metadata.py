@@ -1,6 +1,3 @@
-# -*- coding: utf-8 -*-
-
-
 from unittest import TestCase  # type: ignore
 
 from macrobond_data_api.web import WebClient

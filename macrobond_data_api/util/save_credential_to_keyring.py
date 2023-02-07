@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 import sys
 from getpass import getpass
 

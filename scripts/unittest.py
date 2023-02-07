@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 from context import Context
 
 UNITTEST_COMMAND = "unittest discover -v -s .\\tests -p **.py"

@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 from context import Context
 
 # https://mypy.readthedocs.io/en/stable/command_line.html

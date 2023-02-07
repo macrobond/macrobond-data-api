@@ -1,6 +1,3 @@
-# -*- coding: utf-8 -*-
-
-
 from datetime import datetime
 from typing import Tuple, TYPE_CHECKING, Optional
 

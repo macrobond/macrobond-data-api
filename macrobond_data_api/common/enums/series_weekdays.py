@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 # pylint: disable=invalid-name , missing-module-docstring
 
 from enum import IntFlag
