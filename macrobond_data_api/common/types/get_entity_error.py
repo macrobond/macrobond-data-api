@@ -64,7 +64,7 @@ class GetEntitiesError(Exception):
         super().__init__(self.message)
 
     @classmethod
-    def raise_if(
+    def _raise_if(
         cls,
         raise_error: bool,
         entities_or_name: Union[Iterable[Tuple[str, Optional[str]]], str],

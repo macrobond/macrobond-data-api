@@ -54,7 +54,7 @@ class SeriesRequest:
         """
 
     @Weekdays.setter
-    def Weekdays(self, new_week_days: int):
+    def Weekdays(self, new_week_days: int) -> None:
         """
         This determines what days of the week that are used when the resulting frequency
         is Daily and the CalendarMergeMode is ‘FullCalendar’.
@@ -139,7 +139,7 @@ class SeriesRequest:
         """The end date."""
 
     @EndDate.setter
-    def EndDate(self, new_end_date: Union[None, datetime, str]):
+    def EndDate(self, new_end_date: Union[None, datetime, str]) -> None:
         """The end date."""
 
     def AddSeries(self, name: str) -> SeriesExpression:

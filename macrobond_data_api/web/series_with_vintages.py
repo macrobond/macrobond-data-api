@@ -5,6 +5,11 @@ from dateutil import parser
 
 from .web_types import VintageValuesResponse, SeriesWithVintagesResponse
 
+__pdoc__ = {
+    "VintageValues.__init__": False,
+    "SeriesWithVintages.__init__": False,
+}
+
 
 class VintageValues:
     """A time series with times of change"""

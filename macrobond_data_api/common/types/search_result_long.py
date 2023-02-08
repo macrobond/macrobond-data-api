@@ -3,6 +3,10 @@ from typing import TYPE_CHECKING, List, Sequence
 if TYPE_CHECKING:  # pragma: no cover
     from pandas import DataFrame  # type: ignore
 
+__pdoc__ = {
+    "SearchResultLong.__init__": False,
+}
+
 
 class SearchResultLong(Sequence[str]):
     """
@@ -29,7 +33,7 @@ class SearchResultLong(Sequence[str]):
         """
         return list(self)
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return f"SearchResultLong of {len(self)} entities, is_truncated: {self.is_truncated}"
 
     def to_pd_data_frame(self) -> "DataFrame":

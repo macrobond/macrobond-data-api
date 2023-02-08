@@ -6,6 +6,11 @@ from typing_extensions import TypedDict
 if TYPE_CHECKING:  # pragma: no cover
     from pandas import DataFrame  # type: ignore
 
+__pdoc__ = {
+    "RevisionInfo.__init__": False,
+    "RevisionInfoDict.__init__": False,
+}
+
 
 class RevisionInfoDict(TypedDict, total=False):
     name: str

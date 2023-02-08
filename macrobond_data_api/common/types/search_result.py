@@ -4,6 +4,11 @@ if TYPE_CHECKING:  # pragma: no cover
     from pandas import DataFrame  # type: ignore
 
 
+__pdoc__ = {
+    "SearchResult.__init__": False,
+}
+
+
 class SearchResult(Sequence[MutableMapping[str, Any]]):
     """
     The result of a entity search operation.

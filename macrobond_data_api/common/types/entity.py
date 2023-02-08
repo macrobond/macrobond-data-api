@@ -9,6 +9,10 @@ EntityColumnsLiterals = Literal["ErrorMessage", "Name", "PrimName", "FullDescrip
 
 EntityColumns = List[EntityColumnsLiterals]
 
+__pdoc__ = {
+    "Entity.__init__": False,
+}
+
 
 class Entity:
     """
@@ -108,10 +112,10 @@ class Entity:
             return f"{self.__class__.__name__} with error, error message: {self.error_message}"
         return f"{self.__class__.__name__} PrimName: {self.primary_name}"
 
-    def __bool__(self):
+    def __bool__(self) -> bool:
         return not self.is_error
 
-    def __eq__(self, other):
+    def __eq__(self, other) -> bool:
         return self is other or (
             isinstance(other, Entity) and self.error_message == other.error_message and self.metadata == other.metadata
         )

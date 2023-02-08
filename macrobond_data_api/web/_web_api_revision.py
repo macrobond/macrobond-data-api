@@ -30,6 +30,10 @@ def _str_to_datetime_ignoretz(datetime_str: str) -> datetime:
     return parser.parse(datetime_str, ignoretz=True)
 
 
+def _str_to_datetime(datetime_str: str) -> datetime:
+    return parser.parse(datetime_str)
+
+
 def _optional_str_to_datetime_ignoretz(datetime_str: Optional[str]) -> Optional[datetime]:
     return parser.parse(datetime_str, ignoretz=True) if datetime_str else None
 
@@ -101,7 +105,7 @@ def get_revision_info(self: "WebApi", *series_names: str, raise_error: bool = No
 
     response = self.session.series.get_revision_info(*series_names)
 
-    GetEntitiesError.raise_if(
+    GetEntitiesError._raise_if(  # pylint: disable=protected-access
         self.raise_error if raise_error is None else raise_error,
         map(lambda x, y: (x, y.get("errorText")), series_names, response),
     )
@@ -115,7 +119,7 @@ def get_vintage_series(
     def to_obj(response: "VintageSeriesResponse", series_name: str) -> VintageSeries:
         error_message = response.get("errorText")
         if error_message:
-            return VintageSeries(series_name, error_message, None, None, None)
+            return VintageSeries(series_name, error_message, None, None, None, None)
 
         metadata = self.session._create_metadata(  # pylint: disable=protected-access
             cast(Dict[str, Any], response["metadata"])
@@ -135,13 +139,19 @@ def get_vintage_series(
 
         dates = tuple(map(_str_to_datetime_ignoretz, cast(List[str], response["dates"])))
 
-        return VintageSeries(series_name, None, metadata, values, dates)
+        vintage_time_stamp = (
+            _str_to_datetime(cast(str, response["vintageTimeStamp"]))
+            if "vintageTimeStamp" in response
+            else None
+        )
+
+        return VintageSeries(series_name, None, metadata, values, dates, vintage_time_stamp)
 
     response = self.session.series.fetch_vintage_series(time, *series_names, get_times_of_change=False)
 
     series = list(map(to_obj, response, series_names))
 
-    GetEntitiesError.raise_if(
+    GetEntitiesError._raise_if(  # pylint: disable=protected-access
         self.raise_error if raise_error is None else raise_error,
         map(
             lambda x, y: (x, y.error_message if y.is_error else None),
@@ -158,7 +168,7 @@ def get_nth_release(self: "WebApi", nth: int, *series_names: str, raise_error: b
 
     series = list(map(lambda x, y: _create_series(x, y, self.session), response, series_names))
 
-    GetEntitiesError.raise_if(
+    GetEntitiesError._raise_if(  # pylint: disable=protected-access
         self.raise_error if raise_error is None else raise_error,
         map(
             lambda x, y: (x, y.error_message if y.is_error else None),
@@ -171,6 +181,32 @@ def get_nth_release(self: "WebApi", nth: int, *series_names: str, raise_error: b
 
 
 def get_all_vintage_series(self: "WebApi", series_name: str) -> GetAllVintageSeriesResult:
+    def to_obj(response: "VintageSeriesResponse", series_name: str) -> VintageSeries:
+        error_message = response.get("errorText")
+        if error_message:
+            return VintageSeries(series_name, error_message, None, None, None, None)
+
+        metadata = self.session._create_metadata(  # pylint: disable=protected-access
+            cast(Dict[str, Any], response["metadata"])
+        )
+
+        values: Tuple[Optional[float], ...] = tuple(
+            map(
+                lambda x: float(x) if x else None,
+                cast(List[Optional[float]], response["values"]),
+            )
+        )
+
+        dates = tuple(map(_str_to_datetime_ignoretz, cast(List[str], response["dates"])))
+
+        vintage_time_stamp = (
+            _str_to_datetime(cast(str, response["vintageTimeStamp"]))
+            if "vintageTimeStamp" in response
+            else None
+        )
+
+        return VintageSeries(series_name, None, metadata, values, dates, vintage_time_stamp)
+
     try:
         response = self.session.series.get_fetch_all_vintage_series(series_name)
     except ProblemDetailsException as ex:
@@ -178,9 +214,7 @@ def get_all_vintage_series(self: "WebApi", series_name: str) -> GetAllVintageSer
             raise ValueError("Series not found: " + series_name) from ex
         raise ex
 
-    return GetAllVintageSeriesResult(
-        list(map(lambda x: _create_series(x, series_name, self.session), response)), series_name
-    )
+    return GetAllVintageSeriesResult([to_obj(x, series_name) for x in response], series_name)
 
 
 def get_observation_history(self: "WebApi", series_name: str, *times: datetime) -> List[SeriesObservationHistory]:

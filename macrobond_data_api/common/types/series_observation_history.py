@@ -9,6 +9,10 @@ SeriesObservationHistoryColumnsLiterals = Literal["ObservationDate", "Values", "
 
 SeriesObservationHistoryColumns = List[SeriesObservationHistoryColumnsLiterals]
 
+__pdoc__ = {
+    "SeriesObservationHistory.__init__": False,
+}
+
 
 class SeriesObservationHistory:
     """The history of changes of an observation"""

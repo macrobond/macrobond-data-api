@@ -17,6 +17,12 @@ UnifiedSeriesColumnsLiterals = Literal["Dates", "Series"]
 
 UnifiedSeriesColumns = List[UnifiedSeriesColumnsLiterals]
 
+__pdoc__ = {
+    "UnifiedSeriesDict.__init__": False,
+    "UnifiedSeries.__init__": False,
+    "UnifiedSeriesList.__init__": False,
+}
+
 if TYPE_CHECKING:  # pragma: no cover
     from pandas import DataFrame  # type: ignore
 
@@ -139,7 +145,7 @@ class UnifiedSeriesList(Sequence[UnifiedSeries]):
 
         return pandas.DataFrame({kv.name: kv.values for kv in self}, self.dates)
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         names = ", ".join(map(lambda x: x.name, self))
         return f"UnifiedSeries series: ({names})"
 

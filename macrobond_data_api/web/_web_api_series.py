@@ -95,7 +95,7 @@ def get_one_series(self: "WebApi", series_name: str, raise_error: bool = None) -
 def get_series(self, *series_names: str, raise_error: bool = None) -> List[Series]:
     response = self.session.series.fetch_series(*series_names)
     series = list(map(lambda x, y: _create_series(x, y, self.session), response, series_names))
-    GetEntitiesError.raise_if(
+    GetEntitiesError._raise_if(  # pylint: disable=protected-access
         self.raise_error if raise_error is None else raise_error,
         map(
             lambda x, y: (x, y.error_message if y.is_error else None),
@@ -113,7 +113,7 @@ def get_one_entity(self: "WebApi", entity_name: str, raise_error: bool = None) -
 def get_entities(self: "WebApi", *entity_names: str, raise_error: bool = None) -> List[Entity]:
     response = self.session.series.fetch_entities(*entity_names)
     entitys = list(map(lambda x, y: _create_entity(x, y, self.session), response, entity_names))
-    GetEntitiesError.raise_if(
+    GetEntitiesError._raise_if(  # pylint: disable=protected-access
         self.raise_error if raise_error is None else raise_error,
         map(
             lambda x, y: (x, y.error_message if y.is_error else None),

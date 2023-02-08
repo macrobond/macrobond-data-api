@@ -7,6 +7,12 @@ from typing import (
 )
 from typing_extensions import TypedDict, Literal
 
+__pdoc__ = {
+    "TypedDictMetadataValueInformationItem.__init__": False,
+    "MetadataValueInformationItem.__init__": False,
+    "MetadataValueInformation.__init__": False,
+}
+
 if TYPE_CHECKING:  # pragma: no cover
     from pandas import DataFrame, _typing as pandas_typing  # type: ignore
 
@@ -71,14 +77,14 @@ class MetadataValueInformationItem:
             "comment": self.comment,
         }
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return (
             f"MetadataValueInformationItem attribute_name: {self.attribute_name},"
             + f" value: {self.value}, "
             + f" description: {self.description}"
         )
 
-    def __eq__(self, other):
+    def __eq__(self, other) -> bool:
         if not isinstance(other, MetadataValueInformationItem):
             return NotImplemented
 

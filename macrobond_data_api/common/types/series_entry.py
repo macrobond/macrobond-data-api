@@ -9,6 +9,10 @@ from macrobond_data_api.common.enums import (
     SeriesPartialPeriodsMethod,
 )
 
+__pdoc__ = {
+    "SeriesEntry.__init__": False,
+}
+
 
 class SeriesEntry:
     """

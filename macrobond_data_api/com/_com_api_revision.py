@@ -12,6 +12,11 @@ from macrobond_data_api.common.types import (
     SeriesObservationHistory,
 )
 
+try:
+    from pywintypes import TimeType
+except ImportError as ex:
+    pass
+
 if TYPE_CHECKING:  # pragma: no cover
     from .com_api import ComApi
 
@@ -26,8 +31,15 @@ def _fill_metadata_from_entity(com_entity: "ComEntity") -> Dict[str, Any]:
 
     for names_and_description in metadata.ListNames():
         name = names_and_description[0]
-        values = metadata.GetValues(name)
-        ret[name] = values[0] if len(values) == 1 else list(values)
+        values: Sequence[Any] = metadata.GetValues(name)
+        if isinstance(values[0], TimeType):
+            values = [
+                datetime(
+                    x.year, x.month, x.day, x.hour, x.minute, x.second, x.microsecond, timezone.utc
+                )
+                for x in values
+            ]
+        ret[name] = values[0] if len(values) == 1 else values
 
     if "FullDescription" not in ret:
         ret["FullDescription"] = com_entity.Title
@@ -53,7 +65,7 @@ def _datetime_to_datetime_utc(dates: Sequence[datetime]) -> Tuple[datetime, ...]
     )
 
 
-def _datetime_to_datetime(dates: Sequence[datetime]) -> Tuple[datetime, ...]:
+def _datetime_to_datetime_timezone(dates: Sequence[datetime]) -> Tuple[datetime, ...]:
     return tuple(
         map(
             lambda x: datetime(
@@ -127,7 +139,7 @@ def get_revision_info(self: "ComApi", *series_names: str, raise_error: bool = No
 
     series = self.database.FetchSeriesWithRevisions(series_names)
 
-    GetEntitiesError.raise_if(
+    GetEntitiesError._raise_if(  # pylint: disable=protected-access
         self.raise_error if raise_error is None else raise_error,
         map(
             lambda x, y: (x, y.ErrorMessage if y.IsError else None),
@@ -152,6 +164,7 @@ def get_vintage_series(
                 None,
                 None,
                 None,
+                None,
             )
 
         try:
@@ -168,6 +181,7 @@ def get_vintage_series(
                 None,
                 None,
                 None,
+                None,
             )
 
         values_and_dates = _remove_padding(series)
@@ -177,12 +191,13 @@ def get_vintage_series(
             "",
             _fill_metadata_from_entity(series),
             values_and_dates[0],
-            _datetime_to_datetime(values_and_dates[1]),
+            _datetime_to_datetime_timezone(values_and_dates[1]),
+            None,
         )
 
     series = list(map(to_obj, series_names))
 
-    GetEntitiesError.raise_if(
+    GetEntitiesError._raise_if(  # pylint: disable=protected-access
         self.raise_error if raise_error is None else raise_error,
         map(
             lambda x, y: (x, y.error_message if y.is_error else None),
@@ -219,7 +234,7 @@ def get_nth_release(self: "ComApi", nth: int, *series_names: str, raise_error: b
 
         values = tuple(map(lambda x: None if isnan(x) else x, series.Values))  # type: ignore
 
-        dates = _datetime_to_datetime(series.DatesAtStartOfPeriod)
+        dates = _datetime_to_datetime_timezone(series.DatesAtStartOfPeriod)
 
         return Series(
             series_name,
@@ -231,7 +246,7 @@ def get_nth_release(self: "ComApi", nth: int, *series_names: str, raise_error: b
 
     series = list(map(to_obj, series_names))
 
-    GetEntitiesError.raise_if(
+    GetEntitiesError._raise_if(  # pylint: disable=protected-access
         self.raise_error if raise_error is None else raise_error,
         map(
             lambda x, y: (x, y.error_message if y.is_error else None),
@@ -244,18 +259,19 @@ def get_nth_release(self: "ComApi", nth: int, *series_names: str, raise_error: b
 
 
 def get_all_vintage_series(self: "ComApi", series_name: str) -> GetAllVintageSeriesResult:
-    def to_obj(com_series: "ComSeries", name: str):
+    def to_obj(com_series: "ComSeries", name: str) -> VintageSeries:
         if com_series.IsError:
-            return Series(name, com_series.ErrorMessage, None, None, None)
+            return VintageSeries(name, com_series.ErrorMessage, None, None, None, None)
 
         values_and_dates = _remove_padding(com_series)
 
-        return Series(
+        return VintageSeries(
             name,
             None,
             _fill_metadata_from_entity(com_series),
             values_and_dates[0],
-            _datetime_to_datetime(values_and_dates[1]),
+            _datetime_to_datetime_timezone(values_and_dates[1]),
+            None,
         )
 
     series_with_revisions = self.database.FetchOneSeriesWithRevisions(series_name)
@@ -266,12 +282,7 @@ def get_all_vintage_series(self: "ComApi", series_name: str) -> GetAllVintageSer
         raise Exception(series_with_revisions.ErrorMessage)
 
     return GetAllVintageSeriesResult(
-        list(
-            map(
-                lambda x: to_obj(x, series_name),
-                series_with_revisions.GetCompleteHistory(),
-            )
-        ),
+        [to_obj(x, series_name) for x in series_with_revisions.GetCompleteHistory()],
         series_name,
     )
 
@@ -286,7 +297,7 @@ def get_observation_history(self: "ComApi", series_name: str, *times: datetime) 
 
     def to_obj(time: datetime) -> SeriesObservationHistory:
         series = series_with_revisions.GetObservationHistory(time)
-        dates = _datetime_to_datetime(series.DatesAtStartOfPeriod)
+        dates = _datetime_to_datetime_timezone(series.DatesAtStartOfPeriod)
         return SeriesObservationHistory(time, series.Values, dates)
 
     return list(map(to_obj, times))

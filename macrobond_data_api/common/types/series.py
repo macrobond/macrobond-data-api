@@ -13,6 +13,10 @@ SeriesColumns = List[SeriesColumnsLiterals]
 if TYPE_CHECKING:  # pragma: no cover
     from pandas import Series as PdSeries  # type: ignore
 
+__pdoc__ = {
+    "Series.__init__": False,
+}
+
 
 class Series(Entity):
     """Represents a Macrobond time series."""

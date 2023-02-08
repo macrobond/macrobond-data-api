@@ -120,9 +120,10 @@ class Session:
             api_url = api_url + "/"
         self.__api_url = api_url
 
-        scopes_str_list = list(map(lambda s: s.value, scopes))
         if test_auth2_session is None:
-            self.__auth2_session = OAuth2Session(username, password, scope=scopes_str_list)
+            self.__auth2_session = OAuth2Session(
+                username, password, scope=[x.value for x in scopes]
+            )
         else:
             self.__auth2_session = test_auth2_session
 

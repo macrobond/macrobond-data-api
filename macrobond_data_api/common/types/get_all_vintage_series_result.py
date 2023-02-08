@@ -3,25 +3,29 @@
 
 from typing import TYPE_CHECKING, Any, Dict, Sequence
 
-from macrobond_data_api.common.types.series import Series
+from macrobond_data_api.common.types.vintage_series import VintageSeries
 
 if TYPE_CHECKING:  # pragma: no cover
     from pandas import DataFrame  # type: ignore
 
+__pdoc__ = {
+    "GetAllVintageSeriesResult.__init__": False,
+}
 
-class GetAllVintageSeriesResult(Sequence[Series]):
+
+class GetAllVintageSeriesResult(Sequence[VintageSeries]):
     """
     The result of downloading all vintages of a time series.
     """
 
     __slots__ = ("series", "series_name")
 
-    series: Sequence[Series]
+    series: Sequence[VintageSeries]
     series_name: str
 
     def __init__(
         self,
-        series: Sequence[Series],
+        series: Sequence[VintageSeries],
         series_name: str,
     ) -> None:
         super().__init__()
@@ -37,7 +41,7 @@ class GetAllVintageSeriesResult(Sequence[Series]):
         import pandas  # pylint: disable=import-outside-toplevel
 
         data = list(map(lambda s: s.values_to_pd_series(), self))
-        data_frame = pandas.concat(data, axis=1, keys=[s.name for s in self])
+        data_frame = pandas.concat(data, axis=1, keys=[s.revision_time_stamp for s in self])
         data_frame = data_frame.sort_index()
         return data_frame
 

@@ -83,7 +83,7 @@ def get_one_series(self: "ComApi", series_name: str, raise_error: bool = None) -
 def get_series(self, *series_names: str, raise_error: bool = None) -> List[Series]:
     com_series = self.database.FetchSeries(series_names)
     series = list(map(_create_series, com_series, series_names))
-    GetEntitiesError.raise_if(
+    GetEntitiesError._raise_if(  # pylint: disable=protected-access
         self.raise_error if raise_error is None else raise_error,
         map(
             lambda x, y: (x, y.error_message if y.is_error else None),
@@ -101,7 +101,7 @@ def get_one_entity(self: "ComApi", entity_name: str, raise_error: bool = None) -
 def get_entities(self: "ComApi", *entity_names: str, raise_error: bool = None) -> List[Entity]:
     com_entitys = self.database.FetchEntities(entity_names)
     entitys = list(map(_create_entity, com_entitys, entity_names))
-    GetEntitiesError.raise_if(
+    GetEntitiesError._raise_if(  # pylint: disable=protected-access
         self.raise_error if raise_error is None else raise_error,
         map(
             lambda x, y: (x, y.error_message if y.is_error else None),

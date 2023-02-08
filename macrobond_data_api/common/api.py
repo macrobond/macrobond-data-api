@@ -27,6 +27,10 @@ from .types import (
 
 from .enums import SeriesFrequency, SeriesWeekdays, CalendarMergeMode
 
+__pdoc__ = {
+    "Api.__init__": False,
+}
+
 
 class Api(ABC):
     # fmt: off

@@ -1,10 +1,14 @@
 from typing import Optional, List, TYPE_CHECKING
 from typing_extensions import TypedDict, Literal
 
+__pdoc__ = {
+    "MetadataAttributeInformation.__init__": False,
+    "TypedDictMetadataAttributeInformation.__init__": False,
+}
+
 if TYPE_CHECKING:  # pragma: no cover
     from pandas import DataFrame  # type: ignore
     from ..enums import MetadataAttributeType
-
 
 MetadataAttributeInformationColumns = List[
     Literal[
