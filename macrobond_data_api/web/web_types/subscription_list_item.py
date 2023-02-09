@@ -16,9 +16,7 @@ class SubscriptionListItem:
 
     def __eq__(self, other):
         return self is other or (
-            isinstance(other, SubscriptionListItem)
-            and self.name == other.name
-            and self.modified == other.modified
+            isinstance(other, SubscriptionListItem) and self.name == other.name and self.modified == other.modified
         )
 
     def __repr__(self):

@@ -17,9 +17,7 @@ def metadata_list_values(self: "WebApi", name: str) -> MetadataValueInformation:
     return MetadataValueInformation(
         list(
             map(
-                lambda x: MetadataValueInformationItem(
-                    name, x["value"], x["description"], x.get("comment")
-                ),
+                lambda x: MetadataValueInformationItem(name, x["value"], x["description"], x.get("comment")),
                 values,
             )
         ),
@@ -27,9 +25,7 @@ def metadata_list_values(self: "WebApi", name: str) -> MetadataValueInformation:
     )
 
 
-def metadata_get_attribute_information(
-    self: "WebApi", *name: str
-) -> List[MetadataAttributeInformation]:
+def metadata_get_attribute_information(self: "WebApi", *name: str) -> List[MetadataAttributeInformation]:
     def get_metadata_attribute_information(info):
         return MetadataAttributeInformation(
             info["name"],
@@ -46,9 +42,7 @@ def metadata_get_attribute_information(
     return list(map(get_metadata_attribute_information, info))
 
 
-def metadata_get_value_information(
-    self: "WebApi", *name_val: Tuple[str, str]
-) -> List[MetadataValueInformationItem]:
+def metadata_get_value_information(self: "WebApi", *name_val: Tuple[str, str]) -> List[MetadataValueInformationItem]:
     ret: List[MetadataValueInformationItem] = []
     try:
         for info in self.session.metadata.get_value_information(*name_val):

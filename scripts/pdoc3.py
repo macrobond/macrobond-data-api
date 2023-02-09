@@ -13,9 +13,7 @@ def pdoc3(context: Context) -> None:
         shutil.rmtree("docs/build/macrobond_data_api/assets")
     shutil.copytree("docs/assets", "docs/build/macrobond_data_api/assets")
 
-    file_url = os.path.join(
-        os.getcwd(), "docs", "build", "macrobond_data_api", "index.html"
-    ).replace("\\", "/")
+    file_url = os.path.join(os.getcwd(), "docs", "build", "macrobond_data_api", "index.html").replace("\\", "/")
 
     print("file:///" + file_url)
 

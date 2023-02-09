@@ -41,10 +41,7 @@ def _raise_on_error(response: "Response", non_error_status: Sequence[int] = None
 
     content_type = response.headers.get("Content-Type")
 
-    if (
-        not content_type
-        or ["application/json; charset=utf-8", "application/json"].count(content_type) != 0
-    ):
+    if not content_type or ["application/json; charset=utf-8", "application/json"].count(content_type) != 0:
         raise ProblemDetailsException.create_from_response(response)
 
     macrobond_status = response.headers.get("X-Macrobond-Status")
@@ -210,9 +207,7 @@ class Session:
 
         return token_endpoint
 
-    def __if_status_code_401_fetch_token_and_retry(
-        self, http: Callable[[], "Response"]
-    ) -> "Response":
+    def __if_status_code_401_fetch_token_and_retry(self, http: Callable[[], "Response"]) -> "Response":
         try:
             response = http()
         except InvalidTokenError:

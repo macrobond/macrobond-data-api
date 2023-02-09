@@ -20,8 +20,7 @@ class _ShellCommand:
 
     def __str__(self) -> str:
         return (
-            f'command: "{self.command}", ignore_exit_code: {self.ignore_exit_code}, '
-            + f"exit_code: {self.exit_code}"
+            f'command: "{self.command}", ignore_exit_code: {self.ignore_exit_code}, ' + f"exit_code: {self.exit_code}"
         )
 
 

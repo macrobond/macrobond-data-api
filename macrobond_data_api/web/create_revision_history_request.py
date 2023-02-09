@@ -16,7 +16,5 @@ def create_revision_history_request(
         "name": name,
         "ifModifiedSince": if_modified_since.isoformat() if if_modified_since else None,
         "lastRevision": last_revision.isoformat() if last_revision else None,
-        "lastRevisionAdjustment": last_revision_adjustment.isoformat()
-        if last_revision_adjustment
-        else None,
+        "lastRevisionAdjustment": last_revision_adjustment.isoformat() if last_revision_adjustment else None,
     }

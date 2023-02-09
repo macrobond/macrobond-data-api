@@ -14,6 +14,4 @@ class WebErrorHandling(TestCase):
         if context.exception.errors is None:
             self.fail("context.exception.errors is None")
 
-        self.assertEqual(
-            ["The request field is required."], cast(dict, context.exception.errors)["request"]
-        )
+        self.assertEqual(["The request field is required."], cast(dict, context.exception.errors)["request"])

@@ -113,9 +113,7 @@ class Entity:
 
     def __eq__(self, other):
         return self is other or (
-            isinstance(other, Entity)
-            and self.error_message == other.error_message
-            and self.metadata == other.metadata
+            isinstance(other, Entity) and self.error_message == other.error_message and self.metadata == other.metadata
         )
 
     def __hash__(self):

@@ -105,14 +105,10 @@ class SearchMethods:
 
             403 Forbidden. Not authorized.
         """
-        response = self.__session.get_or_raise(
-            "v1/search/filterlists", params={"entityType": entity_type}
-        )
+        response = self.__session.get_or_raise("v1/search/filterlists", params={"entityType": entity_type})
         return cast(List["ItemListingResponse"], response.json())
 
-    def entities_for_display(
-        self, request: "SearchForDisplayRequest"
-    ) -> "SearchForDisplayResponse":
+    def entities_for_display(self, request: "SearchForDisplayRequest") -> "SearchForDisplayResponse":
         """
         Search for time series and other entites matching attribute values and return the
         selected metadata formatted for presentation purposes.

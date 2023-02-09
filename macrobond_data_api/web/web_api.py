@@ -166,9 +166,7 @@ class WebApi(Api):
         if if_modified_since:
             params["ifModifiedSince"] = if_modified_since.isoformat()
 
-        with self.__session.get(
-            "v1/series/getsubscriptionlist", params=params, stream=True
-        ) as response:
+        with self.__session.get("v1/series/getsubscriptionlist", params=params, stream=True) as response:
             _raise_on_error(response)
             ijson_parse = ijson.parse(response.raw)
 
@@ -185,18 +183,11 @@ class WebApi(Api):
             if not if_modified_since and download_full_list_on_or_after is None:
                 raise Exception("bad format: downloadFullListOnOrAfter was not found")
 
-            body = SubscriptionBody(
-                time_stamp_for_if_modified_since, download_full_list_on_or_after, state
-            )
+            body = SubscriptionBody(time_stamp_for_if_modified_since, download_full_list_on_or_after, state)
             if body_callback(body) is False:
                 return None
 
-            if (
-                _get_subscription_list_iterative_pars_items(
-                    ijson_parse, items_callback, buffer_size, body
-                )
-                is False
-            ):
+            if _get_subscription_list_iterative_pars_items(ijson_parse, items_callback, buffer_size, body) is False:
                 return None
 
             return body
@@ -231,9 +222,7 @@ class WebApi(Api):
                 break
             start_index = end_index
 
-            with self.session.series.post_fetch_all_vintage_series(
-                requests_subset, stream=True
-            ) as response:
+            with self.session.series.post_fetch_all_vintage_series(requests_subset, stream=True) as response:
                 _raise_on_error(response)
                 ijson_items = ijson.items(response.raw, "item")
                 item: "SeriesWithVintagesResponse"
@@ -268,9 +257,7 @@ class WebApi(Api):
 
         response = self.session.search.post_entities(request)
 
-        return SearchResultLong(
-            [x["Name"] for x in response["results"]], response.get("isTruncated") is True
-        )
+        return SearchResultLong([x["Name"] for x in response["results"]], response.get("isTruncated") is True)
 
     entity_search_multi_filter = entity_search_multi_filter
 

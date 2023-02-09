@@ -57,9 +57,7 @@ def _create_entity(response: "EntityResponse", name: str, session: Session) -> E
     if error_text:
         return Entity(name, error_text, None)
 
-    metadata = session._create_metadata(  # pylint: disable=protected-access
-        cast(Dict[str, Any], response["metadata"])
-    )
+    metadata = session._create_metadata(cast(Dict[str, Any], response["metadata"]))  # pylint: disable=protected-access
 
     return Entity(name, None, cast(Dict[str, Any], metadata))
 
@@ -84,9 +82,7 @@ def _create_series(response: "SeriesResponse", name: str, session: Session) -> S
         )
     )
 
-    metadata = session._create_metadata(  # pylint: disable=protected-access
-        cast(Dict[str, Any], response["metadata"])
-    )
+    metadata = session._create_metadata(cast(Dict[str, Any], response["metadata"]))  # pylint: disable=protected-access
 
     # values = cast(Tuple[Optional[float]], response["values"])
     return Series(name, "", metadata, values, dates)
@@ -139,9 +135,7 @@ def get_unified_series(
     end_point: "StartOrEndPoint" = None,
     raise_error: bool = None
 ) -> UnifiedSeriesList:
-    def convert_to_unified_series_entry(
-        entry_or_name: Union[SeriesEntry, str]
-    ) -> "UnifiedSeriesEntry":
+    def convert_to_unified_series_entry(entry_or_name: Union[SeriesEntry, str]) -> "UnifiedSeriesEntry":
         if isinstance(entry_or_name, str):
             entry_or_name = SeriesEntry(entry_or_name)
         entrie = entry_or_name

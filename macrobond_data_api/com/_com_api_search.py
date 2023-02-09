@@ -61,7 +61,5 @@ def entity_search_multi_filter(
 
     result = self.database.Search(querys)
 
-    entities: List[MutableMapping[str, Any]] = list(
-        map(_fill_metadata_from_entity, result.Entities)
-    )
+    entities: List[MutableMapping[str, Any]] = list(map(_fill_metadata_from_entity, result.Entities))
     return SearchResult(entities, result.IsTruncated)

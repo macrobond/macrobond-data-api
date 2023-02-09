@@ -27,9 +27,7 @@ class VintageValues:
         else:
             self.vintage_time_stamp = None
 
-        self.dates = [
-            datetime(int(x[0:4]), int(x[5:7]), int(x[8:10])) for x in vintage_values["dates"]
-        ]
+        self.dates = [datetime(int(x[0:4]), int(x[5:7]), int(x[8:10])) for x in vintage_values["dates"]]
 
         self.values = [float(x) if x else None for x in vintage_values["values"]]
 

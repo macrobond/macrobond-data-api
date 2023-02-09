@@ -41,9 +41,7 @@ class SeriesMethods:
         401 Unauthorized. Missing, invalid or expired access token.
         403 Forbidden. Not authorized.
         """
-        response = self.__session.get_or_raise(
-            "v1/series/fetchentities", params={"n": entitie_names}
-        )
+        response = self.__session.get_or_raise("v1/series/fetchentities", params={"n": entitie_names})
         return cast(List["EntityResponse"], response.json())
 
     # Get /v1/series/fetchseries
@@ -67,9 +65,7 @@ class SeriesMethods:
         return cast(List["SeriesResponse"], response.json())
 
     # Post /fetchseries
-    def fetch_series_last_modified_time_stamp(
-        self, *requests: "EntityRequest"
-    ) -> List["SeriesResponse"]:
+    def fetch_series_last_modified_time_stamp(self, *requests: "EntityRequest") -> List["SeriesResponse"]:
         """
         Fetch one or more series.
         A timestamp can be specified for each series to conditionally retrieve a result.
@@ -105,9 +101,7 @@ class SeriesMethods:
 
             403 Forbidden. Not authorized.
         """
-        response = self.__session.get_or_raise(
-            "v1/series/getrevisioninfo", params={"n": series_names}
-        )
+        response = self.__session.get_or_raise("v1/series/getrevisioninfo", params={"n": series_names})
         return cast(List["SeriesWithRevisionsInfoResponse"], response.json())
 
     # Get /v1/series/fetchvintageseries
@@ -185,12 +179,8 @@ class SeriesMethods:
         return cast(List["VintageSeriesResponse"], response.json())
 
     # post /v1/series/fetchallvintageseries
-    def post_fetch_all_vintage_series(
-        self, requests: Sequence["RevisionHistoryRequest"], stream=False
-    ) -> "Response":
-        return self.__session.post_or_raise(
-            "v1/series/fetchallvintageseries", json=requests, stream=stream
-        )
+    def post_fetch_all_vintage_series(self, requests: Sequence["RevisionHistoryRequest"], stream=False) -> "Response":
+        return self.__session.post_or_raise("v1/series/fetchallvintageseries", json=requests, stream=stream)
 
     # Get /v1/series/fetchnthreleaseseries
     def fetch_nth_release_series(
@@ -292,9 +282,7 @@ class SeriesMethods:
 
             404 The series could not be found.
         """
-        response = self.__session.get_or_raise(
-            "v1/series/entityinfofordisplay", params={"n": entitie_names}
-        )
+        response = self.__session.get_or_raise("v1/series/entityinfofordisplay", params={"n": entitie_names})
         return cast("EntityInfoForDisplayResponse", response.json())
 
     # Post /v1/series/fetchunifiedseries

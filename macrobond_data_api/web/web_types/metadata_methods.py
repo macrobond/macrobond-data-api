@@ -12,9 +12,7 @@ class MetadataMethods:
         self.__session = session
 
     # Get /v1/metadata/getattributeinformation
-    def get_attribute_information(
-        self, *attribute_names: str
-    ) -> List["MetadataAttributeInformationResponse"]:
+    def get_attribute_information(self, *attribute_names: str) -> List["MetadataAttributeInformationResponse"]:
         """
         Get information about metadata attributes.
         The result will be in the same order as the request.
@@ -31,15 +29,11 @@ class MetadataMethods:
             404 At least one attribute was not found.
 
         """
-        response = self.__session.get_or_raise(
-            "v1/metadata/getattributeinformation", params={"n": attribute_names}
-        )
+        response = self.__session.get_or_raise("v1/metadata/getattributeinformation", params={"n": attribute_names})
         return cast(List["MetadataAttributeInformationResponse"], response.json())
 
     # Get /v1/metadata/getvalueinformation
-    def get_value_information(
-        self, *metadata_value: Tuple[str, str]
-    ) -> "MetadataValueInformationResponse":
+    def get_value_information(self, *metadata_value: Tuple[str, str]) -> "MetadataValueInformationResponse":
         """
         Get information about metadata values.
         The result will be in the same order as the request.
@@ -82,7 +76,5 @@ class MetadataMethods:
 
             404 The attribute was not found.
         """
-        response = self.__session.get_or_raise(
-            "v1/metadata/listattributevalues", params={"n": attribute_name}
-        )
+        response = self.__session.get_or_raise("v1/metadata/listattributevalues", params={"n": attribute_name})
         return cast("MetadataValueInformationResponse", response.json())

@@ -62,9 +62,7 @@ class ComClient(Client["ComApi"]):
 
         if self.__api is None:
             try:
-                connection: "Connection" = cast(
-                    "Connection", _client.Dispatch("Macrobond.Connection")
-                )
+                connection: "Connection" = cast("Connection", _client.Dispatch("Macrobond.Connection"))
             except com_error:
                 hints: List[str] = []
 

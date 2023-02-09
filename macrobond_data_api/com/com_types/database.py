@@ -19,9 +19,7 @@ class Database:
     def FetchOneSeries(self, series_name: str) -> Series:
         """Download one series from the database."""
 
-    def FetchSeries(
-        self, series_names: Union[str, Tuple[str, ...], SeriesRequest]
-    ) -> Tuple[Series, ...]:
+    def FetchSeries(self, series_names: Union[str, Tuple[str, ...], SeriesRequest]) -> Tuple[Series, ...]:
         """
         Download one or more series from the database.
         The parameter can be a string, a vector of series names or an
@@ -152,9 +150,7 @@ class Database:
         (MB 1.23 or later. Requires Data+ license.)
         """
 
-    def FetchSeriesWithRevisions(
-        self, seriesNames: Union[str, Sequence[str]]
-    ) -> Tuple[SeriesWithRevisions, ...]:
+    def FetchSeriesWithRevisions(self, seriesNames: Union[str, Sequence[str]]) -> Tuple[SeriesWithRevisions, ...]:
         """
         Download one or more series from the database.
         The parameter can be a string or a vector of series names.

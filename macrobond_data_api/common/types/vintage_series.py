@@ -20,8 +20,4 @@ class VintageSeries(Series):
         if isinstance(revision_time_stamp, list):
             revision_time_stamp = revision_time_stamp[0]
 
-        return (
-            parser.parse(revision_time_stamp)
-            if isinstance(revision_time_stamp, str)
-            else revision_time_stamp
-        )
+        return parser.parse(revision_time_stamp) if isinstance(revision_time_stamp, str) else revision_time_stamp

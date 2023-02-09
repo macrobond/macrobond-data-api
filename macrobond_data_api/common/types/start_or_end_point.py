@@ -38,9 +38,7 @@ class StartOrEndPoint:
         return self.time + " mode:" + str(self.mode)
 
     @staticmethod
-    def relative_to_observations(
-        observations: int, mode: CalendarDateMode = None
-    ) -> "StartOrEndPoint":
+    def relative_to_observations(observations: int, mode: CalendarDateMode = None) -> "StartOrEndPoint":
         """
         Create a start or endpoint as a number of observations relative the end of the intervall.
         """

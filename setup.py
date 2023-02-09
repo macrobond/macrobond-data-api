@@ -14,9 +14,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 try:
     version = (
-        subprocess.run(["git", "describe", "--tags"], stdout=subprocess.PIPE, check=True)
-        .stdout.decode("utf-8")
-        .strip()
+        subprocess.run(["git", "describe", "--tags"], stdout=subprocess.PIPE, check=True).stdout.decode("utf-8").strip()
     )
     print("using tag")
 except subprocess.CalledProcessError:

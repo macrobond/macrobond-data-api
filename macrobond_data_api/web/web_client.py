@@ -100,12 +100,7 @@ class WebClient(Client["WebApi"]):
 
         self.__api: Optional["WebApi"] = None
         self.__session = Session(
-            username,
-            password,
-            *scopes,
-            api_url=api_url,
-            authorization_url=authorization_url,
-            proxy=proxy
+            username, password, *scopes, api_url=api_url, authorization_url=authorization_url, proxy=proxy
         )
 
     @property

@@ -27,7 +27,5 @@ class SearchQuery:
     def AddAttributeFilter(self, attribute_name: str, include: bool = True) -> None:
         """Add an attribute filter."""
 
-    def AddAttributeValueFilter(
-        self, attribute_name: str, attribute_values: object, include: bool = True
-    ) -> None:
+    def AddAttributeValueFilter(self, attribute_name: str, attribute_values: object, include: bool = True) -> None:
         """Add an attribute value filter."""

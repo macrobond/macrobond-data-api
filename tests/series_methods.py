@@ -52,9 +52,7 @@ def get_one_series(test: TestCase, api: Api) -> None:
 
     test.assertNotEqual(len(series.values), 0, "values")
     test.assertNotEqual(len(series.dates), 0, "dates")
-    test.assertEqual(
-        len(series.dates), len(series.values), "len(series.dates) = len(series.values)"
-    )
+    test.assertEqual(len(series.dates), len(series.values), "len(series.dates) = len(series.values)")
 
     test.assertEqual(series.entity_type, "TimeSeries", "entity_type")
 
@@ -205,13 +203,9 @@ def get_unified_series_vintage(test: TestCase, api: Api) -> None:
 
     unified_1 = api.get_unified_series(SeriesEntry("usgdp"))[0]
 
-    unified_2 = api.get_unified_series(
-        SeriesEntry("usgdp", revision_info.time_stamp_of_last_revision)
-    )[0]
+    unified_2 = api.get_unified_series(SeriesEntry("usgdp", revision_info.time_stamp_of_last_revision))[0]
 
-    unified_3 = api.get_unified_series(
-        SeriesEntry("usgdp", revision_info.time_stamp_of_first_revision)
-    )[0]
+    unified_3 = api.get_unified_series(SeriesEntry("usgdp", revision_info.time_stamp_of_first_revision))[0]
 
     test.assertEqual(unified_1.values, unified_2.values)
 

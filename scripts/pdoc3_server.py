@@ -8,9 +8,7 @@ def pdoc3server(context: Context) -> None:
         " --http : --html --template-dir docs --force -o docs/build macrobond_data_api",
     )
 
-    file_url = os.path.join(
-        os.getcwd(), "docs", "build", "macrobond_data_api", "index.html"
-    ).replace("\\", "/")
+    file_url = os.path.join(os.getcwd(), "docs", "build", "macrobond_data_api", "index.html").replace("\\", "/")
 
     print("file:///" + file_url)
 

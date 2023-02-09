@@ -58,9 +58,7 @@ class Web(TestCase):
         ) -> bool:
             return True
 
-        self.assertNoWarnings(
-            lambda: self.web_api.get_subscription_list_iterative(empty_method_1, empty_method_2)
-        )
+        self.assertNoWarnings(lambda: self.web_api.get_subscription_list_iterative(empty_method_1, empty_method_2))
 
     @skip("needs access")
     def test_get_fetch_all_vintageseries(self) -> None:

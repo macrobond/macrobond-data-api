@@ -112,6 +112,4 @@ class ProblemDetailsException(Exception):
         extensions = json.get("extensions")
         errors = json.get("errors")
 
-        return ProblemDetailsException(
-            response, _type, title, status, detail, instance, extensions, errors
-        )
+        return ProblemDetailsException(response, _type, title, status, detail, instance, extensions, errors)

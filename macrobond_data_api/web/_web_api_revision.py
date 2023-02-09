@@ -54,17 +54,13 @@ def _create_series(response: "SeriesResponse", name: str, session: Session) -> S
         )
     )
 
-    metadata = session._create_metadata(  # pylint: disable=protected-access
-        cast(Dict[str, Any], response["metadata"])
-    )
+    metadata = session._create_metadata(cast(Dict[str, Any], response["metadata"]))  # pylint: disable=protected-access
 
     # values = cast(Tuple[Optional[float]], response["values"])
     return Series(name, "", cast(Dict[str, Any], metadata), values, dates)
 
 
-def get_revision_info(
-    self: "WebApi", *series_names: str, raise_error: bool = None
-) -> List[RevisionInfo]:
+def get_revision_info(self: "WebApi", *series_names: str, raise_error: bool = None) -> List[RevisionInfo]:
     def to_obj(name: str, serie: "SeriesWithRevisionsInfoResponse"):
         error_text = serie.get("errorText")
         if error_text:
@@ -78,13 +74,9 @@ def get_revision_info(
                 tuple(),
             )
 
-        time_stamp_of_first_revision = _optional_str_to_datetime(
-            serie.get("timeStampOfFirstRevision")
-        )
+        time_stamp_of_first_revision = _optional_str_to_datetime(serie.get("timeStampOfFirstRevision"))
 
-        time_stamp_of_last_revision = _optional_str_to_datetime(
-            serie.get("timeStampOfLastRevision")
-        )
+        time_stamp_of_last_revision = _optional_str_to_datetime(serie.get("timeStampOfLastRevision"))
 
         stores_revisions = serie["storesRevisions"]
         if stores_revisions:
@@ -145,9 +137,7 @@ def get_vintage_series(
 
         return VintageSeries(series_name, None, metadata, values, dates)
 
-    response = self.session.series.fetch_vintage_series(
-        time, *series_names, get_times_of_change=False
-    )
+    response = self.session.series.fetch_vintage_series(time, *series_names, get_times_of_change=False)
 
     series = list(map(to_obj, response, series_names))
 
@@ -163,9 +153,7 @@ def get_vintage_series(
     return series
 
 
-def get_nth_release(
-    self: "WebApi", nth: int, *series_names: str, raise_error: bool = None
-) -> List[Series]:
+def get_nth_release(self: "WebApi", nth: int, *series_names: str, raise_error: bool = None) -> List[Series]:
     response = self.session.series.fetch_nth_release_series(nth, *series_names)
 
     series = list(map(lambda x, y: _create_series(x, y, self.session), response, series_names))
@@ -195,9 +183,7 @@ def get_all_vintage_series(self: "WebApi", series_name: str) -> GetAllVintageSer
     )
 
 
-def get_observation_history(
-    self: "WebApi", series_name: str, *times: datetime
-) -> List[SeriesObservationHistory]:
+def get_observation_history(self: "WebApi", series_name: str, *times: datetime) -> List[SeriesObservationHistory]:
     try:
         response = self.session.series.fetch_observation_history(series_name, list(times))
     except ProblemDetailsException as ex:

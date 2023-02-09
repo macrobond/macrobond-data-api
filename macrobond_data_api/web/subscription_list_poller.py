@@ -99,9 +99,7 @@ class SubscriptionListPoller(ABC):
                 self.on_listing_stop(False, ex)
         return None
 
-    def _run_listing(
-        self, if_modified_since: datetime, max_attempts=3
-    ) -> Optional["SubscriptionBody"]:
+    def _run_listing(self, if_modified_since: datetime, max_attempts=3) -> Optional["SubscriptionBody"]:
         is_stated = False
 
         def _body_callback(body: "SubscriptionBody"):
@@ -133,9 +131,7 @@ class SubscriptionListPoller(ABC):
 
             self._sleep(self.incomplete_delay)
 
-            return self._run_listing_incomplete(
-                sub.time_stamp_for_if_modified_since, is_stated, max_attempts
-            )
+            return self._run_listing_incomplete(sub.time_stamp_for_if_modified_since, is_stated, max_attempts)
         except _AbortException as ex:
             if is_stated:
                 self.on_listing_stop(True, cast(Exception, ex.__cause__))
@@ -188,9 +184,7 @@ class SubscriptionListPoller(ABC):
         ...
 
     @abstractmethod
-    def on_full_listing_itmes(
-        self, subscription: "SubscriptionBody", items: List["SubscriptionListItem"]
-    ):
+    def on_full_listing_itmes(self, subscription: "SubscriptionBody", items: List["SubscriptionListItem"]):
         ...
 
     @abstractmethod
@@ -204,9 +198,7 @@ class SubscriptionListPoller(ABC):
         ...
 
     @abstractmethod
-    def on_listing_items(
-        self, subscription: "SubscriptionBody", items: List["SubscriptionListItem"]
-    ):
+    def on_listing_items(self, subscription: "SubscriptionBody", items: List["SubscriptionListItem"]):
         ...
 
     @abstractmethod

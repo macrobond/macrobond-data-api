@@ -84,6 +84,4 @@ class GetEntitiesError(Exception):
                 list(filter(lambda x: x[1] is not None, entities)),
             )
             if entities_list:
-                raise GetEntitiesError(
-                    list(map(lambda x: EntityErrorInfo(x[0], x[1]), entities_list))
-                )
+                raise GetEntitiesError(list(map(lambda x: EntityErrorInfo(x[0], x[1]), entities_list)))

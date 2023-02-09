@@ -27,9 +27,7 @@ def metadata_list_values(self: "ComApi", name: str) -> MetadataValueInformation:
     )
 
 
-def metadata_get_attribute_information(
-    self: "ComApi", *names: str
-) -> List[MetadataAttributeInformation]:
+def metadata_get_attribute_information(self: "ComApi", *names: str) -> List[MetadataAttributeInformation]:
     def get_metadata_attribute_information(name: str):
         info = self.database.GetMetadataInformation(name)
         return MetadataAttributeInformation(
@@ -46,9 +44,7 @@ def metadata_get_attribute_information(
     return list(map(get_metadata_attribute_information, names))
 
 
-def metadata_get_value_information(
-    self: "ComApi", *name_val: Tuple[str, str]
-) -> List[MetadataValueInformationItem]:
+def metadata_get_value_information(self: "ComApi", *name_val: Tuple[str, str]) -> List[MetadataValueInformationItem]:
     def is_error_with_text(ex: Exception, text: str) -> bool:
         return len(ex.args) >= 3 and len(ex.args[2]) >= 3 and ex.args[2][2].startswith(text)
 
@@ -71,9 +67,5 @@ def metadata_get_value_information(
                 raise ValueError("Unknown attribute value: " + name + "," + val) from ex
             raise ex
 
-        ret.append(
-            MetadataValueInformationItem(
-                name, value_info.Value, value_info.Description, value_info.Comment
-            )
-        )
+        ret.append(MetadataValueInformationItem(name, value_info.Value, value_info.Description, value_info.Comment))
     return ret

@@ -14,10 +14,7 @@ __pdoc__ = {
 
 
 def entity_search_multi_filter(
-    self: "WebApi",
-    *filters: "SearchFilter",
-    include_discontinued: bool = False,
-    no_metadata: bool = False
+    self: "WebApi", *filters: "SearchFilter", include_discontinued: bool = False, no_metadata: bool = False
 ) -> SearchResult:
     def convert_filter_to_web_filter(_filter: "SearchFilter") -> "WebSearchFilter":
         return {

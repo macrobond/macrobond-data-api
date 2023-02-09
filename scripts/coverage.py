@@ -20,9 +20,7 @@ def coverage_com(context: Context) -> None:
     context.python_run(
         "coverage",
         "erase",
-        "run --include=macrobond_data_api/com/com_api.py,"
-        + "macrobond-data-api/com/** -m "
-        + UNITTEST_COMMAND,
+        "run --include=macrobond_data_api/com/com_api.py," + "macrobond-data-api/com/** -m " + UNITTEST_COMMAND,
         "html -d htmlcov_com",
         "report -m",
         "erase",
@@ -35,9 +33,7 @@ def coverage_web(context: Context) -> None:
     context.python_run(
         "coverage",
         "erase",
-        "run --include=macrobond_data_api/web/web_api.py,"
-        + "macrobond_data_api/web/** -m "
-        + UNITTEST_COMMAND,
+        "run --include=macrobond_data_api/web/web_api.py," + "macrobond_data_api/web/** -m " + UNITTEST_COMMAND,
         "html -d htmlcov_web",
         "report -m",
         "erase",

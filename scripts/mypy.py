@@ -7,9 +7,7 @@ from context import Context
 
 
 def mypy(context: Context) -> None:
-    context.python_run(
-        "mypy", ". --show-error-codes --exclude macrobond_data_api_python_env --python-version 3.7"
-    )
+    context.python_run("mypy", ". --show-error-codes --exclude macrobond_data_api_python_env --python-version 3.7")
 
 
 if __name__ == "__main__":

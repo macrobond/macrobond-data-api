@@ -139,9 +139,7 @@ class Api(ABC):
         # fmt: on
 
     @abstractmethod
-    def metadata_get_value_information(
-        self, *name_val: Tuple[str, str]
-    ) -> List[MetadataValueInformationItem]:
+    def metadata_get_value_information(self, *name_val: Tuple[str, str]) -> List[MetadataValueInformationItem]:
         # pylint: disable=line-too-long
         # fmt: off
         """
@@ -199,9 +197,7 @@ class Api(ABC):
         """
 
     @abstractmethod
-    def get_vintage_series(
-        self, time: datetime, *series_names: str, raise_error: bool = None
-    ) -> List[VintageSeries]:
+    def get_vintage_series(self, time: datetime, *series_names: str, raise_error: bool = None) -> List[VintageSeries]:
         """
         Fetch vintage series.
 
@@ -223,9 +219,7 @@ class Api(ABC):
         """
 
     @abstractmethod
-    def get_nth_release(
-        self, nth: int, *series_names: str, raise_error: bool = None
-    ) -> List[Series]:
+    def get_nth_release(self, nth: int, *series_names: str, raise_error: bool = None) -> List[Series]:
         """
         Fetcha series where each value is the nth change of the value.
 
@@ -262,9 +256,7 @@ class Api(ABC):
         """
 
     @abstractmethod
-    def get_observation_history(
-        self, series_name: str, *times: datetime
-    ) -> List[SeriesObservationHistory]:
+    def get_observation_history(self, series_name: str, *times: datetime) -> List[SeriesObservationHistory]:
         """
         Get the revision of an observation.
 

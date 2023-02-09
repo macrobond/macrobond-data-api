@@ -43,9 +43,7 @@ class MetadataValueInformationItem:
     description: str
     comment: Optional[str]
 
-    def __init__(
-        self, attribute_name: str, value: Any, description: str, comment: Optional[str]
-    ) -> None:
+    def __init__(self, attribute_name: str, value: Any, description: str, comment: Optional[str]) -> None:
         self.attribute_name = attribute_name
         """The name of the metadata attribute"""
 
@@ -85,9 +83,7 @@ class MetadataValueInformationItem:
             return NotImplemented
 
         return self is other or (
-            self.value == other.value
-            and self.description == other.description
-            and self.comment == other.comment
+            self.value == other.value and self.description == other.description and self.comment == other.comment
         )
 
 
@@ -126,9 +122,7 @@ class MetadataValueInformation(Sequence[MetadataValueInformationItem]):
         return list(map(lambda x: x.to_dict(), self))
 
     def __repr__(self):
-        return (
-            f"MetadataValueInformation of {len(self)} items, attribute_name: {self.attribute_name}"
-        )
+        return f"MetadataValueInformation of {len(self)} items, attribute_name: {self.attribute_name}"
 
     def __getitem__(self, key):
         return self.entities[key]

@@ -97,9 +97,7 @@ def _remove_padding(
     )
 
 
-def get_revision_info(
-    self: "ComApi", *series_names: str, raise_error: bool = None
-) -> List[RevisionInfo]:
+def get_revision_info(self: "ComApi", *series_names: str, raise_error: bool = None) -> List[RevisionInfo]:
     def to_obj(name: str, serie: "SeriesWithRevisions"):
         if serie.IsError:
             return RevisionInfo(
@@ -196,9 +194,7 @@ def get_vintage_series(
     return series
 
 
-def get_nth_release(
-    self: "ComApi", nth: int, *series_names: str, raise_error: bool = None
-) -> List[Series]:
+def get_nth_release(self: "ComApi", nth: int, *series_names: str, raise_error: bool = None) -> List[Series]:
     def to_obj(series_name: str) -> Series:
         series_with_revisions = self.database.FetchOneSeriesWithRevisions(series_name)
 
@@ -280,9 +276,7 @@ def get_all_vintage_series(self: "ComApi", series_name: str) -> GetAllVintageSer
     )
 
 
-def get_observation_history(
-    self: "ComApi", series_name: str, *times: datetime
-) -> List[SeriesObservationHistory]:
+def get_observation_history(self: "ComApi", series_name: str, *times: datetime) -> List[SeriesObservationHistory]:
     series_with_revisions = self.database.FetchOneSeriesWithRevisions(series_name)
 
     if series_with_revisions.IsError:

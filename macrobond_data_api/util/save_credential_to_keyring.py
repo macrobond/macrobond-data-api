@@ -114,12 +114,7 @@ def save_credential_to_keyring(warn_before_removing=True, ask_for_service_name=F
 
     keyring.set_password(service_name, username, password)
 
-    print(
-        'successfully saved to the keyring with the service name: "'
-        + service_name
-        + '" in '
-        + KEYRING_NAME
-    )
+    print('successfully saved to the keyring with the service name: "' + service_name + '" in ' + KEYRING_NAME)
 
     return True
 

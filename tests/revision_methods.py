@@ -107,9 +107,7 @@ class Common(TestCase):
     # get_vintage_series
 
     def test_get_vintage_series_values_to_pd_series(self) -> None:
-        time_stamp = cast(
-            datetime, self.web_api.get_revision_info("usgdp")[0].time_stamp_of_first_revision
-        )
+        time_stamp = cast(datetime, self.web_api.get_revision_info("usgdp")[0].time_stamp_of_first_revision)
         self.assertEqual(
             0,
             len(
@@ -120,19 +118,13 @@ class Common(TestCase):
             ),
             "usgdp",
         )
-        time_stamp = cast(
-            datetime, self.web_api.get_revision_info("ustrad4488")[0].time_stamp_of_first_revision
-        )
+        time_stamp = cast(datetime, self.web_api.get_revision_info("ustrad4488")[0].time_stamp_of_first_revision)
         self.assertEqual(
             0,
             len(
                 PdSeries.compare(
-                    self.web_api.get_vintage_series(time_stamp, "ustrad4488")[
-                        0
-                    ].values_to_pd_series(),
-                    self.com_api.get_vintage_series(time_stamp, "ustrad4488")[
-                        0
-                    ].values_to_pd_series(),
+                    self.web_api.get_vintage_series(time_stamp, "ustrad4488")[0].values_to_pd_series(),
+                    self.com_api.get_vintage_series(time_stamp, "ustrad4488")[0].values_to_pd_series(),
                 )
             ),
             "ustrad4488",
@@ -205,12 +197,8 @@ class Common(TestCase):
             0,
             len(
                 PdSeries.compare(
-                    self.web_api.get_all_vintage_series("ct_au_e_ao_c_22_v")[
-                        0
-                    ].values_to_pd_series(),
-                    self.com_api.get_all_vintage_series("ct_au_e_ao_c_22_v")[
-                        0
-                    ].values_to_pd_series(),
+                    self.web_api.get_all_vintage_series("ct_au_e_ao_c_22_v")[0].values_to_pd_series(),
+                    self.com_api.get_all_vintage_series("ct_au_e_ao_c_22_v")[0].values_to_pd_series(),
                 )
             ),
             "ct_au_e_ao_c_22_v",

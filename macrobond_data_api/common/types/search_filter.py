@@ -53,9 +53,7 @@ class SearchFilter:
 
         self.must_have_values: Dict[str, object] = must_have_values if must_have_values else {}
 
-        self.must_not_have_values: Dict[str, object] = (
-            must_not_have_values if must_not_have_values else {}
-        )
+        self.must_not_have_values: Dict[str, object] = must_not_have_values if must_not_have_values else {}
 
         if isinstance(must_have_attributes, str):
             self.must_have_attributes: Sequence[str] = [must_have_attributes]
@@ -65,6 +63,4 @@ class SearchFilter:
         if isinstance(must_not_have_attributes, str):
             self.must_not_have_attributes: Sequence[str] = [must_not_have_attributes]
         else:
-            self.must_not_have_attributes = (
-                must_not_have_attributes if must_not_have_attributes else []
-            )
+            self.must_not_have_attributes = must_not_have_attributes if must_not_have_attributes else []
