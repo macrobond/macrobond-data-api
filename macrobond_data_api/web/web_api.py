@@ -148,11 +148,11 @@ class WebApi(Api):
 
     get_observation_history = get_observation_history
 
-    # web onley
+    # web only
     def get_subscription_list(self, if_modified_since: datetime = None) -> SubscriptionList:
         return SubscriptionList(self.session.series.get_subscription_list(if_modified_since))
 
-    # web onley
+    # web only
     def get_subscription_list_iterative(
         self,
         body_callback: Callable[[SubscriptionBody], Optional[bool]],
@@ -201,11 +201,26 @@ class WebApi(Api):
 
             return body
 
-    def get_fetch_all_vintageseries(
+    def get_all_vintage_multiple_series(
         self,
         callback: Callable[[SeriesWithVintages], None],
         requests: Sequence["RevisionHistoryRequest"],
     ) -> None:
+        """
+        Download all revisions for one or more series.
+        Specify a callback to receive the response series by series.
+        This method is primarily intended for syncronizing a local database with updates.
+
+        You are expected to retain the LastModifiedTimeStamp, LastRevisionTimeStamp and LastRevisionAdjustmentTimeStamp
+        for each series and use them in the next request.
+
+        Parameters
+        ----------
+        callback : `Callable[[macrobond_data_api.web.series_with_vintages.SeriesWithVintages], None]`
+            A callback that will receive the response series by series.
+        requests : `Sequence[macrobond_data_api.web.revision_history_request.RevisionHistoryRequest]`
+            A sequence of series requests.
+        """
         start_index = 0
         batch_size = 200
 
