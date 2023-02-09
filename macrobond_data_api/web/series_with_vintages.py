@@ -36,7 +36,7 @@ class VintageValues:
 
         self.values = [float(x) if x else None for x in vintage_values["values"]]
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return f"VintageValues vintage_time_stamp: {self.vintage_time_stamp}"
 
 
@@ -89,7 +89,7 @@ class SeriesWithVintages:
         vintages = response.get("vintages")
         self.vintages = [VintageValues(x) for x in vintages] if vintages else []
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return (
             f"SeriesWithVintages primary_name: {self.primary_name}, "
             + f"error_text: {self.error_text}, error_code: {self.error_code}, "

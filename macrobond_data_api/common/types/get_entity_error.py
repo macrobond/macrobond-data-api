@@ -1,4 +1,5 @@
 from typing import Dict, List, Optional, Tuple, Iterable, cast, Union
+from dataclasses import dataclass
 
 __pdoc__ = {
     "EntitieErrorInfo.__init__": False,
@@ -6,10 +7,13 @@ __pdoc__ = {
 }
 
 
+@dataclass(init=False)
 class EntityErrorInfo:
     """
     Represents a failed entity retrieval.
     """
+
+    __slots__ = ("name", "error_message")
 
     name: str
     error_message: str
@@ -27,9 +31,6 @@ class EntityErrorInfo:
 
         self.error_message = error_message
         """Contains the error message."""
-
-    def __repr__(self):
-        return f"name: {self.name} error_message: {self.error_message}"
 
 
 class GetEntitiesError(Exception):

@@ -1,4 +1,6 @@
-from typing import Sequence, TYPE_CHECKING
+from dataclasses import dataclass
+
+from typing import List, Sequence, TYPE_CHECKING, overload
 
 from dateutil import parser
 
@@ -10,8 +12,11 @@ if TYPE_CHECKING:  # pragma: no cover
     from .feed_entities_response import FeedEntitiesResponse
 
 
+@dataclass(init=False)
 class SubscriptionList(Sequence[SubscriptionListItem], SubscriptionBody):
     __slots__ = ("items",)
+
+    items: Sequence[SubscriptionListItem]
 
     def __init__(self, response: "FeedEntitiesResponse") -> None:
         download_full = response.get("downloadFullListOnOrAfter")
@@ -28,11 +33,16 @@ class SubscriptionList(Sequence[SubscriptionListItem], SubscriptionBody):
             )
         )
 
-    def __getitem__(self, index):
-        return self.items.__getitem__(index)
+    @overload
+    def __getitem__(self, i: int) -> SubscriptionListItem:
+        ...
 
-    def __len__(self):
+    @overload
+    def __getitem__(self, s: slice) -> List[SubscriptionListItem]:
+        ...
+
+    def __getitem__(self, key):  # type: ignore
+        return self.items[key]
+
+    def __len__(self) -> int:
         return self.items.__len__()
-
-    def __repr__(self):
-        return "SubscriptionList"

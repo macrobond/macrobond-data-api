@@ -10,7 +10,7 @@ class SearchQuery:
         """The free text search property."""
 
     @Text.setter
-    def Text(self, new_text: str):
+    def Text(self, new_text: str) -> None:
         """The free text search property."""
 
     @property
@@ -18,7 +18,7 @@ class SearchQuery:
         """If to include discontinued series, false by default."""
 
     @IncludeDiscontinued.setter
-    def IncludeDiscontinued(self, new_include_discontinued: bool):
+    def IncludeDiscontinued(self, new_include_discontinued: bool) -> None:
         """If to include discontinued series, false by default."""
 
     def SetEntityTypeFilter(self, entity_types: object) -> None:

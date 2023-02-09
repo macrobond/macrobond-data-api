@@ -179,7 +179,9 @@ class SeriesMethods:
         return cast(List["VintageSeriesResponse"], response.json())
 
     # post /v1/series/fetchallvintageseries
-    def post_fetch_all_vintage_series(self, requests: Sequence["RevisionHistoryRequest"], stream=False) -> "Response":
+    def post_fetch_all_vintage_series(
+        self, requests: Sequence["RevisionHistoryRequest"], stream: bool = False
+    ) -> "Response":
         return self.__session.post_or_raise("v1/series/fetchallvintageseries", json=requests, stream=stream)
 
     # Get /v1/series/fetchnthreleaseseries

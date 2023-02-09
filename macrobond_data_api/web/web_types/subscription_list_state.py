@@ -24,7 +24,7 @@ class SubscriptionListState(IntEnum):
     Wait one minute and then use the timeStampForIfModifiedSince in an a new request.
     """
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         if self == self.FULL_LISTING:
             return f"SubscriptionList State {int(self)}, A complete listing of all series."
 

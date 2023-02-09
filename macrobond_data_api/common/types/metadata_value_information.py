@@ -1,9 +1,11 @@
+from dataclasses import dataclass
 from typing import (
     Any,
     Optional,
     List,
     TYPE_CHECKING,
     Sequence,
+    overload,
 )
 from typing_extensions import TypedDict, Literal
 
@@ -37,6 +39,7 @@ class TypedDictMetadataValueInformationItem(TypedDict):
     """The comment of the metadata value"""
 
 
+@dataclass(init=False)
 class MetadataValueInformationItem:
     """
     Contains information about one metadata attribute value.
@@ -77,22 +80,8 @@ class MetadataValueInformationItem:
             "comment": self.comment,
         }
 
-    def __repr__(self) -> str:
-        return (
-            f"MetadataValueInformationItem attribute_name: {self.attribute_name},"
-            + f" value: {self.value}, "
-            + f" description: {self.description}"
-        )
 
-    def __eq__(self, other) -> bool:
-        if not isinstance(other, MetadataValueInformationItem):
-            return NotImplemented
-
-        return self is other or (
-            self.value == other.value and self.description == other.description and self.comment == other.comment
-        )
-
-
+@dataclass(init=False)
 class MetadataValueInformation(Sequence[MetadataValueInformationItem]):
     # fmt: off
     """
@@ -127,10 +116,15 @@ class MetadataValueInformation(Sequence[MetadataValueInformationItem]):
         """The information represented as a dictionary"""
         return list(map(lambda x: x.to_dict(), self))
 
-    def __repr__(self):
-        return f"MetadataValueInformation of {len(self)} items, attribute_name: {self.attribute_name}"
+    @overload
+    def __getitem__(self, i: int) -> MetadataValueInformationItem:
+        ...
 
-    def __getitem__(self, key):
+    @overload
+    def __getitem__(self, s: slice) -> List[MetadataValueInformationItem]:
+        ...
+
+    def __getitem__(self, key):  # type: ignore
         return self.entities[key]
 
     def __len__(self) -> int:

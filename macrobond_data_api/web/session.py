@@ -73,19 +73,19 @@ class Session:
         return self.__series_tree
 
     @property
-    def api_url(self):
+    def api_url(self) -> str:
         return self.__api_url
 
     @property
-    def authorization_url(self):
+    def authorization_url(self) -> str:
         return self.__authorization_url
 
     @property
-    def token_endpoint(self):
+    def token_endpoint(self) -> Optional[str]:
         return self.__token_endpoint
 
     @property
-    def auth2_session(self):
+    def auth2_session(self) -> OAuth2Session:
         return self.__auth2_session
 
     def __init__(
@@ -121,9 +121,7 @@ class Session:
         self.__api_url = api_url
 
         if test_auth2_session is None:
-            self.__auth2_session = OAuth2Session(
-                username, password, scope=[x.value for x in scopes]
-            )
+            self.__auth2_session = OAuth2Session(username, password, scope=[x.value for x in scopes])
         else:
             self.__auth2_session = test_auth2_session
 
@@ -143,8 +141,8 @@ class Session:
             self.__token_endpoint = self.discovery(self.authorization_url)
         self.auth2_session.fetch_token(self.token_endpoint, proxies=self.__proxies)
 
-    def get(self, url: str, params: dict = None, stream=False) -> "Response":
-        def http():
+    def get(self, url: str, params: dict = None, stream: bool = False) -> "Response":
+        def http() -> "Response":
             return self.auth2_session.get(
                 url=self.api_url + url,
                 params=params,
@@ -156,14 +154,18 @@ class Session:
         return self.__if_status_code_401_fetch_token_and_retry(http)
 
     def get_or_raise(
-        self, url: str, params: dict = None, non_error_status: Sequence[int] = None, stream=False
+        self,
+        url: str,
+        params: dict = None,
+        non_error_status: Sequence[int] = None,
+        stream: bool = False,
     ) -> "Response":
         response = self.get(url, params, stream=stream)
         _raise_on_error(response, non_error_status)
         return response
 
-    def post(self, url: str, params: dict = None, json: object = None, stream=False) -> "Response":
-        def http():
+    def post(self, url: str, params: dict = None, json: object = None, stream: bool = False) -> "Response":
+        def http() -> "Response":
             return self.auth2_session.post(
                 url=self.api_url + url,
                 params=params,
@@ -181,7 +183,7 @@ class Session:
         params: dict = None,
         json: object = None,
         non_error_status: Sequence[int] = None,
-        stream=False,
+        stream: bool = False,
     ) -> "Response":
         response = self.post(url, params, json, stream=stream)
         _raise_on_error(response, non_error_status)

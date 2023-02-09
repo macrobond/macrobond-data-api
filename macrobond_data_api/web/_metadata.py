@@ -5,7 +5,7 @@ if TYPE_CHECKING:  # pragma: no cover
 
 
 class _Metadata(MutableMapping[str, Any]):
-    __slots__ = ("__type_directory", "__data")
+    __slots__ = ("__data", "__type_directory")
 
     def __init__(self, data: Dict[str, Any], type_directory: "_MetadataTypeDirectory") -> None:
         self.__data = data
@@ -16,7 +16,7 @@ class _Metadata(MutableMapping[str, Any]):
             return self.__data[key]
         return self.__type_directory.convert(key, self.__data[key])
 
-    def __setitem__(self, key: str, val) -> None:
+    def __setitem__(self, key: str, val: Any) -> None:
         self.__data[key] = val
 
     def __delitem__(self, key: str) -> None:
@@ -28,5 +28,5 @@ class _Metadata(MutableMapping[str, Any]):
     def __len__(self) -> int:
         return self.__data.__len__()
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return dict(self.items()).__repr__()

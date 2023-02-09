@@ -1,3 +1,5 @@
+from dataclasses import dataclass
+
 from typing import Optional, List, TYPE_CHECKING
 from typing_extensions import TypedDict, Literal
 
@@ -63,6 +65,7 @@ class TypedDictMetadataAttributeInformation(TypedDict):
     """
 
 
+@dataclass(init=False)
 class MetadataAttributeInformation:
     # fmt: off
     """
@@ -149,31 +152,3 @@ class MetadataAttributeInformation:
         import pandas  # pylint: disable=import-outside-toplevel
 
         return pandas.DataFrame([self.to_dict()])
-
-    def __repr__(self):
-        return f"MetadataAttributeInformation name: {self.name}, description: {self.description}"
-
-    def __eq__(self, other):
-        return self is other or (
-            isinstance(other, MetadataAttributeInformation)
-            and self.name == other.name
-            and self.description == other.description
-            and self.comment == other.comment
-            and self.uses_value_list == other.uses_value_list
-            and self.can_list_values == other.can_list_values
-            and self.can_have_multiple_values == other.can_have_multiple_values
-            and self.is_database_entity == other.is_database_entity
-        )
-
-    def __hash__(self):
-        return hash(
-            (
-                self.name,
-                self.description,
-                self.comment,
-                self.uses_value_list,
-                self.can_list_values,
-                self.can_have_multiple_values,
-                self.is_database_entity,
-            )
-        )

@@ -20,7 +20,7 @@ class SeriesExpression:
         """Get the name of the series."""
 
     @Name.setter
-    def Name(self, new_name: str):
+    def Name(self, new_name: str) -> None:
         """Set the name of the series."""
 
     @property
@@ -28,7 +28,7 @@ class SeriesExpression:
         """Get the method for filling in missing values."""
 
     @MissingValueMethod.setter
-    def MissingValueMethod(self, new_missing_value_method: SeriesMissingValueMethod):
+    def MissingValueMethod(self, new_missing_value_method: SeriesMissingValueMethod) -> None:
         """Set the method for filling in missing values."""
 
     @property
@@ -36,7 +36,7 @@ class SeriesExpression:
         """Get the method to converting to lower frequency."""
 
     @ToLowerFrequencyMethod.setter
-    def ToLowerFrequencyMethod(self, new_missing_value_method: SeriesToLowerFrequencyMethod):
+    def ToLowerFrequencyMethod(self, new_missing_value_method: SeriesToLowerFrequencyMethod) -> None:
         """Set the method to converting to lower frequency."""
 
     @property
@@ -44,7 +44,7 @@ class SeriesExpression:
         """Get the method to converting to higher frequency."""
 
     @ToHigherFrequencyMethod.setter
-    def ToHigherFrequencyMethod(self, new_missing_value_method: SeriesToHigherFrequencyMethod):
+    def ToHigherFrequencyMethod(self, new_missing_value_method: SeriesToHigherFrequencyMethod) -> None:
         """Set the method to converting to higher frequency."""
 
     @property
@@ -52,7 +52,7 @@ class SeriesExpression:
         """Get the method to use for converting partial periods to lower frequency."""
 
     @PartialPeriodsMethod.setter
-    def PartialPeriodsMethod(self, new_missing_value_method: SeriesPartialPeriodsMethod):
+    def PartialPeriodsMethod(self, new_missing_value_method: SeriesPartialPeriodsMethod) -> None:
         """Set the method to use for converting partial periods to lower frequency."""
 
     @property
@@ -60,5 +60,5 @@ class SeriesExpression:
         """Get the vintage date of the series."""
 
     @Vintage.setter
-    def Vintage(self, new_vintage: Optional[datetime]):
+    def Vintage(self, new_vintage: Optional[datetime]) -> None:
         """Set the vintage date of the series."""

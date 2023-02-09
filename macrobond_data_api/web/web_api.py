@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import TYPE_CHECKING, List, Optional, Callable, Sequence, Tuple
+from typing import TYPE_CHECKING, Any, List, Optional, Callable, Sequence, Tuple
 
 import ijson  # type: ignore
 from dateutil import parser
@@ -55,7 +55,7 @@ __pdoc__ = {
 
 
 def _get_subscription_list_iterative_pars_body(
-    ijson_parse,
+    ijson_parse: Any,
 ) -> Tuple[Optional[datetime], Optional[datetime], Optional[SubscriptionListState]]:
     time_stamp_for_if_modified_since: Optional[datetime] = None
     download_full_list_on_or_after: Optional[datetime] = None
@@ -81,7 +81,7 @@ def _get_subscription_list_iterative_pars_body(
 
 
 def _get_subscription_list_iterative_pars_items(
-    ijson_parse,
+    ijson_parse: Any,
     items_callback: Callable[[SubscriptionBody, List[SubscriptionListItem]], Optional[bool]],
     buffer_size: int,
     body: SubscriptionBody,
@@ -158,7 +158,7 @@ class WebApi(Api):
         body_callback: Callable[[SubscriptionBody], Optional[bool]],
         items_callback: Callable[[SubscriptionBody, List[SubscriptionListItem]], Optional[bool]],
         if_modified_since: datetime = None,
-        buffer_size=200,
+        buffer_size: int = 200,
     ) -> Optional[SubscriptionBody]:
         params = {}
         body: Optional[SubscriptionBody] = None

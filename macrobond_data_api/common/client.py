@@ -4,7 +4,7 @@ Base class for the implementations `macrobond_data_api.web.web_client.WebClient`
 """
 
 from abc import ABC, abstractmethod
-from typing import Generic, TypeVar
+from typing import Any, Generic, TypeVar
 
 from .api import Api
 
@@ -22,7 +22,12 @@ class Client(ABC, Generic[TypeVarApi]):
     def __enter__(self) -> TypeVarApi:
         return self.open()  # pragma: no cover
 
-    def __exit__(self, exception_type, exception_value, traceback) -> None:
+    def __exit__(
+        self,
+        exception_type: Any,
+        exception_value: Any,
+        traceback: Any,
+    ) -> None:
         self.close()  # pragma: no cover
 
     @property
@@ -38,5 +43,5 @@ class Client(ABC, Generic[TypeVarApi]):
     def close(self) -> None:
         ...  # pragma: no cover
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return f"{self.__class__.__name__} is_open: {self.is_open}"

@@ -1,7 +1,8 @@
 from math import isnan
-from typing import Any, Dict, List, Tuple, Union, TYPE_CHECKING, Sequence
+from typing import Any, Dict, List, Optional, Tuple, Union, TYPE_CHECKING, Sequence
 
 from datetime import datetime
+
 
 from macrobond_data_api.common.enums import (
     SeriesWeekdays,
@@ -18,27 +19,14 @@ from macrobond_data_api.common.types import (
     UnifiedSeries,
 )
 
+from ._fill_metadata_from_entity import _fill_metadata_from_entity
+
 if TYPE_CHECKING:  # pragma: no cover
     from .com_api import ComApi
 
     from macrobond_data_api.common.types import StartOrEndPoint
 
     from .com_types import Series as ComSeries, Entity as ComEntity
-
-
-def _fill_metadata_from_entity(com_entity: "ComEntity") -> Dict[str, Any]:
-    ret = {}
-    metadata = com_entity.Metadata
-
-    for names_and_description in metadata.ListNames():
-        name = names_and_description[0]
-        values = metadata.GetValues(name)
-        ret[name] = values[0] if len(values) == 1 else list(values)
-
-    if "FullDescription" not in ret:
-        ret["FullDescription"] = com_entity.Title
-
-    return ret
 
 
 def _datetime_to_datetime(dates: Sequence[datetime]) -> Tuple[datetime, ...]:
@@ -80,7 +68,7 @@ def get_one_series(self: "ComApi", series_name: str, raise_error: bool = None) -
     return self.get_series(series_name, raise_error=raise_error)[0]
 
 
-def get_series(self, *series_names: str, raise_error: bool = None) -> List[Series]:
+def get_series(self: "ComApi", *series_names: str, raise_error: Optional[bool] = None) -> List[Series]:
     com_series = self.database.FetchSeries(series_names)
     series = list(map(_create_series, com_series, series_names))
     GetEntitiesError._raise_if(  # pylint: disable=protected-access
@@ -115,13 +103,13 @@ def get_entities(self: "ComApi", *entity_names: str, raise_error: bool = None) -
 def get_unified_series(
     self: "ComApi",
     *series_entries: Union[SeriesEntry, str],
-    frequency=SeriesFrequency.HIGHEST,
+    frequency: SeriesFrequency = SeriesFrequency.HIGHEST,
     weekdays: SeriesWeekdays = SeriesWeekdays.FULL_WEEK,
-    calendar_merge_mode=CalendarMergeMode.AVAILABLE_IN_ANY,
-    currency="",
-    start_point: "StartOrEndPoint" = None,
-    end_point: "StartOrEndPoint" = None,
-    raise_error: bool = None
+    calendar_merge_mode: CalendarMergeMode = CalendarMergeMode.AVAILABLE_IN_ANY,
+    currency: str = "",
+    start_point: Optional["StartOrEndPoint"] = None,
+    end_point: Optional["StartOrEndPoint"] = None,
+    raise_error: Optional[bool] = None
 ) -> UnifiedSeriesList:
     # pylint: disable=too-many-branches
     request = self.database.CreateUnifiedSeriesRequest()

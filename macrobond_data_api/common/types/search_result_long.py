@@ -1,4 +1,5 @@
-from typing import TYPE_CHECKING, List, Sequence
+from dataclasses import dataclass
+from typing import TYPE_CHECKING, List, Sequence, overload
 
 if TYPE_CHECKING:  # pragma: no cover
     from pandas import DataFrame  # type: ignore
@@ -8,6 +9,7 @@ __pdoc__ = {
 }
 
 
+@dataclass(init=False)
 class SearchResultLong(Sequence[str]):
     """
     The result of a entity search operation.
@@ -33,9 +35,6 @@ class SearchResultLong(Sequence[str]):
         """
         return list(self)
 
-    def __repr__(self) -> str:
-        return f"SearchResultLong of {len(self)} entities, is_truncated: {self.is_truncated}"
-
     def to_pd_data_frame(self) -> "DataFrame":
         """
         Return the result as a `DataFrame`.
@@ -44,7 +43,15 @@ class SearchResultLong(Sequence[str]):
 
         return pandas.DataFrame(self)
 
-    def __getitem__(self, key):
+    @overload
+    def __getitem__(self, i: int) -> str:
+        ...
+
+    @overload
+    def __getitem__(self, s: slice) -> List[str]:
+        ...
+
+    def __getitem__(self, key):  # type: ignore
         return self.entities[key]
 
     def __len__(self) -> int:

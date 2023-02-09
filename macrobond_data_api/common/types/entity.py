@@ -107,7 +107,7 @@ class Entity:
         name = name if name else self.name
         return pandas.Series(self.metadata.values(), self.metadata.keys(), name=name)
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         if self.is_error:
             return f"{self.__class__.__name__} with error, error message: {self.error_message}"
         return f"{self.__class__.__name__} PrimName: {self.primary_name}"
@@ -115,12 +115,12 @@ class Entity:
     def __bool__(self) -> bool:
         return not self.is_error
 
-    def __eq__(self, other) -> bool:
+    def __eq__(self, other: Any) -> bool:
         return self is other or (
             isinstance(other, Entity) and self.error_message == other.error_message and self.metadata == other.metadata
         )
 
-    def __hash__(self):
+    def __hash__(self) -> int:
         return hash(
             (
                 self.error_message,

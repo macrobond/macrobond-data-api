@@ -1,5 +1,5 @@
 from math import isnan
-from typing import Any, Dict, List, Optional, Tuple, TYPE_CHECKING, Sequence
+from typing import List, Optional, Tuple, TYPE_CHECKING, Sequence
 
 from datetime import datetime, timezone
 
@@ -12,10 +12,7 @@ from macrobond_data_api.common.types import (
     SeriesObservationHistory,
 )
 
-try:
-    from pywintypes import TimeType
-except ImportError as ex:
-    pass
+from ._fill_metadata_from_entity import _fill_metadata_from_entity
 
 if TYPE_CHECKING:  # pragma: no cover
     from .com_api import ComApi
@@ -23,28 +20,6 @@ if TYPE_CHECKING:  # pragma: no cover
     from .com_types import SeriesWithRevisions
 
     from .com_types import Series as ComSeries, Entity as ComEntity
-
-
-def _fill_metadata_from_entity(com_entity: "ComEntity") -> Dict[str, Any]:
-    ret = {}
-    metadata = com_entity.Metadata
-
-    for names_and_description in metadata.ListNames():
-        name = names_and_description[0]
-        values: Sequence[Any] = metadata.GetValues(name)
-        if isinstance(values[0], TimeType):
-            values = [
-                datetime(
-                    x.year, x.month, x.day, x.hour, x.minute, x.second, x.microsecond, timezone.utc
-                )
-                for x in values
-            ]
-        ret[name] = values[0] if len(values) == 1 else values
-
-    if "FullDescription" not in ret:
-        ret["FullDescription"] = com_entity.Title
-
-    return ret
 
 
 def _datetime_to_datetime_utc(dates: Sequence[datetime]) -> Tuple[datetime, ...]:
@@ -110,7 +85,7 @@ def _remove_padding(
 
 
 def get_revision_info(self: "ComApi", *series_names: str, raise_error: bool = None) -> List[RevisionInfo]:
-    def to_obj(name: str, serie: "SeriesWithRevisions"):
+    def to_obj(name: str, serie: "SeriesWithRevisions") -> RevisionInfo:
         if serie.IsError:
             return RevisionInfo(
                 name,

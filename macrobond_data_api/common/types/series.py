@@ -74,7 +74,7 @@ class Series(Entity):
         name = name if name else self.name
         return pandas.Series(self.values, self.dates, name=name)
 
-    def __eq__(self, other):
+    def __eq__(self, other: Any) -> bool:
         return self is other or (
             isinstance(other, Series) and self.error_message == other.error_message and self.metadata == other.metadata
         )

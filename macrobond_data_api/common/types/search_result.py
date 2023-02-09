@@ -1,4 +1,4 @@
-from typing import Any, MutableMapping, TYPE_CHECKING, List, Sequence
+from typing import Any, MutableMapping, TYPE_CHECKING, List, Sequence, overload
 
 if TYPE_CHECKING:  # pragma: no cover
     from pandas import DataFrame  # type: ignore
@@ -30,7 +30,7 @@ class SearchResult(Sequence[MutableMapping[str, Any]]):
         Indicates whether the search result was too long and truncated.
         """
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return f"SearchResult of {len(self)} entities, is_truncated: {self.is_truncated}"
 
     def to_dict(self) -> List[MutableMapping[str, Any]]:
@@ -47,7 +47,15 @@ class SearchResult(Sequence[MutableMapping[str, Any]]):
 
         return pandas.DataFrame(self)
 
-    def __getitem__(self, key):
+    @overload
+    def __getitem__(self, i: int) -> MutableMapping[str, Any]:
+        ...
+
+    @overload
+    def __getitem__(self, s: slice) -> List[MutableMapping[str, Any]]:
+        ...
+
+    def __getitem__(self, key):  # type: ignore
         return self.entities[key]
 
     def __len__(self) -> int:

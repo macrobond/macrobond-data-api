@@ -25,7 +25,7 @@ class SeriesRequest:
         """
 
     @Frequency.setter
-    def Frequency(self, new_series_frequency: int):
+    def Frequency(self, new_series_frequency: int) -> None:
         """
         The frequency that all series will be converted to.
         The default value is ‘Highest’, which means that all series will be converted to the
@@ -40,7 +40,7 @@ class SeriesRequest:
         """
 
     @CalendarMergeMode.setter
-    def CalendarMergeMode(self, new_calendar_merge_mode: CalendarMergeMode):
+    def CalendarMergeMode(self, new_calendar_merge_mode: CalendarMergeMode) -> None:
         """
         Determines how to handle points in time that are not available in one or more series.
         The default value is ‘AvailibleInAny’
@@ -70,7 +70,7 @@ class SeriesRequest:
         """
 
     @Currency.setter
-    def Currency(self, new_currency: str):
+    def Currency(self, new_currency: str) -> None:
         """
         The currency code based on the three letter IS 4217 codes that will be used to convert
         any series expressed in currency units.
@@ -88,7 +88,7 @@ class SeriesRequest:
         """
 
     @StartDateMode.setter
-    def StartDateMode(self, new_start_date_mode: CalendarDateMode):
+    def StartDateMode(self, new_start_date_mode: CalendarDateMode) -> None:
         """
         Determines if the automatic start of the series is at the first point when there is
         data in any series or the first point where there is data in all series.
@@ -107,7 +107,7 @@ class SeriesRequest:
         """
 
     @StartDate.setter
-    def StartDate(self, new_start_date: Union[None, datetime, str]):
+    def StartDate(self, new_start_date: Union[None, datetime, str]) -> None:
         """
         This specifies the start date used for all the series in the request.
         The value can be empty, a specific date or a string representing a point in time
@@ -126,7 +126,7 @@ class SeriesRequest:
         """
 
     @EndDateMode.setter
-    def EndDateMode(self, new_end_date_mode: CalendarDateMode):
+    def EndDateMode(self, new_end_date_mode: CalendarDateMode) -> None:
         """
         Determines if the automatic end of the series is at the last point when there is
         data in any series or the last point where there is data in all series.

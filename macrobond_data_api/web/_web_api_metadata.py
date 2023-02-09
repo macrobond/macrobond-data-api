@@ -13,49 +13,45 @@ if TYPE_CHECKING:  # pragma: no cover
 
 
 def metadata_list_values(self: "WebApi", name: str) -> MetadataValueInformation:
-    values = self.session.metadata.list_attribute_values(name)
     return MetadataValueInformation(
         list(
-            map(
-                lambda x: MetadataValueInformationItem(name, x["value"], x["description"], x.get("comment")),
-                values,
-            )
+            MetadataValueInformationItem(name, x["value"], x["description"], x.get("comment"))
+            for x in self.session.metadata.list_attribute_values(name)
         ),
         name,
     )
 
 
 def metadata_get_attribute_information(self: "WebApi", *name: str) -> List[MetadataAttributeInformation]:
-    def get_metadata_attribute_information(info):
-        return MetadataAttributeInformation(
-            info["name"],
-            info["description"],
-            info.get("comment"),
-            info["valueType"],
-            info["usesValueList"],
-            info["canListValues"],
-            info["canHaveMultipleValues"],
-            info["isDatabaseEntity"],
+    return list(
+        MetadataAttributeInformation(
+            x["name"],
+            x["description"],
+            x.get("comment"),
+            x["valueType"],
+            x["usesValueList"],
+            x["canListValues"],
+            x["canHaveMultipleValues"],
+            x["isDatabaseEntity"],
         )
-
-    info = self.session.metadata.get_attribute_information(*name)
-    return list(map(get_metadata_attribute_information, info))
+        for x in self.session.metadata.get_attribute_information(*name)
+    )
 
 
 def metadata_get_value_information(self: "WebApi", *name_val: Tuple[str, str]) -> List[MetadataValueInformationItem]:
-    ret: List[MetadataValueInformationItem] = []
     try:
-        for info in self.session.metadata.get_value_information(*name_val):
-            ret.append(
+        return list(
+            (
                 MetadataValueInformationItem(
-                    info["attributeName"],
-                    info["value"],
-                    info["description"],
-                    info.get("comment"),
+                    x["attributeName"],
+                    x["value"],
+                    x["description"],
+                    x.get("comment"),
                 )
+                for x in self.session.metadata.get_value_information(*name_val)
             )
+        )
     except ProblemDetailsException as ex:
         if ex.status == 404:
             raise ValueError(ex.detail) from ex
         raise ex
-    return ret

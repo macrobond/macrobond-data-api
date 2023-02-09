@@ -1,7 +1,6 @@
-# get_all_vintage_series_result
+from dataclasses import dataclass
 
-
-from typing import TYPE_CHECKING, Any, Dict, Sequence
+from typing import TYPE_CHECKING, Any, Dict, Sequence, overload
 
 from macrobond_data_api.common.types.vintage_series import VintageSeries
 
@@ -13,6 +12,7 @@ __pdoc__ = {
 }
 
 
+@dataclass(init=False)
 class GetAllVintageSeriesResult(Sequence[VintageSeries]):
     """
     The result of downloading all vintages of a time series.
@@ -54,10 +54,15 @@ class GetAllVintageSeriesResult(Sequence[VintageSeries]):
             "series": tuple(map(lambda x: x.to_dict(), self)),
         }
 
-    def __repr__(self):
-        return "GetAllVintageSeriesResult series_name: " + self.series_name
+    @overload
+    def __getitem__(self, i: int) -> VintageSeries:
+        ...
 
-    def __getitem__(self, key):
+    @overload
+    def __getitem__(self, s: slice) -> Sequence[VintageSeries]:
+        ...
+
+    def __getitem__(self, key):  # type: ignore
         return self.series[key]
 
     def __len__(self) -> int:

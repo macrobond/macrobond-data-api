@@ -42,7 +42,7 @@ def coverage_web(context: Context) -> None:
     print("file:///" + file_url)
 
 
-def main():
+def main() -> None:
     Context(coverage, coverage_com, coverage_web)
 
 

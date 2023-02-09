@@ -1,7 +1,7 @@
 # pylint: disable=invalid-name missing-function-docstring , missing-class-docstring , missing-module-docstring
 
 from unittest import TestCase as UnittestTestCase  # type: ignore
-from typing import Optional, Callable
+from typing import Optional, Callable, Tuple, Any
 import warnings
 import io
 import sys
@@ -19,14 +19,14 @@ pandas.set_option("display.width", 1000)
 
 
 class TestCase(UnittestTestCase):
-    def __init__(self, *args, **kwargs) -> None:
+    def __init__(self, *args: Any, **kwargs: Any) -> None:
         super(TestCase, self).__init__(*args, **kwargs)
         self.__com_client: Optional[ComClient] = None
         self.__com_api: Optional[ComApi] = None
         self.__web_client: Optional[WebClient] = None
         self.__web_api: Optional[WebApi] = None
 
-    def assertNoWarnings(self, mef: Callable):
+    def assertNoWarnings(self, mef: Callable) -> None:
         captured_output_stdout = io.StringIO()
         sys.stdout = captured_output_stdout
 

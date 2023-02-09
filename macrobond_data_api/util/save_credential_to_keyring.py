@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 import sys
 from getpass import getpass
 
@@ -7,7 +8,7 @@ from macrobond_data_api.web.web_client import DEFAULT_SERVICE_NAME
 __pdoc__ = {"_inquiry": False, "_remove_duplicates": False}
 
 
-def _inquiry(question, default="yes") -> bool:
+def _inquiry(question: str, default: str = "yes") -> bool:
     valid = {"yes": True, "y": True, "no": False, "n": False}
     if default is None:
         prompt = " [y/n] "
@@ -40,7 +41,7 @@ def _remove_duplicates(service_name: str, warn_before_removing: bool) -> bool:
     return True
 
 
-def save_credential_to_keyring(warn_before_removing=True, ask_for_service_name=False) -> bool:
+def save_credential_to_keyring(warn_before_removing: bool = True, ask_for_service_name: bool = False) -> bool:
     # fmt: off
     # pylint: disable=line-too-long
     """

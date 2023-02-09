@@ -28,7 +28,7 @@ def metadata_list_values(self: "ComApi", name: str) -> MetadataValueInformation:
 
 
 def metadata_get_attribute_information(self: "ComApi", *names: str) -> List[MetadataAttributeInformation]:
-    def get_metadata_attribute_information(name: str):
+    def get_metadata_attribute_information(name: str) -> MetadataAttributeInformation:
         info = self.database.GetMetadataInformation(name)
         return MetadataAttributeInformation(
             info.Name,

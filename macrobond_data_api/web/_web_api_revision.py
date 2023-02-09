@@ -64,8 +64,8 @@ def _create_series(response: "SeriesResponse", name: str, session: Session) -> S
     return Series(name, "", cast(Dict[str, Any], metadata), values, dates)
 
 
-def get_revision_info(self: "WebApi", *series_names: str, raise_error: bool = None) -> List[RevisionInfo]:
-    def to_obj(name: str, serie: "SeriesWithRevisionsInfoResponse"):
+def get_revision_info(self: "WebApi", *series_names: str, raise_error: Optional[bool] = None) -> List[RevisionInfo]:
+    def to_obj(name: str, serie: "SeriesWithRevisionsInfoResponse") -> RevisionInfo:
         error_text = serie.get("errorText")
         if error_text:
             return RevisionInfo(
@@ -114,7 +114,7 @@ def get_revision_info(self: "WebApi", *series_names: str, raise_error: bool = No
 
 
 def get_vintage_series(
-    self: "WebApi", time: datetime, *series_names: str, raise_error: bool = None
+    self: "WebApi", time: datetime, *series_names: str, raise_error: Optional[bool] = None
 ) -> List[VintageSeries]:
     def to_obj(response: "VintageSeriesResponse", series_name: str) -> VintageSeries:
         error_message = response.get("errorText")
@@ -140,9 +140,7 @@ def get_vintage_series(
         dates = tuple(map(_str_to_datetime_ignoretz, cast(List[str], response["dates"])))
 
         vintage_time_stamp = (
-            _str_to_datetime(cast(str, response["vintageTimeStamp"]))
-            if "vintageTimeStamp" in response
-            else None
+            _str_to_datetime(cast(str, response["vintageTimeStamp"])) if "vintageTimeStamp" in response else None
         )
 
         return VintageSeries(series_name, None, metadata, values, dates, vintage_time_stamp)
@@ -163,7 +161,7 @@ def get_vintage_series(
     return series
 
 
-def get_nth_release(self: "WebApi", nth: int, *series_names: str, raise_error: bool = None) -> List[Series]:
+def get_nth_release(self: "WebApi", nth: int, *series_names: str, raise_error: Optional[bool] = None) -> List[Series]:
     response = self.session.series.fetch_nth_release_series(nth, *series_names)
 
     series = list(map(lambda x, y: _create_series(x, y, self.session), response, series_names))
@@ -200,9 +198,7 @@ def get_all_vintage_series(self: "WebApi", series_name: str) -> GetAllVintageSer
         dates = tuple(map(_str_to_datetime_ignoretz, cast(List[str], response["dates"])))
 
         vintage_time_stamp = (
-            _str_to_datetime(cast(str, response["vintageTimeStamp"]))
-            if "vintageTimeStamp" in response
-            else None
+            _str_to_datetime(cast(str, response["vintageTimeStamp"])) if "vintageTimeStamp" in response else None
         )
 
         return VintageSeries(series_name, None, metadata, values, dates, vintage_time_stamp)

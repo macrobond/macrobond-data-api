@@ -7,6 +7,7 @@ from typing import (
     Optional,
     MutableMapping,
     TYPE_CHECKING,
+    overload,
 )
 
 from datetime import datetime
@@ -86,10 +87,10 @@ class UnifiedSeries:
         # self._add_metadata(ret)
         return ret
 
-    def __bool__(self):
+    def __bool__(self) -> bool:
         return self.error_message == ""
 
-    def __eq__(self, other):
+    def __eq__(self, other: Any) -> bool:
         return self is other or (
             isinstance(other, UnifiedSeries)
             and self.name == other.name
@@ -149,7 +150,15 @@ class UnifiedSeriesList(Sequence[UnifiedSeries]):
         names = ", ".join(map(lambda x: x.name, self))
         return f"UnifiedSeries series: ({names})"
 
-    def __getitem__(self, key):
+    @overload
+    def __getitem__(self, i: int) -> UnifiedSeries:
+        ...
+
+    @overload
+    def __getitem__(self, s: slice) -> List[UnifiedSeries]:
+        ...
+
+    def __getitem__(self, key):  # type: ignore
         return self.series[key]
 
     def __len__(self) -> int:

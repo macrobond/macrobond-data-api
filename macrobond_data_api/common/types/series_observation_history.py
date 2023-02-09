@@ -1,3 +1,5 @@
+from dataclasses import dataclass
+
 from datetime import datetime
 from typing import Any, Dict, List, Optional, TYPE_CHECKING, Tuple
 from typing_extensions import Literal
@@ -14,6 +16,7 @@ __pdoc__ = {
 }
 
 
+@dataclass(init=False)
 class SeriesObservationHistory:
     """The history of changes of an observation"""
 
@@ -65,16 +68,3 @@ class SeriesObservationHistory:
 
         name = name if name else str(self.observation_date)
         return pandas.Series(self.values, self.time_stamps, name=name)
-
-    def __repr__(self):
-        return f"{self.__class__.__name__} observation_date: {self.observation_date}"
-
-    def __eq__(self, other):
-        if not isinstance(other, SeriesObservationHistory):
-            return NotImplemented
-
-        return self is other or (
-            self.observation_date == other.observation_date
-            and self.values == other.values
-            and self.time_stamps == other.time_stamps
-        )

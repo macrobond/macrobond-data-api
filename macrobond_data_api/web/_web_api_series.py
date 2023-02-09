@@ -88,11 +88,11 @@ def _create_series(response: "SeriesResponse", name: str, session: Session) -> S
     return Series(name, "", metadata, values, dates)
 
 
-def get_one_series(self: "WebApi", series_name: str, raise_error: bool = None) -> Series:
+def get_one_series(self: "WebApi", series_name: str, raise_error: Optional[bool] = None) -> Series:
     return self.get_series(series_name, raise_error=raise_error)[0]
 
 
-def get_series(self, *series_names: str, raise_error: bool = None) -> List[Series]:
+def get_series(self: "WebApi", *series_names: str, raise_error: Optional[bool] = None) -> List[Series]:
     response = self.session.series.fetch_series(*series_names)
     series = list(map(lambda x, y: _create_series(x, y, self.session), response, series_names))
     GetEntitiesError._raise_if(  # pylint: disable=protected-access
@@ -106,11 +106,11 @@ def get_series(self, *series_names: str, raise_error: bool = None) -> List[Serie
     return series
 
 
-def get_one_entity(self: "WebApi", entity_name: str, raise_error: bool = None) -> Entity:
+def get_one_entity(self: "WebApi", entity_name: str, raise_error: Optional[bool] = None) -> Entity:
     return self.get_entities(entity_name, raise_error=raise_error)[0]
 
 
-def get_entities(self: "WebApi", *entity_names: str, raise_error: bool = None) -> List[Entity]:
+def get_entities(self: "WebApi", *entity_names: str, raise_error: Optional[bool] = None) -> List[Entity]:
     response = self.session.series.fetch_entities(*entity_names)
     entitys = list(map(lambda x, y: _create_entity(x, y, self.session), response, entity_names))
     GetEntitiesError._raise_if(  # pylint: disable=protected-access
@@ -127,13 +127,13 @@ def get_entities(self: "WebApi", *entity_names: str, raise_error: bool = None) -
 def get_unified_series(
     self: "WebApi",
     *series_entries: Union[SeriesEntry, str],
-    frequency=SeriesFrequency.HIGHEST,
+    frequency: SeriesFrequency = SeriesFrequency.HIGHEST,
     weekdays: SeriesWeekdays = SeriesWeekdays.FULL_WEEK,
-    calendar_merge_mode=CalendarMergeMode.AVAILABLE_IN_ANY,
-    currency="",
-    start_point: "StartOrEndPoint" = None,
-    end_point: "StartOrEndPoint" = None,
-    raise_error: bool = None
+    calendar_merge_mode: CalendarMergeMode = CalendarMergeMode.AVAILABLE_IN_ANY,
+    currency: str = "",
+    start_point: Optional["StartOrEndPoint"] = None,
+    end_point: Optional["StartOrEndPoint"] = None,
+    raise_error: Optional[bool] = None
 ) -> UnifiedSeriesList:
     def convert_to_unified_series_entry(entry_or_name: Union[SeriesEntry, str]) -> "UnifiedSeriesEntry":
         if isinstance(entry_or_name, str):

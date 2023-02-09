@@ -449,10 +449,10 @@ class Api(ABC):
     def get_unified_series(
         self,
         *series_entries: Union[SeriesEntry, str],
-        frequency=SeriesFrequency.HIGHEST,
-        weekdays=SeriesWeekdays.MONDAY_TO_FRIDAY,
-        calendar_merge_mode=CalendarMergeMode.AVAILABLE_IN_ANY,
-        currency="",
+        frequency: SeriesFrequency = SeriesFrequency.HIGHEST,
+        weekdays: SeriesWeekdays = SeriesWeekdays.MONDAY_TO_FRIDAY,
+        calendar_merge_mode: CalendarMergeMode = CalendarMergeMode.AVAILABLE_IN_ANY,
+        currency: str = "",
         start_point: StartOrEndPoint = None,
         end_point: StartOrEndPoint = None,
         raise_error: bool = None

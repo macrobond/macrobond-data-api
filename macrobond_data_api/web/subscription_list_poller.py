@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 from datetime import datetime, timezone
 
 import time
-from typing import List, Optional, cast, TYPE_CHECKING
+from typing import List, Optional, cast, TYPE_CHECKING, Callable
 
 from macrobond_data_api.web import WebApi
 from .web_types.subscription_list_state import SubscriptionListState
@@ -21,7 +21,7 @@ class SubscriptionListPoller(ABC):
         api: WebApi,
         download_full_list_on_or_after: Optional[datetime] = None,
         time_stamp_for_if_modified_since: Optional[datetime] = None,
-        _sleep=time.sleep,
+        _sleep: Callable[[int], None] = time.sleep,
     ) -> None:
         self._api = api
         self._sleep = _sleep
@@ -65,10 +65,10 @@ class SubscriptionListPoller(ABC):
 
             self._sleep(self.up_to_date_delay)
 
-    def _run_full_listing(self, max_attempts=3) -> Optional["SubscriptionBody"]:
+    def _run_full_listing(self, max_attempts: int = 3) -> Optional["SubscriptionBody"]:
         is_stated = False
 
-        def _body_callback(body: "SubscriptionBody"):
+        def _body_callback(body: "SubscriptionBody") -> None:
             is_stated = True  # pylint: disable=unused-variable
             self.on_full_listing_start(body)
 
@@ -99,10 +99,10 @@ class SubscriptionListPoller(ABC):
                 self.on_listing_stop(False, ex)
         return None
 
-    def _run_listing(self, if_modified_since: datetime, max_attempts=3) -> Optional["SubscriptionBody"]:
+    def _run_listing(self, if_modified_since: datetime, max_attempts: int = 3) -> Optional["SubscriptionBody"]:
         is_stated = False
 
-        def _body_callback(body: "SubscriptionBody"):
+        def _body_callback(body: "SubscriptionBody") -> None:
             is_stated = True  # pylint: disable=unused-variable
             self.on_listing_start(body)
 
@@ -141,7 +141,7 @@ class SubscriptionListPoller(ABC):
         return None
 
     def _run_listing_incomplete(
-        self, if_modified_since: datetime, is_stated: bool, max_attempts=3
+        self, if_modified_since: datetime, is_stated: bool, max_attempts: int = 3
     ) -> Optional["SubscriptionBody"]:
         try:
             while True:
@@ -184,7 +184,7 @@ class SubscriptionListPoller(ABC):
         ...
 
     @abstractmethod
-    def on_full_listing_itmes(self, subscription: "SubscriptionBody", items: List["SubscriptionListItem"]):
+    def on_full_listing_itmes(self, subscription: "SubscriptionBody", items: List["SubscriptionListItem"]) -> None:
         ...
 
     @abstractmethod
@@ -198,7 +198,7 @@ class SubscriptionListPoller(ABC):
         ...
 
     @abstractmethod
-    def on_listing_items(self, subscription: "SubscriptionBody", items: List["SubscriptionListItem"]):
+    def on_listing_items(self, subscription: "SubscriptionBody", items: List["SubscriptionListItem"]) -> None:
         ...
 
     @abstractmethod

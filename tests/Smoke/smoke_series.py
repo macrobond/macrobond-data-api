@@ -1,4 +1,4 @@
-from typing import List
+from typing import Any, List
 from unittest import skip  # type: ignore[attr-defined]
 from macrobond_data_api.web import create_revision_history_request
 from macrobond_data_api.web.web_types import SubscriptionBody, SubscriptionListItem
@@ -41,7 +41,7 @@ class Web(TestCase):
 
     @skip("needs access")
     def test_get_subscription_list(self) -> None:
-        def _run():
+        def _run() -> None:
             result = self.web_api.get_subscription_list()  # pylint: disable=unused-variable
             breakpoint()  # pylint: disable=forgotten-debug-statement
 
@@ -61,12 +61,12 @@ class Web(TestCase):
         self.assertNoWarnings(lambda: self.web_api.get_subscription_list_iterative(empty_method_1, empty_method_2))
 
     @skip("needs access")
-    def test_get_fetch_all_vintageseries(self) -> None:
-        def _run():
-            def empty_method_1(arg):  # pylint: disable=unused-argument
+    def test_get_all_vintage_multiple_series(self) -> None:
+        def _run() -> None:
+            def empty_method_1(arg: Any) -> None:  # pylint: disable=unused-argument
                 ...
 
-            self.web_api.get_fetch_all_vintageseries(
+            self.web_api.get_all_vintage_multiple_series(
                 empty_method_1,
                 [
                     create_revision_history_request("usgdp"),

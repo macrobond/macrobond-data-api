@@ -94,5 +94,5 @@ class RevisionInfo:
 
         return pandas.DataFrame(self.to_dict())
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return f"RevisionInfo name: {self.name}"

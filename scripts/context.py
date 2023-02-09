@@ -44,7 +44,7 @@ class Context:
         if self.hade_error:
             sys_exit(1)
 
-    def shell_command(self, command: str, ignore_exit_code=False, prefix: str = "") -> bool:
+    def shell_command(self, command: str, ignore_exit_code: bool = False, prefix: str = "") -> bool:
         print("shell_command start :" + command)
         exit_code = os.system(prefix + command)
         print("shell_command end :" + command)
