@@ -192,7 +192,7 @@ class WebApi(Api):
 
             return body
 
-    def get_all_vintage_multiple_series(
+    def get_all_vintages_multiple_series(
         self,
         callback: Callable[[SeriesWithVintages], None],
         requests: Sequence["RevisionHistoryRequest"],

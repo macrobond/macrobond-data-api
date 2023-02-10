@@ -61,12 +61,12 @@ class Web(TestCase):
         self.assertNoWarnings(lambda: self.web_api.get_subscription_list_iterative(empty_method_1, empty_method_2))
 
     @skip("needs access")
-    def test_get_all_vintage_multiple_series(self) -> None:
+    def test_get_all_vintages_multiple_series(self) -> None:
         def _run() -> None:
             def empty_method_1(arg: Any) -> None:  # pylint: disable=unused-argument
                 ...
 
-            self.web_api.get_all_vintage_multiple_series(
+            self.web_api.get_all_vintages_multiple_series(
                 empty_method_1,
                 [
                     create_revision_history_request("usgdp"),
