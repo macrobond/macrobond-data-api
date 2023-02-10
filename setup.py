@@ -1,7 +1,8 @@
 import os
 import subprocess
+import setuptools
 
-from setuptools import setup, find_packages  # type: ignore
+version_info_path = os.path.join("macrobond_data_api", "__version__.py")
 
 AUTHOR = "Macrobond Financial"
 AUTHOR_EMAIL = "support@macrobond.com"
@@ -16,16 +17,17 @@ try:
     version = (
         subprocess.run(["git", "describe", "--tags"], stdout=subprocess.PIPE, check=True).stdout.decode("utf-8").strip()
     )
-    print("using tag")
+    print("version is from git tag")
 except subprocess.CalledProcessError:
-    FOLDER_NAME = os.path.basename(os.getcwd())
-    if FOLDER_NAME.startswith("macrobond-data-api-"):
-        START_INDEX = len("macrobond-data-api-")
-        version = FOLDER_NAME[START_INDEX:]
-        print("using dir name")
+    if os.path.exists(version_info_path):
+        with open(version_info_path, "r", encoding="utf-8") as f:
+            about: dict = {}
+            exec(f.read(), about)  # pylint: disable=exec-used
+            version = about["__version__"]
+            print("version is from " + version_info_path)
     else:
-        print("no tag or dir name using default")
         version = "0.0.0"  # pylint: disable=invalid-name
+        print("version is default")
 
 if "-" in version:
     v, i, s = version.split("-")
@@ -48,14 +50,14 @@ __url__ = "''' + URL + '''"
 '''
 # fmt: on
 
-with open(os.path.join("macrobond_data_api", "__version__.py"), "w+", encoding="utf-8") as fh:
+with open(version_info_path, "w+", encoding="utf-8") as fh:
     fh.write(PACKAGE_INFO)
 
 REQUESTS_VERSION = "2.28.1"
 
-setup(
+setuptools.setup(
     name="macrobond-data-api",
-    packages=find_packages(include=["macrobond_data_api", "macrobond_data_api.*"]),
+    packages=setuptools.find_packages(include=["macrobond_data_api", "macrobond_data_api.*"]),
     version=version,
     author=AUTHOR,
     author_email=AUTHOR_EMAIL,
@@ -97,6 +99,7 @@ setup(
             "types-pywin32==305.0.0.7",
             "types-python-dateutil==2.8.19.6",
             "types-requests==2.28.11.8",
+            "types-setuptools==67.2.0.1",
         ],
         "socks": ["requests[socks]>=" + REQUESTS_VERSION],
     },
