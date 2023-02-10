@@ -58,7 +58,7 @@ def _create_series(response: "SeriesResponse", name: str, session: Session) -> S
         )
     )
 
-    metadata = session._create_metadata(cast(Dict[str, Any], response["metadata"]))  # pylint: disable=protected-access
+    metadata = session._create_metadata(cast(Dict[str, Any], response["metadata"]))
 
     # values = cast(Tuple[Optional[float]], response["values"])
     return Series(name, "", cast(Dict[str, Any], metadata), values, dates)
@@ -105,7 +105,7 @@ def get_revision_info(self: "WebApi", *series_names: str, raise_error: Optional[
 
     response = self.session.series.get_revision_info(*series_names)
 
-    GetEntitiesError._raise_if(  # pylint: disable=protected-access
+    GetEntitiesError._raise_if(
         self.raise_error if raise_error is None else raise_error,
         map(lambda x, y: (x, y.get("errorText")), series_names, response),
     )
@@ -121,9 +121,7 @@ def get_vintage_series(
         if error_message:
             return VintageSeries(series_name, error_message, None, None, None, None)
 
-        metadata = self.session._create_metadata(  # pylint: disable=protected-access
-            cast(Dict[str, Any], response["metadata"])
-        )
+        metadata = self.session._create_metadata(cast(Dict[str, Any], response["metadata"]))
 
         revision_time_stamp = cast(str, metadata.get("RevisionTimeStamp"))
 
@@ -149,7 +147,7 @@ def get_vintage_series(
 
     series = list(map(to_obj, response, series_names))
 
-    GetEntitiesError._raise_if(  # pylint: disable=protected-access
+    GetEntitiesError._raise_if(
         self.raise_error if raise_error is None else raise_error,
         map(
             lambda x, y: (x, y.error_message if y.is_error else None),
@@ -166,7 +164,7 @@ def get_nth_release(self: "WebApi", nth: int, *series_names: str, raise_error: O
 
     series = list(map(lambda x, y: _create_series(x, y, self.session), response, series_names))
 
-    GetEntitiesError._raise_if(  # pylint: disable=protected-access
+    GetEntitiesError._raise_if(
         self.raise_error if raise_error is None else raise_error,
         map(
             lambda x, y: (x, y.error_message if y.is_error else None),
@@ -184,9 +182,7 @@ def get_all_vintage_series(self: "WebApi", series_name: str) -> GetAllVintageSer
         if error_message:
             return VintageSeries(series_name, error_message, None, None, None, None)
 
-        metadata = self.session._create_metadata(  # pylint: disable=protected-access
-            cast(Dict[str, Any], response["metadata"])
-        )
+        metadata = self.session._create_metadata(cast(Dict[str, Any], response["metadata"]))
 
         values: Tuple[Optional[float], ...] = tuple(
             map(
