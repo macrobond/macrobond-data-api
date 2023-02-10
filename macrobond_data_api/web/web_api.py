@@ -152,10 +152,9 @@ class WebApi(Api):
     def get_subscription_list(self, if_modified_since: datetime = None) -> SubscriptionList:
         """
         Get the items in the subscription list.
-        
+
         Typically you want to pass the date of time_stamp_for_if_modified_since from response of the previous call
         to get incremental updates.
-
 
         Parameters
         ----------
@@ -177,6 +176,33 @@ class WebApi(Api):
         if_modified_since: datetime = None,
         buffer_size: int = 200,
     ) -> Optional[SubscriptionBody]:
+        # pylint: disable=line-too-long
+        """
+        Process the subscription list in batches.
+        This is more efficient since the complete list does not have to be in memory.
+
+        Typically you want to pass the date of time_stamp_for_if_modified_since from response of the previous call
+        to get incremental updates.
+
+        Parameters
+        ----------
+        body_callback : `Callable[[macrobond_data_api.web.web_types.subscription_body.SubscriptionBody], Optional[bool]]`
+            The callback for the body. This call comes first. Return True to continue processing.
+
+        items_callback : Callable[[macrobond_data_api.web.web_types.subscription_body.SubscriptionBody, List[macrobond_data_api.web.web_types.subscription_list_item.SubscriptionListItem]], Optional[bool]]
+            The callback for each batch of items. Return True to continue processing.
+
+        if_modified_since : datetime
+            The timestamp of the property time_stamp_for_if_modified_since from the response of the previous call.
+            If not specified, all items will be returned.
+
+        buffer_size : int
+            The maximum number of items to include in each callback
+        Returns
+        -------
+        `macrobond_data_api.web.web_types.subscription_body.SubscriptionBody`
+        """
+        # pylint: enable=line-too-long
         params = {}
         body: Optional[SubscriptionBody] = None
 
