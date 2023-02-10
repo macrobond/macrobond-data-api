@@ -1,10 +1,12 @@
-from typing import TYPE_CHECKING, Any, Dict, Iterator, MutableMapping
+from typing import TYPE_CHECKING, Any, Dict, Iterator
+
+from macrobond_data_api.common.types.metadata import Metadata
 
 if TYPE_CHECKING:  # pragma: no cover
     from ._metadata_directory import _MetadataTypeDirectory
 
 
-class _Metadata(MutableMapping[str, Any]):
+class _Metadata(Metadata):
     __slots__ = ("__data", "__type_directory")
 
     def __init__(self, data: Dict[str, Any], type_directory: "_MetadataTypeDirectory") -> None:

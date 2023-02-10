@@ -1,10 +1,13 @@
 from datetime import datetime
 
-from typing import Any, List, MutableMapping, Optional, Tuple
+from typing import List, Optional, Tuple, TYPE_CHECKING
 from typing_extensions import Literal
 from dateutil import parser
 
 from .series import Series, SeriesColumnsLiterals
+
+if TYPE_CHECKING:
+    from .metadata import Metadata
 
 
 VintageSeriesColumns = List[Literal[SeriesColumnsLiterals, "VintageTimeStamp", "TimesOfChange"]]
@@ -24,7 +27,7 @@ class VintageSeries(Series):
         self,
         name: str,
         error_message: Optional[str],
-        metadata: Optional[MutableMapping[str, Any]],
+        metadata: Optional["Metadata"],
         values: Optional[Tuple[Optional[float], ...]],
         dates: Optional[Tuple[datetime, ...]],
         _revision_time_stamp: Optional[datetime],

@@ -5,7 +5,6 @@ from typing import (
     Sequence,
     Tuple,
     Optional,
-    MutableMapping,
     TYPE_CHECKING,
     overload,
 )
@@ -26,6 +25,7 @@ __pdoc__ = {
 
 if TYPE_CHECKING:  # pragma: no cover
     from pandas import DataFrame  # type: ignore
+    from .metadata import Metadata
 
 
 class UnifiedSeriesDict(TypedDict):
@@ -43,7 +43,7 @@ class UnifiedSeries:
 
     name: str
     error_message: str
-    metadata: MutableMapping[str, Any]
+    metadata: "Metadata"
     values: Tuple[Optional[float], ...]
 
     @property
@@ -58,7 +58,7 @@ class UnifiedSeries:
         self,
         name: str,
         error_message: str,
-        metadata: MutableMapping[str, Any],
+        metadata: "Metadata",
         values: Tuple[Optional[float], ...],
     ) -> None:
         self.name = name

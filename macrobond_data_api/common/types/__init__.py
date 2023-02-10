@@ -43,3 +43,5 @@ from .series_observation_history import (
 from .revision_info import RevisionInfo, RevisionInfoDict
 
 from .get_all_vintage_series_result import GetAllVintageSeriesResult
+
+from .metadata import Metadata

@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from typing import Any, Dict, Tuple, Optional, List, cast, MutableMapping, TYPE_CHECKING
+from typing import Any, Dict, Tuple, Optional, List, cast, TYPE_CHECKING
 from typing_extensions import Literal
 
 from .entity import Entity, EntityColumnsLiterals
@@ -12,6 +12,7 @@ SeriesColumns = List[SeriesColumnsLiterals]
 
 if TYPE_CHECKING:  # pragma: no cover
     from pandas import Series as PdSeries  # type: ignore
+    from .metadata import Metadata
 
 __pdoc__ = {
     "Series.__init__": False,
@@ -30,7 +31,7 @@ class Series(Entity):
         self,
         name: str,
         error_message: Optional[str],
-        metadata: Optional[MutableMapping[str, Any]],
+        metadata: Optional["Metadata"],
         values: Optional[Tuple[Optional[float], ...]],
         dates: Optional[Tuple[datetime, ...]],
     ) -> None:

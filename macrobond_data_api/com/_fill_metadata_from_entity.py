@@ -1,5 +1,6 @@
-from typing import Any, Dict, TYPE_CHECKING, Sequence
+from typing import Any, TYPE_CHECKING, Sequence
 from datetime import datetime, timezone
+
 
 try:
     from pywintypes import TimeType
@@ -8,9 +9,10 @@ except ImportError as ex:
 
 if TYPE_CHECKING:  # pragma: no cover
     from .com_types import Entity as ComEntity
+    from macrobond_data_api.common.types.metadata import Metadata
 
 
-def _fill_metadata_from_entity(com_entity: "ComEntity") -> Dict[str, Any]:
+def _fill_metadata_from_entity(com_entity: "ComEntity") -> "Metadata":
     def get_val(values: Sequence[Any]) -> Any:
         if isinstance(values[0], TimeType):
             values = [

@@ -1,8 +1,9 @@
-from typing import Any, Dict, List, Optional, MutableMapping, TYPE_CHECKING
+from typing import Any, Dict, List, Optional, TYPE_CHECKING
 from typing_extensions import Literal
 
 if TYPE_CHECKING:  # pragma: no cover
     from pandas import Series, DataFrame  # type: ignore
+    from .metadata import Metadata
 
 
 EntityColumnsLiterals = Literal["ErrorMessage", "Name", "PrimName", "FullDescription", "EntityType"]
@@ -23,7 +24,7 @@ class Entity:
 
     name: str
     error_message: str
-    metadata: MutableMapping[str, Any]
+    metadata: "Metadata"
 
     @property
     def is_error(self) -> bool:
@@ -73,7 +74,7 @@ class Entity:
         self,
         name: str,
         error_message: Optional[str],
-        metadata: Optional[MutableMapping[str, Any]],
+        metadata: Optional["Metadata"],
     ) -> None:
         self.name = name
         """The name of the entity."""

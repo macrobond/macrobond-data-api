@@ -1,9 +1,11 @@
 from datetime import datetime
-from typing import MutableMapping, Optional, Any, List
+from typing import Optional, List
 
 from dateutil import parser
 
+from macrobond_data_api.common.types.metadata import Metadata
 from .web_types import VintageValuesResponse, SeriesWithVintagesResponse
+
 
 __pdoc__ = {
     "VintageValues.__init__": False,
@@ -59,7 +61,7 @@ class SeriesWithVintages:
     500 = Other (There was an error and it is described in the error text)
     """
 
-    metadata: Optional[MutableMapping[str, Any]]
+    metadata: Optional[Metadata]
     """
     The time when this version of the series was recorded
     """
@@ -117,7 +119,7 @@ class SeriesWithVintages:
             else None
         )
 
-    def __init__(self, response: SeriesWithVintagesResponse, metadata: Optional[MutableMapping[str, Any]]) -> None:
+    def __init__(self, response: SeriesWithVintagesResponse, metadata: Optional[Metadata]) -> None:
         self.error_text = response.get("errorText")
         self.error_code = response.get("errorCode")
         self.metadata = metadata
