@@ -114,7 +114,7 @@ def get_revision_info(self: "ComApi", *series_names: str, raise_error: bool = No
 
     series = self.database.FetchSeriesWithRevisions(series_names)
 
-    GetEntitiesError._raise_if(  # pylint: disable=protected-access
+    GetEntitiesError._raise_if(
         self.raise_error if raise_error is None else raise_error,
         map(
             lambda x, y: (x, y.ErrorMessage if y.IsError else None),
@@ -172,7 +172,7 @@ def get_vintage_series(
 
     series = list(map(to_obj, series_names))
 
-    GetEntitiesError._raise_if(  # pylint: disable=protected-access
+    GetEntitiesError._raise_if(
         self.raise_error if raise_error is None else raise_error,
         map(
             lambda x, y: (x, y.error_message if y.is_error else None),
@@ -221,7 +221,7 @@ def get_nth_release(self: "ComApi", nth: int, *series_names: str, raise_error: b
 
     series = list(map(to_obj, series_names))
 
-    GetEntitiesError._raise_if(  # pylint: disable=protected-access
+    GetEntitiesError._raise_if(
         self.raise_error if raise_error is None else raise_error,
         map(
             lambda x, y: (x, y.error_message if y.is_error else None),

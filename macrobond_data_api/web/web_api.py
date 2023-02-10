@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import TYPE_CHECKING, Any, List, Optional, Callable, Sequence, Tuple
+from typing import TYPE_CHECKING, Any, List, Optional, Callable, Sequence, Tuple, cast
 
 import ijson  # type: ignore
 from dateutil import parser
@@ -227,7 +227,10 @@ class WebApi(Api):
                 ijson_items = ijson.items(response.raw, "item")
                 item: "SeriesWithVintagesResponse"
                 for item in ijson_items:
-                    callback(SeriesWithVintages(item))
+                    metadata = (
+                        self.session._create_metadata(cast(dict, item["metadata"])) if "metadata" in item else None
+                    )
+                    callback(SeriesWithVintages(item, metadata))
 
     # Search
 

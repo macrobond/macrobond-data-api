@@ -1,7 +1,7 @@
 # pylint: disable=invalid-name missing-function-docstring , missing-class-docstring , missing-module-docstring
 
 from unittest import TestCase as UnittestTestCase  # type: ignore
-from typing import Optional, Callable, Tuple, Any
+from typing import Optional, Callable, Any
 import warnings
 import io
 import sys

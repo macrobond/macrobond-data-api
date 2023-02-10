@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Optional, Dict, Any, List
+from typing import MutableMapping, Optional, Any, List
 
 from dateutil import parser
 
@@ -59,7 +59,7 @@ class SeriesWithVintages:
     500 = Other (There was an error and it is described in the error text)
     """
 
-    metadata: Optional[Dict[str, Any]]
+    metadata: Optional[MutableMapping[str, Any]]
     """
     The time when this version of the series was recorded
     """
@@ -81,10 +81,34 @@ class SeriesWithVintages:
             prim_name = prim_name[0]
         return prim_name
 
-    def __init__(self, response: SeriesWithVintagesResponse) -> None:
+    @property
+    def last_revision(self) -> Optional[datetime]:
+        return (
+            self.metadata["LastRevisionTimeStamp"]
+            if self.metadata and "LastRevisionTimeStamp" in self.metadata
+            else None
+        )
+
+    @property
+    def last_revision_adjustment(self) -> Optional[datetime]:
+        return (
+            self.metadata["LastRevisionAdjustmentTimeStamp"]
+            if self.metadata and "LastRevisionAdjustmentTimeStamp" in self.metadata
+            else None
+        )
+
+    @property
+    def last_modified(self) -> Optional[datetime]:
+        return (
+            self.metadata["LastModifiedTimeStamp"]
+            if self.metadata and "LastModifiedTimeStamp" in self.metadata
+            else None
+        )
+
+    def __init__(self, response: SeriesWithVintagesResponse, metadata: Optional[MutableMapping[str, Any]]) -> None:
         self.error_text = response.get("errorText")
         self.error_code = response.get("errorCode")
-        self.metadata = response.get("metadata")
+        self.metadata = metadata
         self.vintages = []
         vintages = response.get("vintages")
         self.vintages = [VintageValues(x) for x in vintages] if vintages else []

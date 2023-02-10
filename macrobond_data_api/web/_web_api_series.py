@@ -57,7 +57,7 @@ def _create_entity(response: "EntityResponse", name: str, session: Session) -> E
     if error_text:
         return Entity(name, error_text, None)
 
-    metadata = session._create_metadata(cast(Dict[str, Any], response["metadata"]))  # pylint: disable=protected-access
+    metadata = session._create_metadata(cast(Dict[str, Any], response["metadata"]))
 
     return Entity(name, None, cast(Dict[str, Any], metadata))
 
@@ -82,7 +82,7 @@ def _create_series(response: "SeriesResponse", name: str, session: Session) -> S
         )
     )
 
-    metadata = session._create_metadata(cast(Dict[str, Any], response["metadata"]))  # pylint: disable=protected-access
+    metadata = session._create_metadata(cast(Dict[str, Any], response["metadata"]))
 
     # values = cast(Tuple[Optional[float]], response["values"])
     return Series(name, "", metadata, values, dates)
@@ -95,7 +95,7 @@ def get_one_series(self: "WebApi", series_name: str, raise_error: Optional[bool]
 def get_series(self: "WebApi", *series_names: str, raise_error: Optional[bool] = None) -> List[Series]:
     response = self.session.series.fetch_series(*series_names)
     series = list(map(lambda x, y: _create_series(x, y, self.session), response, series_names))
-    GetEntitiesError._raise_if(  # pylint: disable=protected-access
+    GetEntitiesError._raise_if(
         self.raise_error if raise_error is None else raise_error,
         map(
             lambda x, y: (x, y.error_message if y.is_error else None),
@@ -113,7 +113,7 @@ def get_one_entity(self: "WebApi", entity_name: str, raise_error: Optional[bool]
 def get_entities(self: "WebApi", *entity_names: str, raise_error: Optional[bool] = None) -> List[Entity]:
     response = self.session.series.fetch_entities(*entity_names)
     entitys = list(map(lambda x, y: _create_entity(x, y, self.session), response, entity_names))
-    GetEntitiesError._raise_if(  # pylint: disable=protected-access
+    GetEntitiesError._raise_if(
         self.raise_error if raise_error is None else raise_error,
         map(
             lambda x, y: (x, y.error_message if y.is_error else None),
@@ -189,9 +189,7 @@ def get_unified_series(
                 )
             )
 
-            metadata = self.session._create_metadata(  # pylint: disable=protected-access
-                cast(Dict[str, Any], one_series["metadata"])
-            )
+            metadata = self.session._create_metadata(cast(Dict[str, Any], one_series["metadata"]))
 
             series.append(UnifiedSeries(name, "", metadata, values))
 
