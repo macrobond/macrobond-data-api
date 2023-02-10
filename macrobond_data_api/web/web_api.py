@@ -150,8 +150,10 @@ class WebApi(Api):
 
     # web only
     def get_subscription_list(self, if_modified_since: datetime = None) -> SubscriptionList:
+        # pylint: disable=line-too-long
         """
         Get the items in the subscription list.
+        .. Important:: For large lists you might want to use `macrobond_data_api.web.web_api.WebApi.get_subscription_list_iterative`.
 
         Typically you want to pass the date of time_stamp_for_if_modified_since from response of the previous call
         to get incremental updates.
@@ -166,6 +168,7 @@ class WebApi(Api):
         -------
         `macrobond_data_api.web.web_types.subscription_list.SubscriptionList`
         """
+        # pylint: enable=line-too-long
         return SubscriptionList(self.session.series.get_subscription_list(if_modified_since))
 
     # web only
@@ -180,6 +183,8 @@ class WebApi(Api):
         """
         Process the subscription list in batches.
         This is more efficient since the complete list does not have to be in memory.
+
+        .. Note:: For for continous polling you might want to use `macrobond_data_api.web.subscription_list_poller.SubscriptionListPoller`.
 
         Typically you want to pass the date of time_stamp_for_if_modified_since from response of the previous call
         to get incremental updates.
