@@ -345,6 +345,8 @@ class Api(ABC):
             One or more search filters.
         include_discontinued : bool
             Set this value to True in order to include discontinued entities in the search.
+        no_metadata : bool
+            Set this value to True in order only return the entity names and no metadata, which is faster.
 
         Returns
         -------

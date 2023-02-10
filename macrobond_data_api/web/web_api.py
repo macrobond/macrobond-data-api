@@ -150,6 +150,23 @@ class WebApi(Api):
 
     # web only
     def get_subscription_list(self, if_modified_since: datetime = None) -> SubscriptionList:
+        """
+        Get the items in the subscription list.
+        
+        Typically you want to pass the date of time_stamp_for_if_modified_since from response of the previous call
+        to get incremental updates.
+
+
+        Parameters
+        ----------
+        if_modified_since : datetime
+            The timestamp of the property time_stamp_for_if_modified_since from the response of the previous call.
+            If not specified, all items will be returned.
+
+        Returns
+        -------
+        `macrobond_data_api.web.web_types.subscription_list.SubscriptionList`
+        """
         return SubscriptionList(self.session.series.get_subscription_list(if_modified_since))
 
     # web only
@@ -209,7 +226,7 @@ class WebApi(Api):
         ----------
         callback : `Callable[[macrobond_data_api.web.series_with_vintages.SeriesWithVintages], None]`
             A callback that will receive the response series by series.
-        requests : `Sequence[macrobond_data_api.web.revision_history_request.RevisionHistoryRequest]`
+        requests : `Sequence[macrobond_data_api.web.web_types.revision_history_request.RevisionHistoryRequest]`
             A sequence of series requests.
         """
         start_index = 0
@@ -239,6 +256,25 @@ class WebApi(Api):
         *filters: "SearchFilter",
         include_discontinued: bool = False,
     ) -> SearchResultLong:
+        """
+        Search for time series and other entitites.
+        This call can return more results than `macrobond_data_api.common.api.Api.entity_search_multi_filter`,
+        but is also slower and cannot return any metadata.
+        You can pass more than one search filter. In this case the filters have to use different
+        entity types and searches will be nested so that the result of the previous filter will be
+        used as a condition in the subsequent filter linked by the entity type.
+
+        Parameters
+        ----------
+        *filters : `macrobond_data_api.common.types.search_filter.SearchFilter`
+            One or more search filters.
+        include_discontinued : bool
+            Set this value to True in order to include discontinued entities in the search.
+
+        Returns
+        -------
+        `macrobond_data_api.common.types.search_result_long.SearchResultLong`
+        """
         def convert_filter_to_web_filter(_filter: "SearchFilter") -> "WebSearchFilter":
             return {
                 "text": _filter.text,
