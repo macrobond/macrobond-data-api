@@ -306,6 +306,7 @@ class WebApi(Api):
         -------
         `macrobond_data_api.common.types.search_result_long.SearchResultLong`
         """
+
         def convert_filter_to_web_filter(_filter: "SearchFilter") -> "WebSearchFilter":
             return {
                 "text": _filter.text,
