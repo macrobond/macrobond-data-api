@@ -43,20 +43,21 @@ class VintageValues:
     def __repr__(self) -> str:
         return f"VintageValues vintage_time_stamp: {self.vintage_time_stamp}"
 
+
 class SeriesWithVintagesErrorCode(IntFlag):
-    PartialContent = 206 
+    PARTIAL_CONTENT = 206
     """The item was not modified and is not included in the response"""
-    
-    NotModified = 304 
+
+    NOT_MODIFIED = 304
     """The item was not modified and is not included in the response"""
-    
-    Forbidden = 403 
+
+    FORBIDDEN = 403
     """Access to the item was denied"""
-    
-    NotFound =  404 
+
+    NOT_FOUND = 404
     """The item was not found"""
-    
-    Other = 500 
+
+    OTHER = 500
     """There was an error and it is described in the error text"""
 
 
@@ -139,8 +140,8 @@ class SeriesWithVintages:
 
     def __init__(self, response: SeriesWithVintagesResponse, metadata: Optional[Metadata]) -> None:
         self.error_text = response.get("errorText")
-        errorCode = response.get("errorCode")
-        self.error_code = SeriesWithVintagesErrorCode(errorCode) if errorCode else None
+        error_code = response.get("errorCode")
+        self.error_code = SeriesWithVintagesErrorCode(error_code) if error_code else None
         self.metadata = metadata
         self.vintages = []
         vintages = response.get("vintages")
