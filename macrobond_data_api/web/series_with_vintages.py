@@ -1,6 +1,8 @@
 from datetime import datetime
 from typing import Optional, List
 
+from enum import IntFlag
+
 from dateutil import parser
 
 from macrobond_data_api.common.types.metadata import Metadata
@@ -41,6 +43,22 @@ class VintageValues:
     def __repr__(self) -> str:
         return f"VintageValues vintage_time_stamp: {self.vintage_time_stamp}"
 
+class SeriesWithVintagesErrorCode(IntFlag):
+    PartialContent = 206 
+    """The item was not modified and is not included in the response"""
+    
+    NotModified = 304 
+    """The item was not modified and is not included in the response"""
+    
+    Forbidden = 403 
+    """Access to the item was denied"""
+    
+    NotFound =  404 
+    """The item was not found"""
+    
+    Other = 500 
+    """There was an error and it is described in the error text"""
+
 
 class SeriesWithVintages:
     """A time series with times of change"""
@@ -50,7 +68,7 @@ class SeriesWithVintages:
     error_text: Optional[str]
     """The error text if there was an error or not specified if there was no error"""
 
-    error_code: Optional[int]
+    error_code: Optional[SeriesWithVintagesErrorCode]
     """
     Set if there was an error and not specified if there was no error
 
@@ -121,7 +139,8 @@ class SeriesWithVintages:
 
     def __init__(self, response: SeriesWithVintagesResponse, metadata: Optional[Metadata]) -> None:
         self.error_text = response.get("errorText")
-        self.error_code = response.get("errorCode")
+        errorCode = response.get("errorCode")
+        self.error_code = SeriesWithVintagesErrorCode(errorCode) if errorCode else None
         self.metadata = metadata
         self.vintages = []
         vintages = response.get("vintages")
