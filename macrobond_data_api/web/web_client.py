@@ -1,12 +1,18 @@
-from typing import Optional, List
-
+from typing import Optional, List, Tuple
+import json
+import sys
 from macrobond_data_api.common import Client
 
-from .session import Session, API_URL_DEFAULT, AUTHORIZATION_URL_DEFAULT
+from .session import (
+    Session as _Session,
+    API_URL_DEFAULT,
+    AUTHORIZATION_URL_DEFAULT,
+)
 from .scope import Scope
 from .web_api import WebApi
 
 DEFAULT_SERVICE_NAME = AUTHORIZATION_URL_DEFAULT
+DARWIN_USERNAME = "Macrobond"
 
 _keyring_import_error: Optional[ImportError] = None
 try:
@@ -78,19 +84,9 @@ class WebClient(Client["WebApi"]):
         super().__init__()
 
         if password is None:
-            if _keyring_import_error:
-                raise _keyring_import_error
-
-            credential = _keyring.get_credential(service_name, "")
-
-            if credential is None:
-                keyring_name = str(_keyring.get_keyring())
-                raise ValueError("can not find the key in keyring " + keyring_name)
-
-            if username is None:
-                username = credential.username
-
-            password = credential.password
+            credentials = self.__get_credentials_from_keyring(service_name, username)
+            username = credentials[0]
+            password = credentials[1]
         else:
             if username is None:
                 raise ValueError("username is None")
@@ -99,7 +95,7 @@ class WebClient(Client["WebApi"]):
             scopes = []
 
         self.__api: Optional["WebApi"] = None
-        self.__session = Session(
+        self.__session = _Session(
             username, password, *scopes, api_url=api_url, authorization_url=authorization_url, proxy=proxy
         )
 
@@ -115,3 +111,45 @@ class WebClient(Client["WebApi"]):
 
     def close(self) -> None:
         self.__session.close()
+
+    def __get_credentials_from_keyring(self, service_name: str, username: Optional[str]) -> Tuple[str, str]:
+        if _keyring_import_error:
+            raise _keyring_import_error
+
+        keyring_name = _keyring.get_keyring().name
+
+        if sys.platform.startswith("darwin"):
+            credentials = _keyring.get_credential(service_name, DARWIN_USERNAME)
+            if not credentials:
+                raise ValueError(f"can not find the key in keyring {keyring_name}")
+
+            if credentials.password == "":
+                raise ValueError(f"can not find the key in keyring {keyring_name}")
+
+            json_obj = json.loads(credentials.password)
+
+            if not isinstance(dict, json_obj):
+                raise ValueError(f"can not find the key in keyring {keyring_name}")
+
+            if "username" not in json_obj:
+                raise ValueError(f"can not find the key in keyring {keyring_name}")
+
+            if "password" not in json_obj:
+                raise ValueError(f"can not find the key in keyring {keyring_name}")
+
+            if username is None:
+                username = json_obj["username"]
+
+            password = json_obj["password"]
+        else:
+            credentials = _keyring.get_credential(service_name, "")
+
+            if credentials is None:
+                raise ValueError(f"can not find the key in keyring {_keyring.get_keyring()}")
+
+            if username is None:
+                username = credentials.username
+
+            password = credentials.password
+
+        return username, password
