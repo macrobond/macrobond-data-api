@@ -152,3 +152,6 @@ class MetadataAttributeInformation:
         import pandas  # pylint: disable=import-outside-toplevel
 
         return pandas.DataFrame([self.to_dict()])
+
+    def _repr_html_(self) -> str:
+        return self.to_pd_data_frame()._repr_html_()

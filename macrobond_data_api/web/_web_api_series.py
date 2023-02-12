@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union, cast
+from typing import TYPE_CHECKING, Any, Dict, List, Optional, Sequence, Union, cast
 
 from dateutil import parser
 
@@ -92,7 +92,7 @@ def get_one_series(self: "WebApi", series_name: str, raise_error: Optional[bool]
     return self.get_series(series_name, raise_error=raise_error)[0]
 
 
-def get_series(self: "WebApi", *series_names: str, raise_error: Optional[bool] = None) -> List[Series]:
+def get_series(self: "WebApi", *series_names: str, raise_error: Optional[bool] = None) -> Sequence[Series]:
     response = self.session.series.fetch_series(*series_names)
     series = list(map(lambda x, y: _create_series(x, y, self.session), response, series_names))
     GetEntitiesError._raise_if(
@@ -110,7 +110,7 @@ def get_one_entity(self: "WebApi", entity_name: str, raise_error: Optional[bool]
     return self.get_entities(entity_name, raise_error=raise_error)[0]
 
 
-def get_entities(self: "WebApi", *entity_names: str, raise_error: Optional[bool] = None) -> List[Entity]:
+def get_entities(self: "WebApi", *entity_names: str, raise_error: Optional[bool] = None) -> Sequence[Entity]:
     response = self.session.series.fetch_entities(*entity_names)
     entitys = list(map(lambda x, y: _create_entity(x, y, self.session), response, entity_names))
     GetEntitiesError._raise_if(

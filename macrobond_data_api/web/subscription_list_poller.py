@@ -7,7 +7,7 @@ from typing import List, Optional, cast, TYPE_CHECKING, Callable
 from macrobond_data_api.web import WebApi
 from .web_types.subscription_list_state import SubscriptionListState
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from .web_types import SubscriptionBody, SubscriptionListItem
 
 

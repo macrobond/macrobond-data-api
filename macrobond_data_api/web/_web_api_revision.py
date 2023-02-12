@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import TYPE_CHECKING, Any, Dict, List, Optional, Tuple, cast
+from typing import TYPE_CHECKING, Any, Dict, List, Optional, Sequence, Tuple, cast
 
 from dateutil import parser
 
@@ -64,7 +64,7 @@ def _create_series(response: "SeriesResponse", name: str, session: Session) -> S
     return Series(name, "", cast(Dict[str, Any], metadata), values, dates)
 
 
-def get_revision_info(self: "WebApi", *series_names: str, raise_error: Optional[bool] = None) -> List[RevisionInfo]:
+def get_revision_info(self: "WebApi", *series_names: str, raise_error: Optional[bool] = None) -> Sequence[RevisionInfo]:
     def to_obj(name: str, serie: "SeriesWithRevisionsInfoResponse") -> RevisionInfo:
         error_text = serie.get("errorText")
         if error_text:
@@ -115,7 +115,7 @@ def get_revision_info(self: "WebApi", *series_names: str, raise_error: Optional[
 
 def get_vintage_series(
     self: "WebApi", time: datetime, *series_names: str, raise_error: Optional[bool] = None
-) -> List[VintageSeries]:
+) -> Sequence[VintageSeries]:
     def to_obj(response: "VintageSeriesResponse", series_name: str) -> VintageSeries:
         error_message = response.get("errorText")
         if error_message:
@@ -159,7 +159,9 @@ def get_vintage_series(
     return series
 
 
-def get_nth_release(self: "WebApi", nth: int, *series_names: str, raise_error: Optional[bool] = None) -> List[Series]:
+def get_nth_release(
+    self: "WebApi", nth: int, *series_names: str, raise_error: Optional[bool] = None
+) -> Sequence[Series]:
     response = self.session.series.fetch_nth_release_series(nth, *series_names)
 
     series = list(map(lambda x, y: _create_series(x, y, self.session), response, series_names))
@@ -209,7 +211,7 @@ def get_all_vintage_series(self: "WebApi", series_name: str) -> GetAllVintageSer
     return GetAllVintageSeriesResult([to_obj(x, series_name) for x in response], series_name)
 
 
-def get_observation_history(self: "WebApi", series_name: str, *times: datetime) -> List[SeriesObservationHistory]:
+def get_observation_history(self: "WebApi", series_name: str, *times: datetime) -> Sequence[SeriesObservationHistory]:
     try:
         response = self.session.series.fetch_observation_history(series_name, list(times))
     except ProblemDetailsException as ex:
