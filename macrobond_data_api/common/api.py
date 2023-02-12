@@ -3,7 +3,7 @@ The class `macrobond_data_api.common.api.Api` defines the core methods to intera
 Macrobond database.
 """
 
-from typing import List, Sequence, Union, Tuple, Dict
+from typing import Sequence, Union, Tuple, Dict
 from abc import ABC, abstractmethod
 
 from datetime import datetime
@@ -108,7 +108,7 @@ class Api(ABC):
         """
 
     @abstractmethod
-    def metadata_get_attribute_information(self, *names: str) -> List[MetadataAttributeInformation]:
+    def metadata_get_attribute_information(self, *names: str) -> Sequence[MetadataAttributeInformation]:
         # pylint: disable=line-too-long
         # fmt: off
         """
@@ -121,7 +121,7 @@ class Api(ABC):
 
         Returns
         -------
-        `List[macrobond_data_api.common.types.metadata_attribute_information.MetadataAttributeInformation]`  
+        `Sequence[macrobond_data_api.common.types.metadata_attribute_information.MetadataAttributeInformation]`  
         The result is in the same order as the attribute names in the request.
 
         Examples
@@ -143,7 +143,7 @@ class Api(ABC):
         # fmt: on
 
     @abstractmethod
-    def metadata_get_value_information(self, *name_val: Tuple[str, str]) -> List[MetadataValueInformationItem]:
+    def metadata_get_value_information(self, *name_val: Tuple[str, str]) -> Sequence[MetadataValueInformationItem]:
         # pylint: disable=line-too-long
         # fmt: off
         """
@@ -156,7 +156,7 @@ class Api(ABC):
 
         Returns
         -------
-        `List[macrobond_data_api.common.types.metadata_value_information.MetadataValueInformationItem]`  
+        `Sequence[macrobond_data_api.common.types.metadata_value_information.MetadataValueInformationItem]`  
         The result is in the same order as the attribute names in the request.
 
         Examples
@@ -180,7 +180,7 @@ class Api(ABC):
     # revision
 
     @abstractmethod
-    def get_revision_info(self, *series_names: str, raise_error: bool = None) -> List[RevisionInfo]:
+    def get_revision_info(self, *series_names: str, raise_error: bool = None) -> Sequence[RevisionInfo]:
         """
         Get information about if revision history is available for a series
         and a list of revision timestamps.
@@ -196,12 +196,14 @@ class Api(ABC):
 
         Returns
         -------
-        `List[macrobond_data_api.common.types.revision_info.RevisionInfo]`
+        `Sequence[macrobond_data_api.common.types.revision_info.RevisionInfo]`
         The result is in the sane order as in the request.
         """
 
     @abstractmethod
-    def get_vintage_series(self, time: datetime, *series_names: str, raise_error: bool = None) -> List[VintageSeries]:
+    def get_vintage_series(
+        self, time: datetime, *series_names: str, raise_error: bool = None
+    ) -> Sequence[VintageSeries]:
         """
         Fetch vintage series.
 
@@ -218,12 +220,12 @@ class Api(ABC):
 
         Returns
         -------
-        `List[macrobond_data_api.common.types.vintage_series.VintageSeries]`
+        `Sequence[macrobond_data_api.common.types.vintage_series.VintageSeries]`
         The result is in the same order as in the request.
         """
 
     @abstractmethod
-    def get_nth_release(self, nth: int, *series_names: str, raise_error: bool = None) -> List[Series]:
+    def get_nth_release(self, nth: int, *series_names: str, raise_error: bool = None) -> Sequence[Series]:
         """
         Fetcha series where each value is the nth change of the value.
 
@@ -240,7 +242,7 @@ class Api(ABC):
 
         Returns
         -------
-        `List[macrobond_data_api.common.types.series.Series]`
+        `Sequence[macrobond_data_api.common.types.series.Series]`
         The result is in the same order as in the request.
         """
 
@@ -260,7 +262,7 @@ class Api(ABC):
         """
 
     @abstractmethod
-    def get_observation_history(self, series_name: str, *times: datetime) -> List[SeriesObservationHistory]:
+    def get_observation_history(self, series_name: str, *times: datetime) -> Sequence[SeriesObservationHistory]:
         """
         Get the revision of an observation.
 
@@ -273,7 +275,7 @@ class Api(ABC):
 
         Returns
         -------
-        `List[macrobond_data_api.common.types.series_observation_history.SeriesObservationHistory]`
+        `Sequence[macrobond_data_api.common.types.series_observation_history.SeriesObservationHistory]`
         """
 
     # Search
@@ -378,7 +380,7 @@ class Api(ABC):
         """
 
     @abstractmethod
-    def get_series(self, *series_names: str, raise_error: bool = None) -> List[Series]:
+    def get_series(self, *series_names: str, raise_error: bool = None) -> Sequence[Series]:
         """
         Download one or more series.
 
@@ -397,7 +399,7 @@ class Api(ABC):
 
         Returns
         -------
-        `List[macrobond_data_api.common.types.series.Series]`
+        `Sequence[macrobond_data_api.common.types.series.Series]`
         The result is in the same order as in the request.
         """
 
@@ -424,7 +426,7 @@ class Api(ABC):
         """
 
     @abstractmethod
-    def get_entities(self, *entity_names: str, raise_error: bool = None) -> List[Entity]:
+    def get_entities(self, *entity_names: str, raise_error: bool = None) -> Sequence[Entity]:
         """
         Download one or more entities.
 
@@ -443,7 +445,7 @@ class Api(ABC):
 
         Returns
         -------
-        `List[macrobond_data_api.common.types.entity.Entity]`
+        `Sequence[macrobond_data_api.common.types.entity.Entity]`
         The result is in the same order as in the request.
         """
 
@@ -459,7 +461,6 @@ class Api(ABC):
         end_point: StartOrEndPoint = None,
         raise_error: bool = None
     ) -> UnifiedSeriesList:
-        # pylint: disable=line-too-long
         """
         Get one or more series and convert them to a common frequency and calendar.
 
@@ -492,4 +493,3 @@ class Api(ABC):
         `macrobond_data_api.common.types.unified_series.UnifiedSeries`
         The result is in the same order as in the request.
         """
-        # pylint: enable=line-too-long

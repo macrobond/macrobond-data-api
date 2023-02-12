@@ -6,7 +6,7 @@ from dateutil import parser
 
 from .series import Series, SeriesColumnsLiterals
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from .metadata import Metadata
 
 

@@ -16,7 +16,7 @@ __pdoc__ = {
 }
 
 if TYPE_CHECKING:  # pragma: no cover
-    from pandas import DataFrame, _typing as pandas_typing  # type: ignore
+    from pandas import DataFrame  # type: ignore
 
 MetadataValueInformationColumns = List[Literal["attribute_name", "value", "description", "comment"]]
 
@@ -80,6 +80,9 @@ class MetadataValueInformationItem:
             "comment": self.comment,
         }
 
+    def _repr_html_(self) -> str:
+        return self.to_pd_data_frame()._repr_html_()
+
 
 @dataclass(init=False)
 class MetadataValueInformation(Sequence[MetadataValueInformationItem]):
@@ -129,3 +132,8 @@ class MetadataValueInformation(Sequence[MetadataValueInformationItem]):
 
     def __len__(self) -> int:
         return len(self.entities)
+
+    def _repr_html_(self) -> str:
+        frame = self.to_pd_data_frame()
+        del frame["attribute_name"]
+        return f"<h1>{self.attribute_name}</h1>" + frame._repr_html_()

@@ -1,7 +1,4 @@
-from typing import Dict, Sequence, Union, TYPE_CHECKING
-
-if TYPE_CHECKING:  # pragma: no cover
-    from pandas import DataFrame, _typing as pandas_typing  # type: ignore
+from typing import Dict, Sequence, Union
 
 
 class SearchFilter:

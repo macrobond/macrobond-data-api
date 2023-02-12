@@ -68,7 +68,7 @@ def get_one_series(self: "ComApi", series_name: str, raise_error: bool = None) -
     return self.get_series(series_name, raise_error=raise_error)[0]
 
 
-def get_series(self: "ComApi", *series_names: str, raise_error: Optional[bool] = None) -> List[Series]:
+def get_series(self: "ComApi", *series_names: str, raise_error: Optional[bool] = None) -> Sequence[Series]:
     com_series = self.database.FetchSeries(series_names)
     series = list(map(_create_series, com_series, series_names))
     GetEntitiesError._raise_if(
@@ -86,7 +86,7 @@ def get_one_entity(self: "ComApi", entity_name: str, raise_error: bool = None) -
     return self.get_entities(entity_name, raise_error=raise_error)[0]
 
 
-def get_entities(self: "ComApi", *entity_names: str, raise_error: bool = None) -> List[Entity]:
+def get_entities(self: "ComApi", *entity_names: str, raise_error: bool = None) -> Sequence[Entity]:
     com_entitys = self.database.FetchEntities(entity_names)
     entitys = list(map(_create_entity, com_entitys, entity_names))
     GetEntitiesError._raise_if(

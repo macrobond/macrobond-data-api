@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, List, Tuple
+from typing import TYPE_CHECKING, Sequence, Tuple
 
 from macrobond_data_api.common.types import (
     MetadataValueInformation,
@@ -22,7 +22,7 @@ def metadata_list_values(self: "WebApi", name: str) -> MetadataValueInformation:
     )
 
 
-def metadata_get_attribute_information(self: "WebApi", *name: str) -> List[MetadataAttributeInformation]:
+def metadata_get_attribute_information(self: "WebApi", *name: str) -> Sequence[MetadataAttributeInformation]:
     return list(
         MetadataAttributeInformation(
             x["name"],
@@ -38,7 +38,9 @@ def metadata_get_attribute_information(self: "WebApi", *name: str) -> List[Metad
     )
 
 
-def metadata_get_value_information(self: "WebApi", *name_val: Tuple[str, str]) -> List[MetadataValueInformationItem]:
+def metadata_get_value_information(
+    self: "WebApi", *name_val: Tuple[str, str]
+) -> Sequence[MetadataValueInformationItem]:
     try:
         return list(
             (
