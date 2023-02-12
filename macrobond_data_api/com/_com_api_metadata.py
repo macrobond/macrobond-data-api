@@ -1,4 +1,4 @@
-from typing import List, Tuple, TYPE_CHECKING, cast
+from typing import List, Sequence, Tuple, TYPE_CHECKING, cast
 
 from macrobond_data_api.common.types import (
     MetadataValueInformationItem,
@@ -27,7 +27,7 @@ def metadata_list_values(self: "ComApi", name: str) -> MetadataValueInformation:
     )
 
 
-def metadata_get_attribute_information(self: "ComApi", *names: str) -> List[MetadataAttributeInformation]:
+def metadata_get_attribute_information(self: "ComApi", *names: str) -> Sequence[MetadataAttributeInformation]:
     def get_metadata_attribute_information(name: str) -> MetadataAttributeInformation:
         info = self.database.GetMetadataInformation(name)
         return MetadataAttributeInformation(
@@ -44,7 +44,9 @@ def metadata_get_attribute_information(self: "ComApi", *names: str) -> List[Meta
     return list(map(get_metadata_attribute_information, names))
 
 
-def metadata_get_value_information(self: "ComApi", *name_val: Tuple[str, str]) -> List[MetadataValueInformationItem]:
+def metadata_get_value_information(
+    self: "ComApi", *name_val: Tuple[str, str]
+) -> Sequence[MetadataValueInformationItem]:
     def is_error_with_text(ex: Exception, text: str) -> bool:
         return len(ex.args) >= 3 and len(ex.args[2]) >= 3 and ex.args[2][2].startswith(text)
 

@@ -1,5 +1,5 @@
 from math import isnan
-from typing import List, Optional, Tuple, TYPE_CHECKING, Sequence
+from typing import Optional, Tuple, TYPE_CHECKING, Sequence
 
 from datetime import datetime, timezone
 
@@ -84,7 +84,7 @@ def _remove_padding(
     )
 
 
-def get_revision_info(self: "ComApi", *series_names: str, raise_error: bool = None) -> List[RevisionInfo]:
+def get_revision_info(self: "ComApi", *series_names: str, raise_error: bool = None) -> Sequence[RevisionInfo]:
     def to_obj(name: str, serie: "SeriesWithRevisions") -> RevisionInfo:
         if serie.IsError:
             return RevisionInfo(
@@ -128,7 +128,7 @@ def get_revision_info(self: "ComApi", *series_names: str, raise_error: bool = No
 
 def get_vintage_series(
     self: "ComApi", time: datetime, *series_names: str, raise_error: bool = None
-) -> List[VintageSeries]:
+) -> Sequence[VintageSeries]:
     def to_obj(series_name: str) -> VintageSeries:
         series_with_revisions = self.database.FetchOneSeriesWithRevisions(series_name)
 
@@ -184,7 +184,7 @@ def get_vintage_series(
     return series
 
 
-def get_nth_release(self: "ComApi", nth: int, *series_names: str, raise_error: bool = None) -> List[Series]:
+def get_nth_release(self: "ComApi", nth: int, *series_names: str, raise_error: bool = None) -> Sequence[Series]:
     def to_obj(series_name: str) -> Series:
         series_with_revisions = self.database.FetchOneSeriesWithRevisions(series_name)
 
@@ -262,7 +262,7 @@ def get_all_vintage_series(self: "ComApi", series_name: str) -> GetAllVintageSer
     )
 
 
-def get_observation_history(self: "ComApi", series_name: str, *times: datetime) -> List[SeriesObservationHistory]:
+def get_observation_history(self: "ComApi", series_name: str, *times: datetime) -> Sequence[SeriesObservationHistory]:
     series_with_revisions = self.database.FetchOneSeriesWithRevisions(series_name)
 
     if series_with_revisions.IsError:

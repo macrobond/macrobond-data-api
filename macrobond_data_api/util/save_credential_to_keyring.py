@@ -1,11 +1,13 @@
 #!/usr/bin/env python3
 import sys
+import json
 from getpass import getpass
 
 import keyring
-from macrobond_data_api.web.web_client import DEFAULT_SERVICE_NAME
-
-__pdoc__ = {"_inquiry": False, "_remove_duplicates": False}
+from macrobond_data_api.web.web_client import (
+    DEFAULT_SERVICE_NAME,
+    DARWIN_USERNAME,
+)
 
 
 def _inquiry(question: str, default: str = "yes") -> bool:
@@ -27,8 +29,8 @@ def _inquiry(question: str, default: str = "yes") -> bool:
         sys.stdout.write("Please respond with 'yes' or 'no' (or 'y' or 'n').\n")
 
 
-def _remove_duplicates(service_name: str, warn_before_removing: bool) -> bool:
-    old_credential = keyring.get_credential(service_name, "")
+def _remove_duplicates(service_name: str, username: str, warn_before_removing: bool) -> bool:
+    old_credential = keyring.get_credential(service_name, username)
     while old_credential:
         if warn_before_removing and not _inquiry(
             'Warning - There is already a key with the same service name, it has the username "'
@@ -37,7 +39,7 @@ def _remove_duplicates(service_name: str, warn_before_removing: bool) -> bool:
         ):
             return False
         keyring.delete_password(service_name, old_credential.username)
-        old_credential = keyring.get_credential(service_name, "")
+        old_credential = keyring.get_credential(service_name, username)
     return True
 
 
@@ -89,10 +91,10 @@ def save_credential_to_keyring(warn_before_removing: bool = True, ask_for_servic
     """
     # pylint: enable=line-too-long
     # fmt: on
+    is_darwin = sys.platform.startswith("darwin")
+    keyring_name = keyring.get_keyring().name
 
-    KEYRING_NAME = keyring.get_keyring().name  # pylint: disable=invalid-name
-
-    print("Saving secret to " + KEYRING_NAME + "\n")
+    print("Saving secret to " + keyring_name + "\n")
 
     service_name = (
         input(
@@ -106,16 +108,19 @@ def save_credential_to_keyring(warn_before_removing: bool = True, ask_for_servic
     if service_name == "":
         service_name = DEFAULT_SERVICE_NAME
 
-    if not _remove_duplicates(service_name, warn_before_removing):
+    if not _remove_duplicates(service_name, DARWIN_USERNAME if is_darwin else "", warn_before_removing):
         return False
 
     username = input("Please enter Macrobond Web Api username: ")
 
     password = getpass("Please enter Macrobond Web Api password: ")
 
-    keyring.set_password(service_name, username, password)
+    if is_darwin:
+        keyring.set_password(service_name, DARWIN_USERNAME, json.dumps({"username": username, "password": password}))
+    else:
+        keyring.set_password(service_name, username, password)
 
-    print('successfully saved to the keyring with the service name: "' + service_name + '" in ' + KEYRING_NAME)
+    print(f'successfully saved to the keyring with the service name: "{ service_name }" in {keyring_name}')
 
     return True
 
