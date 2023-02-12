@@ -139,7 +139,6 @@ class Api(ABC):
             print(api.metadata_get_attribute_information("Region")[0].to_pd_data_frame())
         ```
         """
-        # pylint: enable=line-too-long
         # fmt: on
 
     @abstractmethod
@@ -175,7 +174,6 @@ class Api(ABC):
         ```
         """
         # fmt: on
-        # pylint: enable=line-too-long
 
     # revision
 
