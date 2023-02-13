@@ -1,5 +1,5 @@
 from math import isnan
-from typing import Optional, Tuple, TYPE_CHECKING, Sequence
+from typing import Optional, Tuple, List, TYPE_CHECKING, Sequence
 
 from datetime import datetime, timezone
 
@@ -22,39 +22,12 @@ if TYPE_CHECKING:  # pragma: no cover
     from .com_types import Series as ComSeries, Entity as ComEntity
 
 
-def _datetime_to_datetime_utc(dates: Sequence[datetime]) -> Tuple[datetime, ...]:
-    return tuple(
-        map(
-            lambda x: datetime(
-                x.year,
-                x.month,
-                x.day,
-                x.hour,
-                x.minute,
-                x.second,
-                x.microsecond,
-                timezone.utc,
-            ),
-            dates,
-        )
-    )
+def _datetime_to_datetime_utc(dates: Sequence[datetime]) -> List[datetime]:
+    return [datetime(x.year, x.month, x.day, x.hour, x.minute, x.second, x.microsecond, timezone.utc) for x in dates]
 
 
-def _datetime_to_datetime_timezone(dates: Sequence[datetime]) -> Tuple[datetime, ...]:
-    return tuple(
-        map(
-            lambda x: datetime(
-                x.year,
-                x.month,
-                x.day,
-                x.hour,
-                x.minute,
-                x.second,
-                x.microsecond,
-            ),
-            dates,
-        )
-    )
+def _datetime_to_datetime_timezone(dates: Sequence[datetime]) -> List[datetime]:
+    return [datetime(x.year, x.month, x.day, x.hour, x.minute, x.second, x.microsecond) for x in dates]
 
 
 def _remove_padding(
@@ -87,15 +60,7 @@ def _remove_padding(
 def get_revision_info(self: "ComApi", *series_names: str, raise_error: bool = None) -> Sequence[RevisionInfo]:
     def to_obj(name: str, serie: "SeriesWithRevisions") -> RevisionInfo:
         if serie.IsError:
-            return RevisionInfo(
-                name,
-                serie.ErrorMessage,
-                False,
-                False,
-                None,
-                None,
-                tuple(),
-            )
+            return RevisionInfo(name, serie.ErrorMessage, False, False, None, None, [])
 
         vintage_time_stamps = _datetime_to_datetime_utc(serie.GetVintageDates())
 

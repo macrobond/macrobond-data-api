@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from typing import Any, Dict, Tuple, Optional, List, cast, TYPE_CHECKING
+from typing import Any, Dict, Tuple, Optional, List, cast, Sequence, TYPE_CHECKING
 from typing_extensions import Literal
 
 from .entity import Entity, EntityColumnsLiterals
@@ -24,16 +24,16 @@ class Series(Entity):
 
     __slots__ = ("values", "dates")
 
-    values: Tuple[Optional[float], ...]
-    dates: Tuple[datetime, ...]
+    values: Sequence[Optional[float]]
+    dates: Sequence[datetime]
 
     def __init__(
         self,
         name: str,
         error_message: Optional[str],
         metadata: Optional["Metadata"],
-        values: Optional[Tuple[Optional[float], ...]],
-        dates: Optional[Tuple[datetime, ...]],
+        values: Optional[Sequence[Optional[float]]],
+        dates: Optional[Sequence[datetime]],
     ) -> None:
         super().__init__(name, error_message, metadata)
 
@@ -49,11 +49,11 @@ class Series(Entity):
         """
 
         if values is None:
-            self.values = tuple()
-            self.dates = tuple()
+            self.values = []
+            self.dates = []
         else:
             self.values = values
-            self.dates = cast(Tuple[datetime, ...], dates)
+            self.dates = dates
 
     def to_dict(self) -> Dict[str, Any]:
         if self.is_error:
@@ -74,6 +74,9 @@ class Series(Entity):
 
         name = name if name else self.name
         return pandas.Series(self.values, self.dates, name=name)
+
+    def _repr_html_(self) -> str:
+        return self.values_to_pd_series()._repr_html_()
 
     def __eq__(self, other: Any) -> bool:
         return self is other or (

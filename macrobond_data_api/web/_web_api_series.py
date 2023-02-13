@@ -3,6 +3,8 @@ from typing import TYPE_CHECKING, Any, Dict, List, Optional, Sequence, Union, ca
 
 from dateutil import parser
 
+from macrobond_data_api.common.types._repr_html_sequence import _ReprHtmlSequence
+
 from macrobond_data_api.common.types import SeriesEntry
 
 from macrobond_data_api.common.enums import (
@@ -57,7 +59,7 @@ def _create_entity(response: "EntityResponse", name: str, session: Session) -> E
     if error_text:
         return Entity(name, error_text, None)
 
-    metadata = session._create_metadata(cast(Dict[str, Any], response["metadata"]))
+    metadata = session._create_metadata(response["metadata"])
 
     return Entity(name, None, cast(Dict[str, Any], metadata))
 
@@ -68,21 +70,11 @@ def _create_series(response: "SeriesResponse", name: str, session: Session) -> S
     if error_text:
         return Series(name, error_text, None, None, None)
 
-    dates = tuple(
-        map(
-            _str_to_datetime_no_utc,
-            cast(List[str], response["dates"]),
-        )
-    )
+    dates = [_str_to_datetime_no_utc(x) for x in cast(List[str], response["dates"])]
 
-    values = tuple(
-        map(
-            lambda x: float(x) if x else None,
-            cast(List[Optional[float]], response["values"]),
-        )
-    )
+    values = [float(x) if x else None for x in cast(List[Optional[float]], response["values"])]
 
-    metadata = session._create_metadata(cast(Dict[str, Any], response["metadata"]))
+    metadata = session._create_metadata(response["metadata"])
 
     # values = cast(Tuple[Optional[float]], response["values"])
     return Series(name, "", metadata, values, dates)
@@ -94,7 +86,7 @@ def get_one_series(self: "WebApi", series_name: str, raise_error: Optional[bool]
 
 def get_series(self: "WebApi", *series_names: str, raise_error: Optional[bool] = None) -> Sequence[Series]:
     response = self.session.series.fetch_series(*series_names)
-    series = list(map(lambda x, y: _create_series(x, y, self.session), response, series_names))
+    series = [_create_series(x, y, self.session) for x, y in zip(response, series_names)]
     GetEntitiesError._raise_if(
         self.raise_error if raise_error is None else raise_error,
         map(
@@ -103,7 +95,7 @@ def get_series(self: "WebApi", *series_names: str, raise_error: Optional[bool] =
             series,
         ),
     )
-    return series
+    return _ReprHtmlSequence(series)
 
 
 def get_one_entity(self: "WebApi", entity_name: str, raise_error: Optional[bool] = None) -> Entity:
@@ -112,7 +104,7 @@ def get_one_entity(self: "WebApi", entity_name: str, raise_error: Optional[bool]
 
 def get_entities(self: "WebApi", *entity_names: str, raise_error: Optional[bool] = None) -> Sequence[Entity]:
     response = self.session.series.fetch_entities(*entity_names)
-    entitys = list(map(lambda x, y: _create_entity(x, y, self.session), response, entity_names))
+    entitys = [_create_entity(x, y, self.session) for x, y in zip(response, entity_names)]
     GetEntitiesError._raise_if(
         self.raise_error if raise_error is None else raise_error,
         map(
@@ -121,7 +113,7 @@ def get_entities(self: "WebApi", *entity_names: str, raise_error: Optional[bool]
             entitys,
         ),
     )
-    return entitys
+    return _ReprHtmlSequence(entitys)
 
 
 def get_unified_series(
@@ -148,7 +140,7 @@ def get_unified_series(
             "toHigherFrequencyMethod": entrie.to_higher_frequency_method,
         }
 
-    web_series_entries = list(map(convert_to_unified_series_entry, series_entries))
+    web_series_entries = [convert_to_unified_series_entry(x) for x in series_entries]
 
     request: "UnifiedSeriesRequest" = {
         "frequency": frequency,
@@ -169,10 +161,8 @@ def get_unified_series(
     response = self.session.series.fetch_unified_series(request)
 
     str_dates = response.get("dates")
-    if str_dates:
-        dates = tuple(map(_str_to_datetime_no_utc, str_dates))
-    else:
-        dates = tuple()
+
+    dates = [_str_to_datetime_no_utc(x) for x in str_dates] if str_dates else []
 
     series: List[UnifiedSeries] = []
     for i, one_series in enumerate(response["series"]):
@@ -180,16 +170,11 @@ def get_unified_series(
         error_text = one_series.get("errorText")
 
         if error_text:
-            series.append(UnifiedSeries(name, error_text, {}, tuple()))
+            series.append(UnifiedSeries(name, error_text, {}, []))
         else:
-            values = tuple(
-                map(
-                    lambda x: float(x) if x else None,
-                    cast(List[Optional[float]], one_series["values"]),
-                )
-            )
+            values = [float(x) if x else None for x in cast(List[Optional[float]], one_series["values"])]
 
-            metadata = self.session._create_metadata(cast(Dict[str, Any], one_series["metadata"]))
+            metadata = self.session._create_metadata(one_series["metadata"])
 
             series.append(UnifiedSeries(name, "", metadata, values))
 

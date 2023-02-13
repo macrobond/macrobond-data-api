@@ -1,9 +1,4 @@
-from typing import (
-    Generic,
-    Sequence,
-    TypeVar,
-    overload,
-)
+from typing import Generic, Sequence, TypeVar, overload
 
 
 _TypeVar = TypeVar("_TypeVar")

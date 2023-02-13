@@ -113,6 +113,9 @@ class Entity:
             return f"{self.__class__.__name__} with error, error message: {self.error_message}"
         return f"{self.__class__.__name__} PrimName: {self.primary_name}"
 
+    def _repr_html_(self) -> str:
+        return self.metadata_to_pd_series()._repr_html_()
+
     def __bool__(self) -> bool:
         return not self.is_error
 

@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, Any, List, MutableMapping
+from typing import TYPE_CHECKING
 
 from macrobond_data_api.common.types import SearchResult
 
@@ -35,7 +35,5 @@ def entity_search_multi_filter(
     }
 
     response = self.session.search.post_entities(request)
-
-    results: List[MutableMapping[str, Any]] = list(map(self.session._create_metadata, response["results"]))
-
+    results = [self.session._create_metadata(x) for x in response["results"]]
     return SearchResult(results, response.get("isTruncated") is True)

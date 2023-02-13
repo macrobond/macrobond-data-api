@@ -2,24 +2,24 @@ from typing import Any, MutableMapping, TYPE_CHECKING, List, Sequence, overload
 
 if TYPE_CHECKING:  # pragma: no cover
     from pandas import DataFrame  # type: ignore
-
+    from .metadata import Metadata
 
 __pdoc__ = {
     "SearchResult.__init__": False,
 }
 
 
-class SearchResult(Sequence[MutableMapping[str, Any]]):
+class SearchResult(Sequence["Metadata"]):
     """
     The result of a entity search operation.
     """
 
     __slots__ = ("entities", "is_truncated")
 
-    entities: Sequence[MutableMapping[str, Any]]
+    entities: Sequence["Metadata"]
     is_truncated: bool
 
-    def __init__(self, entities: Sequence[MutableMapping[str, Any]], is_truncated: bool) -> None:
+    def __init__(self, entities: Sequence["Metadata"], is_truncated: bool) -> None:
         super().__init__()
         self.entities = entities
         """
@@ -47,12 +47,15 @@ class SearchResult(Sequence[MutableMapping[str, Any]]):
 
         return pandas.DataFrame(self)
 
+    def _repr_html_(self) -> str:
+        return self.to_pd_data_frame()._repr_html_()
+
     @overload
-    def __getitem__(self, i: int) -> MutableMapping[str, Any]:
+    def __getitem__(self, i: int) -> "Metadata":
         ...
 
     @overload
-    def __getitem__(self, s: slice) -> List[MutableMapping[str, Any]]:
+    def __getitem__(self, s: slice) -> Sequence["Metadata"]:
         ...
 
     def __getitem__(self, key):  # type: ignore

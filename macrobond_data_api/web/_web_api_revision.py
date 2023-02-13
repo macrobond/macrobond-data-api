@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import TYPE_CHECKING, Any, Dict, List, Optional, Sequence, Tuple, cast
+from typing import TYPE_CHECKING, Any, Dict, List, Optional, Sequence, cast
 
 from dateutil import parser
 
@@ -11,6 +11,7 @@ from macrobond_data_api.common.types import (
     SeriesObservationHistory,
     GetAllVintageSeriesResult,
 )
+from macrobond_data_api.common.types._repr_html_sequence import _ReprHtmlSequence
 
 from .session import ProblemDetailsException, Session
 
@@ -38,29 +39,20 @@ def _optional_str_to_datetime_ignoretz(datetime_str: Optional[str]) -> Optional[
     return parser.parse(datetime_str, ignoretz=True) if datetime_str else None
 
 
+def int_to_float_or_none(int_: Optional[int]) -> Optional[float]:
+    return float(int_) if int_ else None
+
+
 def _create_series(response: "SeriesResponse", name: str, session: Session) -> Series:
     error_text = response.get("errorText")
 
     if error_text:
         return Series(name, error_text, None, None, None)
 
-    dates = tuple(
-        map(
-            _str_to_datetime_ignoretz,
-            cast(List[str], response["dates"]),
-        )
-    )
+    dates = [_str_to_datetime_ignoretz(x) for x in cast(List[str], response["dates"])]
+    values = [float(x) if x else None for x in cast(List[Optional[int]], response["values"])]
+    metadata = session._create_metadata(response["metadata"])
 
-    values = tuple(
-        map(
-            lambda x: float(x) if x else None,
-            cast(List[Optional[float]], response["values"]),
-        )
-    )
-
-    metadata = session._create_metadata(cast(Dict[str, Any], response["metadata"]))
-
-    # values = cast(Tuple[Optional[float]], response["values"])
     return Series(name, "", cast(Dict[str, Any], metadata), values, dates)
 
 
@@ -68,30 +60,15 @@ def get_revision_info(self: "WebApi", *series_names: str, raise_error: Optional[
     def to_obj(name: str, serie: "SeriesWithRevisionsInfoResponse") -> RevisionInfo:
         error_text = serie.get("errorText")
         if error_text:
-            return RevisionInfo(
-                name,
-                error_text,
-                False,
-                False,
-                None,
-                None,
-                tuple(),
-            )
+            return RevisionInfo(name, error_text, False, False, None, None, [])
 
         time_stamp_of_first_revision = _optional_str_to_datetime(serie.get("timeStampOfFirstRevision"))
 
         time_stamp_of_last_revision = _optional_str_to_datetime(serie.get("timeStampOfLastRevision"))
 
         stores_revisions = serie["storesRevisions"]
-        if stores_revisions:
-            vintage_time_stamps = tuple(
-                map(
-                    parser.parse,
-                    serie["vintageTimeStamps"],
-                )
-            )
-        else:
-            vintage_time_stamps = tuple()
+
+        vintage_time_stamps = [parser.parse(x) for x in serie["vintageTimeStamps"]] if stores_revisions else []
 
         return RevisionInfo(
             name,
@@ -110,7 +87,7 @@ def get_revision_info(self: "WebApi", *series_names: str, raise_error: Optional[
         map(lambda x, y: (x, y.get("errorText")), series_names, response),
     )
 
-    return list(map(to_obj, series_names, response))
+    return _ReprHtmlSequence(list(map(to_obj, series_names, response)))
 
 
 def get_vintage_series(
@@ -121,21 +98,15 @@ def get_vintage_series(
         if error_message:
             return VintageSeries(series_name, error_message, None, None, None, None)
 
-        metadata = self.session._create_metadata(cast(Dict[str, Any], response["metadata"]))
+        metadata = self.session._create_metadata(response["metadata"])
 
         revision_time_stamp = cast(str, metadata.get("RevisionTimeStamp"))
 
         if not revision_time_stamp or time != revision_time_stamp:
             raise ValueError("Invalid time")
 
-        values: Tuple[Optional[float], ...] = tuple(
-            map(
-                lambda x: float(x) if x else None,
-                cast(List[Optional[float]], response["values"]),
-            )
-        )
-
-        dates = tuple(map(_str_to_datetime_ignoretz, cast(List[str], response["dates"])))
+        values = [float(x) if x else None for x in cast(List[Optional[int]], response["values"])]
+        dates = [_str_to_datetime_ignoretz(x) for x in cast(List[str], response["dates"])]
 
         vintage_time_stamp = (
             _str_to_datetime(cast(str, response["vintageTimeStamp"])) if "vintageTimeStamp" in response else None
@@ -145,7 +116,7 @@ def get_vintage_series(
 
     response = self.session.series.fetch_vintage_series(time, *series_names, get_times_of_change=False)
 
-    series = list(map(to_obj, response, series_names))
+    series = [to_obj(x, y) for x, y in zip(response, series_names)]
 
     GetEntitiesError._raise_if(
         self.raise_error if raise_error is None else raise_error,
@@ -156,7 +127,7 @@ def get_vintage_series(
         ),
     )
 
-    return series
+    return _ReprHtmlSequence(series)
 
 
 def get_nth_release(
@@ -164,7 +135,7 @@ def get_nth_release(
 ) -> Sequence[Series]:
     response = self.session.series.fetch_nth_release_series(nth, *series_names)
 
-    series = list(map(lambda x, y: _create_series(x, y, self.session), response, series_names))
+    series = [_create_series(x, y, self.session) for x, y in zip(response, series_names)]
 
     GetEntitiesError._raise_if(
         self.raise_error if raise_error is None else raise_error,
@@ -175,7 +146,7 @@ def get_nth_release(
         ),
     )
 
-    return series
+    return _ReprHtmlSequence(series)
 
 
 def get_all_vintage_series(self: "WebApi", series_name: str) -> GetAllVintageSeriesResult:
@@ -184,16 +155,9 @@ def get_all_vintage_series(self: "WebApi", series_name: str) -> GetAllVintageSer
         if error_message:
             return VintageSeries(series_name, error_message, None, None, None, None)
 
-        metadata = self.session._create_metadata(cast(Dict[str, Any], response["metadata"]))
-
-        values: Tuple[Optional[float], ...] = tuple(
-            map(
-                lambda x: float(x) if x else None,
-                cast(List[Optional[float]], response["values"]),
-            )
-        )
-
-        dates = tuple(map(_str_to_datetime_ignoretz, cast(List[str], response["dates"])))
+        metadata = self.session._create_metadata(response["metadata"])
+        values = [float(x) if x else None for x in cast(List[Optional[int]], response["values"])]
+        dates = [_str_to_datetime_ignoretz(x) for x in cast(List[str], response["dates"])]
 
         vintage_time_stamp = (
             _str_to_datetime(cast(str, response["vintageTimeStamp"])) if "vintageTimeStamp" in response else None
@@ -219,13 +183,13 @@ def get_observation_history(self: "WebApi", series_name: str, *times: datetime) 
             raise Exception(ex.detail) from ex
         raise ex
 
-    return list(
-        map(
-            lambda x: SeriesObservationHistory(
+    return _ReprHtmlSequence(
+        [
+            SeriesObservationHistory(
                 parser.parse(x["observationDate"]),
-                tuple(map(lambda v: float(v) if v else None, x["values"])),
-                tuple(map(_optional_str_to_datetime_ignoretz, x["timeStamps"])),
-            ),
-            response,
-        )
+                [float(y) if y else None for y in x["values"]],
+                [_optional_str_to_datetime_ignoretz(y) for y in x["timeStamps"]],
+            )
+            for x in response
+        ]
     )

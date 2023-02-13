@@ -1,7 +1,9 @@
-from typing import Callable, Dict, Optional, Any, TYPE_CHECKING, Sequence
+from typing import Callable, Dict, Optional, Any, TYPE_CHECKING, Sequence, cast
 
 from authlib.integrations.requests_client import OAuth2Session  # type: ignore
 from authlib.integrations.base_client.errors import InvalidTokenError  # type: ignore
+from macrobond_data_api.common.types import Metadata
+
 from .web_types import (
     MetadataMethods,
     SearchMethods,
@@ -221,5 +223,5 @@ class Session:
             response = http()
         return response
 
-    def _create_metadata(self, metadata: dict) -> _Metadata:
-        return _Metadata(metadata, self._metadata_type_directory)
+    def _create_metadata(self, data: Optional[Dict[str, Any]]) -> Metadata:
+        return cast(Metadata, _Metadata(data, self._metadata_type_directory)) if data else {}

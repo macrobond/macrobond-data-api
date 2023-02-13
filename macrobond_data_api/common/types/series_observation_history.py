@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 
 from datetime import datetime
-from typing import Any, Dict, List, Optional, TYPE_CHECKING, Tuple
+from typing import Any, Dict, List, Optional, Sequence, TYPE_CHECKING
 from typing_extensions import Literal
 
 if TYPE_CHECKING:  # pragma: no cover
@@ -27,14 +27,14 @@ class SeriesObservationHistory:
     )
 
     observation_date: datetime
-    values: Tuple[Optional[float], ...]
-    time_stamps: Tuple[Optional[datetime], ...]
+    values: Sequence[Optional[float]]
+    time_stamps: Sequence[Optional[datetime]]
 
     def __init__(
         self,
         observation_date: datetime,
-        values: Tuple[Optional[float], ...],
-        time_stamps: Tuple[Optional[datetime], ...],
+        values: Sequence[Optional[float]],
+        time_stamps: Sequence[Optional[datetime]],
     ) -> None:
         self.observation_date = observation_date
         """The date of the observation"""
@@ -68,3 +68,6 @@ class SeriesObservationHistory:
 
         name = name if name else str(self.observation_date)
         return pandas.Series(self.values, self.time_stamps, name=name)
+
+    def _repr_html_(self) -> str:
+        return self.to_pd_data_frame()._repr_html_()

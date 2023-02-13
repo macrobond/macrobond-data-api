@@ -1,13 +1,4 @@
-from typing import (
-    Any,
-    Dict,
-    List,
-    Sequence,
-    Tuple,
-    Optional,
-    TYPE_CHECKING,
-    overload,
-)
+from typing import Any, Dict, List, Sequence, Optional, TYPE_CHECKING, overload
 
 from datetime import datetime
 from typing_extensions import Literal, TypedDict
@@ -29,8 +20,8 @@ if TYPE_CHECKING:  # pragma: no cover
 
 
 class UnifiedSeriesDict(TypedDict):
-    Dates: Tuple[datetime, ...]
-    Series: Tuple[Dict[str, Any], ...]
+    Dates: Sequence[datetime]
+    Series: Sequence[Dict[str, Any]]
 
 
 class UnifiedSeries:
@@ -44,7 +35,7 @@ class UnifiedSeries:
     name: str
     error_message: str
     metadata: "Metadata"
-    values: Tuple[Optional[float], ...]
+    values: Sequence[Optional[float]]
 
     @property
     def is_error(self) -> bool:
@@ -59,7 +50,7 @@ class UnifiedSeries:
         name: str,
         error_message: str,
         metadata: "Metadata",
-        values: Tuple[Optional[float], ...],
+        values: Sequence[Optional[float]],
     ) -> None:
         self.name = name
         """The name of the requested series."""
@@ -112,7 +103,7 @@ class UnifiedSeriesList(Sequence[UnifiedSeries]):
     )
 
     series: Sequence[UnifiedSeries]
-    dates: Tuple[datetime, ...]
+    dates: Sequence[datetime]
 
     @property
     def is_error(self) -> bool:
@@ -124,7 +115,7 @@ class UnifiedSeriesList(Sequence[UnifiedSeries]):
     def __init__(
         self,
         series: Sequence[UnifiedSeries],
-        dates: Tuple[datetime, ...],
+        dates: Sequence[datetime],
     ) -> None:
         super().__init__()
         self.series = series
@@ -135,7 +126,7 @@ class UnifiedSeriesList(Sequence[UnifiedSeries]):
     def to_dict(self) -> UnifiedSeriesDict:
         return {
             "Dates": self.dates,
-            "Series": tuple(map(lambda x: x.to_dict(), self)),
+            "Series": [x.to_dict() for x in self],
         }
 
     def get_errors(self) -> Dict[str, str]:
@@ -145,6 +136,9 @@ class UnifiedSeriesList(Sequence[UnifiedSeries]):
         import pandas  # pylint: disable=import-outside-toplevel
 
         return pandas.DataFrame({kv.name: kv.values for kv in self}, self.dates)
+
+    def _repr_html_(self) -> str:
+        return self.to_pd_data_frame()._repr_html_()
 
     def __repr__(self) -> str:
         names = ", ".join(map(lambda x: x.name, self))

@@ -28,7 +28,6 @@ class SeriesEntry:
         "partial_periods_method",
     )
 
-    # pylint: disable=line-too-long
     def __init__(
         self,
         name: str,
@@ -70,6 +69,3 @@ class SeriesEntry:
         Should be a value of
         `macrobond_data_api.common.enums.series_partial_periods_method.SeriesPartialPeriodsMethod`
         """
-
-
-# pylint: enable=line-too-long

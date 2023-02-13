@@ -54,6 +54,9 @@ class GetAllVintageSeriesResult(Sequence[VintageSeries]):
             "series": tuple(map(lambda x: x.to_dict(), self)),
         }
 
+    def _repr_html_(self) -> str:
+        return self.to_pd_data_frame()._repr_html_()
+
     @overload
     def __getitem__(self, i: int) -> VintageSeries:
         ...

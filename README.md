@@ -50,6 +50,14 @@ order to use the API.
 ## Basic usage
 
 ```python
+import macrobond_data_api as mb_api
+
+usgdp = mb_api.get_one_series("usgdp")
+```
+
+## Advanced usage
+
+```python
 # web
 from macrobond_data_api.web import WebClient
 

@@ -10,7 +10,7 @@ class SeriesObservationHistoryResponse(TypedDict):
     observationDate: str
     """The date of the observation"""
 
-    values: List[Optional[float]]
+    values: List[Optional[int]]
     """
     The historical values of the observation or an empty list if
     there are no recorded values for the specified date.

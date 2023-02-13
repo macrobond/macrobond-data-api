@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from typing import List, Optional, Tuple, TYPE_CHECKING
+from typing import List, Optional, Sequence, TYPE_CHECKING
 from typing_extensions import Literal
 from dateutil import parser
 
@@ -28,8 +28,8 @@ class VintageSeries(Series):
         name: str,
         error_message: Optional[str],
         metadata: Optional["Metadata"],
-        values: Optional[Tuple[Optional[float], ...]],
-        dates: Optional[Tuple[datetime, ...]],
+        values: Optional[Sequence[Optional[float]]],
+        dates: Optional[Sequence[datetime]],
         _revision_time_stamp: Optional[datetime],
     ) -> None:
         super().__init__(name, error_message, metadata, values, dates)

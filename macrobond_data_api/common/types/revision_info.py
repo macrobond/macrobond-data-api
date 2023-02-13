@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Tuple, TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING, Optional, Sequence
 
 from typing_extensions import TypedDict
 
@@ -19,7 +19,7 @@ class RevisionInfoDict(TypedDict, total=False):
     has_revisions: bool
     time_stamp_of_first_revision: Optional[datetime]
     time_stamp_of_last_revision: Optional[datetime]
-    vintage_time_stamps: Tuple[datetime, ...]
+    vintage_time_stamps: Sequence[datetime]
 
 
 class RevisionInfo:
@@ -41,7 +41,7 @@ class RevisionInfo:
     has_revisions: bool
     time_stamp_of_first_revision: Optional[datetime]
     time_stamp_of_last_revision: Optional[datetime]
-    vintage_time_stamps: Tuple[datetime, ...]
+    vintage_time_stamps: Sequence[datetime]
 
     def __init__(
         self,
@@ -51,7 +51,7 @@ class RevisionInfo:
         has_revisions: bool,
         time_stamp_of_first_revision: Optional[datetime],
         time_stamp_of_last_revision: Optional[datetime],
-        vintage_time_stamps: Tuple[datetime, ...],
+        vintage_time_stamps: Sequence[datetime],
     ) -> None:
         self.name = name
         """The name of the series"""
@@ -96,3 +96,6 @@ class RevisionInfo:
 
     def __repr__(self) -> str:
         return f"RevisionInfo name: {self.name}"
+
+    def _repr_html_(self) -> str:
+        return self.to_pd_data_frame()._repr_html_()
