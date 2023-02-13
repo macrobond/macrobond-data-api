@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from typing import Any, Dict, Tuple, Optional, List, cast, Sequence, TYPE_CHECKING
+from typing import Any, Dict, Optional, List, Sequence, TYPE_CHECKING, cast
 from typing_extensions import Literal
 
 from .entity import Entity, EntityColumnsLiterals
@@ -53,7 +53,7 @@ class Series(Entity):
             self.dates = []
         else:
             self.values = values
-            self.dates = dates
+            self.dates = cast(Sequence[datetime], dates)
 
     def to_dict(self) -> Dict[str, Any]:
         if self.is_error:
