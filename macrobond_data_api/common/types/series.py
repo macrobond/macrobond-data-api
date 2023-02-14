@@ -76,7 +76,7 @@ class Series(Entity):
         return pandas.Series(self.values, self.dates, name=name)
 
     def _repr_html_(self) -> str:
-        return self.values_to_pd_series()._repr_html_()
+        return self.metadata_to_pd_series().to_frame()._repr_html_()
 
     def __eq__(self, other: Any) -> bool:
         return self is other or (

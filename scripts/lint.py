@@ -5,5 +5,7 @@ from pylint import pylint
 from pycodestyle import pycodestyle
 from pdoc3 import pdoc3
 
+import api_code_generator
+
 if __name__ == "__main__":
-    Context(black_check, mypy, pylint, pycodestyle, pdoc3)
+    Context(api_code_generator.verify, black_check, mypy, pylint, pycodestyle, pdoc3)

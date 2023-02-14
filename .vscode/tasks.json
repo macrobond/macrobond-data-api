@@ -113,6 +113,12 @@
             "args": [
                 "macrobond_financial/util/save_credential_to_keyring.py"
             ],
+        },
+        {
+            "label": "api code generator",
+            "args": [
+                "scripts/api_code_generator.py" , "--generate"
+            ]
         }
     ]
 }
