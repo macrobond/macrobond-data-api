@@ -237,7 +237,7 @@ class SeriesMethods:
             "v1/series/fetchobservationhistory",
             params={
                 "n": series_name,
-                "t": list(map(lambda x: x.isoformat(), date_of_the_observation)),
+                "t": [x.isoformat() for x in date_of_the_observation],
             },
         )
         return cast(List["SeriesObservationHistoryResponse"], response.json())

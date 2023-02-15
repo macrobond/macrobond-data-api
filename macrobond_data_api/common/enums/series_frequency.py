@@ -1,9 +1,9 @@
 # pylint: disable=invalid-name , missing-module-docstring
 
-from enum import IntFlag
+from enum import IntEnum
 
 
-class SeriesFrequency(IntFlag):
+class SeriesFrequency(IntEnum):
     """The series frequency. This must match SeriesCalendarFrequency."""
 
     ANNUAL = 1

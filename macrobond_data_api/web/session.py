@@ -150,7 +150,7 @@ class Session:
                 params=params,
                 stream=stream,
                 proxies=self.__proxies,
-                headers={"Accept": "application/json; charset=utf-8"},
+                headers={"Accept": "application/json"},
             )
 
         return self.__if_status_code_401_fetch_token_and_retry(http)
@@ -174,7 +174,7 @@ class Session:
                 json=json,
                 stream=stream,
                 proxies=self.__proxies,
-                headers={"Accept": "application/json; charset=utf-8"},
+                headers={"Accept": "application/json"},
             )
 
         return self.__if_status_code_401_fetch_token_and_retry(http)

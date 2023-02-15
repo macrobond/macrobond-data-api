@@ -3,11 +3,7 @@ import json
 import sys
 from macrobond_data_api.common import Client
 
-from .session import (
-    Session as _Session,
-    API_URL_DEFAULT,
-    AUTHORIZATION_URL_DEFAULT,
-)
+from .session import Session as _Session, API_URL_DEFAULT, AUTHORIZATION_URL_DEFAULT
 from .scope import Scope
 from .web_api import WebApi
 

@@ -87,7 +87,7 @@ def get_revision_info(self: "WebApi", *series_names: str, raise_error: Optional[
         map(lambda x, y: (x, y.get("errorText")), series_names, response),
     )
 
-    return _ReprHtmlSequence(list(map(to_obj, series_names, response)))
+    return _ReprHtmlSequence([to_obj(x, y) for x, y in zip(series_names, response)])
 
 
 def get_vintage_series(
@@ -120,11 +120,7 @@ def get_vintage_series(
 
     GetEntitiesError._raise_if(
         self.raise_error if raise_error is None else raise_error,
-        map(
-            lambda x, y: (x, y.error_message if y.is_error else None),
-            series_names,
-            series,
-        ),
+        map(lambda x, y: (x, y.error_message if y.is_error else None), series_names, series),
     )
 
     return _ReprHtmlSequence(series)
@@ -139,11 +135,7 @@ def get_nth_release(
 
     GetEntitiesError._raise_if(
         self.raise_error if raise_error is None else raise_error,
-        map(
-            lambda x, y: (x, y.error_message if y.is_error else None),
-            series_names,
-            series,
-        ),
+        map(lambda x, y: (x, y.error_message if y.is_error else None), series_names, series),
     )
 
     return _ReprHtmlSequence(series)

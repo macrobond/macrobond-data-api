@@ -36,7 +36,7 @@ class TestCase(UnittestTestCase):
         with warnings.catch_warnings(record=True) as wlist:
             warnings.simplefilter("always")
             mef()
-            self.assertEqual(len(wlist), 0, "\n\n".join(map(str, wlist)))
+            self.assertEqual(len(wlist), 0, "\n\n".join(str(x) for x in wlist))
 
         sys.stdout = sys.__stdout__
         sys.stderr = sys.__stderr__

@@ -1,9 +1,9 @@
 # pylint: disable=invalid-name , missing-module-docstring
 
-from enum import IntFlag
+from enum import IntEnum
 
 
-class SeriesWeekdays(IntFlag):
+class SeriesWeekdays(IntEnum):
     """A bitmask for the weekday used in a Macrobond daily time series."""
 
     SUNDAY = 1 << 0

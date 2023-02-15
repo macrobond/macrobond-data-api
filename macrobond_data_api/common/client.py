@@ -22,12 +22,7 @@ class Client(ABC, Generic[TypeVarApi]):
     def __enter__(self) -> TypeVarApi:
         return self.open()  # pragma: no cover
 
-    def __exit__(
-        self,
-        exception_type: Any,
-        exception_value: Any,
-        traceback: Any,
-    ) -> None:
+    def __exit__(self, exception_type: Any, exception_value: Any, traceback: Any) -> None:
         self.close()  # pragma: no cover
 
     @property

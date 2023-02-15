@@ -141,7 +141,7 @@ class UnifiedSeriesList(Sequence[UnifiedSeries]):
         return self.to_pd_data_frame()._repr_html_()
 
     def __repr__(self) -> str:
-        names = ", ".join(map(lambda x: x.name, self))
+        names = ", ".join(x.name for x in self)
         return f"UnifiedSeries series: ({names})"
 
     @overload

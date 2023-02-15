@@ -1,7 +1,7 @@
-from enum import IntFlag
+from enum import IntEnum
 
 
-class MetadataAttributeType(IntFlag):
+class MetadataAttributeType(IntEnum):
     INT = 3
     """32-bit signed integer"""
 

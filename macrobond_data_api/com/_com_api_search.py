@@ -1,7 +1,8 @@
-from typing import Any, List, TYPE_CHECKING, MutableMapping
+from typing import List, TYPE_CHECKING
 
 from macrobond_data_api.common.types import SearchResult
 from ._fill_metadata_from_entity import _fill_metadata_from_entity
+
 
 if TYPE_CHECKING:  # pragma: no cover
     from .com_api import ComApi
@@ -46,6 +47,4 @@ def entity_search_multi_filter(
         querys.append(query)
 
     result = self.database.Search(querys)
-
-    entities: List[MutableMapping[str, Any]] = list((_fill_metadata_from_entity(x) for x in result.Entities))
-    return SearchResult(entities, result.IsTruncated)
+    return SearchResult([_fill_metadata_from_entity(x) for x in result.Entities], result.IsTruncated)

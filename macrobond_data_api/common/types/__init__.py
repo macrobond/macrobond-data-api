@@ -12,12 +12,7 @@ from .series import Series, SeriesColumns
 
 from .entity import Entity, EntityColumns
 
-from .unified_series import (
-    UnifiedSeries,
-    UnifiedSeriesList,
-    UnifiedSeriesDict,
-    UnifiedSeriesColumns,
-)
+from .unified_series import UnifiedSeries, UnifiedSeriesList, UnifiedSeriesDict, UnifiedSeriesColumns
 
 from .vintage_series import VintageSeries
 
@@ -30,15 +25,9 @@ from .metadata_value_information import (
 
 from .get_entity_error import EntityErrorInfo, GetEntitiesError
 
-from .metadata_attribute_information import (
-    TypedDictMetadataAttributeInformation,
-    MetadataAttributeInformationColumns,
-)
+from .metadata_attribute_information import TypedDictMetadataAttributeInformation, MetadataAttributeInformationColumns
 
-from .series_observation_history import (
-    SeriesObservationHistory,
-    SeriesObservationHistoryColumns,
-)
+from .series_observation_history import SeriesObservationHistory, SeriesObservationHistoryColumns
 
 from .revision_info import RevisionInfo, RevisionInfoDict
 

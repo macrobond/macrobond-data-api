@@ -26,10 +26,8 @@ def entity_search_multi_filter(
             "mustNotHaveAttributes": list(_filter.must_not_have_attributes),
         }
 
-    web_filters = list(map(convert_filter_to_web_filter, filters))
-
     request: "SearchRequest" = {
-        "filters": web_filters,
+        "filters": [convert_filter_to_web_filter(x) for x in filters],
         "includeDiscontinued": include_discontinued,
         "noMetadata": no_metadata,
     }

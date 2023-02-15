@@ -1,7 +1,7 @@
 from datetime import datetime
 from typing import Optional, List
 
-from enum import IntFlag
+from enum import IntEnum
 
 from dateutil import parser
 
@@ -44,7 +44,7 @@ class VintageValues:
         return f"VintageValues vintage_time_stamp: {self.vintage_time_stamp}"
 
 
-class SeriesWithVintagesErrorCode(IntFlag):
+class SeriesWithVintagesErrorCode(IntEnum):
     PARTIAL_CONTENT = 206
     """The item was not modified and is not included in the response"""
 

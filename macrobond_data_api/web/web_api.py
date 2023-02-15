@@ -15,11 +15,7 @@ from .web_types.subscription_body import SubscriptionBody
 
 from .series_with_vintages import SeriesWithVintages
 
-from ._web_api_metadata import (
-    metadata_list_values,
-    metadata_get_attribute_information,
-    metadata_get_value_information,
-)
+from ._web_api_metadata import metadata_list_values, metadata_get_attribute_information, metadata_get_value_information
 
 from ._web_api_revision import (
     get_all_vintage_series,
@@ -29,13 +25,7 @@ from ._web_api_revision import (
     get_observation_history,
 )
 
-from ._web_api_series import (
-    get_one_series,
-    get_series,
-    get_one_entity,
-    get_entities,
-    get_unified_series,
-)
+from ._web_api_series import get_one_series, get_series, get_one_entity, get_entities, get_unified_series
 
 from ._web_api_search import entity_search_multi_filter
 
@@ -315,10 +305,8 @@ class WebApi(Api):
                 "mustNotHaveAttributes": list(_filter.must_not_have_attributes),
             }
 
-        web_filters = list(map(convert_filter_to_web_filter, filters))
-
         request: "SearchRequest" = {
-            "filters": web_filters,
+            "filters": [convert_filter_to_web_filter(x) for x in filters],
             "includeDiscontinued": include_discontinued,
             "noMetadata": True,
             "allowLongResult": True,

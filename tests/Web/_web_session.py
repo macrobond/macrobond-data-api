@@ -42,7 +42,7 @@ class WebSession(TestCase):
             params=None,
             stream=False,
             proxies=None,
-            headers={"Accept": "application/json; charset=utf-8"},
+            headers={"Accept": "application/json"},
         )
 
     def test_retry(self) -> None:
@@ -69,7 +69,7 @@ class WebSession(TestCase):
             params=None,
             stream=False,
             proxies=None,
-            headers={"Accept": "application/json; charset=utf-8"},
+            headers={"Accept": "application/json"},
         )
         mock.request.assert_called_with(
             "get",
@@ -99,7 +99,7 @@ class WebSession(TestCase):
             params=None,
             stream=False,
             proxies=None,
-            headers={"Accept": "application/json; charset=utf-8"},
+            headers={"Accept": "application/json"},
         )
 
         mock.request.assert_called_with("get", "https://.well-known/openid-configuration", True, proxies=None)
@@ -124,7 +124,7 @@ class WebSession(TestCase):
             params=None,
             stream=False,
             proxies=None,
-            headers={"Accept": "application/json; charset=utf-8"},
+            headers={"Accept": "application/json"},
         )
 
         mock.request.assert_called_with("get", "https://.well-known/openid-configuration", True, proxies=None)
@@ -149,7 +149,7 @@ class WebSession(TestCase):
             params=None,
             stream=False,
             proxies=None,
-            headers={"Accept": "application/json; charset=utf-8"},
+            headers={"Accept": "application/json"},
         )
 
         mock.request.assert_called_with("get", "https://.well-known/openid-configuration", True, proxies=None)
@@ -174,7 +174,7 @@ class WebSession(TestCase):
             params=None,
             stream=False,
             proxies=None,
-            headers={"Accept": "application/json; charset=utf-8"},
+            headers={"Accept": "application/json"},
         )
 
         mock.request.assert_called_with("get", "https://.well-known/openid-configuration", True, proxies=None)

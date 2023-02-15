@@ -1,13 +1,13 @@
 # pylint: disable = missing-module-docstring
 
 from typing import Optional, List
-from enum import IntFlag
+from enum import IntEnum
 from typing_extensions import TypedDict
 
 from ....common.enums import MetadataAttributeType
 
 
-class MetadataAttributeTypeRestriction(IntFlag):
+class MetadataAttributeTypeRestriction(IntEnum):
     URL = 1
     """The string is an URL"""
 

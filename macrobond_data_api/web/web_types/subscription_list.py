@@ -26,12 +26,7 @@ class SubscriptionList(Sequence[SubscriptionListItem], SubscriptionBody):
             parser.parse(download_full) if download_full is not None else None,
             SubscriptionListState(response["state"]),
         )
-        self.items = list(
-            map(
-                lambda x: SubscriptionListItem(x["name"], parser.parse(x["modified"])),
-                response["entities"],
-            )
-        )
+        self.items = [SubscriptionListItem(x["name"], parser.parse(x["modified"])) for x in response["entities"]]
 
     @overload
     def __getitem__(self, i: int) -> SubscriptionListItem:

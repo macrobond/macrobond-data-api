@@ -89,11 +89,7 @@ def get_series(self: "WebApi", *series_names: str, raise_error: Optional[bool] =
     series = [_create_series(x, y, self.session) for x, y in zip(response, series_names)]
     GetEntitiesError._raise_if(
         self.raise_error if raise_error is None else raise_error,
-        map(
-            lambda x, y: (x, y.error_message if y.is_error else None),
-            series_names,
-            series,
-        ),
+        map(lambda x, y: (x, y.error_message if y.is_error else None), series_names, series),
     )
     return _ReprHtmlSequence(series)
 
@@ -107,11 +103,7 @@ def get_entities(self: "WebApi", *entity_names: str, raise_error: Optional[bool]
     entitys = [_create_entity(x, y, self.session) for x, y in zip(response, entity_names)]
     GetEntitiesError._raise_if(
         self.raise_error if raise_error is None else raise_error,
-        map(
-            lambda x, y: (x, y.error_message if y.is_error else None),
-            entity_names,
-            entitys,
-        ),
+        map(lambda x, y: (x, y.error_message if y.is_error else None), entity_names, entitys),
     )
     return _ReprHtmlSequence(entitys)
 

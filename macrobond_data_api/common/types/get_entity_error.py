@@ -53,12 +53,7 @@ class GetEntitiesError(Exception):
         """entities"""
 
         self.message = "failed to retrieve:\n" + (
-            "\n".join(
-                map(
-                    lambda x: "\t" + x.name + " error_message: " + x.error_message,
-                    self.entities,
-                )
-            )
+            "\n".join("\t" + x.name + " error_message: " + x.error_message for x in self.entities)
         )
         """message"""
 

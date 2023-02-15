@@ -175,18 +175,18 @@ def get_unified_series_no_series(test: TestCase, api: Api) -> None:
         raise_error=False,
     )
 
-    test.assertEqual(unified.dates, tuple())
+    test.assertEqual(unified.dates, [])
     test.assertEqual(len(unified), 1)
 
     test.assertEqual(unified[0].is_error, True)
     test.assertEqual(unified[0].error_message, "noseries! : Not found")
-    test.assertEqual(unified[0].values, tuple())
+    test.assertEqual(unified[0].values, [])
 
     unified = api.get_unified_series(
         raise_error=False,
     )
 
-    test.assertEqual(unified.dates, tuple())
+    test.assertEqual(unified.dates, [])
     test.assertEqual(len(unified), 0)
 
     with test.assertRaises(GetEntitiesError) as context:

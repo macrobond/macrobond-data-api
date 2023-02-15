@@ -48,12 +48,7 @@ def metadata_get_value_information(
     try:
         return _ReprHtmlSequence(
             [
-                MetadataValueInformationItem(
-                    x["attributeName"],
-                    x["value"],
-                    x["description"],
-                    x.get("comment"),
-                )
+                MetadataValueInformationItem(x["attributeName"], x["value"], x["description"], x.get("comment"))
                 for x in self.session.metadata.get_value_information(*name_val)
             ]
         )

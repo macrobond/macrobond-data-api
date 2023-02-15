@@ -1,11 +1,11 @@
 # pylint: disable = missing-module-docstring
 
 from typing import Optional
-from enum import IntFlag
+from enum import IntEnum
 from typing_extensions import TypedDict
 
 
-class ResponseErrorCode(IntFlag):
+class ResponseErrorCode(IntEnum):
     """Response Error Codes"""
 
     NOT_MODIFIED = 304

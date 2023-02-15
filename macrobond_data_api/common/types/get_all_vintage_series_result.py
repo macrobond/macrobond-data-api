@@ -23,11 +23,7 @@ class GetAllVintageSeriesResult(Sequence[VintageSeries]):
     series: Sequence[VintageSeries]
     series_name: str
 
-    def __init__(
-        self,
-        series: Sequence[VintageSeries],
-        series_name: str,
-    ) -> None:
+    def __init__(self, series: Sequence[VintageSeries], series_name: str) -> None:
         super().__init__()
         self.series = series
         """A sequence of time series corresponding to the vintages."""
@@ -40,7 +36,7 @@ class GetAllVintageSeriesResult(Sequence[VintageSeries]):
         """
         import pandas  # pylint: disable=import-outside-toplevel
 
-        data = list(map(lambda s: s.values_to_pd_series(), self))
+        data = [x.values_to_pd_series() for x in self]
         data_frame = pandas.concat(data, axis=1, keys=[s.revision_time_stamp for s in self])
         data_frame = data_frame.sort_index()
         return data_frame
@@ -49,10 +45,7 @@ class GetAllVintageSeriesResult(Sequence[VintageSeries]):
         """
         Return the result as a dictionary.
         """
-        return {
-            "series_name": self.series_name,
-            "series": tuple(map(lambda x: x.to_dict(), self)),
-        }
+        return {"series_name": self.series_name, "series": [x.to_dict() for x in self]}
 
     def _repr_html_(self) -> str:
         return self.to_pd_data_frame()._repr_html_()

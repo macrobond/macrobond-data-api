@@ -1,12 +1,5 @@
 from dataclasses import dataclass
-from typing import (
-    Any,
-    Optional,
-    List,
-    TYPE_CHECKING,
-    Sequence,
-    overload,
-)
+from typing import Any, Optional, List, TYPE_CHECKING, Sequence, overload
 from typing_extensions import TypedDict, Literal
 
 __pdoc__ = {
@@ -117,7 +110,7 @@ class MetadataValueInformation(Sequence[MetadataValueInformationItem]):
 
     def to_dict(self) -> List[TypedDictMetadataValueInformationItem]:
         """The information represented as a dictionary"""
-        return list(map(lambda x: x.to_dict(), self))
+        return [x.to_dict() for x in self]
 
     @overload
     def __getitem__(self, i: int) -> MetadataValueInformationItem:
