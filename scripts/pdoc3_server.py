@@ -1,17 +1,10 @@
-import os
-from context import Context
+from context import WorkItem, run
 
 
-def pdoc3server(context: Context) -> None:
-    context.python_run(
-        "pdoc",
-        " --http : --html --template-dir docs --force -o docs/build macrobond_data_api",
-    )
-
-    file_url = os.path.join(os.getcwd(), "docs", "build", "macrobond_data_api", "index.html").replace("\\", "/")
-
-    print("file:///" + file_url)
+class Pdoc3Server(WorkItem):
+    async def run(self) -> None:
+        await self.python_run("pdoc", " --http : --html --template-dir docs --force -o docs/build macrobond_data_api")
 
 
 if __name__ == "__main__":
-    Context(pdoc3server)
+    run(Pdoc3Server)

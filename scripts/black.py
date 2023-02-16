@@ -1,9 +1,10 @@
-from context import Context
+from context import WorkItem, run
 
 
-def black(context: Context) -> None:
-    context.python_run("black", "--extend-exclude macrobond_data_api_python_env .")
+class Black(WorkItem):
+    async def run(self) -> None:
+        await self.python_run("black", "--extend-exclude macrobond_data_api_python_env .")
 
 
 if __name__ == "__main__":
-    Context(black)
+    run(Black)

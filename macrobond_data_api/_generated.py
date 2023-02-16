@@ -2,7 +2,7 @@
 # This is generated code, do not edit
 #
 
-from typing import Sequence, Union, Tuple, Dict
+from typing import Generator, Sequence, Union, Tuple, Dict
 from datetime import datetime
 from macrobond_data_api.common.types import (
     SearchFilter,
@@ -19,6 +19,8 @@ from macrobond_data_api.common.types import (
     UnifiedSeriesList,
     GetAllVintageSeriesResult,
     SeriesObservationHistory,
+    SeriesWithVintages,
+    RevisionHistoryRequest,
 )
 from macrobond_data_api.common.enums import SeriesFrequency, SeriesWeekdays, CalendarMergeMode
 from ._get_api import _get_api
@@ -147,6 +149,29 @@ def get_entities(*entity_names: str, raise_error: bool = None) -> Sequence[Entit
 
     """
     return _get_api().get_entities(*entity_names, raise_error=raise_error)
+
+
+def get_many_series_with_revisions(
+    requests: Sequence[RevisionHistoryRequest],
+) -> Generator[SeriesWithVintages, None, None]:
+    """
+    Download all revisions for one or more series.
+    Specify a callback to receive the response series by series.
+    This method is primarily intended for syncronizing a local database with updates.
+
+    You are expected to retain the LastModifiedTimeStamp, LastRevisionTimeStamp and LastRevisionAdjustmentTimeStamp
+    for each series and use them in the next request.
+
+    Parameters
+    ----------
+    callback : `Callable[[macrobond_data_api.common.types.SeriesWithVintages], None]`
+        A callback that will receive the response series by series.
+    requests : `Sequence[macrobond_data_api.common.types.RevisionHistoryRequest]`
+        A sequence of series requests.
+
+
+    """
+    return _get_api().get_many_series_with_revisions(requests)
 
 
 def get_nth_release(nth: int, *series_names: str, raise_error: bool = None) -> Sequence[Series]:

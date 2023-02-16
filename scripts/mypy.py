@@ -1,4 +1,4 @@
-from context import Context
+from context import WorkItem, run
 
 # https://mypy.readthedocs.io/en/stable/command_line.html
 
@@ -6,9 +6,12 @@ from context import Context
 # TODO: @mb-jp use --strict for mypy
 
 
-def mypy(context: Context) -> None:
-    context.python_run("mypy", ". --show-error-codes --exclude macrobond_data_api_python_env --python-version 3.7")
+class Mypy(WorkItem):
+    async def run(self) -> None:
+        await self.python_run(
+            "mypy", ". --show-error-codes --exclude macrobond_data_api_python_env --python-version 3.7"
+        )
 
 
 if __name__ == "__main__":
-    Context(mypy)
+    run(Mypy)

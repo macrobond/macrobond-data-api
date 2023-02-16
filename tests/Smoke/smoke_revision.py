@@ -1,11 +1,16 @@
-from datetime import datetime
+from datetime import datetime, timezone
+
 from pandas import Series as PdSeries  # type: ignore
-
+import pytest
 from macrobond_data_api.common import Api
-from tests.test_common import TestCase
+from macrobond_data_api.common.types import RevisionHistoryRequest
+from macrobond_data_api.web import WebApi
+from macrobond_data_api.com import ComApi
 
 
-def run(test: TestCase, api: Api) -> None:  # pylint: disable=unused-argument
+@pytest.mark.usefixtures("assert_no_warnings")
+@pytest.mark.parametrize("api", ["web", "com"], indirect=True)
+def test_com_and_web(api: Api) -> None:
     # get_revision_info
     result1 = api.get_revision_info("usgdp")[0]
     str(result1.to_pd_data_frame())
@@ -41,29 +46,33 @@ def run(test: TestCase, api: Api) -> None:  # pylint: disable=unused-argument
     result5.to_pd_series()
 
 
-class Web(TestCase):
-    def test(self) -> None:
-        self.assertNoWarnings(lambda: run(self, self.web_api))
+def test_common(web: WebApi, com: ComApi) -> None:
+    PdSeries.compare(
+        web.get_all_vintage_series("usgdp")[0].values_to_pd_series(),
+        com.get_all_vintage_series("usgdp")[0].values_to_pd_series(),
+    )
 
+    PdSeries.compare(
+        web.get_all_vintage_series("ustrad4488")[0].values_to_pd_series(),
+        com.get_all_vintage_series("ustrad4488")[0].values_to_pd_series(),
+    )
 
-class Com(TestCase):
-    def test(self) -> None:
-        self.assertNoWarnings(lambda: run(self, self.com_api))
+    PdSeries.compare(
+        web.get_all_vintage_series("ct_au_e_ao_c_22_v")[0].values_to_pd_series(),
+        com.get_all_vintage_series("ct_au_e_ao_c_22_v")[0].values_to_pd_series(),
+    )
 
+    # get_many_series_with_revisions
 
-class Common(TestCase):
-    def test(self) -> None:
-        PdSeries.compare(
-            self.web_api.get_all_vintage_series("usgdp")[0].values_to_pd_series(),
-            self.com_api.get_all_vintage_series("usgdp")[0].values_to_pd_series(),
-        )
+    for _ in com.get_many_series_with_revisions([]):
+        ...
 
-        PdSeries.compare(
-            self.web_api.get_all_vintage_series("ustrad4488")[0].values_to_pd_series(),
-            self.com_api.get_all_vintage_series("ustrad4488")[0].values_to_pd_series(),
-        )
+    for _ in web.get_many_series_with_revisions([]):
+        ...
 
-        PdSeries.compare(
-            self.web_api.get_all_vintage_series("ct_au_e_ao_c_22_v")[0].values_to_pd_series(),
-            self.com_api.get_all_vintage_series("ct_au_e_ao_c_22_v")[0].values_to_pd_series(),
-        )
+    _ = next(
+        web.get_many_series_with_revisions([RevisionHistoryRequest("usgdp", datetime(2000, 2, 3, tzinfo=timezone.utc))])
+    )
+    _ = next(
+        com.get_many_series_with_revisions([RevisionHistoryRequest("usgdp", datetime(2000, 2, 3, tzinfo=timezone.utc))])
+    )

@@ -19,9 +19,9 @@
             "command": "py -3 -m venv macrobond_data_api_python_env"
         },
         {
-            "label": "unittest",
+            "label": "pytest",
             "args": [
-                "scripts/unittest.py"
+                "scripts/pytest_.py"
             ],
         },
         {
@@ -115,9 +115,9 @@
             ],
         },
         {
-            "label": "api code generator",
+            "label": "code generation",
             "args": [
-                "scripts/api_code_generator.py" , "--generate"
+                "scripts/code_generation.py" , "--generate"
             ]
         }
     ]

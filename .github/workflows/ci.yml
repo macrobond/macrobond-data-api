@@ -30,6 +30,10 @@ jobs:
     - name: Run set_up_dev_environment.py
       run: python scripts/set_up_dev_environment.py
 
+    - name: Api code generator
+      if: always()
+      run: python scripts/api_code_generator.py --verify
+
     - name: Black
       if: always()
       run: python scripts/black_check.py

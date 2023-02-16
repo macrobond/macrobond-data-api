@@ -1,12 +1,15 @@
-from typing import Any, List
-from unittest import skip  # type: ignore[attr-defined]
-from macrobond_data_api.web import create_revision_history_request
+from typing import List
+
+import pytest  # type: ignore[attr-defined]
 from macrobond_data_api.web.web_types import SubscriptionBody, SubscriptionListItem
 from macrobond_data_api.common import Api
-from tests.test_common import TestCase
+from macrobond_data_api.web import WebApi
+from macrobond_data_api.common.types import RevisionHistoryRequest
 
 
-def run(test: TestCase, api: Api) -> None:  # pylint: disable=unused-argument
+@pytest.mark.usefixtures("assert_no_warnings")
+@pytest.mark.parametrize("api", ["web", "com"], indirect=True)
+def test(api: Api) -> None:  # pylint: disable=unused-argument
     # Get_one_series
     result1 = api.get_one_series("usgdp")
     str(result1.values_to_pd_series())
@@ -35,20 +38,17 @@ def run(test: TestCase, api: Api) -> None:  # pylint: disable=unused-argument
     result5.to_dict()
 
 
-class Web(TestCase):
-    def test(self) -> None:
-        self.assertNoWarnings(lambda: run(self, self.web_api))
+class TestWeb:
+    @pytest.mark.usefixtures("assert_no_warnings")
+    def test_get_subscription_list(self, web: WebApi) -> None:
+        pytest.skip("needs access")
+        result = web.get_subscription_list()  # pylint: disable=unused-variable
+        breakpoint()  # pylint: disable=forgotten-debug-statement
 
-    @skip("needs access")
-    def test_get_subscription_list(self) -> None:
-        def _run() -> None:
-            result = self.web_api.get_subscription_list()  # pylint: disable=unused-variable
-            breakpoint()  # pylint: disable=forgotten-debug-statement
+    @pytest.mark.usefixtures("assert_no_warnings")
+    def test_get_subscription_list_iterative(self, web: WebApi) -> None:
+        pytest.skip("needs access")
 
-        self.assertNoWarnings(_run)
-
-    @skip("needs access")
-    def test_get_subscription_list_iterative(self) -> None:
         def empty_method_1(body: SubscriptionBody) -> bool:  # pylint: disable=unused-argument
             return True
 
@@ -58,25 +58,12 @@ class Web(TestCase):
         ) -> bool:
             return True
 
-        self.assertNoWarnings(lambda: self.web_api.get_subscription_list_iterative(empty_method_1, empty_method_2))
+        web.get_subscription_list_iterative(empty_method_1, empty_method_2)
 
-    @skip("needs access")
-    def test_get_all_vintages_multiple_series(self) -> None:
-        def _run() -> None:
-            def empty_method_1(arg: Any) -> None:  # pylint: disable=unused-argument
-                ...
+    @pytest.mark.usefixtures("assert_no_warnings")
+    @pytest.mark.parametrize("api", ["web", "com"], indirect=True)
+    def test_get_many_series_with_revisions(self, api: Api) -> None:
+        pytest.skip("needs access")
 
-            self.web_api.get_all_vintages_multiple_series(
-                empty_method_1,
-                [
-                    create_revision_history_request("usgdp"),
-                    create_revision_history_request("uscpi"),
-                ],
-            )
-
-        self.assertNoWarnings(_run)
-
-
-class Com(TestCase):
-    def test(self) -> None:
-        self.assertNoWarnings(lambda: run(self, self.com_api))
+        for _ in api.get_many_series_with_revisions([RevisionHistoryRequest("usgdp"), RevisionHistoryRequest("uscpi")]):
+            ...

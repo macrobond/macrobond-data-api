@@ -1,9 +1,10 @@
-from context import Context
+from context import WorkItem, run
 
 
-def pycodestyle(context: Context) -> None:
-    context.python_run("pycodestyle", "--count . --exclude=macrobond_data_api_python_env")
+class Pycodestyle(WorkItem):
+    async def run(self) -> None:
+        await self.python_run("pycodestyle", "--count . --exclude=macrobond_data_api_python_env")
 
 
 if __name__ == "__main__":
-    Context(pycodestyle)
+    run(Pycodestyle)

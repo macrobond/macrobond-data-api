@@ -1,7 +1,8 @@
 from typing import Any
 
-from unittest import TestCase  # type: ignore
 from unittest.mock import Mock
+
+import pytest
 
 from macrobond_data_api.web.session import Session
 
@@ -18,7 +19,7 @@ def new_response(status_code: int, json: Any = None, side_effect: Any = None) ->
     return response
 
 
-class WebSession(TestCase):
+class TestWebSession:
     def test_get_200(self) -> None:
         mock = Mock()
         session = Session(
@@ -35,7 +36,7 @@ class WebSession(TestCase):
 
         # asserts
 
-        self.assertEqual(response.status_code, 200)
+        assert response.status_code == 200
 
         mock.get.assert_called_with(
             url="https://",
@@ -62,7 +63,7 @@ class WebSession(TestCase):
 
         # asserts
 
-        self.assertEqual(response.status_code, 200)
+        assert response.status_code == 200
 
         mock.get.assert_called_with(
             url="https://",
@@ -86,13 +87,10 @@ class WebSession(TestCase):
         mock.get.return_value = new_response(401)
         mock.request.return_value = new_response(500)
 
-        with self.assertRaises(Exception) as context_manager:
+        with pytest.raises(Exception, match="discovery Exception, status code is not 200"):
             session.get("")
-        ex = context_manager.exception
 
         # asserts
-
-        self.assertEqual(ex.args[0], "discovery Exception, status code is not 200")
 
         mock.get.assert_called_with(
             url="https://",
@@ -111,13 +109,10 @@ class WebSession(TestCase):
         mock.get.return_value = new_response(401)
         mock.request.return_value = new_response(200, side_effect=Exception("Boom!"))
 
-        with self.assertRaises(Exception) as context_manager:
+        with pytest.raises(Exception, match="discovery Exception, not valid json."):
             session.get("")
-        ex = context_manager.exception
 
         # asserts
-
-        self.assertEqual(ex.args[0], "discovery Exception, not valid json.")
 
         mock.get.assert_called_with(
             url="https://",
@@ -136,13 +131,10 @@ class WebSession(TestCase):
         mock.get.return_value = new_response(401)
         mock.request.return_value = new_response(200, json="")
 
-        with self.assertRaises(Exception) as context_manager:
+        with pytest.raises(Exception, match="discovery Exception, no root obj in json."):
             session.get("")
-        ex = context_manager.exception
 
         # asserts
-
-        self.assertEqual(ex.args[0], "discovery Exception, no root obj in json.")
 
         mock.get.assert_called_with(
             url="https://",
@@ -161,13 +153,10 @@ class WebSession(TestCase):
         mock.get.return_value = new_response(401)
         mock.request.return_value = new_response(200, json={})
 
-        with self.assertRaises(Exception) as context_manager:
+        with pytest.raises(Exception, match="discovery Exception, token_endpoint in root obj."):
             session.get("")
-        ex = context_manager.exception
 
         # asserts
-
-        self.assertEqual(ex.args[0], "discovery Exception, token_endpoint in root obj.")
 
         mock.get.assert_called_with(
             url="https://",

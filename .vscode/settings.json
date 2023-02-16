@@ -5,20 +5,15 @@
     "files.exclude": {
         "**/__pycache__": true,
         "**/.mypy_cache": true,
+        ".pytest_cache": true,
         "dist/": true,
         "macrobond_data_api.egg-info/": true,
         "macrobond_data_api_python_env/":true,
         "build/": true
     },
-    "python.testing.unittestArgs": [
-        "-v",
-        "-s",
-        "./tests",
-        "-p",
-        "**.py"
-    ],
-    "python.testing.pytestEnabled": false,
-    "python.testing.unittestEnabled": true,
+    "python.testing.pytestArgs": ["-n", "auto" , "-p", "no:faulthandler"],
+    "python.testing.pytestEnabled": true,
+    "python.testing.unittestEnabled": false,
     "testing.autoRun.mode": "all",
     "testing.autoRun.delay": 2000,
     "python.linting.enabled": true,

@@ -1,6 +1,8 @@
 import os
 import sys
-from typing import Callable, List, Optional
+import asyncio
+import time
+from typing import Any, Callable, List, Optional, cast, Sequence
 
 
 def error_print(text: str) -> None:
@@ -13,55 +15,148 @@ def warning_print(text: str) -> None:
 
 
 class _ShellCommand:
-    def __init__(self, command: str, ignore_exit_code: bool, exit_code: int) -> None:
+    def __init__(self, command: str, ignore_exit_code: bool, exit_code: int, stdout: str, stderr: str) -> None:
         self.command = command
         self.ignore_exit_code = ignore_exit_code
         self.exit_code = exit_code
+        self.stdout = stdout
+        self.stderr = stderr
 
     def __str__(self) -> str:
-        return (
-            f'command: "{self.command}", ignore_exit_code: {self.ignore_exit_code}, ' + f"exit_code: {self.exit_code}"
-        )
+        ret = f'"{self.command}"'
 
+        if self.ignore_exit_code:
+            ret += ", ignore_exit_code: True,"
 
-class Context:
-    def __init__(self, *mefs: Callable[["Context"], None]) -> None:
-        def sys_exit(code: int) -> None:
-            sys.exit(code)
-
-        self.hade_error = False
-        self.shell_commands: List[_ShellCommand] = []
-        self.python_path = sys.executable
-
-        for mef in mefs:
-            mef(self)
-        print("python_path: " + self.python_path)
-        print("--- shell commands ---")
-        for shell_command in self.shell_commands:
-            print(str(shell_command))
-
-        print("Error" if self.hade_error else "")
-        if self.hade_error:
-            sys_exit(1)
-
-    def shell_command(self, command: str, ignore_exit_code: bool = False, prefix: str = "") -> bool:
-        print("shell_command start :" + command)
-        exit_code = os.system(prefix + command)
-        print("shell_command end :" + command)
-        print("exit_code " + str(exit_code))
-        self.shell_commands.append(_ShellCommand(command, ignore_exit_code, exit_code))
-        if exit_code != 0 and not ignore_exit_code:
-            self.hade_error = True
-            return False
-        return True
-
-    def python_run(self, name: Optional[str], *args: str) -> None:
-        def run(command: str) -> None:
-            self.shell_command(command, prefix='"' + self.python_path + '" ')
-
-        if name is not None:
-            for arg in args:
-                run("-m " + name + " " + arg)
+        if self.ignore_exit_code is False:
+            if self.exit_code == 0:
+                ret += " ✅"
+            else:
+                ret += " ❌"
         else:
-            for arg in args:
-                run(arg)
+            ret += " ❔"
+
+        ret += f" exit code: {self.exit_code}"
+
+        return ret
+
+    @property
+    def is_error(self) -> bool:
+        return not self.ignore_exit_code and self.exit_code != 0
+
+
+class WorkItem:
+    def __init__(self, in_sequence: bool, python_path: str) -> None:
+        self.in_sequence = in_sequence
+        self.python_path = python_path
+        self.hade_error = False
+        self.commands: List[_ShellCommand] = []
+        self.out = ""
+
+    def __bool__(self) -> bool:
+        return self.hade_error
+
+    @property
+    def name(self) -> str:
+        return self.__class__.__name__.lower()
+
+    @property
+    def symbole(self) -> str:
+        return "❌" if self.hade_error else "✅"
+
+    async def _run(self) -> None:
+        await self.run()
+        print(self.symbole, end=" ", flush=True)
+
+    async def run(self) -> None:
+        ...
+
+    def print(self, object_: object) -> None:
+        if self.in_sequence:
+            print(object_)
+        else:
+            self.out += str(object_) + "\n"
+
+    async def python_run(self, name: Optional[str], *args: str, ignore_exit_code: bool = False) -> None:
+        prefix = f'"{self.python_path }" '
+
+        for arg in args:
+            command = f"-m {name} {arg}" if name else arg
+
+            self.print("shell_command start :" + command)
+
+            if self.in_sequence:
+                exit_code = os.system(prefix + command)
+
+                shell_command = _ShellCommand(command, ignore_exit_code, exit_code, "", "")
+            else:
+                proc = await asyncio.create_subprocess_shell(
+                    prefix + command, stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE
+                )
+                stdout, stderr = await proc.communicate()
+                exit_code = cast(int, proc.returncode)
+
+                shell_command = _ShellCommand(
+                    command, ignore_exit_code, cast(int, proc.returncode), stdout.decode(), stderr.decode()
+                )
+                self.print("stdout")
+                self.print(shell_command.stdout)
+                self.print("stderr")
+                self.print(shell_command.stderr)
+
+            self.print("shell_command end :" + command)
+            self.print("exit_code " + str(exit_code))
+
+            self.commands.append(shell_command)
+
+            if shell_command.is_error:
+                self.hade_error = True
+
+
+async def _run_all(in_sequence: bool, work_items: Sequence) -> Any:
+    if in_sequence:
+        for work_item in work_items:
+            print("Start " + work_item.name)
+            await work_item.run()
+            print("End " + work_item.name)
+    else:
+        print(f"Running the {len(work_items)} work items: ", end="", flush=True)
+        await asyncio.gather(*[x._run() for x in work_items])
+        print("")
+
+
+def run(*work: Callable[[bool, str], WorkItem], in_sequence: bool = True) -> None:
+    start_time = time.time()
+    python_path = sys.executable
+    work_items = [x(in_sequence, python_path) for x in work]
+
+    loop = asyncio.ProactorEventLoop()
+    asyncio.set_event_loop(loop)
+    loop.run_until_complete(_run_all(in_sequence, work_items))
+
+    if not in_sequence:
+        for work_item in work_items:
+            print("Start " + work_item.name)
+            print(work_item.out)
+            print("End " + work_item.name)
+
+    elapsed = time.time() - start_time
+    print("elapsed: seconds " + str(elapsed))
+    print("in_sequence: " + str(in_sequence))
+    print("python_path: " + python_path)
+
+    print("")
+
+    print("--- WorkItems ---")
+    for work_item in work_items:
+        print(work_item.name + " " + work_item.symbole)
+        if work_item.hade_error:
+            print(work_item.out)
+
+    print("")
+
+    if any(work_items):
+        print("Hade Errors ❌")
+        sys.exit(1)
+
+    print("No Errors ✅")

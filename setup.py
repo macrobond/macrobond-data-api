@@ -92,6 +92,8 @@ setuptools.setup(
             "pycodestyle==2.10.0",
             "pdoc3==0.10.0",
             "build>=0.10.0",
+            "pytest==7.2.1",
+            "pytest-xdist==3.2.0",
             "coverage>=6.5.0",
             "black[jupyter]==23.1.0",
             "requests[socks]>=" + REQUESTS_VERSION,

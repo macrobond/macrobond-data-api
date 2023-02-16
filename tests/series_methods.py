@@ -1,204 +1,141 @@
 from pandas import Series as PdSeries, DataFrame  # type: ignore
+import pytest
 
 from macrobond_data_api.common import Api
+from macrobond_data_api.com import ComApi
+from macrobond_data_api.web import WebApi
 from macrobond_data_api.common.types import GetEntitiesError, SeriesEntry
 
-from tests.test_common import TestCase
 
-
-class Web(TestCase):
-    def test_get_one_series(self) -> None:
-        get_one_series(self, self.web_api)
-
-    def test_get_series(self) -> None:
-        get_series(self, self.web_api)
-
-    def test_get_one_entity(self) -> None:
-        get_one_entity(self, self.web_api)
-
-    def test_get_entities(self) -> None:
-        get_entities(self, self.web_api)
-
-    def test_get_unified_series_no_series(self) -> None:
-        get_unified_series_no_series(self, self.web_api)
-
-    def test_get_unified_series_vintage(self) -> None:
-        get_unified_series_vintage(self, self.web_api)
-
-
-class Com(TestCase):
-    def test_get_one_series(self) -> None:
-        get_one_series(self, self.com_api)
-
-    def test_get_series(self) -> None:
-        get_series(self, self.com_api)
-
-    def test_get_one_entity(self) -> None:
-        get_one_entity(self, self.com_api)
-
-    def test_get_entities(self) -> None:
-        get_entities(self, self.com_api)
-
-    def test_get_unified_series_no_series(self) -> None:
-        get_unified_series_no_series(self, self.com_api)
-
-    def test_get_unified_series_vintage(self) -> None:
-        get_unified_series_vintage(self, self.com_api)
-
-
-def get_one_series(test: TestCase, api: Api) -> None:
+@pytest.mark.parametrize("api", ["web", "com"], indirect=True)
+def test_get_one_series(api: Api) -> None:
     series = api.get_one_series("usgdp")
-    test.assertFalse(series.is_error, "is_error")
+    assert series.is_error is False
 
-    test.assertNotEqual(len(series.values), 0, "values")
-    test.assertNotEqual(len(series.dates), 0, "dates")
-    test.assertEqual(len(series.dates), len(series.values), "len(series.dates) = len(series.values)")
+    assert len(series.values) != 0
+    assert len(series.dates) != 0
+    assert len(series.dates) == len(series.values)
 
-    test.assertEqual(series.entity_type, "TimeSeries", "entity_type")
+    assert series.entity_type == "TimeSeries"
 
-    test.assertEqual(float, type(series.values[0]))
+    assert isinstance(series.values[0], float)
 
     series = api.get_one_series("noseries!", raise_error=False)
-    test.assertTrue(series.is_error, "is_error")
-    test.assertEqual(series.error_message, "Not found", "error_message")
+    assert series.is_error is True
+    assert series.error_message == "Not found"
 
     # test raise_get_entities_error=True
 
-    with test.assertRaises(GetEntitiesError) as context:
+    with pytest.raises(GetEntitiesError, match="failed to retrieve:\n\tnoseries! error_message: Not found"):
         api.get_one_series("noseries!")
 
-    test.assertEqual(
-        "failed to retrieve:\n\tnoseries! error_message: Not found",
-        context.exception.message,
-    )
 
-
-def get_series(test: TestCase, api: Api) -> None:
+@pytest.mark.parametrize("api", ["web", "com"], indirect=True)
+def test_get_series(api: Api) -> None:
     series = api.get_series("usgdp", "uscpi", "noseries!", raise_error=False)
 
     # test.assertEqual(series[0].name, 'usgdp', 'name')
-    test.assertEqual(series[0].primary_name, "usnaac0169", "primary_name")
-    test.assertFalse(series[0].is_error, "is_error")
-    test.assertEqual(series[0].error_message, "", "error_message")
-    test.assertEqual(float, type(series[0].values[0]))
+    assert series[0].primary_name == "usnaac0169"
+    assert series[0].is_error is False
+    assert series[0].error_message == ""
+    assert isinstance(series[0].values[0], float)
 
     # test.assertEqual(series[1].name, 'uscpi', 'name')
-    test.assertEqual(series[1].primary_name, "uspric2156", "primary_name")
-    test.assertFalse(series[1].is_error, "is_error")
-    test.assertEqual(series[1].error_message, "", "error_message")
+    assert series[1].primary_name == "uspric2156"
+    assert series[1].is_error is False
+    assert series[1].error_message == ""
 
     # test.assertEqual(series[2].name, 'noseries!', 'name')
     # test.assertEqual(series[2].primary_name, '', 'primary_name')
-    test.assertTrue(series[2].is_error, "is_error")
-    test.assertEqual(series[2].error_message, "Not found", "error_message")
+    assert series[2].is_error is True
+    assert series[2].error_message == "Not found"
 
     # test raise_get_entities_error=True
 
-    with test.assertRaises(GetEntitiesError) as context:
+    with pytest.raises(GetEntitiesError, match="failed to retrieve:\n\tnoseries! error_message: Not found"):
         api.get_series("usgdp", "noseries!")
 
-    test.assertEqual(
-        "failed to retrieve:\n\tnoseries! error_message: Not found",
-        context.exception.message,
-    )
 
-
-def get_one_entity(test: TestCase, api: Api) -> None:
+@pytest.mark.parametrize("api", ["web", "com"], indirect=True)
+def test_get_one_entity(api: Api) -> None:
     entitie = api.get_one_entity("usgdp")
     # test.assertEqual(entitie.name, 'usgdp', 'name')
-    test.assertEqual(entitie.primary_name, "usnaac0169", "primary_name")
-    test.assertFalse(entitie.is_error, "is_error")
-    test.assertEqual(entitie.error_message, "", "error_message")
-    test.assertIsNotNone(entitie.metadata, "metadata")
+    assert entitie.primary_name == "usnaac0169"
+    assert entitie.is_error is False
+    assert entitie.error_message == ""
+    assert entitie.metadata is not None
 
     entitie = api.get_one_entity("noseries!", raise_error=False)
     # test.assertEqual(entitie.name, 'noseries!', 'name')
-    test.assertTrue(entitie.is_error, "is_error")
-    test.assertEqual(entitie.error_message, "Not found", "error_message")
+    assert entitie.is_error is True
+    assert entitie.error_message == "Not found"
 
     # test raise_get_entities_error=True
 
-    with test.assertRaises(GetEntitiesError) as context:
+    with pytest.raises(GetEntitiesError, match="failed to retrieve:\n\tnoseries! error_message: Not found"):
         api.get_one_entity("noseries!")
-
-    test.assertEqual(
-        "failed to retrieve:\n\tnoseries! error_message: Not found",
-        context.exception.message,
-    )
 
     # dict
 
     dict_series = api.get_one_entity("usgdp", raise_error=False).to_dict()
 
-    test.assertEqual(dict_series["Name"], "usgdp")
-    test.assertEqual(dict_series["metadata.Class"], "stock")
+    assert dict_series["Name"] == "usgdp"
+    assert dict_series["metadata.Class"] == "stock"
 
     # test is_discontinued
 
-    test.assertTrue(api.get_one_entity("uslama9621").is_discontinued)
+    assert api.get_one_entity("uslama9621").is_discontinued is True
 
-    test.assertFalse(api.get_one_entity("usgdp").is_discontinued)
+    assert api.get_one_entity("usgdp").is_discontinued is False
 
 
-def get_entities(test: TestCase, api: Api) -> None:
+@pytest.mark.parametrize("api", ["web", "com"], indirect=True)
+def test_get_entities(api: Api) -> None:
     entities = api.get_entities("usgdp", "uscpi", "noseries!", raise_error=False)
 
     # test.assertEqual(series[0].name, 'usgdp', 'name')
-    test.assertEqual(entities[0].primary_name, "usnaac0169", "primary_name")
-    test.assertFalse(entities[0].is_error, "is_error")
-    test.assertEqual(entities[0].error_message, "", "error_message")
+    assert entities[0].primary_name == "usnaac0169"
+    assert entities[0].is_error is False
+    assert entities[0].error_message == ""
 
     # test.assertEqual(series[1].name, 'uscpi', 'name')
-    test.assertEqual(entities[1].primary_name, "uspric2156", "primary_name")
-    test.assertFalse(entities[1].is_error, "is_error")
-    test.assertEqual(entities[1].error_message, "", "error_message")
+    assert entities[1].primary_name == "uspric2156"
+    assert entities[1].is_error is False
+    assert entities[1].error_message == ""
 
     # test.assertEqual(series[2].name, 'noseries!', 'name')
     # test.assertEqual(series[2].primary_name, '', 'primary_name')
-    test.assertTrue(entities[2].is_error, "is_error")
-    test.assertEqual(entities[2].error_message, "Not found", "error_message")
+    assert entities[2].is_error is True
+    assert entities[2].error_message == "Not found"
 
     # test raise_get_entities_error=True
 
-    with test.assertRaises(GetEntitiesError) as context:
+    with pytest.raises(GetEntitiesError, match="failed to retrieve:\n\tnoseries! error_message: Not found"):
         api.get_entities("usgdp", "noseries!")
 
-    test.assertEqual(
-        "failed to retrieve:\n\tnoseries! error_message: Not found",
-        context.exception.message,
-    )
 
+@pytest.mark.parametrize("api", ["web", "com"], indirect=True)
+def test_get_unified_series_no_series(api: Api) -> None:
+    unified = api.get_unified_series("noseries!", raise_error=False)
 
-def get_unified_series_no_series(test: TestCase, api: Api) -> None:
-    unified = api.get_unified_series(
-        "noseries!",
-        raise_error=False,
-    )
+    assert unified.dates == []
+    assert len(unified) == 1
 
-    test.assertEqual(unified.dates, [])
-    test.assertEqual(len(unified), 1)
+    assert unified[0].is_error is True
+    assert unified[0].error_message == "noseries! : Not found"
+    assert unified[0].values == []
 
-    test.assertEqual(unified[0].is_error, True)
-    test.assertEqual(unified[0].error_message, "noseries! : Not found")
-    test.assertEqual(unified[0].values, [])
+    unified = api.get_unified_series(raise_error=False)
 
-    unified = api.get_unified_series(
-        raise_error=False,
-    )
+    assert unified.dates == []
+    assert len(unified) == 0
 
-    test.assertEqual(unified.dates, [])
-    test.assertEqual(len(unified), 0)
-
-    with test.assertRaises(GetEntitiesError) as context:
+    with pytest.raises(GetEntitiesError, match="failed to retrieve:\n\tnoseries! error_message: noseries! : Not found"):
         unified = api.get_unified_series("noseries!")
 
-    test.assertEqual(
-        "failed to retrieve:\n\tnoseries! error_message: noseries! : Not found",
-        context.exception.message,
-    )
 
-
-def get_unified_series_vintage(test: TestCase, api: Api) -> None:
+@pytest.mark.parametrize("api", ["web", "com"], indirect=True)
+def test_get_unified_series_vintage(api: Api) -> None:
     revision_info = api.get_revision_info("usgdp")[0]
 
     unified_1 = api.get_unified_series(SeriesEntry("usgdp"))[0]
@@ -207,76 +144,56 @@ def get_unified_series_vintage(test: TestCase, api: Api) -> None:
 
     unified_3 = api.get_unified_series(SeriesEntry("usgdp", revision_info.time_stamp_of_first_revision))[0]
 
-    test.assertEqual(unified_1.values, unified_2.values)
+    assert unified_1.values == unified_2.values
 
-    test.assertNotEqual(unified_1.values, unified_3.values)
+    assert unified_1.values != unified_3.values
 
 
-class Common(TestCase):
+class TestCommon:
     # get_one_series
 
-    def test_get_one_series_values_to_pd_series(self) -> None:
-        self.assertEqual(
-            0,
-            len(
-                PdSeries.compare(
-                    self.web_api.get_one_series("usgdp").values_to_pd_series(),
-                    self.com_api.get_one_series("usgdp").values_to_pd_series(),
-                )
-            ),
-            "usgdp",
+    def test_get_one_series_values_to_pd_series(self, web: WebApi, com: ComApi) -> None:
+        assert 0 == len(
+            PdSeries.compare(
+                web.get_one_series("usgdp").values_to_pd_series(),
+                com.get_one_series("usgdp").values_to_pd_series(),
+            )
         )
-        self.assertEqual(
-            0,
-            len(
-                PdSeries.compare(
-                    self.web_api.get_one_series("ustrad4488").values_to_pd_series(),
-                    self.com_api.get_one_series("ustrad4488").values_to_pd_series(),
-                )
-            ),
-            "ustrad4488",
+
+        assert 0 == len(
+            PdSeries.compare(
+                web.get_one_series("ustrad4488").values_to_pd_series(),
+                com.get_one_series("ustrad4488").values_to_pd_series(),
+            )
         )
-        self.assertEqual(
-            0,
-            len(
-                PdSeries.compare(
-                    self.web_api.get_one_series("ct_au_e_ao_c_22_v").values_to_pd_series(),
-                    self.com_api.get_one_series("ct_au_e_ao_c_22_v").values_to_pd_series(),
-                )
-            ),
-            "ct_au_e_ao_c_22_v",
+
+        assert 0 == len(
+            PdSeries.compare(
+                web.get_one_series("ct_au_e_ao_c_22_v").values_to_pd_series(),
+                com.get_one_series("ct_au_e_ao_c_22_v").values_to_pd_series(),
+            )
         )
 
     # get_unified_series
 
-    def test_get_unified_series_to_pd_data_frame(self) -> None:
-        self.assertEqual(
-            0,
-            len(
-                DataFrame.compare(
-                    self.web_api.get_unified_series("usgdp").to_pd_data_frame(),
-                    self.com_api.get_unified_series("usgdp").to_pd_data_frame(),
-                )
-            ),
-            "usgdp",
+    def test_get_unified_series_to_pd_data_frame(self, web: WebApi, com: ComApi) -> None:
+        assert 0 == len(
+            DataFrame.compare(
+                web.get_unified_series("usgdp").to_pd_data_frame(),
+                com.get_unified_series("usgdp").to_pd_data_frame(),
+            )
         )
-        self.assertEqual(
-            0,
-            len(
-                DataFrame.compare(
-                    self.web_api.get_unified_series("ustrad4488").to_pd_data_frame(),
-                    self.com_api.get_unified_series("ustrad4488").to_pd_data_frame(),
-                )
-            ),
-            "ustrad4488",
+
+        assert 0 == len(
+            DataFrame.compare(
+                web.get_unified_series("ustrad4488").to_pd_data_frame(),
+                com.get_unified_series("ustrad4488").to_pd_data_frame(),
+            )
         )
-        self.assertEqual(
-            0,
-            len(
-                DataFrame.compare(
-                    self.web_api.get_unified_series("ct_au_e_ao_c_22_v").to_pd_data_frame(),
-                    self.com_api.get_unified_series("ct_au_e_ao_c_22_v").to_pd_data_frame(),
-                )
-            ),
-            "ct_au_e_ao_c_22_v",
+
+        assert 0 == len(
+            DataFrame.compare(
+                web.get_unified_series("ct_au_e_ao_c_22_v").to_pd_data_frame(),
+                com.get_unified_series("ct_au_e_ao_c_22_v").to_pd_data_frame(),
+            )
         )

@@ -1,13 +1,10 @@
+from dataclasses import dataclass
 from datetime import datetime
 from typing import Optional, List
 
 from enum import IntEnum
 
-from dateutil import parser
-
-from macrobond_data_api.common.types.metadata import Metadata
-from .web_types import VintageValuesResponse, SeriesWithVintagesResponse
-
+from .metadata import Metadata
 
 __pdoc__ = {
     "VintageValues.__init__": False,
@@ -15,6 +12,7 @@ __pdoc__ = {
 }
 
 
+@dataclass(init=False)
 class VintageValues:
     """A time series with times of change"""
 
@@ -29,19 +27,12 @@ class VintageValues:
     values: List[Optional[float]]
     """The values of the vintage series. Missing values are represented by null."""
 
-    def __init__(self, vintage_values: VintageValuesResponse) -> None:
-        vintage_time_stamp = vintage_values.get("vintageTimeStamp")
-        if vintage_time_stamp:
-            self.vintage_time_stamp = parser.parse(vintage_time_stamp)
-        else:
-            self.vintage_time_stamp = None
-
-        self.dates = [datetime(int(x[0:4]), int(x[5:7]), int(x[8:10])) for x in vintage_values["dates"]]
-
-        self.values = [float(x) if x else None for x in vintage_values["values"]]
-
-    def __repr__(self) -> str:
-        return f"VintageValues vintage_time_stamp: {self.vintage_time_stamp}"
+    def __init__(
+        self, vintage_time_stamp: Optional[datetime], dates: List[datetime], values: List[Optional[float]]
+    ) -> None:
+        self.vintage_time_stamp = vintage_time_stamp
+        self.dates = dates
+        self.values = values
 
 
 class SeriesWithVintagesErrorCode(IntEnum):
@@ -61,6 +52,7 @@ class SeriesWithVintagesErrorCode(IntEnum):
     """There was an error and it is described in the error text"""
 
 
+@dataclass(init=False)
 class SeriesWithVintages:
     """A time series with times of change"""
 
@@ -138,18 +130,14 @@ class SeriesWithVintages:
             else None
         )
 
-    def __init__(self, response: SeriesWithVintagesResponse, metadata: Optional[Metadata]) -> None:
-        self.error_text = response.get("errorText")
-        error_code = response.get("errorCode")
-        self.error_code = SeriesWithVintagesErrorCode(error_code) if error_code else None
+    def __init__(
+        self,
+        error_text: Optional[str],
+        error_code: Optional[SeriesWithVintagesErrorCode],
+        metadata: Optional[Metadata],
+        vintages: List[VintageValues],
+    ) -> None:
+        self.error_text = error_text
+        self.error_code = error_code
         self.metadata = metadata
-        self.vintages = []
-        vintages = response.get("vintages")
-        self.vintages = [VintageValues(x) for x in vintages] if vintages else []
-
-    def __repr__(self) -> str:
-        return (
-            f"SeriesWithVintages primary_name: {self.primary_name}, "
-            + f"error_text: {self.error_text}, error_code: {self.error_code}, "
-            + f"vintages: {len(self.vintages)}"
-        )
+        self.vintages = vintages

@@ -68,10 +68,7 @@ class ComClient(Client["ComApi"]):
 
                 sub_key = "CLSID\\{F22A9A5C-E6F2-4FA8-8D1B-E928AB5DDF9B}\\InprocServer32"
                 try:
-                    with OpenKey(
-                        HKEY_CLASSES_ROOT,
-                        sub_key,
-                    ) as regkey:
+                    with OpenKey(HKEY_CLASSES_ROOT, sub_key) as regkey:
                         QueryValueEx(regkey, "Assembly")
                 except OSError:
                     hints.append(

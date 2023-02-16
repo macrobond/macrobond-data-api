@@ -1,9 +1,10 @@
-from context import Context
+from context import WorkItem, run
 
 
-def pylint(context: Context) -> None:
-    context.python_run("pylint", "macrobond_data_api -f colorized -r y")
+class Pylint(WorkItem):
+    async def run(self) -> None:
+        await self.python_run("pylint", "macrobond_data_api -f colorized -r y")
 
 
 if __name__ == "__main__":
-    Context(pylint)
+    run(Pylint)

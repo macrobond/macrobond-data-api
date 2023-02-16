@@ -3,7 +3,7 @@ The class `macrobond_data_api.common.api.Api` defines the core methods to intera
 Macrobond database.
 """
 
-from typing import Sequence, Union, Tuple, Dict
+from typing import Generator, Sequence, Union, Tuple, Dict
 from abc import ABC, abstractmethod
 
 from datetime import datetime
@@ -23,6 +23,8 @@ from .types import (
     UnifiedSeriesList,
     GetAllVintageSeriesResult,
     SeriesObservationHistory,
+    SeriesWithVintages,
+    RevisionHistoryRequest,
 )
 
 from .enums import SeriesFrequency, SeriesWeekdays, CalendarMergeMode
@@ -274,6 +276,26 @@ class Api(ABC):
         Returns
         -------
         `Sequence[macrobond_data_api.common.types.series_observation_history.SeriesObservationHistory]`
+        """
+
+    @abstractmethod
+    def get_many_series_with_revisions(
+        self, requests: Sequence[RevisionHistoryRequest]
+    ) -> Generator[SeriesWithVintages, None, None]:
+        """
+        Download all revisions for one or more series.
+        Specify a callback to receive the response series by series.
+        This method is primarily intended for syncronizing a local database with updates.
+
+        You are expected to retain the LastModifiedTimeStamp, LastRevisionTimeStamp and LastRevisionAdjustmentTimeStamp
+        for each series and use them in the next request.
+
+        Parameters
+        ----------
+        callback : `Callable[[macrobond_data_api.common.types.SeriesWithVintages], None]`
+            A callback that will receive the response series by series.
+        requests : `Sequence[macrobond_data_api.common.types.RevisionHistoryRequest]`
+            A sequence of series requests.
         """
 
     # Search

@@ -8,3 +8,12 @@ disallow_untyped_defs = true
 
 [tool.black]
 line-length = 120
+
+[tool.pytest.ini_options]
+testpaths = [
+    "tests",
+    "integration",
+]
+python_files = "*.py"
+# python_classes = "*"
+# python_functions = "*"

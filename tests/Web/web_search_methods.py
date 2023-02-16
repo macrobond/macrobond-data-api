@@ -1,31 +1,32 @@
-from tests.test_common import TestCase
+from macrobond_data_api.web import WebApi
 
 
-class WebSearchMethods(TestCase):
-    def test_web_entities_for_display(self) -> None:
-        actual = self.web_api.session.search.entities_for_display(
-            {
-                "filters": [
-                    {
-                        "text": "abc",
-                    }
-                ],
-                "attributesForDisplayFormat": ["Name", "Class"],
-            }
-        )
+def test_web_entities_for_display(web: WebApi) -> None:
+    actual = web.session.search.entities_for_display(
+        {
+            "filters": [
+                {
+                    "text": "abc",
+                }
+            ],
+            "attributesForDisplayFormat": ["Name", "Class"],
+        }
+    )
 
-        self.assertNotEqual(len(actual["results"]), 0, "len(actual['results'])")
+    assert len(actual["results"]) != 0, "len(actual['results'])"
 
-        self.assertTrue("Name" in actual["results"][0])
-        self.assertTrue("Title" in actual["results"][0])
-        self.assertTrue("Class" in actual["results"][0])
+    assert "Name" in actual["results"][0]
+    assert "Title" in actual["results"][0]
+    assert "Class" in actual["results"][0]
 
-    def test_web_filter_lists(self) -> None:
-        self.web_api.session.search.filter_lists("*")
 
-    def test_web_get_entities(self) -> None:
-        actual = self.web_api.session.search.get_entities(text="abc")
+def test_web_filter_lists(web: WebApi) -> None:
+    web.session.search.filter_lists("*")
 
-        self.assertNotEqual(len(actual["results"]), 0, "len(actual['results'])")
 
-        self.assertTrue("Name" in actual["results"][0])
+def test_web_get_entities(web: WebApi) -> None:
+    actual = web.session.search.get_entities(text="abc")
+
+    assert len(actual["results"]) != 0, "len(actual['results'])"
+
+    assert "Name" in actual["results"][0]

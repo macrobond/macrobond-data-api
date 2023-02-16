@@ -1,9 +1,10 @@
-from context import Context
+from context import WorkItem, run
 
 
-def build(context: Context) -> None:
-    context.python_run(None, "-m build")
+class BuildTool(WorkItem):
+    async def run(self) -> None:
+        await self.python_run(None, "-m build")
 
 
 if __name__ == "__main__":
-    Context(build)
+    run(BuildTool)

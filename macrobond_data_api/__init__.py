@@ -6,11 +6,12 @@
 Exposes a common API in Python for the Macrobond Web and Client Data APIs
 """
 
-from ._macrobond_data_api import (
+from ._generated import (
     entity_search,
     entity_search_multi_filter,
     get_all_vintage_series,
     get_entities,
+    get_many_series_with_revisions,
     get_nth_release,
     get_observation_history,
     get_one_entity,

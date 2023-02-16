@@ -1,7 +1,9 @@
 from datetime import datetime
-from typing import TYPE_CHECKING, Any, Dict, List, Optional, Sequence, cast
+from typing import TYPE_CHECKING, Any, Dict, Generator, List, Optional, Sequence, TypeVar, cast
 
 from dateutil import parser
+
+import ijson  # type: ignore
 
 from macrobond_data_api.common.types import (
     RevisionInfo,
@@ -10,17 +12,29 @@ from macrobond_data_api.common.types import (
     Series,
     SeriesObservationHistory,
     GetAllVintageSeriesResult,
+    SeriesWithVintages,
+    VintageValues,
+    SeriesWithVintagesErrorCode,
+    RevisionHistoryRequest,
 )
 from macrobond_data_api.common.types._repr_html_sequence import _ReprHtmlSequence
 
-from .session import ProblemDetailsException, Session
+from .session import ProblemDetailsException, Session, _raise_on_error
+
+# from .series_with_vintages import SeriesWithVintages
+
 
 if TYPE_CHECKING:  # pragma: no cover
     from .web_api import WebApi
 
-    from .web_types import SeriesWithRevisionsInfoResponse, VintageSeriesResponse
-
-    from .web_types import SeriesResponse
+    from .web_types import (
+        SeriesWithRevisionsInfoResponse,
+        VintageSeriesResponse,
+        SeriesWithVintagesResponse,
+        RevisionHistoryRequest as WebRevisionHistoryRequest,
+        SeriesResponse,
+        VintageValuesResponse,
+    )
 
 
 def _optional_str_to_datetime(datetime_str: Optional[str]) -> Optional[datetime]:
@@ -185,3 +199,62 @@ def get_observation_history(self: "WebApi", series_name: str, *times: datetime) 
             for x in response
         ]
     )
+
+
+def _create_vintage_values(vintage_values: "VintageValuesResponse") -> VintageValues:
+    _vintage_time_stamp = vintage_values.get("vintageTimeStamp")
+    vintage_time_stamp = parser.parse(_vintage_time_stamp) if _vintage_time_stamp else None
+
+    dates = [datetime(int(x[0:4]), int(x[5:7]), int(x[8:10])) for x in vintage_values["dates"]]
+
+    values = [float(x) if x else None for x in vintage_values["values"]]
+
+    return VintageValues(vintage_time_stamp, dates, values)
+
+
+SplitInToChunksTypeVar = TypeVar("SplitInToChunksTypeVar")
+
+
+def _split_in_to_chunks(
+    sequence: Sequence[SplitInToChunksTypeVar], chunk_size: int
+) -> Generator[Sequence[SplitInToChunksTypeVar], None, None]:
+    for i in range(0, len(sequence), chunk_size):
+        yield sequence[i : i + chunk_size]
+
+
+def _create_web_revision_h_request(requests: Sequence[RevisionHistoryRequest]) -> List["WebRevisionHistoryRequest"]:
+    return [
+        {
+            "name": x.name,
+            "ifModifiedSince": x.if_modified_since.isoformat() if x.if_modified_since else None,
+            "lastRevision": x.last_revision.isoformat() if x.last_revision else None,
+            "lastRevisionAdjustment": x.last_revision_adjustment.isoformat() if x.last_revision_adjustment else None,
+        }
+        for x in requests
+    ]
+
+
+def get_many_series_with_revisions(
+    self: "WebApi",
+    requests: Sequence[RevisionHistoryRequest],
+) -> Generator[SeriesWithVintages, None, None]:
+    if len(requests) == 0:
+        yield from ()
+    for requests_chunkd in _split_in_to_chunks(requests, 200):
+        with self.session.series.post_fetch_all_vintage_series(
+            _create_web_revision_h_request(requests_chunkd), stream=True
+        ) as response:
+            _raise_on_error(response)
+            ijson_items = ijson.items(response.raw, "item")
+            item: "SeriesWithVintagesResponse"
+            for item in ijson_items:
+                _error_code = item.get("errorCode")
+                error_code = SeriesWithVintagesErrorCode(_error_code) if _error_code else None
+
+                _metadata = item.get("metadata")
+                metadata = self.session._create_metadata(_metadata) if _metadata else None
+
+                _vintages = item.get("vintages")
+                vintages = [_create_vintage_values(x) for x in _vintages] if _vintages else []
+
+                yield SeriesWithVintages(item.get("errorText"), error_code, metadata, vintages)
