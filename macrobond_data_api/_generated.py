@@ -164,9 +164,7 @@ def get_many_series_with_revisions(
 
     Parameters
     ----------
-    callback : `Callable[[macrobond_data_api.common.types.SeriesWithVintages], None]`
-        A callback that will receive the response series by series.
-    requests : `Sequence[macrobond_data_api.common.types.RevisionHistoryRequest]`
+    requests : `Sequence[macrobond_data_api.common.types.revision_history_request.RevisionHistoryRequest]`
         A sequence of series requests.
 
 

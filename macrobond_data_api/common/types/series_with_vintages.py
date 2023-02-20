@@ -98,7 +98,7 @@ class SeriesWithVintages:
     def last_revision(self) -> Optional[datetime]:
         """
         The timestamp of the last revision to be used in the next call to
-        `macrobond_data_api.web.web_api.WebApi.get_all_vintages_multiple_series`.
+        `macrobond_data_api.common.api.Api.get_many_series_with_revisions`.
         """
         return (
             self.metadata["LastRevisionTimeStamp"]
@@ -110,7 +110,7 @@ class SeriesWithVintages:
     def last_revision_adjustment(self) -> Optional[datetime]:
         """
         The timestamp of the last revision adjustment to be used in the next call to
-        `macrobond_data_api.web.web_api.WebApi.get_all_vintages_multiple_series`.
+        `macrobond_data_api.common.api.Api.get_many_series_with_revisions`.
         """
         return (
             self.metadata["LastRevisionAdjustmentTimeStamp"]
@@ -122,7 +122,7 @@ class SeriesWithVintages:
     def last_modified(self) -> Optional[datetime]:
         """
         The timestamp of the last modification to be used in the next call to
-        `macrobond_data_api.web.web_api.WebApi.get_all_vintages_multiple_series`.
+        `macrobond_data_api.common.api.Api.get_many_series_with_revisions`.
         """
         return (
             self.metadata["LastModifiedTimeStamp"]

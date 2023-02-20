@@ -33,7 +33,67 @@ def test_get_nth_release_values_is_float(api: Api) -> None:
         assert isinstance(obj.values[0], float)
 
 
+class _Test_get_many_series_with_revisions:
+    @pytest.mark.parametrize(
+        "requests",
+        [
+            [],
+            [RevisionHistoryRequest("usgdp")],
+            [RevisionHistoryRequest("usgdp", if_modified_since=datetime(1, 1, 1, tzinfo=timezone.utc))],
+            [RevisionHistoryRequest("usgdp", if_modified_since=datetime(9000, 1, 1, tzinfo=timezone.utc))],
+            [RevisionHistoryRequest("usgdp", last_revision=datetime(1, 1, 1, tzinfo=timezone.utc))],
+            [RevisionHistoryRequest("usgdp", last_revision=datetime(9000, 1, 1, tzinfo=timezone.utc))],
+            [RevisionHistoryRequest("usgdp", last_revision_adjustment=datetime(1, 1, 1, tzinfo=timezone.utc))],
+            [RevisionHistoryRequest("usgdp", last_revision_adjustment=datetime(9000, 1, 1, tzinfo=timezone.utc))],
+        ],
+        ids=[
+            "[]",
+            '[RevisionHistoryRequest("usgdp")]',
+            "if modified since = datetime(1, 1, 1)",
+            "if_modified_since = datetime(9000, 1, 1)",
+            "last revision = datetime(1, 1, 1)",
+            "last revision = datetime(9000, 1, 1)",
+            "last revision adjustment = datetime(1, 1, 1)",
+            "last revision adjustment = datetime(9000, 1, 1)",
+        ],
+    )
+    def test_out_liers(self, requests: List[RevisionHistoryRequest], web: WebApi, com: ComApi) -> None:
+        self._test(requests, web, com)
+
+    def test_get_get_many_series_with_revisions_2(self, web: WebApi, com: ComApi) -> None:
+        vintage_series = com.get_all_vintage_series("usgdp")[:3]
+
+        for vintage in vintage_series:
+            metadata = vintage.metadata
+            revision_time_stamp = vintage.revision_time_stamp
+            last_modified_time = metadata["LastModifiedTimeStamp"]
+            last_revision_adjustment = metadata["LastRevisionAdjustmentTimeStamp"]
+            last_revision_time = metadata["LastRevisionTimeStamp"]
+
+            request = RevisionHistoryRequest("usgdp", if_modified_since=revision_time_stamp)
+
+            self._test([request], web, com)
+
+            request = RevisionHistoryRequest(
+                "usgdp", if_modified_since=revision_time_stamp, last_revision=revision_time_stamp
+            )
+
+            self._test([request], web, com)
+
+    def _test(self, requests: List[RevisionHistoryRequest], web: WebApi, com: ComApi) -> None:
+        web_r = list(web.get_many_series_with_revisions(requests))
+        com_r = list(com.get_many_series_with_revisions(requests))
+
+        for results in zip(web_r, com_r):
+            results[0].metadata = {}
+            results[1].metadata = {}
+
+        assert com_r == web_r
+
+
 class TestCommon:
+    Test_get_many_series_with_revisions = _Test_get_many_series_with_revisions
+
     def test_get_revision_info_to_pd_data_frame(self, web: WebApi, com: ComApi) -> None:
         assert 0 == len(
             DataFrame.compare(
@@ -248,59 +308,3 @@ class TestCommon:
         # assert (
         #     com_r.metadata["LastRevisionAdjustmentTimeStamp"] == web_r.metadata["LastRevisionAdjustmentTimeStamp"]
         # ), "test metadata"
-
-    @pytest.mark.parametrize(
-        "requests",
-        [
-            [],
-            [RevisionHistoryRequest("usgdp")],
-            [RevisionHistoryRequest("usgdp", if_modified_since=datetime(1, 1, 1, tzinfo=timezone.utc))],
-            [RevisionHistoryRequest("usgdp", if_modified_since=datetime(9000, 1, 1, tzinfo=timezone.utc))],
-            [RevisionHistoryRequest("usgdp", last_revision=datetime(1, 1, 1, tzinfo=timezone.utc))],
-            [RevisionHistoryRequest("usgdp", last_revision=datetime(9000, 1, 1, tzinfo=timezone.utc))],
-            [RevisionHistoryRequest("usgdp", last_revision_adjustment=datetime(1, 1, 1, tzinfo=timezone.utc))],
-            [RevisionHistoryRequest("usgdp", last_revision_adjustment=datetime(9000, 1, 1, tzinfo=timezone.utc))],
-        ],
-        ids=[
-            "[]",
-            '[RevisionHistoryRequest("usgdp")]',
-            "if modified since = datetime(1, 1, 1)",
-            "if_modified_since = datetime(9000, 1, 1)",
-            "last revision = datetime(1, 1, 1)",
-            "last revision = datetime(9000, 1, 1)",
-            "last revision adjustment = datetime(1, 1, 1)",
-            "last revision adjustment = datetime(9000, 1, 1)",
-        ],
-    )
-    def test_get_get_many_series_with_revisions(
-        self, requests: List[RevisionHistoryRequest], web: WebApi, com: ComApi
-    ) -> None:
-        web_r = list(web.get_many_series_with_revisions(requests))
-        com_r = list(com.get_many_series_with_revisions(requests))
-
-        for results in zip(web_r, com_r):
-            results[0].metadata = {}
-            results[1].metadata = {}
-
-        assert com_r == web_r
-
-
-#    def test_get_get_many_series_with_revisions_2(self, com: ComApi) -> None:
-#        vintage_series = com.get_all_vintage_series("usgdp")
-#
-#        for vintage in vintage_series:
-#            metadata = vintage.metadata
-#            revision_time_stamp = vintage.revision_time_stamp
-#            last_modified_time = metadata["LastModifiedTimeStamp"]
-#            last_revision_adjustment = metadata["LastRevisionAdjustmentTimeStamp"]
-#            last_revision_time = metadata["LastRevisionTimeStamp"]
-#
-#            request = RevisionHistoryRequest("usgdp", if_modified_since=revision_time_stamp)
-#
-#            self.test_get_get_many_series_with_revisions([request])
-#
-#            request = RevisionHistoryRequest(
-#                "usgdp", if_modified_since=revision_time_stamp, last_revision=revision_time_stamp
-#            )
-#
-#            self.test_get_get_many_series_with_revisions([request])
