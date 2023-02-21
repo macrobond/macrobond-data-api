@@ -1,8 +1,8 @@
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import TYPE_CHECKING, Any, Dict, Optional
 
 from json import load as json_load
-from dateutil import parser
+from dateutil import parser, tz
 
 from ..common.enums import MetadataAttributeType
 from .web_types.metadata import MetadataAttributeTypeRestriction
@@ -60,7 +60,19 @@ class _MetadataTypeDirectory:
             if type_info.value_type == MetadataAttributeType.TIME_STAMP:
                 if type_info.value_restriction == MetadataAttributeTypeRestriction.DATE:
                     return datetime(int(obj[0:4]), int(obj[5:7]), int(obj[8:10]))
-                return parser.parse(obj)
+                time = parser.parse(obj)
+                if time.tzinfo == tz.tzutc():
+                    time = datetime(
+                        time.year,
+                        time.month,
+                        time.day,
+                        time.hour,
+                        time.minute,
+                        time.second,
+                        time.microsecond,
+                        tzinfo=timezone.utc,
+                    )
+                return time
             if (
                 type_info.value_type == MetadataAttributeType.STRING
                 and type_info.value_restriction == MetadataAttributeTypeRestriction.JSON

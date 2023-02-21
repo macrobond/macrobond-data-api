@@ -1,3 +1,4 @@
+from dataclasses import dataclass
 from datetime import datetime
 from typing import TYPE_CHECKING, Optional, Sequence
 
@@ -22,6 +23,7 @@ class RevisionInfoDict(TypedDict, total=False):
     vintage_time_stamps: Sequence[datetime]
 
 
+@dataclass(init=False)
 class RevisionInfo:
     """Information about revisions of a time series."""
 
@@ -93,9 +95,6 @@ class RevisionInfo:
         import pandas  # pylint: disable=import-outside-toplevel
 
         return pandas.DataFrame(self.to_dict())
-
-    def __repr__(self) -> str:
-        return f"RevisionInfo name: {self.name}"
 
     def _repr_html_(self) -> str:
         return self.to_pd_data_frame()._repr_html_()

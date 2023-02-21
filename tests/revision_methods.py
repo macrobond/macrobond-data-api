@@ -1,8 +1,8 @@
-from typing import cast, List
-from datetime import datetime, timezone
+from typing import Optional, cast, List
+from datetime import datetime, timezone, timedelta
 import pytest
 from pandas import Series as PdSeries, DataFrame  # type: ignore
-from macrobond_data_api.common.types import GetEntitiesError, RevisionHistoryRequest
+from macrobond_data_api.common.types import GetEntitiesError, RevisionHistoryRequest, SeriesWithVintagesErrorCode
 from macrobond_data_api.common import Api
 from macrobond_data_api.web import WebApi
 from macrobond_data_api.com import ComApi
@@ -58,9 +58,38 @@ class _Test_get_many_series_with_revisions:
         ],
     )
     def test_out_liers(self, requests: List[RevisionHistoryRequest], web: WebApi, com: ComApi) -> None:
-        self._test(requests, web, com)
+        for web_r, com_r in zip(
+            list(web.get_many_series_with_revisions(requests)), list(com.get_many_series_with_revisions(requests))
+        ):
+            web_r.metadata = {}
+            com_r.metadata = {}
+
+            assert com_r.error_code == web_r.error_code
+
+            assert len(com_r.vintages) == len(com_r.vintages)
+
+            assert com_r == web_r
 
     def test_get_get_many_series_with_revisions_2(self, web: WebApi, com: ComApi) -> None:
+        def test(
+            request: RevisionHistoryRequest,
+            error_code: Optional[SeriesWithVintagesErrorCode],
+        ) -> None:
+            for web_r, com_r in zip(
+                list(web.get_many_series_with_revisions([request])),
+                list(com.get_many_series_with_revisions([request])),
+            ):
+                web_r.metadata = {}
+                com_r.metadata = {}
+
+                assert com_r.error_code == web_r.error_code
+
+                assert com_r.error_code == error_code
+
+                assert len(com_r.vintages) == len(com_r.vintages)
+
+                assert com_r == web_r
+
         vintage_series = com.get_all_vintage_series("usgdp")[:3]
 
         for vintage in vintage_series:
@@ -70,25 +99,71 @@ class _Test_get_many_series_with_revisions:
             last_revision_adjustment = metadata["LastRevisionAdjustmentTimeStamp"]
             last_revision_time = metadata["LastRevisionTimeStamp"]
 
-            request = RevisionHistoryRequest("usgdp", if_modified_since=revision_time_stamp)
+            # Test that we get the same result (no data) when we pass the current last modification timestamp
+            request = RevisionHistoryRequest("usgdp", if_modified_since=last_modified_time)
+            test(request, SeriesWithVintagesErrorCode.NOT_MODIFIED)
 
-            self._test([request], web, com)
+            # Test that we get the same result (some data) when we pass an older last modification timestamp
+            request = RevisionHistoryRequest("usgdp", if_modified_since=last_modified_time - timedelta(seconds=1))
+            test(request, None)
 
+            # Since we do not pass last_revision_time, we will always get all revisions
             request = RevisionHistoryRequest(
-                "usgdp", if_modified_since=revision_time_stamp, last_revision=revision_time_stamp
+                "usgdp",
+                if_modified_since=last_modified_time - timedelta(seconds=1),
+                last_revision_adjustment=last_revision_adjustment,
             )
+            test(request, None)
 
-            self._test([request], web, com)
+            # Since neither last_revision_adjustment nor last_revision_time are changed,
+            # we will always get all revisions. The metadata must have changed.
+            request = RevisionHistoryRequest(
+                "usgdp",
+                if_modified_since=last_modified_time - timedelta(seconds=1),
+                last_revision_adjustment=last_revision_adjustment,
+                last_revision=last_revision_time,
+            )
+            test(request, None)
 
-    def _test(self, requests: List[RevisionHistoryRequest], web: WebApi, com: ComApi) -> None:
-        web_r = list(web.get_many_series_with_revisions(requests))
-        com_r = list(com.get_many_series_with_revisions(requests))
+            # Since neither the last_revision_time is now and historical timestamp, we should get incremental updates
+            request = RevisionHistoryRequest(
+                "usgdp",
+                if_modified_since=last_modified_time - timedelta(seconds=1),
+                last_revision_adjustment=last_revision_adjustment,
+                last_revision=revision_time_stamp,
+            )
+            test(request, None)
 
-        for results in zip(web_r, com_r):
-            results[0].metadata = {}
-            results[1].metadata = {}
+            # Since the last_revision_adjustment is now changed, we should get all the revisions
+            request = RevisionHistoryRequest(
+                "usgdp",
+                if_modified_since=last_modified_time - timedelta(seconds=1),
+                last_revision_adjustment=last_revision_adjustment - timedelta(seconds=1),
+                last_revision=revision_time_stamp,
+            )
+            test(request, None)
 
-        assert com_r == web_r
+    def _test(
+        self,
+        requests: List[RevisionHistoryRequest],
+        web: WebApi,
+        com: ComApi,
+        error_code: Optional[SeriesWithVintagesErrorCode] = None,
+    ) -> None:
+        for web_r, com_r in zip(
+            list(web.get_many_series_with_revisions(requests)), list(com.get_many_series_with_revisions(requests))
+        ):
+            web_r.metadata = {}
+            com_r.metadata = {}
+
+            if error_code:
+                assert com_r.error_code == error_code
+
+            assert com_r.error_code == web_r.error_code
+
+            assert len(com_r.vintages) == len(com_r.vintages)
+
+            assert com_r == web_r
 
 
 class TestCommon:
@@ -160,6 +235,60 @@ class TestCommon:
         ), "ct_au_e_ao_c_22_v"
 
     # get_all_vintage_series
+
+    def test_get_all_vintage_series_1(self, web: WebApi, com: ComApi) -> None:
+        web_r = web.get_all_vintage_series("usgdp")
+        com_r = com.get_all_vintage_series("usgdp")
+
+        for web_vintage, com_vintage in zip(web_r, com_r):
+            keys = list(set(web_vintage.metadata.keys()) & set(com_vintage.metadata.keys()))
+            keys.sort()
+
+            assert len(keys) != 0
+
+            for key in keys:
+                if key == "DisplayUnit":
+                    continue
+
+                if isinstance(web_vintage.metadata[key], datetime):
+                    web_datetime = web_vintage.metadata[key]
+                    web_datetime = datetime(
+                        web_datetime.year,
+                        web_datetime.month,
+                        web_datetime.day,
+                        web_datetime.hour,
+                        web_datetime.minute,
+                        web_datetime.second,
+                        # web_vintage.metadata[key].microsecond,
+                        tzinfo=web_datetime.tzinfo,
+                    )
+
+                    com_datetime = com_vintage.metadata[key]
+                    com_datetime = datetime(
+                        com_datetime.year,
+                        com_datetime.month,
+                        com_datetime.day,
+                        com_datetime.hour,
+                        com_datetime.minute,
+                        com_datetime.second,
+                        # web_vintage.metadata[key].microsecond,
+                        tzinfo=com_datetime.tzinfo,
+                    )
+                    assert web_datetime == com_datetime, "key " + key
+                else:
+                    if (
+                        isinstance(web_vintage.metadata[key], list)
+                        and not isinstance(com_vintage.metadata[key], list)
+                        and len(web_vintage.metadata[key]) == 1
+                    ):
+                        assert web_vintage.metadata[key][0] == com_vintage.metadata[key], "key " + key
+                    else:
+                        assert web_vintage.metadata[key] == com_vintage.metadata[key], "key " + key
+
+            web_vintage.metadata = {}
+            com_vintage.metadata = {}
+
+        assert web_r == com_r
 
     def test_get_all_vintage_series_values_to_pd_series(self, web: WebApi, com: ComApi) -> None:
         # TODO: @mb-jp Needs rework

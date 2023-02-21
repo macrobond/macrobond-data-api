@@ -1,3 +1,4 @@
+from dataclasses import dataclass
 from typing import Any, Dict, List, Sequence, Optional, TYPE_CHECKING, overload
 
 from datetime import datetime
@@ -24,6 +25,7 @@ class UnifiedSeriesDict(TypedDict):
     Series: Sequence[Dict[str, Any]]
 
 
+@dataclass(init=False)
 class UnifiedSeries:
     """
     Represents a Macrobond time series in the response from
@@ -81,16 +83,8 @@ class UnifiedSeries:
     def __bool__(self) -> bool:
         return self.error_message == ""
 
-    def __eq__(self, other: Any) -> bool:
-        return self is other or (
-            isinstance(other, UnifiedSeries)
-            and self.name == other.name
-            and self.error_message == other.error_message
-            and self.values == other.values
-            and self.metadata == other.metadata
-        )
 
-
+@dataclass(init=False)
 class UnifiedSeriesList(Sequence[UnifiedSeries]):
     """
     The response from
@@ -139,10 +133,6 @@ class UnifiedSeriesList(Sequence[UnifiedSeries]):
 
     def _repr_html_(self) -> str:
         return self.to_pd_data_frame()._repr_html_()
-
-    def __repr__(self) -> str:
-        names = ", ".join(x.name for x in self)
-        return f"UnifiedSeries series: ({names})"
 
     @overload
     def __getitem__(self, i: int) -> UnifiedSeries:

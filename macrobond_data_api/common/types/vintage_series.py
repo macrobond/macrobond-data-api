@@ -1,3 +1,4 @@
+from dataclasses import dataclass
 from datetime import datetime
 
 from typing import List, Optional, Sequence, TYPE_CHECKING
@@ -18,6 +19,7 @@ __pdoc__ = {
 }
 
 
+@dataclass(init=False)
 class VintageSeries(Series):
     """Represtents a vintage series"""
 

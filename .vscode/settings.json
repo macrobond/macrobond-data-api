@@ -11,7 +11,7 @@
         "macrobond_data_api_python_env/":true,
         "build/": true
     },
-    "python.testing.pytestArgs": ["-n", "auto" , "-p", "no:faulthandler"],
+    "python.testing.pytestArgs": ["-p", "no:faulthandler", "--durations=50", "-vv"],
     "python.testing.pytestEnabled": true,
     "python.testing.unittestEnabled": false,
     "testing.autoRun.mode": "all",

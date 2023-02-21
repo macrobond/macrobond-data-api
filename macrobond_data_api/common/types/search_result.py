@@ -1,3 +1,4 @@
+from dataclasses import dataclass
 from typing import Any, MutableMapping, TYPE_CHECKING, List, Sequence, overload
 
 if TYPE_CHECKING:  # pragma: no cover
@@ -9,6 +10,7 @@ __pdoc__ = {
 }
 
 
+@dataclass(init=False)
 class SearchResult(Sequence["Metadata"]):
     """
     The result of a entity search operation.
@@ -29,9 +31,6 @@ class SearchResult(Sequence["Metadata"]):
         """
         Indicates whether the search result was too long and truncated.
         """
-
-    def __repr__(self) -> str:
-        return f"SearchResult of {len(self)} entities, is_truncated: {self.is_truncated}"
 
     def to_dict(self) -> List[MutableMapping[str, Any]]:
         """

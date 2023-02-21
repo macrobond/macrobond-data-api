@@ -1,3 +1,4 @@
+from dataclasses import dataclass
 from datetime import datetime
 
 from typing import Any, Dict, Optional, List, Sequence, TYPE_CHECKING, cast
@@ -19,6 +20,7 @@ __pdoc__ = {
 }
 
 
+@dataclass(init=False)
 class Series(Entity):
     """Represents a Macrobond time series."""
 
@@ -77,8 +79,3 @@ class Series(Entity):
 
     def _repr_html_(self) -> str:
         return self.metadata_to_pd_series().to_frame()._repr_html_()
-
-    def __eq__(self, other: Any) -> bool:
-        return self is other or (
-            isinstance(other, Series) and self.error_message == other.error_message and self.metadata == other.metadata
-        )

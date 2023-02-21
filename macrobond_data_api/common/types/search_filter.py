@@ -1,6 +1,8 @@
+from dataclasses import dataclass
 from typing import Dict, Sequence, Union
 
 
+@dataclass(init=False)
 class SearchFilter:
     __slots__ = (
         "text",

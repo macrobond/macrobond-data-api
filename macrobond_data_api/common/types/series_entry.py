@@ -1,3 +1,4 @@
+from dataclasses import dataclass
 from datetime import datetime
 
 from typing import Optional
@@ -14,6 +15,7 @@ __pdoc__ = {
 }
 
 
+@dataclass(init=False)
 class SeriesEntry:
     """
     Properties of a series in a call to `macrobond_data_api.common.api.Api.get_unified_series`.
