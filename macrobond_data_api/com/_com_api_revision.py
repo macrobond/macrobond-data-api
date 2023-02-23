@@ -234,7 +234,7 @@ def _less_than_or_equal_with_margin(d1: Optional[datetime], d2: Optional[datetim
 
 
 def get_many_series_with_revisions(
-    self: "ComApi", requests: Sequence[RevisionHistoryRequest]
+    self: "ComApi", requests: Sequence[RevisionHistoryRequest], include_not_modified: bool = False
 ) -> Generator[SeriesWithVintages, None, None]:
     if len(requests) == 0:
         yield from ()
@@ -250,8 +250,6 @@ def get_many_series_with_revisions(
 
         head = series_with_revisions.Head
         metadata = _fill_metadata_from_entity(head)
-        last_revision_adjustment = metadata["LastRevisionAdjustmentTimeStamp"]
-        # last_revision_time = metadata["LastRevisionTimeStamp"]
         last_modified_time = metadata["LastModifiedTimeStamp"]
 
         if (
@@ -259,6 +257,8 @@ def get_many_series_with_revisions(
             and last_modified_time
             and _less_than_or_equal_with_margin(last_modified_time, request.if_modified_since)
         ):
+            if not include_not_modified:
+                continue
             yield SeriesWithVintages("Not modified", SeriesWithVintagesErrorCode.NOT_MODIFIED, None, [])
             continue
 
@@ -272,6 +272,8 @@ def get_many_series_with_revisions(
                 [],
             )
             continue
+
+        last_revision_adjustment = metadata["LastRevisionAdjustmentTimeStamp"]
 
         if (
             can_do_incremental_response

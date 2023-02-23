@@ -18,11 +18,20 @@ def _test_data(com: ComApi) -> Any:
 
 @pytest.fixture(scope="module", name="test_revision_history_request")
 def _test_revision_history_request(web: WebApi, com: ComApi, test_metadata: Any) -> Any:
-    def test(request: RevisionHistoryRequest, error_code: Optional[SeriesWithVintagesErrorCode]) -> None:
-        for web_r, com_r in zip(
-            list(web.get_many_series_with_revisions([request])),
-            list(com.get_many_series_with_revisions([request])),
-        ):
+    def test(
+        request: RevisionHistoryRequest,
+        error_code: Optional[SeriesWithVintagesErrorCode],
+        include_not_modified: bool = True,
+        results_len: int = 1,
+    ) -> None:
+        web_list = list(web.get_many_series_with_revisions([request], include_not_modified))
+        com_list = list(com.get_many_series_with_revisions([request], include_not_modified))
+
+        assert len(web_list) == len(com_list)
+
+        assert len(web_list) == results_len
+
+        for web_r, com_r in zip(web_list, com_list):
             test_metadata(web_r, com_r, can_be_none=True)
 
             assert com_r.error_code == web_r.error_code
@@ -81,7 +90,8 @@ def test_1(test_data: Any, test_revision_history_request: Any) -> None:
     for vintage in test_data:
         metadata = vintage.metadata
         request = RevisionHistoryRequest("usgdp", if_modified_since=metadata["LastModifiedTimeStamp"])
-        test_revision_history_request(request, SeriesWithVintagesErrorCode.NOT_MODIFIED)
+        test_revision_history_request(request, SeriesWithVintagesErrorCode.NOT_MODIFIED, include_not_modified=True)
+        test_revision_history_request(request, None, include_not_modified=False, results_len=0)
 
 
 def test_2(test_data: Any, test_revision_history_request: Any) -> None:

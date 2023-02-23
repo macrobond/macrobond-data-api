@@ -237,8 +237,7 @@ def _create_web_revision_h_request(requests: Sequence[RevisionHistoryRequest]) -
 
 
 def get_many_series_with_revisions(
-    self: "WebApi",
-    requests: Sequence[RevisionHistoryRequest],
+    self: "WebApi", requests: Sequence[RevisionHistoryRequest], include_not_modified: bool = False
 ) -> Generator[SeriesWithVintages, None, None]:
     if len(requests) == 0:
         yield from ()
@@ -252,6 +251,9 @@ def get_many_series_with_revisions(
             for item in ijson_items:
                 _error_code = item.get("errorCode")
                 error_code = SeriesWithVintagesErrorCode(_error_code) if _error_code else None
+
+                if not include_not_modified and error_code == SeriesWithVintagesErrorCode.NOT_MODIFIED:
+                    continue
 
                 _metadata = item.get("metadata")
                 metadata = self.session._create_metadata(_metadata) if _metadata else None
