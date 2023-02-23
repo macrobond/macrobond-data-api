@@ -130,9 +130,14 @@ def run(*work: Callable[[bool, str], WorkItem], in_sequence: bool = True) -> Non
     python_path = sys.executable
     work_items = [x(in_sequence, python_path) for x in work]
 
-    loop = asyncio.ProactorEventLoop()
-    asyncio.set_event_loop(loop)
-    loop.run_until_complete(_run_all(in_sequence, work_items))
+    if in_sequence:
+        asyncio.run(_run_all(in_sequence, work_items))
+    else:
+        if os.name != "nt":
+            raise ValueError("in_sequence == False is only supported on window.")
+        loop = asyncio.ProactorEventLoop()
+        asyncio.set_event_loop(loop)
+        loop.run_until_complete(_run_all(in_sequence, work_items))
 
     if not in_sequence:
         for work_item in work_items:
