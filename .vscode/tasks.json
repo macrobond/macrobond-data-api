@@ -5,27 +5,26 @@
     "problemMatcher": [],
     "tasks": [
         {
-            "label": "set up dev environment",
+            "label": "Set up dev environment",
             "args": [
                 "scripts/set_up_dev_environment.py"
             ],
+            "detail": "Install all depends"
         },
         {
-            "label": "create 3.7 venv macrobond_data_api_python_env",
-            "command": "py -3.7 -m venv macrobond_data_api_python_env"
+            "label": "Create venv",
+            "command": "py",
+            "args": ["-${input:py_version}", "-m", "venv", ".env"],
+            "detail": "Create a new python virtual environment"
         },
         {
-            "label": "create 3 venv macrobond_data_api_python_env",
-            "command": "py -3 -m venv macrobond_data_api_python_env"
-        },
-        {
-            "label": "pytest",
+            "label": "Pytest",
             "args": [
                 "scripts/pytest_.py"
             ],
         },
         {
-            "label": "pylint",
+            "label": "PyLint",
             "args": [
                 "scripts/pylint.py"
             ],
@@ -34,25 +33,27 @@
             },
         },
         {
-            "label": "black check",
+            "label": "Black check",
             "args": [
                 "scripts/black_check.py"
             ],
             "presentation": {
                 "clear": true
             },
+            "detail": "Verify code formatting"
         },
         {
-            "label": "black",
+            "label": "Black",
             "args": [
                 "scripts/black.py"
             ],
             "presentation": {
                 "clear": true
-            }
+            },
+            "detail": "Format code"
         },
         {
-            "label": "mypy",
+            "label": "Mypy",
             "args": [
                 "scripts/mypy.py"
             ],
@@ -61,16 +62,17 @@
             },
         },
         {
-            "label": "lint",
+            "label": "Lint",
             "args": [
                 "scripts/lint.py"
             ],
             "presentation": {
                 "clear": true
             },
+            "detail": "Run all lint tools"
         },
         {
-            "label": "pycodestyle",
+            "label": "PyCodeStyle",
             "args": [
                 "scripts/pycodestyle.py"
             ],
@@ -79,7 +81,7 @@
             }
         },
         {
-            "label": "pdoc3",
+            "label": "Pdoc3",
             "args": [
                 "scripts/pdoc3.py"
             ],
@@ -88,7 +90,7 @@
             }
         },
         {
-            "label": "pdoc3 server",
+            "label": "Pdoc3 server",
             "args": [
                 "scripts/pdoc3_server.py"
             ],
@@ -103,22 +105,31 @@
             ],
         },
         {
-            "label": "build",
+            "label": "Build",
             "args": [
                 "scripts/build.py"
             ],
         },
         {
-            "label": "save credential to keyring",
+            "label": "Save credential to keyring",
             "args": [
                 "macrobond_financial/util/save_credential_to_keyring.py"
             ],
         },
         {
-            "label": "code generation",
+            "label": "Code generation",
             "args": [
                 "scripts/code_generation.py" , "--generate"
             ]
+        }
+    ],
+    "inputs": [
+        {
+            "id": "py_version",
+            "type": "pickString",
+            "options": ["3", "3.7"],
+            "description": "Which version of python ? 3 is recommended normal uses",
+            "default": "3"
         }
     ]
 }

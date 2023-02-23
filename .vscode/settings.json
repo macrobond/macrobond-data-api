@@ -9,21 +9,17 @@
         "dist/": true,
         "macrobond_data_api.egg-info/": true,
         "macrobond_data_api_python_env/":true,
-        "build/": true
+        ".env/":true,
+        "build/": true,
+        "tests/**/__init__.py": true
     },
     "python.testing.pytestArgs": ["-p", "no:faulthandler", "--durations=50", "-vv"],
     "python.testing.pytestEnabled": true,
     "python.testing.unittestEnabled": false,
-    "testing.autoRun.mode": "all",
-    "testing.autoRun.delay": 2000,
     "python.linting.enabled": true,
     "python.linting.pylintEnabled": true,
-    "python.linting.pylintArgs": [],
     "python.linting.mypyEnabled": true,
     "python.linting.pycodestyleEnabled": true,
-    "python.linting.pycodestyleArgs": [
-        "--config=setup.cfg"
-    ],
     "python.formatting.provider": "black",
     "diffEditor.ignoreTrimWhitespace": false,
 }

@@ -66,7 +66,7 @@ class WorkItem:
 
     async def _run(self) -> None:
         await self.run()
-        print(self.symbole, end=" ", flush=True)
+        print(self.name + " " + self.symbole, end=" ", flush=True)
 
     async def run(self) -> None:
         ...

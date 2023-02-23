@@ -213,6 +213,26 @@ def _create_vintage_values(
         yield VintageValues(vintage_date, _datetime_to_datetime_timezone(dates), values)
 
 
+def _equal_with_margin(d1: Optional[datetime], d2: Optional[datetime]) -> bool:
+    if not d1 and not d2:
+        return True
+
+    if not d1 or not d2:
+        return False
+
+    return abs((d2 - d1).total_seconds()) < 0.5
+
+
+def _less_than_or_equal_with_margin(d1: Optional[datetime], d2: Optional[datetime]) -> bool:
+    if not d1 and not d2:
+        return True
+
+    if not d1 or not d2:
+        return False
+
+    return (d1 - d2).total_seconds() < 0.5
+
+
 def get_many_series_with_revisions(
     self: "ComApi", requests: Sequence[RevisionHistoryRequest]
 ) -> Generator[SeriesWithVintages, None, None]:
@@ -234,7 +254,11 @@ def get_many_series_with_revisions(
         # last_revision_time = metadata["LastRevisionTimeStamp"]
         last_modified_time = metadata["LastModifiedTimeStamp"]
 
-        if request.if_modified_since and last_modified_time <= request.if_modified_since:
+        if (
+            request.if_modified_since
+            and last_modified_time
+            and _less_than_or_equal_with_margin(last_modified_time, request.if_modified_since)
+        ):
             yield SeriesWithVintages("Not modified", SeriesWithVintagesErrorCode.NOT_MODIFIED, None, [])
             continue
 
@@ -249,7 +273,11 @@ def get_many_series_with_revisions(
             )
             continue
 
-        if can_do_incremental_response and last_revision_adjustment != request.last_revision_adjustment:
+        if (
+            can_do_incremental_response
+            and last_revision_adjustment
+            and not _equal_with_margin(request.last_revision_adjustment, last_revision_adjustment)
+        ):
             can_do_incremental_response = False
 
         vintage_dates = series_with_revisions.GetVintageDates()
@@ -257,25 +285,24 @@ def get_many_series_with_revisions(
 
         if can_do_incremental_response:
             request_last_revision = cast(datetime, request.last_revision)
-            try:
-                index_ = vintage_dates.index(
-                    datetime(
-                        request_last_revision.year,
-                        request_last_revision.month,
-                        request_last_revision.day,
-                        request_last_revision.hour,
-                        request_last_revision.minute,
-                    )
-                )
-            except ValueError:
-                index_ = -1
+            index = -1
+            for i, vintage_date in enumerate(vintage_dates):
+                if (
+                    vintage_date.year == request_last_revision.year
+                    and vintage_date.month == request_last_revision.month
+                    and vintage_date.day == request_last_revision.day
+                    and vintage_date.hour == request_last_revision.hour
+                    and vintage_date.minute == request_last_revision.minute
+                ):
+                    index = i + 1
+                    break
 
-            if index_ != -1:
+            if index != -1:
                 yield SeriesWithVintages(
                     "Incremental update",
                     SeriesWithVintagesErrorCode.PARTIAL_CONTENT,
                     metadata,
-                    list(_create_vintage_values(index_, vintage_dates, complete_history)),
+                    list(_create_vintage_values(index, vintage_dates, complete_history)),
                 )
                 continue
         yield SeriesWithVintages(

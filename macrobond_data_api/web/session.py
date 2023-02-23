@@ -108,10 +108,10 @@ class Session:
 
         self.__token_endpoint: Optional[str] = None
 
-        if not authorization_url.lower().startswith("https://"):
+        if not self._is_https_url(authorization_url):
             raise ValueError("authorization_url is not https")
 
-        if not api_url.lower().startswith("https://"):
+        if not self._is_https_url(api_url):
             raise ValueError("api_url is not https")
 
         if not authorization_url.endswith("/"):
@@ -133,6 +133,9 @@ class Session:
         self.__series_tree = SeriesTreeMethods(self)
 
         self._metadata_type_directory = _MetadataTypeDirectory(self)
+
+    def _is_https_url(self, url: str) -> bool:
+        return url.lower().startswith("https://")
 
     def close(self) -> None:
         self.auth2_session.close()

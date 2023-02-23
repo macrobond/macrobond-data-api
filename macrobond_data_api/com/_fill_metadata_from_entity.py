@@ -26,6 +26,18 @@ def _get_val(name: str, values: Sequence[Any]) -> Any:
                 datetime_.microsecond,
                 tzinfo=datetime.now().astimezone().tzinfo,
             ).astimezone(timezone.utc)
+        if name in ("LastRevisionAdjustmentTimeStamp", "LastRevisionTimeStamp"):
+            datetime_ = values[0]
+            return datetime(
+                datetime_.year,
+                datetime_.month,
+                datetime_.day,
+                datetime_.hour,
+                datetime_.minute,
+                datetime_.second,
+                datetime_.microsecond,
+                tzinfo=timezone.utc,
+            )
         values = [
             datetime(x.year, x.month, x.day, x.hour, x.minute, x.second, x.microsecond, timezone.utc) for x in values
         ]

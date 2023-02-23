@@ -5,10 +5,10 @@
 ```bash
 echo "Git pre push hock"
 
-. ./macrobond_data_api_python_env/Scripts/activate
+. ./.env/Scripts/activate
 if test $? != 0
 then
-    echo -e '\033[31mError in git pre push hock - ./macrobond_data_api_python_env/Scripts/activate\033[0m'
+    echo -e '\033[31mError in git pre push hock - ./.env/Scripts/activate\033[0m'
     exit 1
 fi
 

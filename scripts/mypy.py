@@ -8,9 +8,7 @@ from context import WorkItem, run
 
 class Mypy(WorkItem):
     async def run(self) -> None:
-        await self.python_run(
-            "mypy", ". --show-error-codes --exclude macrobond_data_api_python_env --python-version 3.7"
-        )
+        await self.python_run("mypy", ". --show-error-codes --exclude .env --python-version 3.7")
 
 
 if __name__ == "__main__":
