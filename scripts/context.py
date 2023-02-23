@@ -135,9 +135,9 @@ def run(*work: Callable[[bool, str], WorkItem], in_sequence: bool = True) -> Non
     else:
         if os.name != "nt":
             raise ValueError("in_sequence == False is only supported on window.")
-        loop = asyncio.ProactorEventLoop()
-        asyncio.set_event_loop(loop)
-        loop.run_until_complete(_run_all(in_sequence, work_items))
+        loop = asyncio.ProactorEventLoop()  # type: ignore
+        asyncio.set_event_loop(loop)  # type: ignore
+        loop.run_until_complete(_run_all(in_sequence, work_items))  # type: ignore
 
     if not in_sequence:
         for work_item in work_items:
