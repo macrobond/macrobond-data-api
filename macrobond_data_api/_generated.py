@@ -62,8 +62,6 @@ def entity_search(
     Returns
     -------
     `macrobond_data_api.common.types.search_result.SearchResult`
-
-
     """
     return _get_api().entity_search(
         text,
@@ -98,8 +96,6 @@ def entity_search_multi_filter(
     Returns
     -------
     `macrobond_data_api.common.types.search_result.SearchResult`
-
-
     """
     return _get_api().entity_search_multi_filter(
         *filters, include_discontinued=include_discontinued, no_metadata=no_metadata
@@ -118,8 +114,6 @@ def get_all_vintage_series(series_name: str) -> GetAllVintageSeriesResult:
     Returns
     -------
     `macrobond_data_api.common.types.get_all_vintage_series_result.GetAllVintageSeriesResult`
-
-
     """
     return _get_api().get_all_vintage_series(series_name)
 
@@ -145,14 +139,12 @@ def get_entities(*entity_names: str, raise_error: bool = None) -> Sequence[Entit
     -------
     `Sequence[macrobond_data_api.common.types.entity.Entity]`
     The result is in the same order as in the request.
-
-
     """
     return _get_api().get_entities(*entity_names, raise_error=raise_error)
 
 
 def get_many_series_with_revisions(
-    requests: Sequence[RevisionHistoryRequest],
+    requests: Sequence[RevisionHistoryRequest], include_not_modified: bool = False
 ) -> Generator[SeriesWithVintages, None, None]:
     """
     Download all revisions for one or more series.
@@ -164,12 +156,12 @@ def get_many_series_with_revisions(
 
     Parameters
     ----------
-    requests : `Sequence[macrobond_data_api.common.types.revision_history_request.RevisionHistoryRequest]`
+    requests: `Sequence[macrobond_data_api.common.types.revision_history_request.RevisionHistoryRequest]`
         A sequence of series requests.
-
-
+    include_not_modified: `bool`
+        Set this value to True in order to include NotNodified series.
     """
-    return _get_api().get_many_series_with_revisions(requests)
+    return _get_api().get_many_series_with_revisions(requests, include_not_modified)
 
 
 def get_nth_release(nth: int, *series_names: str, raise_error: bool = None) -> Sequence[Series]:
@@ -191,8 +183,6 @@ def get_nth_release(nth: int, *series_names: str, raise_error: bool = None) -> S
     -------
     `Sequence[macrobond_data_api.common.types.series.Series]`
     The result is in the same order as in the request.
-
-
     """
     return _get_api().get_nth_release(nth, *series_names, raise_error=raise_error)
 
@@ -211,8 +201,6 @@ def get_observation_history(series_name: str, *times: datetime) -> Sequence[Seri
     Returns
     -------
     `Sequence[macrobond_data_api.common.types.series_observation_history.SeriesObservationHistory]`
-
-
     """
     return _get_api().get_observation_history(series_name, *times)
 
@@ -236,8 +224,6 @@ def get_one_entity(entity_name: str, raise_error: bool = None) -> Entity:
     Returns
     -------
     `macrobond_data_api.common.types.entity.Entity`
-
-
     """
     return _get_api().get_one_entity(entity_name, raise_error)
 
@@ -261,8 +247,6 @@ def get_one_series(series_name: str, raise_error: bool = None) -> Series:
     Returns
     -------
     `macrobond_data_api.common.types.series.Series`
-
-
     """
     return _get_api().get_one_series(series_name, raise_error)
 
@@ -285,8 +269,6 @@ def get_revision_info(*series_names: str, raise_error: bool = None) -> Sequence[
     -------
     `Sequence[macrobond_data_api.common.types.revision_info.RevisionInfo]`
     The result is in the sane order as in the request.
-
-
     """
     return _get_api().get_revision_info(*series_names, raise_error=raise_error)
 
@@ -312,8 +294,6 @@ def get_series(*series_names: str, raise_error: bool = None) -> Sequence[Series]
     -------
     `Sequence[macrobond_data_api.common.types.series.Series]`
     The result is in the same order as in the request.
-
-
     """
     return _get_api().get_series(*series_names, raise_error=raise_error)
 
@@ -359,8 +339,6 @@ def get_unified_series(
     -------
     `macrobond_data_api.common.types.unified_series.UnifiedSeries`
     The result is in the same order as in the request.
-
-
     """
     return _get_api().get_unified_series(
         *series_entries,
@@ -393,8 +371,6 @@ def get_vintage_series(time: datetime, *series_names: str, raise_error: bool = N
     -------
     `Sequence[macrobond_data_api.common.types.vintage_series.VintageSeries]`
     The result is in the same order as in the request.
-
-
     """
     return _get_api().get_vintage_series(time, *series_names, raise_error=raise_error)
 
@@ -427,8 +403,6 @@ def metadata_get_attribute_information(*names: str) -> Sequence[MetadataAttribut
         # as data_frame
         print(api.metadata_get_attribute_information("Region")[0].to_pd_data_frame())
     ```
-
-
     """
     return _get_api().metadata_get_attribute_information(*names)
 
@@ -461,8 +435,6 @@ def metadata_get_value_information(*name_val: Tuple[str, str]) -> Sequence[Metad
         # as data_frame
         print(api.metadata_get_value_information(("RateType", "mole"))[0].to_pd_data_frame())
     ```
-
-
     """
     return _get_api().metadata_get_value_information(*name_val)
 
@@ -494,7 +466,5 @@ def metadata_list_values(name: str) -> MetadataValueInformation:
         # as data_frame
         print(metadata_list_values("RateType").to_pd_data_frame())
     ```
-
-
     """
     return _get_api().metadata_list_values(name)

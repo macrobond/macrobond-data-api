@@ -280,7 +280,7 @@ class Api(ABC):
 
     @abstractmethod
     def get_many_series_with_revisions(
-        self, requests: Sequence[RevisionHistoryRequest]
+        self, requests: Sequence[RevisionHistoryRequest], include_not_modified: bool = False
     ) -> Generator[SeriesWithVintages, None, None]:
         """
         Download all revisions for one or more series.
@@ -292,8 +292,10 @@ class Api(ABC):
 
         Parameters
         ----------
-        requests : `Sequence[macrobond_data_api.common.types.revision_history_request.RevisionHistoryRequest]`
+        requests: `Sequence[macrobond_data_api.common.types.revision_history_request.RevisionHistoryRequest]`
             A sequence of series requests.
+        include_not_modified: `bool`
+            Set this value to True in order to include NotNodified series.
         """
 
     # Search

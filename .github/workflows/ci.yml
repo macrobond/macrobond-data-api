@@ -32,7 +32,7 @@ jobs:
 
     - name: Api code generator
       if: always()
-      run: python scripts/api_code_generator.py --verify
+      run: python scripts/code_generation.py --verify
 
     - name: Black
       if: always()

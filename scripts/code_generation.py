@@ -28,7 +28,7 @@ class FunctionInfo:
         self.definition = source
 
     def get_indentd_doc(self, indent: str) -> str:
-        return "".join("\n" if x == "" else indent + x + "\n" for x in self.doc.split("\n")) + "\n"
+        return "".join("\n" if x == "" else indent + x + "\n" for x in self.doc.split("\n"))
 
 
 class Analyzer(ast.NodeVisitor):
@@ -136,7 +136,7 @@ class CodeGenerator:
         for function in self.functions:
             write(f"def {function.name} {function.definition}\n")
             write(f'{self.indent}"""\n')
-            write(function.get_indentd_doc(self.indent) + "\n")
+            write(function.get_indentd_doc(self.indent))
             write(f'{self.indent}"""\n')
 
             write(f"{self.indent}{self.prefix}{function.name}(")
