@@ -86,7 +86,7 @@ def test_1(test_data: Any, test_revision_history_request: Any) -> None:
 
 def test_2(test_data: Any, test_revision_history_request: Any) -> None:
     """
-    Test that we get the same result (some data) when we pass an older last modification timestamp
+    Test that we get the same result (all data) when we pass an older last modification timestamp
     """
     for vintage in test_data:
         metadata = vintage.metadata
@@ -100,7 +100,7 @@ def test_3(test_data: Any, test_revision_history_request: Any) -> None:
     """
     Since neither the last_revision_time is now and historical timestamp, we should get incremental updates
     """
-    # test_data test_data[1:] is for skuping first we.
+    # test_data test_data[1:] is for skipping first we.
     for vintage in test_data[1:]:
         metadata = vintage.metadata
         request = RevisionHistoryRequest(
