@@ -244,7 +244,7 @@ def get_many_series_with_revisions(
 
         if series_with_revisions.IsError:
             if series_with_revisions.ErrorMessage == "Not found":
-                yield SeriesWithVintages("Not Found", SeriesWithVintagesErrorCode.NOT_FOUND, None, [])
+                yield SeriesWithVintages("Not found", SeriesWithVintagesErrorCode.NOT_FOUND, None, [])
                 continue
             raise Exception(series_with_revisions.ErrorMessage)
 
@@ -273,7 +273,7 @@ def get_many_series_with_revisions(
             )
             continue
 
-        last_revision_adjustment = metadata["LastRevisionAdjustmentTimeStamp"]
+        last_revision_adjustment = metadata.get("LastRevisionAdjustmentTimeStamp")
 
         if (
             can_do_incremental_response

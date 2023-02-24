@@ -11,3 +11,4 @@ __pycache__/
 macrobond_data_api/__version__.py
 macrobond_data_api_python_env/
 .env/
+tests/_conftest.py

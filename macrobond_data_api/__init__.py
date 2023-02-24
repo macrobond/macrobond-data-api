@@ -11,6 +11,7 @@ from ._generated import (
     entity_search_multi_filter,
     get_all_vintage_series,
     get_entities,
+    get_many_series,
     get_many_series_with_revisions,
     get_nth_release,
     get_observation_history,

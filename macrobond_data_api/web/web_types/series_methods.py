@@ -45,7 +45,7 @@ class SeriesMethods:
         return cast(List["EntityResponse"], response.json())
 
     # Get /v1/series/fetchseries
-    def fetch_series(self, *series_names: str) -> List["SeriesResponse"]:
+    def get_fetch_series(self, *series_names: str) -> List["SeriesResponse"]:
         """
         Fetch one or more entities.
         The result will be in the same order as the request.
@@ -62,6 +62,28 @@ class SeriesMethods:
             403 Forbidden. Not authorized.
         """
         response = self.__session.get_or_raise("v1/series/fetchseries", params={"n": series_names})
+        return cast(List["SeriesResponse"], response.json())
+
+    # Post /v1/series/fetchseries
+    def post_fetch_series(self, *series: "EntityRequest") -> List["SeriesResponse"]:
+        """
+        Fetch one or more series.
+        A timestamp can be specified for each series to conditionally retrieve a result.
+        This is typically the value of the metadata LastModifiedTimeStamp from a previous request.
+        The result will be in the same order as the request.
+
+        OAuth scope: macrobond_web_api.read_mb
+
+        Codes:
+            200 The operation was successful.
+
+            400 The operation failed.
+
+            401 Unauthorized. Missing, invalid or expired access token.
+
+            403 Forbidden. Not authorized.
+        """
+        response = self.__session.post_or_raise("v1/series/fetchseries", json=series)
         return cast(List["SeriesResponse"], response.json())
 
     # Post /fetchseries

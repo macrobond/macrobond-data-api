@@ -14,7 +14,12 @@
         {
             "label": "Create venv",
             "command": "py",
-            "args": ["-${input:py_version}", "-m", "venv", ".env"],
+            "args": [
+                "-${input:py_version}",
+                "-m",
+                "venv",
+                ".env"
+            ],
             "detail": "Create a new python virtual environment"
         },
         {
@@ -22,6 +27,7 @@
             "args": [
                 "scripts/pytest_.py"
             ],
+            "detail": "Run all tests correctly"
         },
         {
             "label": "Black",
@@ -51,7 +57,8 @@
             ],
             "presentation": {
                 "clear": true
-            }
+            },
+            "detail": "generate documentation"
         },
         {
             "label": "Pdoc3 server",
@@ -65,7 +72,8 @@
         {
             "label": "py coverage",
             "args": [
-                "scripts/coverage.py"
+                "scripts/coverage.py",
+                "--${input:coverage_tool}"
             ],
         },
         {
@@ -73,6 +81,7 @@
             "args": [
                 "scripts/build.py"
             ],
+            "detail": "lint and generate documentation then builds the the package"
         },
         {
             "label": "Save credential to keyring",
@@ -83,22 +92,47 @@
         {
             "label": "Code generation",
             "args": [
-                "scripts/code_generation.py" , "--generate"
-            ]
+                "scripts/code_generation.py",
+                "--generate"
+            ],
+            "detail": "Generate code for the duplicated code in web and com"
         }
     ],
     "inputs": [
         {
             "id": "py_version",
             "type": "pickString",
-            "options": ["3", "3.7"],
+            "options": [
+                "3",
+                "3.7"
+            ],
             "description": "Which version of python ? 3 is recommended normal uses",
             "default": "3"
         },
         {
             "id": "lint_tool",
             "type": "pickString",
-            "options": ["all", "verify","black_check","mypy","pylint","py_code_style","pdoc3"],
+            "options": [
+                "all",
+                "verify",
+                "black_check",
+                "mypy",
+                "pylint",
+                "py_code_style",
+                "pdoc3"
+            ],
+            "description": "Which tool ?",
+            "default": "all"
+        },
+        {
+            "id": "coverage_tool",
+            "type": "pickString",
+            "options": [
+                "all",
+                "web",
+                "com",
+                "comparison"
+            ],
             "description": "Which tool ?",
             "default": "all"
         }

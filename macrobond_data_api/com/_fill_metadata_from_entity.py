@@ -24,7 +24,6 @@ def _get_val(name: str, values: Sequence[Any]) -> Any:
                 datetime_.minute,
                 datetime_.second,
                 datetime_.microsecond,
-                tzinfo=datetime.now().astimezone().tzinfo,
             ).astimezone(timezone.utc)
         if name in ("LastRevisionAdjustmentTimeStamp", "LastRevisionTimeStamp"):
             datetime_ = values[0]

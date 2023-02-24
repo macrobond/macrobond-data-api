@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import TYPE_CHECKING, Any, Dict, Generator, List, Optional, Sequence, TypeVar, cast
+from typing import TYPE_CHECKING, Any, Dict, Generator, List, Optional, Sequence, cast
 
 from dateutil import parser
 
@@ -18,6 +18,7 @@ from macrobond_data_api.common.types import (
     RevisionHistoryRequest,
 )
 from macrobond_data_api.common.types._repr_html_sequence import _ReprHtmlSequence
+from ._split_in_to_chunks import split_in_to_chunks
 
 from .session import ProblemDetailsException, Session, _raise_on_error
 
@@ -212,16 +213,6 @@ def _create_vintage_values(vintage_values: "VintageValuesResponse") -> VintageVa
     return VintageValues(vintage_time_stamp, dates, values)
 
 
-SplitInToChunksTypeVar = TypeVar("SplitInToChunksTypeVar")
-
-
-def _split_in_to_chunks(
-    sequence: Sequence[SplitInToChunksTypeVar], chunk_size: int
-) -> Generator[Sequence[SplitInToChunksTypeVar], None, None]:
-    for i in range(0, len(sequence), chunk_size):
-        yield sequence[i : i + chunk_size]
-
-
 def _create_web_revision_h_request(requests: Sequence[RevisionHistoryRequest]) -> List["WebRevisionHistoryRequest"]:
     return [
         {
@@ -241,7 +232,7 @@ def get_many_series_with_revisions(
 ) -> Generator[SeriesWithVintages, None, None]:
     if len(requests) == 0:
         yield from ()
-    for requests_chunkd in _split_in_to_chunks(requests, 200):
+    for requests_chunkd in split_in_to_chunks(requests, 200):
         with self.session.series.post_fetch_all_vintage_series(
             _create_web_revision_h_request(requests_chunkd), stream=True
         ) as response:

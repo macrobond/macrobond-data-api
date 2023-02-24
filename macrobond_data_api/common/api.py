@@ -3,7 +3,7 @@ The class `macrobond_data_api.common.api.Api` defines the core methods to intera
 Macrobond database.
 """
 
-from typing import Generator, Sequence, Union, Tuple, Dict
+from typing import Generator, Sequence, Union, Tuple, Dict, Optional
 from abc import ABC, abstractmethod
 
 from datetime import datetime
@@ -475,6 +475,20 @@ class Api(ABC):
         -------
         `Sequence[macrobond_data_api.common.types.entity.Entity]`
         The result is in the same order as in the request.
+        """
+
+    @abstractmethod
+    def get_many_series(self, *series: Tuple[str, datetime]) -> Generator[Optional[Series], None, None]:
+        """
+
+        Parameters
+        ----------
+        *series: `Tuple[str, datetime.datetime]`
+            A sequence of series requests.
+
+        Returns
+        -------
+        `Generator[Optional[macrobond_data_api.common.types.series.Series]]`
         """
 
     @abstractmethod

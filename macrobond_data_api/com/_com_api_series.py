@@ -1,5 +1,5 @@
 from math import isnan
-from typing import List, Optional, Union, TYPE_CHECKING, Sequence
+from typing import Generator, List, Optional, Tuple, Union, TYPE_CHECKING, Sequence
 
 from datetime import datetime
 
@@ -44,7 +44,7 @@ def _create_series(com_series: "ComSeries", name: str) -> Series:
         name,
         None,
         _fill_metadata_from_entity(com_series),
-        com_series.Values,
+        list(com_series.Values),
         _datetime_to_datetime(com_series.DatesAtStartOfPeriod),
     )
 
@@ -75,6 +75,28 @@ def get_entities(self: "ComApi", *entity_names: str, raise_error: bool = None) -
         map(lambda x, y: (x, y.error_message if y.is_error else None), entity_names, entitys),
     )
     return _ReprHtmlSequence(entitys)
+
+
+def get_many_series(self: "ComApi", *series: Tuple[str, datetime]) -> Generator[Optional[Series], None, None]:
+    if len(series) == 0:
+        yield from ()
+
+    names = {x[0] for x in series}
+
+    if len(names) != len(series):
+        raise ValueError("duplicate of series")
+
+    for serie, serie_info in zip(self.get_series(*[x[0] for x in series], raise_error=False), series):
+        if serie.is_error:
+            yield serie
+            continue
+
+        last_modified_time = serie.metadata["LastModifiedTimeStamp"]
+        if last_modified_time <= serie_info[1]:
+            yield Series(serie_info[0], "Not modified", None, None, None)
+            continue
+
+        yield serie
 
 
 def get_unified_series(

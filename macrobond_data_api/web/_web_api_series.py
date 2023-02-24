@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import TYPE_CHECKING, Any, Dict, List, Optional, Sequence, Union, cast
+from typing import TYPE_CHECKING, Any, Dict, Generator, List, Optional, Sequence, Tuple, Union, cast
 
 from dateutil import parser
 
@@ -7,11 +7,7 @@ from macrobond_data_api.common.types._repr_html_sequence import _ReprHtmlSequenc
 
 from macrobond_data_api.common.types import SeriesEntry
 
-from macrobond_data_api.common.enums import (
-    SeriesWeekdays,
-    SeriesFrequency,
-    CalendarMergeMode,
-)
+from macrobond_data_api.common.enums import SeriesWeekdays, SeriesFrequency, CalendarMergeMode
 
 from macrobond_data_api.common.types import (
     GetEntitiesError,
@@ -22,16 +18,14 @@ from macrobond_data_api.common.types import (
 )
 
 from .session import Session
+from ._split_in_to_chunks import split_in_to_chunks
 
 if TYPE_CHECKING:  # pragma: no cover
     from .web_api import WebApi
 
     from macrobond_data_api.common.types import StartOrEndPoint
 
-    from .web_types import (
-        UnifiedSeriesRequest,
-        UnifiedSeriesEntry,
-    )
+    from .web_types import UnifiedSeriesRequest, UnifiedSeriesEntry, EntityRequest
 
     from .web_types import SeriesResponse, EntityResponse
 
@@ -85,7 +79,7 @@ def get_one_series(self: "WebApi", series_name: str, raise_error: Optional[bool]
 
 
 def get_series(self: "WebApi", *series_names: str, raise_error: Optional[bool] = None) -> Sequence[Series]:
-    response = self.session.series.fetch_series(*series_names)
+    response = self.session.series.get_fetch_series(*series_names)
     series = [_create_series(x, y, self.session) for x, y in zip(response, series_names)]
     GetEntitiesError._raise_if(
         self.raise_error if raise_error is None else raise_error,
@@ -106,6 +100,22 @@ def get_entities(self: "WebApi", *entity_names: str, raise_error: Optional[bool]
         map(lambda x, y: (x, y.error_message if y.is_error else None), entity_names, entitys),
     )
     return _ReprHtmlSequence(entitys)
+
+
+def get_many_series(self: "WebApi", *series: Tuple[str, datetime]) -> Generator[Optional[Series], None, None]:
+    if len(series) == 0:
+        yield from ()
+
+    names = {x[0] for x in series}
+
+    if len(names) != len(series):
+        raise ValueError("duplicate of series")
+
+    for chunk in split_in_to_chunks(series, 200):
+        requests: List["EntityRequest"] = [{"name": x[0], "ifModifiedSince": x[1].isoformat()} for x in chunk]
+        response_list = self.session.series.post_fetch_series(*requests)
+        for response, request in zip(response_list, requests):
+            yield _create_series(response, request["name"], self.session)
 
 
 def get_unified_series(

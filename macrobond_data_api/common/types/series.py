@@ -34,8 +34,8 @@ class Series(Entity):
         name: str,
         error_message: Optional[str],
         metadata: Optional["Metadata"],
-        values: Optional[Sequence[Optional[float]]],
-        dates: Optional[Sequence[datetime]],
+        values: Optional[List[Optional[float]]],
+        dates: Optional[List[datetime]],
     ) -> None:
         super().__init__(name, error_message, metadata)
 

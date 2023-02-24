@@ -1,4 +1,5 @@
-from datetime import datetime
+from datetime import datetime, timezone
+import os
 from typing import Any, Sequence, Union
 import collections.abc
 import warnings
@@ -22,12 +23,22 @@ def _conf_pandas() -> None:
 
 @fixture(scope="session", name="web_client")
 def _web_client_fixture() -> Generator[WebClient, None, None]:
-    def test_is_https_url(self: "Session", url: str) -> bool:  # pylint: disable=unused-argument
-        return True
+    conf_path = os.path.join(os.path.realpath(os.path.dirname(__file__)), "_conftest.py")
 
-    Session._is_https_url = test_is_https_url  # type: ignore
+    if os.path.exists(conf_path):
 
-    # yield WebClient(api_url="http://localhost:5000")
+        def test_is_https_url(self: "Session", url: str) -> bool:  # pylint: disable=unused-argument
+            return True
+
+        Session._is_https_url = test_is_https_url  # type: ignore
+
+        with open(conf_path, "r", encoding="utf-8") as f:
+            conf: dict = {}
+            exec(f.read(), conf)  # pylint: disable=exec-used
+            if "api_url" in conf:
+                yield WebClient(api_url=conf["api_url"])
+                return
+
     yield WebClient()
 
 
@@ -100,7 +111,10 @@ def _remove_microsecond(datetime_: datetime) -> datetime:
 
 
 def _test(
-    web: Union[Sequence[object], object], com: Union[Sequence[object], object], can_be_none: bool = False
+    web: Union[Sequence[object], object],
+    com: Union[Sequence[object], object],
+    can_be_none: bool = False,
+    can_be_empty: bool = False,
 ) -> None:
     if not isinstance(web, collections.abc.Sequence):
         web = [web]
@@ -117,15 +131,24 @@ def _test(
         keys = list(set(web_obj.metadata.keys()) & set(com_obj.metadata.keys()))
         keys.sort()
 
-        assert len(keys) != 0
+        if len(keys) == 0:
+            if can_be_empty:
+                continue
+
+            assert len(keys) != 0
 
         for key in keys:
             if key == "DisplayUnit":
                 continue
 
             if isinstance(web_obj.metadata[key], datetime):
-                web_datetime = _remove_microsecond(web_obj.metadata[key])
-                com_datetime = _remove_microsecond(com_obj.metadata[key])
+                web_datetime = _remove_microsecond(web_obj.metadata[key]).astimezone(timezone.utc)
+                com_datetime = _remove_microsecond(com_obj.metadata[key]).astimezone(timezone.utc)
+                if web_datetime != com_datetime:
+                    diff = (web_datetime - com_datetime).total_seconds()
+                    if diff == 0:
+                        continue
+
                 assert web_datetime == com_datetime, "key " + key
             else:
                 if (

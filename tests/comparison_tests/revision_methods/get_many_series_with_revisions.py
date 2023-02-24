@@ -16,6 +16,11 @@ def _test_data(com: ComApi) -> Any:
     yield ret
 
 
+@pytest.fixture(scope="module", name="test_data_2")
+def _test_data_2(com: ComApi) -> Any:
+    yield com.get_one_series("imffdi_218_fd_fie_ix")
+
+
 @pytest.fixture(scope="module", name="test_revision_history_request")
 def _test_revision_history_request(web: WebApi, com: ComApi, test_metadata: Any) -> Any:
     def test(
@@ -89,7 +94,7 @@ def test_1(test_data: Any, test_revision_history_request: Any) -> None:
     """
     for vintage in test_data:
         metadata = vintage.metadata
-        request = RevisionHistoryRequest("usgdp", if_modified_since=metadata["LastModifiedTimeStamp"])
+        request = RevisionHistoryRequest(metadata["PrimName"], if_modified_since=metadata["LastModifiedTimeStamp"])
         test_revision_history_request(request, SeriesWithVintagesErrorCode.NOT_MODIFIED, include_not_modified=True)
         test_revision_history_request(request, None, include_not_modified=False, results_len=0)
 
@@ -101,7 +106,7 @@ def test_2(test_data: Any, test_revision_history_request: Any) -> None:
     for vintage in test_data:
         metadata = vintage.metadata
         request = RevisionHistoryRequest(
-            "usgdp", if_modified_since=metadata["LastModifiedTimeStamp"] - timedelta(seconds=1)
+            metadata["PrimName"], if_modified_since=metadata["LastModifiedTimeStamp"] - timedelta(seconds=1)
         )
         test_revision_history_request(request, None)
 
@@ -114,7 +119,7 @@ def test_3(test_data: Any, test_revision_history_request: Any) -> None:
     for vintage in test_data[1:]:
         metadata = vintage.metadata
         request = RevisionHistoryRequest(
-            "usgdp",
+            metadata["PrimName"],
             if_modified_since=metadata["LastModifiedTimeStamp"] - timedelta(seconds=1),
             last_revision_adjustment=metadata["LastRevisionAdjustmentTimeStamp"],
             last_revision=vintage.revision_time_stamp,
@@ -129,9 +134,65 @@ def test_4(test_data: Any, test_revision_history_request: Any) -> None:
     for vintage in test_data:
         metadata = vintage.metadata
         request = RevisionHistoryRequest(
-            "usgdp",
+            metadata["PrimName"],
             if_modified_since=metadata["LastModifiedTimeStamp"] - timedelta(seconds=1),
             last_revision_adjustment=metadata["LastRevisionAdjustmentTimeStamp"] - timedelta(seconds=1),
             last_revision=vintage.revision_time_stamp,
         )
         test_revision_history_request(request, None)
+
+
+def test_5(test_data: Any, test_revision_history_request: Any) -> None:
+    metadata = test_data[0].metadata
+    request = RevisionHistoryRequest(metadata["PrimName"])
+    test_revision_history_request(request, None)
+
+
+def test_6(test_data_2: Any, test_revision_history_request: Any) -> None:
+    metadata = test_data_2.metadata
+    request = RevisionHistoryRequest(metadata["PrimName"])
+    test_revision_history_request(request, None)
+
+
+def test_7(test_data_2: Any, test_revision_history_request: Any) -> None:
+    metadata = test_data_2.metadata
+    request = RevisionHistoryRequest(
+        metadata["PrimName"],
+        if_modified_since=metadata["LastModifiedTimeStamp"] + timedelta(seconds=1),
+    )
+    test_revision_history_request(request, SeriesWithVintagesErrorCode.NOT_MODIFIED)
+
+
+def test_8(test_data_2: Any, test_revision_history_request: Any) -> None:
+    metadata = test_data_2.metadata
+    request = RevisionHistoryRequest(
+        metadata["PrimName"],
+        if_modified_since=metadata["LastModifiedTimeStamp"] + timedelta(seconds=1),
+    )
+    test_revision_history_request(request, None, include_not_modified=False, results_len=0)
+
+
+def test_9(test_data_2: Any, test_revision_history_request: Any) -> None:
+    metadata = test_data_2.metadata
+    request = RevisionHistoryRequest(
+        metadata["PrimName"],
+        if_modified_since=metadata["LastModifiedTimeStamp"],
+        last_revision=metadata["LastRevisionTimeStamp"] + timedelta(seconds=1),
+    )
+    test_revision_history_request(request, SeriesWithVintagesErrorCode.NOT_MODIFIED)
+
+
+def test_10(test_revision_history_request: Any) -> None:
+    request = RevisionHistoryRequest("bad name")
+    test_revision_history_request(request, SeriesWithVintagesErrorCode.NOT_FOUND)
+
+
+# TODO @mb-jp uese this test ?
+# def test_11(web: WebApi, com: ComApi) -> None:
+#    requests = [RevisionHistoryRequest("usgdp"), RevisionHistoryRequest("usgdp"), RevisionHistoryRequest("name")]
+#
+#    with pytest.raises(ValueError, match=""):
+#        web.get_many_series_with_revisions(requests)
+#
+#    with pytest.raises(ValueError, match=""):
+#        com.get_many_series_with_revisions(requests)

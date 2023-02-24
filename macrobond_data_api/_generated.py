@@ -2,7 +2,7 @@
 # This is generated code, do not edit
 #
 
-from typing import Generator, Sequence, Union, Tuple, Dict
+from typing import Generator, Sequence, Union, Tuple, Dict, Optional
 from datetime import datetime
 from macrobond_data_api.common.types import (
     SearchFilter,
@@ -141,6 +141,20 @@ def get_entities(*entity_names: str, raise_error: bool = None) -> Sequence[Entit
     The result is in the same order as in the request.
     """
     return _get_api().get_entities(*entity_names, raise_error=raise_error)
+
+
+def get_many_series(*series: Tuple[str, datetime]) -> Generator[Optional[Series], None, None]:
+    """
+    Parameters
+    ----------
+    *series: `Tuple[str, datetime.datetime]`
+        A sequence of series requests.
+
+    Returns
+    -------
+    `Generator[Optional[macrobond_data_api.common.types.series.Series]]`
+    """
+    return _get_api().get_many_series(*series)
 
 
 def get_many_series_with_revisions(
