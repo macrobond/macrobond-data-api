@@ -288,7 +288,11 @@ class Api(ABC):
         This method is primarily intended for syncronizing a local database with updates.
 
         You are expected to retain the LastModifiedTimeStamp, LastRevisionTimeStamp and LastRevisionAdjustmentTimeStamp
-        for each series and use them in the next request.
+        for each series and use them in the next request. The attributes LastRevisionTimeStamp and
+        LastRevisionAdjustmentTimeStamp might not be present in all responses.
+
+        This function returns a generator that will return the result in a streaming fashion to conserve memory since
+        the result can be very large.
 
         Parameters
         ----------
@@ -296,6 +300,10 @@ class Api(ABC):
             A sequence of series requests.
         include_not_modified: `bool`
             Set this value to True in order to include NotNodified series.
+
+        Returns
+        -------
+        `Generator[macrobond_data_api.common.types.series_with_vintages.SeriesWithVintages]`
         """
 
     # Search
