@@ -15,11 +15,11 @@ fi
 echo "python dir"
 python -m pip -V
 
-python ./scripts/lint.py
+python ./scripts/lint_tools.py --all
 exit_code=$?
 if test $exit_code != 0
 then
-    echo -e '\033[31mError in commit hock - ./scripts/lint.py\033[0m'
+    echo -e '\033[31mError in commit hock - ./scripts/lint_tools.py\033[0m'
 fi
 
 deactivate

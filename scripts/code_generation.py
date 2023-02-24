@@ -8,6 +8,8 @@ from typing import List, Union, Type, Callable, Optional
 
 from context import WorkItem
 
+from black import format_str, Mode
+
 
 class FunctionInfo:
     def __init__(self, name: str, function: Callable[[], None]) -> None:
@@ -79,19 +81,6 @@ class CodeGenerator:
         return self.source
 
     def format(self, code: str) -> str:
-        path_temp = sys.path[0]
-        sys.path.remove(path_temp)
-
-        # pylint: disable=import-outside-toplevel
-        # pylint: disable=import-error
-        # pylint: disable=no-name-in-module
-        from black import format_str, Mode  # type: ignore
-
-        # pylint: enable=import-outside-toplevel
-        # pylint: enable=import-error
-        # pylint: enable=no-name-in-module
-        sys.path.insert(0, path_temp)
-
         return format_str(code, mode=Mode(line_length=120))
 
     def run(self) -> None:
@@ -250,13 +239,15 @@ def main() -> None:
         ),
     }
 
-    if len(sys.argv) <= 2 and sys.argv[1] == "--generate":
+    command = sys.argv[1] if len(sys.argv) <= 2 else None
+
+    if command == "--generate":
         _write_to_file(paths["_generated"], code["_generated"])
         _write_to_file(paths["__init__"], code["__init__"])
         print("Code generated")
         sys.exit(0)
 
-    if len(sys.argv) <= 2 and sys.argv[1] == "--verify":
+    if command == "--verify":
         exit_code = 0
         exit_code += _verify_file(paths["_generated"], code["_generated"])
         exit_code += _verify_file(paths["__init__"], code["__init__"])

@@ -32,27 +32,27 @@ jobs:
 
     - name: Api code generator
       if: always()
-      run: python scripts/code_generation.py --verify
+      run: python scripts/lint_tools.py --verify
 
     - name: Black
       if: always()
-      run: python scripts/black_check.py
+      run: python scripts/lint_tools.py --black_check
 
     - name: Mypy
       if: always()
-      run: python scripts/mypy.py
+      run: python scripts/lint_tools.py --mypy
 
     - name: Pylint
       if: always()
-      run: python scripts/pylint.py
+      run: python scripts/lint_tools.py --pylint
 
     - name: Pycodestyle
       if: always()
-      run: python scripts/pycodestyle.py
+      run: python scripts/lint_tools.py --py_code_style
 
     - name: Pdoc3
       if: always()
-      run: python scripts/pdoc3.py
+      run: python scripts/lint_tools.py --pdoc3
     
     - name: Build
       if: always()

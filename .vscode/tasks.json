@@ -24,25 +24,6 @@
             ],
         },
         {
-            "label": "PyLint",
-            "args": [
-                "scripts/pylint.py"
-            ],
-            "presentation": {
-                "clear": true
-            },
-        },
-        {
-            "label": "Black check",
-            "args": [
-                "scripts/black_check.py"
-            ],
-            "presentation": {
-                "clear": true
-            },
-            "detail": "Verify code formatting"
-        },
-        {
             "label": "Black",
             "args": [
                 "scripts/black.py"
@@ -53,32 +34,15 @@
             "detail": "Format code"
         },
         {
-            "label": "Mypy",
-            "args": [
-                "scripts/mypy.py"
-            ],
-            "presentation": {
-                "clear": true
-            },
-        },
-        {
             "label": "Lint",
             "args": [
-                "scripts/lint.py"
+                "scripts/lint_tools.py",
+                "--${input:lint_tool}"
             ],
             "presentation": {
                 "clear": true
             },
-            "detail": "Run all lint tools"
-        },
-        {
-            "label": "PyCodeStyle",
-            "args": [
-                "scripts/pycodestyle.py"
-            ],
-            "presentation": {
-                "clear": true
-            }
+            "detail": "Run lint tools, black_check mypy pylint pycodestyle pdoc3"
         },
         {
             "label": "Pdoc3",
@@ -130,6 +94,13 @@
             "options": ["3", "3.7"],
             "description": "Which version of python ? 3 is recommended normal uses",
             "default": "3"
+        },
+        {
+            "id": "lint_tool",
+            "type": "pickString",
+            "options": ["all", "verify","black_check","mypy","pylint","py_code_style","pdoc3"],
+            "description": "Which tool ?",
+            "default": "all"
         }
     ]
 }

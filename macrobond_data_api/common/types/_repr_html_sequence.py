@@ -22,7 +22,7 @@ class _ReprHtmlSequence(Sequence[_TypeVar], Generic[_TypeVar]):
         ...
 
     def __getitem__(self, key):  # type: ignore
-        return self.items[key]
+        return _ReprHtmlSequence(self.items[key]) if isinstance(key, slice) else self.items[key]
 
     def __len__(self) -> int:
         return len(self.items)

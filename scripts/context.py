@@ -2,7 +2,7 @@ import os
 import sys
 import asyncio
 import time
-from typing import Any, Callable, List, Optional, cast, Sequence
+from typing import Any, Callable, List, NoReturn, Optional, cast, Sequence
 
 
 def error_print(text: str) -> None:
@@ -125,7 +125,7 @@ async def _run_all(in_sequence: bool, work_items: Sequence) -> Any:
         print("")
 
 
-def run(*work: Callable[[bool, str], WorkItem], in_sequence: bool = True) -> None:
+def run(*work: Callable[[bool, str], WorkItem], in_sequence: bool = True) -> NoReturn:
     start_time = time.time()
     python_path = sys.executable
     work_items = [x(in_sequence, python_path) for x in work]
@@ -165,3 +165,5 @@ def run(*work: Callable[[bool, str], WorkItem], in_sequence: bool = True) -> Non
         sys.exit(1)
 
     print("No Errors ✅")
+
+    sys.exit()
