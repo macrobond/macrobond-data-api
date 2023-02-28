@@ -186,7 +186,9 @@ def get_many_series_with_revisions(
     return _get_api().get_many_series_with_revisions(requests, include_not_modified)
 
 
-def get_nth_release(nth: int, *series_names: str, raise_error: bool = None) -> Sequence[Series]:
+def get_nth_release(
+    nth: int, *series_names: str, include_times_of_change: bool = False, raise_error: bool = None
+) -> Sequence[Series]:
     """
     Fetcha series where each value is the nth change of the value.
 
@@ -206,7 +208,9 @@ def get_nth_release(nth: int, *series_names: str, raise_error: bool = None) -> S
     `Sequence[macrobond_data_api.common.types.series.Series]`
     The result is in the same order as in the request.
     """
-    return _get_api().get_nth_release(nth, *series_names, raise_error=raise_error)
+    return _get_api().get_nth_release(
+        nth, *series_names, include_times_of_change=include_times_of_change, raise_error=raise_error
+    )
 
 
 def get_observation_history(series_name: str, *times: datetime) -> Sequence[SeriesObservationHistory]:

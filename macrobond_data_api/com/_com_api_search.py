@@ -1,7 +1,7 @@
 from typing import List, TYPE_CHECKING
 
 from macrobond_data_api.common.types import SearchResult
-from ._fill_metadata_from_entity import _fill_metadata_from_entity
+from ._fill_metadata import _fill_metadata_from_entity
 
 
 if TYPE_CHECKING:  # pragma: no cover

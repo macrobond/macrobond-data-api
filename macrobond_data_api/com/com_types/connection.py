@@ -14,7 +14,7 @@ class Connection:
         """This property returns a reference to the database interface."""
 
     @property
-    def Version(self) -> Tuple[int]:
+    def Version(self) -> Tuple[int, int, int]:
         """
         Version	Returns an array of three values for the version of the installed API.
         For example, for the version 1.23.3 it will return [1, 23, 3].

@@ -17,6 +17,8 @@ try:
     version = (
         subprocess.run(["git", "describe", "--tags"], stdout=subprocess.PIPE, check=True).stdout.decode("utf-8").strip()
     )
+    if version[0].lower() == "v":
+        version = version[1:]
     print("version is from git tag")
 except subprocess.CalledProcessError:
     if os.path.exists(version_info_path):

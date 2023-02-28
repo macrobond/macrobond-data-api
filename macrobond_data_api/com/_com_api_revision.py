@@ -19,7 +19,7 @@ from macrobond_data_api.common.types import (
 
 from macrobond_data_api.common.types._repr_html_sequence import _ReprHtmlSequence
 
-from ._fill_metadata_from_entity import _fill_metadata_from_entity
+from ._fill_metadata import _fill_metadata_from_entity, _fill_values_metadata_from_series
 
 if TYPE_CHECKING:  # pragma: no cover
     from .com_api import ComApi
@@ -81,10 +81,8 @@ def get_revision_info(self: "ComApi", *series_names: str, raise_error: bool = No
 
     series = self.database.FetchSeriesWithRevisions(series_names)
 
-    GetEntitiesError._raise_if(
-        self.raise_error if raise_error is None else raise_error,
-        map(lambda x, y: (x, y.ErrorMessage if y.IsError else None), series_names, series),
-    )
+    if self.raise_error if raise_error is None else raise_error:
+        GetEntitiesError._raise_if([(x, y.ErrorMessage) for x, y in zip(series_names, series)])
 
     return _ReprHtmlSequence([to_obj(x, y) for x, y in zip(series_names, series)])
 
@@ -96,7 +94,7 @@ def get_vintage_series(
         series_with_revisions = self.database.FetchOneSeriesWithRevisions(series_name)
 
         if series_with_revisions.IsError:
-            return VintageSeries(series_name, series_with_revisions.ErrorMessage, None, None, None, None)
+            return VintageSeries(series_name, series_with_revisions.ErrorMessage, None, None, None, None, None)
 
         try:
             series = series_with_revisions.GetVintage(time)
@@ -106,47 +104,54 @@ def get_vintage_series(
             raise os_error
 
         if series.IsError:
-            return VintageSeries(series_name, series.ErrorMessage, None, None, None, None)
+            return VintageSeries(series_name, series.ErrorMessage, None, None, None, None, None)
 
         values, dates = _remove_padding(series)
 
         return VintageSeries(
-            series_name, "", _fill_metadata_from_entity(series), values, _datetime_to_datetime_timezone(dates), None
+            series_name,
+            "",
+            _fill_metadata_from_entity(series),
+            None,
+            values,
+            _datetime_to_datetime_timezone(dates),
+            None,
         )
 
     series = [to_obj(x) for x in series_names]
 
-    GetEntitiesError._raise_if(
-        self.raise_error if raise_error is None else raise_error,
-        map(lambda x, y: (x, y.error_message if y.is_error else None), series_names, series),
-    )
+    if self.raise_error if raise_error is None else raise_error:
+        GetEntitiesError._raise_if([(x, y.error_message) for x, y in zip(series_names, series)])
 
     return _ReprHtmlSequence(series)
 
 
-def get_nth_release(self: "ComApi", nth: int, *series_names: str, raise_error: bool = None) -> Sequence[Series]:
+def get_nth_release(
+    self: "ComApi", nth: int, *series_names: str, include_times_of_change: bool = False, raise_error: bool = None
+) -> Sequence[Series]:
+    if len(series_names) == 0:
+        raise ValueError("No series names")
+
     def to_obj(series_name: str) -> Series:
         series_with_revisions = self.database.FetchOneSeriesWithRevisions(series_name)
 
         if series_with_revisions.IsError:
-            return Series(series_name, series_with_revisions.ErrorMessage, None, None, None)
+            return Series(series_name, series_with_revisions.ErrorMessage, None, None, None, None)
 
         series = series_with_revisions.GetNthRelease(nth)
         if series.IsError:
-            return Series(series_name, series.ErrorMessage, None, None, None)
+            return Series(series_name, series.ErrorMessage, None, None, None, None)
 
         values = [None if isnan(x) else x for x in series.Values]  # type: ignore
-
         dates = _datetime_to_datetime_timezone(series.DatesAtStartOfPeriod)
+        values_metadata = _fill_values_metadata_from_series(series) if include_times_of_change else None
 
-        return Series(series_name, None, _fill_metadata_from_entity(series), values, dates)
+        return Series(series_name, None, _fill_metadata_from_entity(series), values_metadata, values, dates)
 
     series = [to_obj(x) for x in series_names]
 
-    GetEntitiesError._raise_if(
-        self.raise_error if raise_error is None else raise_error,
-        map(lambda x, y: (x, y.error_message if y.is_error else None), series_names, series),
-    )
+    if self.raise_error if raise_error is None else raise_error:
+        GetEntitiesError._raise_if([(x, y.error_message) for x, y in zip(series_names, series)])
 
     return _ReprHtmlSequence(series)
 
@@ -154,12 +159,18 @@ def get_nth_release(self: "ComApi", nth: int, *series_names: str, raise_error: b
 def get_all_vintage_series(self: "ComApi", series_name: str) -> GetAllVintageSeriesResult:
     def to_obj(com_series: "ComSeries", name: str) -> VintageSeries:
         if com_series.IsError:
-            return VintageSeries(name, com_series.ErrorMessage, None, None, None, None)
+            return VintageSeries(name, com_series.ErrorMessage, None, None, None, None, None)
 
         values, dates = _remove_padding(com_series)
 
         return VintageSeries(
-            name, None, _fill_metadata_from_entity(com_series), values, _datetime_to_datetime_timezone(dates), None
+            name,
+            None,
+            _fill_metadata_from_entity(com_series),
+            None,
+            values,
+            _datetime_to_datetime_timezone(dates),
+            None,
         )
 
     series_with_revisions = self.database.FetchOneSeriesWithRevisions(series_name)

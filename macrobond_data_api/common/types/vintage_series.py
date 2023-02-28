@@ -9,6 +9,7 @@ from .series import Series, SeriesColumnsLiterals
 
 if TYPE_CHECKING:  # pragma: no cover
     from .metadata import Metadata
+    from .values_metadata import ValuesMetadata
 
 
 VintageSeriesColumns = List[Literal[SeriesColumnsLiterals, "VintageTimeStamp", "TimesOfChange"]]
@@ -30,11 +31,12 @@ class VintageSeries(Series):
         name: str,
         error_message: Optional[str],
         metadata: Optional["Metadata"],
+        values_metadata: Optional["ValuesMetadata"],
         values: Optional[List[Optional[float]]],
         dates: Optional[List[datetime]],
         _revision_time_stamp: Optional[datetime],
     ) -> None:
-        super().__init__(name, error_message, metadata, values, dates)
+        super().__init__(name, error_message, metadata, values_metadata, values, dates)
         self._revision_time_stamp = _revision_time_stamp
 
     @property

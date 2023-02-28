@@ -1,4 +1,4 @@
-from typing import Dict, List, Optional, Tuple, Iterable, cast, Union
+from typing import List, Optional, Tuple, Iterable
 from dataclasses import dataclass
 
 __pdoc__ = {
@@ -33,23 +33,13 @@ class EntityErrorInfo:
         """Contains the error message."""
 
 
+@dataclass(init=False)
 class GetEntitiesError(Exception):
     entities: List[EntityErrorInfo]
     message: str
 
-    def __init__(
-        self,
-        entities: Union[List[EntityErrorInfo], str, Dict[str, str]],
-        error_message: str = None,
-    ):
-        def get_entities() -> List[EntityErrorInfo]:
-            if isinstance(entities, list):
-                return entities
-            if isinstance(entities, dict):
-                return list(map(EntityErrorInfo, entities.keys(), entities.values()))
-            return [EntityErrorInfo(entities, cast(str, error_message))]
-
-        self.entities = get_entities()
+    def __init__(self, entities: List[EntityErrorInfo]):
+        self.entities = entities
         """entities"""
 
         self.message = "failed to retrieve:\n" + (
@@ -60,24 +50,7 @@ class GetEntitiesError(Exception):
         super().__init__(self.message)
 
     @classmethod
-    def _raise_if(
-        cls,
-        raise_error: bool,
-        entities_or_name: Union[Iterable[Tuple[str, Optional[str]]], str],
-        error_message: str = None,
-    ) -> None:
-        if not raise_error:
-            return
-
-        if isinstance(entities_or_name, str):
-            if error_message:
-                name = entities_or_name
-                raise GetEntitiesError(name, error_message)
-        else:
-            entities = entities_or_name
-            entities_list = cast(
-                List[Tuple[str, str]],
-                list(filter(lambda x: x[1] is not None, entities)),
-            )
-            if entities_list:
-                raise GetEntitiesError(list(map(lambda x: EntityErrorInfo(x[0], x[1]), entities_list)))
+    def _raise_if(cls, entities: Iterable[Tuple[str, Optional[str]]]) -> None:
+        entities_list = [EntityErrorInfo(x, y) for x, y in entities if y]
+        if entities_list:
+            raise GetEntitiesError(entities_list)

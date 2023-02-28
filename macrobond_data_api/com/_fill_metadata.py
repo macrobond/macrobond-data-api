@@ -1,4 +1,4 @@
-from typing import Any, TYPE_CHECKING, Sequence
+from typing import Any, TYPE_CHECKING, Sequence, Dict
 from datetime import datetime, timezone
 
 
@@ -9,7 +9,10 @@ except ImportError as ex:
 
 if TYPE_CHECKING:  # pragma: no cover
     from .com_types import Entity as ComEntity
+    from .com_types import Series as ComSeries
+    from .com_types import Metadata as ComMetadata
     from macrobond_data_api.common.types.metadata import Metadata
+    from macrobond_data_api.common.types.values_metadata import ValuesMetadata
 
 
 def _get_val(name: str, values: Sequence[Any]) -> Any:
@@ -44,10 +47,15 @@ def _get_val(name: str, values: Sequence[Any]) -> Any:
     return values[0] if len(values) == 1 else list(values)
 
 
-def _fill_metadata_from_entity(com_entity: "ComEntity") -> "Metadata":
-    metadata = com_entity.Metadata
-    ret = {x: _get_val(x, metadata.GetValues(x)) for x, _ in metadata.ListNames()}
-    # ret = {x: metadata.GetValues(x) for x in (x[0] for x in metadata.ListNames())}
-    ret.setdefault("FullDescription", com_entity.Title)
+def _fill_metadata_from_metadata(com_metadata: "ComMetadata") -> Dict:
+    return {x: _get_val(x, com_metadata.GetValues(x)) for x, _ in com_metadata.ListNames()}
 
+
+def _fill_metadata_from_entity(com_entity: "ComEntity") -> "Metadata":
+    ret = _fill_metadata_from_metadata(com_entity.Metadata)
+    ret.setdefault("FullDescription", com_entity.Title)
     return ret
+
+
+def _fill_values_metadata_from_series(com_series: "ComSeries") -> "ValuesMetadata":
+    return [_fill_metadata_from_metadata(x) for x in com_series.ValuesMetadata]

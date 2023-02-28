@@ -1,4 +1,4 @@
-from typing import Any, MutableMapping
+from typing import Any, Mapping
 
 
-Metadata = MutableMapping[str, Any]
+Metadata = Mapping[str, Any]

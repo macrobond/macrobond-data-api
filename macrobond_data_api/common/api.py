@@ -225,7 +225,9 @@ class Api(ABC):
         """
 
     @abstractmethod
-    def get_nth_release(self, nth: int, *series_names: str, raise_error: bool = None) -> Sequence[Series]:
+    def get_nth_release(
+        self, nth: int, *series_names: str, include_times_of_change: bool = False, raise_error: bool = None
+    ) -> Sequence[Series]:
         """
         Fetcha series where each value is the nth change of the value.
 

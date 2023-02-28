@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Any, MutableMapping, TYPE_CHECKING, List, Sequence, overload
+from typing import Any, Mapping, TYPE_CHECKING, List, Sequence, overload
 
 if TYPE_CHECKING:  # pragma: no cover
     from pandas import DataFrame  # type: ignore
@@ -32,7 +32,7 @@ class SearchResult(Sequence["Metadata"]):
         Indicates whether the search result was too long and truncated.
         """
 
-    def to_dict(self) -> List[MutableMapping[str, Any]]:
+    def to_dict(self) -> List[Mapping[str, Any]]:
         """
         Return the result as a dictionary.
         """

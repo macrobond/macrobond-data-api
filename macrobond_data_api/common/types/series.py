@@ -14,6 +14,7 @@ SeriesColumns = List[SeriesColumnsLiterals]
 if TYPE_CHECKING:  # pragma: no cover
     from pandas import Series as PdSeries  # type: ignore
     from .metadata import Metadata
+    from .values_metadata import ValuesMetadata
 
 __pdoc__ = {
     "Series.__init__": False,
@@ -24,7 +25,7 @@ __pdoc__ = {
 class Series(Entity):
     """Represents a Macrobond time series."""
 
-    __slots__ = ("values", "dates")
+    __slots__ = ("values_metadata", "values", "dates")
 
     values: Sequence[Optional[float]]
     dates: Sequence[datetime]
@@ -34,10 +35,16 @@ class Series(Entity):
         name: str,
         error_message: Optional[str],
         metadata: Optional["Metadata"],
+        values_metadata: Optional["ValuesMetadata"],
         values: Optional[List[Optional[float]]],
         dates: Optional[List[datetime]],
     ) -> None:
         super().__init__(name, error_message, metadata)
+
+        self.values_metadata = values_metadata
+        """
+        The meta data for the values.
+        """
 
         self.values = ...  # type: ignore
         """

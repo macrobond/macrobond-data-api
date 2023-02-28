@@ -1,6 +1,6 @@
 import sys
 
-from typing import TYPE_CHECKING, List, Optional, cast
+from typing import TYPE_CHECKING, List, Optional, Tuple, cast
 
 from macrobond_data_api.common import Client
 
@@ -26,6 +26,10 @@ try:
     from winreg import OpenKey, QueryValueEx, HKEY_CLASSES_ROOT, HKEY_CURRENT_USER  # type: ignore
 except ImportError:
     ...
+
+
+class ComClientVersionException(Exception):
+    pass
 
 
 class ComClient(Client["ComApi"]):
@@ -102,8 +106,27 @@ class ComClient(Client["ComApi"]):
                     print("", file=sys.stderr)
 
                 raise
+
+            ComClient._test_version(connection.Version)
+
             self.__api = ComApi(connection)
         return self.__api
+
+    @staticmethod
+    def _test_version(version: Tuple[int, int, int]) -> None:
+        if version == (0, 0, 0):
+            return
+
+        major, minor, _ = version
+
+        if major > 1:
+            return
+
+        if major == 0:
+            raise ComClientVersionException("Unsupported version " + (".".join([str(x) for x in version])))
+
+        if minor < 25:
+            raise ComClientVersionException("Unsupported version " + (".".join([str(x) for x in version])))
 
     def close(self) -> None:
         """

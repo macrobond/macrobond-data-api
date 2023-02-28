@@ -11,6 +11,7 @@ from macrobond_data_api.common.enums import SeriesWeekdays, SeriesFrequency, Cal
 
 from macrobond_data_api.common.types import (
     GetEntitiesError,
+    EntityErrorInfo,
     Series,
     Entity,
     UnifiedSeries,
@@ -62,7 +63,7 @@ def _create_series(response: "SeriesResponse", name: str, session: Session) -> S
     error_text = response.get("errorText")
 
     if error_text:
-        return Series(name, error_text, None, None, None)
+        return Series(name, error_text, None, None, None, None)
 
     dates = [_str_to_datetime_no_utc(x) for x in cast(List[str], response["dates"])]
 
@@ -71,7 +72,7 @@ def _create_series(response: "SeriesResponse", name: str, session: Session) -> S
     metadata = session._create_metadata(response["metadata"])
 
     # values = cast(Tuple[Optional[float]], response["values"])
-    return Series(name, "", metadata, values, dates)
+    return Series(name, "", metadata, None, values, dates)
 
 
 def get_one_series(self: "WebApi", series_name: str, raise_error: Optional[bool] = None) -> Series:
@@ -81,10 +82,8 @@ def get_one_series(self: "WebApi", series_name: str, raise_error: Optional[bool]
 def get_series(self: "WebApi", *series_names: str, raise_error: Optional[bool] = None) -> Sequence[Series]:
     response = self.session.series.get_fetch_series(*series_names)
     series = [_create_series(x, y, self.session) for x, y in zip(response, series_names)]
-    GetEntitiesError._raise_if(
-        self.raise_error if raise_error is None else raise_error,
-        map(lambda x, y: (x, y.error_message if y.is_error else None), series_names, series),
-    )
+    if self.raise_error if raise_error is None else raise_error:
+        GetEntitiesError._raise_if([(x, y.error_message) for x, y in zip(series_names, series)])
     return _ReprHtmlSequence(series)
 
 
@@ -95,10 +94,8 @@ def get_one_entity(self: "WebApi", entity_name: str, raise_error: Optional[bool]
 def get_entities(self: "WebApi", *entity_names: str, raise_error: Optional[bool] = None) -> Sequence[Entity]:
     response = self.session.series.fetch_entities(*entity_names)
     entitys = [_create_entity(x, y, self.session) for x, y in zip(response, entity_names)]
-    GetEntitiesError._raise_if(
-        self.raise_error if raise_error is None else raise_error,
-        map(lambda x, y: (x, y.error_message if y.is_error else None), entity_names, entitys),
-    )
+    if self.raise_error if raise_error is None else raise_error:
+        GetEntitiesError._raise_if([(x, y.error_message) for x, y in zip(entity_names, entitys)])
     return _ReprHtmlSequence(entitys)
 
 
@@ -182,9 +179,9 @@ def get_unified_series(
 
     ret = UnifiedSeriesList(series, dates)
 
-    errors = ret.get_errors()
-    raise_error = self.raise_error if raise_error is None else raise_error
-    if raise_error and len(errors) != 0:
-        raise GetEntitiesError(errors)
+    if self.raise_error if raise_error is None else raise_error:
+        errors = [EntityErrorInfo(x, y) for x, y in ret.get_errors().items()]
+        if errors:
+            raise GetEntitiesError(errors)
 
     return ret

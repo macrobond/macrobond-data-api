@@ -33,7 +33,7 @@ if TYPE_CHECKING:  # pragma: no cover
         VintageSeriesResponse,
         SeriesWithVintagesResponse,
         RevisionHistoryRequest as WebRevisionHistoryRequest,
-        SeriesResponse,
+        SeriesWithTimesOfChangeResponse,
         VintageValuesResponse,
     )
 
@@ -56,19 +56,6 @@ def _optional_str_to_datetime_ignoretz(datetime_str: Optional[str]) -> Optional[
 
 def int_to_float_or_none(int_: Optional[int]) -> Optional[float]:
     return float(int_) if int_ else None
-
-
-def _create_series(response: "SeriesResponse", name: str, session: Session) -> Series:
-    error_text = response.get("errorText")
-
-    if error_text:
-        return Series(name, error_text, None, None, None)
-
-    dates = [_str_to_datetime_ignoretz(x) for x in cast(List[str], response["dates"])]
-    values = [float(x) if x else None for x in cast(List[Optional[int]], response["values"])]
-    metadata = session._create_metadata(response["metadata"])
-
-    return Series(name, "", cast(Dict[str, Any], metadata), values, dates)
 
 
 def get_revision_info(self: "WebApi", *series_names: str, raise_error: Optional[bool] = None) -> Sequence[RevisionInfo]:
@@ -97,10 +84,8 @@ def get_revision_info(self: "WebApi", *series_names: str, raise_error: Optional[
 
     response = self.session.series.get_revision_info(*series_names)
 
-    GetEntitiesError._raise_if(
-        self.raise_error if raise_error is None else raise_error,
-        map(lambda x, y: (x, y.get("errorText")), series_names, response),
-    )
+    if self.raise_error if raise_error is None else raise_error:
+        GetEntitiesError._raise_if([(x, y.get("errorText")) for x, y in zip(series_names, response)])
 
     return _ReprHtmlSequence([to_obj(x, y) for x, y in zip(series_names, response)])
 
@@ -111,7 +96,7 @@ def get_vintage_series(
     def to_obj(response: "VintageSeriesResponse", series_name: str) -> VintageSeries:
         error_message = response.get("errorText")
         if error_message:
-            return VintageSeries(series_name, error_message, None, None, None, None)
+            return VintageSeries(series_name, error_message, None, None, None, None, None)
 
         metadata = self.session._create_metadata(response["metadata"])
 
@@ -127,31 +112,53 @@ def get_vintage_series(
             _str_to_datetime(cast(str, response["vintageTimeStamp"])) if "vintageTimeStamp" in response else None
         )
 
-        return VintageSeries(series_name, None, metadata, values, dates, vintage_time_stamp)
+        return VintageSeries(series_name, None, metadata, None, values, dates, vintage_time_stamp)
 
     response = self.session.series.fetch_vintage_series(time, *series_names, get_times_of_change=False)
 
     series = [to_obj(x, y) for x, y in zip(response, series_names)]
 
-    GetEntitiesError._raise_if(
-        self.raise_error if raise_error is None else raise_error,
-        map(lambda x, y: (x, y.error_message if y.is_error else None), series_names, series),
-    )
+    if self.raise_error if raise_error is None else raise_error:
+        GetEntitiesError._raise_if([(x, y.error_message) for x, y in zip(series_names, series)])
 
     return _ReprHtmlSequence(series)
 
 
 def get_nth_release(
-    self: "WebApi", nth: int, *series_names: str, raise_error: Optional[bool] = None
+    self: "WebApi",
+    nth: int,
+    *series_names: str,
+    include_times_of_change: bool = False,
+    raise_error: Optional[bool] = None
 ) -> Sequence[Series]:
-    response = self.session.series.fetch_nth_release_series(nth, *series_names)
+    def to_obj(response: "SeriesWithTimesOfChangeResponse", name: str, session: Session) -> Series:
+        error_text = response.get("errorText")
 
-    series = [_create_series(x, y, self.session) for x, y in zip(response, series_names)]
+        if error_text:
+            return Series(name, error_text, None, None, None, None)
 
-    GetEntitiesError._raise_if(
-        self.raise_error if raise_error is None else raise_error,
-        map(lambda x, y: (x, y.error_message if y.is_error else None), series_names, series),
+        dates = [_str_to_datetime_ignoretz(x) for x in cast(List[str], response["dates"])]
+        values = [float(x) if x else None for x in cast(List[Optional[int]], response["values"])]
+        metadata = session._create_metadata(response["metadata"])
+        values_metadata = (
+            [{"timesOfChange": _optional_str_to_datetime(x)} for x in cast(List[str], response["timesOfChange"])]
+            if include_times_of_change and "timesOfChange" in response
+            else None
+        )
+
+        return Series(name, "", cast(Dict[str, Any], metadata), values_metadata, values, dates)
+
+    if len(series_names) == 0:
+        raise ValueError("No series names")
+
+    response = self.session.series.fetch_nth_release_series(
+        nth, *series_names, get_times_of_change=include_times_of_change
     )
+
+    series = [to_obj(x, y, self.session) for x, y in zip(response, series_names)]
+
+    if self.raise_error if raise_error is None else raise_error:
+        GetEntitiesError._raise_if([(x, y.error_message) for x, y in zip(series_names, series)])
 
     return _ReprHtmlSequence(series)
 
@@ -160,7 +167,7 @@ def get_all_vintage_series(self: "WebApi", series_name: str) -> GetAllVintageSer
     def to_obj(response: "VintageSeriesResponse", series_name: str) -> VintageSeries:
         error_message = response.get("errorText")
         if error_message:
-            return VintageSeries(series_name, error_message, None, None, None, None)
+            return VintageSeries(series_name, error_message, None, None, None, None, None)
 
         metadata = self.session._create_metadata(response["metadata"])
         values = [float(x) if x else None for x in cast(List[Optional[int]], response["values"])]
@@ -170,7 +177,7 @@ def get_all_vintage_series(self: "WebApi", series_name: str) -> GetAllVintageSer
             _str_to_datetime(cast(str, response["vintageTimeStamp"])) if "vintageTimeStamp" in response else None
         )
 
-        return VintageSeries(series_name, None, metadata, values, dates, vintage_time_stamp)
+        return VintageSeries(series_name, None, metadata, None, values, dates, vintage_time_stamp)
 
     try:
         response = self.session.series.get_fetch_all_vintage_series(series_name)

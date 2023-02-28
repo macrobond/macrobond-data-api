@@ -9,6 +9,7 @@ from macrobond_data_api.common.enums import SeriesWeekdays, SeriesFrequency, Cal
 from macrobond_data_api.common.types import (
     SeriesEntry,
     GetEntitiesError,
+    EntityErrorInfo,
     Series,
     Entity,
     UnifiedSeriesList,
@@ -17,7 +18,7 @@ from macrobond_data_api.common.types import (
 
 from macrobond_data_api.common.types._repr_html_sequence import _ReprHtmlSequence
 
-from ._fill_metadata_from_entity import _fill_metadata_from_entity
+from ._fill_metadata import _fill_metadata_from_entity
 
 if TYPE_CHECKING:  # pragma: no cover
     from .com_api import ComApi
@@ -39,11 +40,12 @@ def _create_entity(com_entity: "ComEntity", name: str) -> Entity:
 
 def _create_series(com_series: "ComSeries", name: str) -> Series:
     if com_series.IsError:
-        return Series(name, com_series.ErrorMessage, None, None, None)
+        return Series(name, com_series.ErrorMessage, None, None, None, None)
     return Series(
         name,
         None,
         _fill_metadata_from_entity(com_series),
+        None,
         list(com_series.Values),
         _datetime_to_datetime(com_series.DatesAtStartOfPeriod),
     )
@@ -56,10 +58,8 @@ def get_one_series(self: "ComApi", series_name: str, raise_error: bool = None) -
 def get_series(self: "ComApi", *series_names: str, raise_error: Optional[bool] = None) -> Sequence[Series]:
     com_series = self.database.FetchSeries(series_names)
     series = [_create_series(x, y) for x, y in zip(com_series, series_names)]
-    GetEntitiesError._raise_if(
-        self.raise_error if raise_error is None else raise_error,
-        map(lambda x, y: (x, y.error_message if y.is_error else None), series_names, series),
-    )
+    if self.raise_error if raise_error is None else raise_error:
+        GetEntitiesError._raise_if([(x, y.error_message) for x, y in zip(series_names, series)])
     return _ReprHtmlSequence(series)
 
 
@@ -70,10 +70,8 @@ def get_one_entity(self: "ComApi", entity_name: str, raise_error: bool = None) -
 def get_entities(self: "ComApi", *entity_names: str, raise_error: bool = None) -> Sequence[Entity]:
     com_entitys = self.database.FetchEntities(entity_names)
     entitys = [_create_entity(x, y) for x, y in zip(com_entitys, entity_names)]
-    GetEntitiesError._raise_if(
-        self.raise_error if raise_error is None else raise_error,
-        map(lambda x, y: (x, y.error_message if y.is_error else None), entity_names, entitys),
-    )
+    if self.raise_error if raise_error is None else raise_error:
+        GetEntitiesError._raise_if([(x, y.error_message) for x, y in zip(entity_names, entitys)])
     return _ReprHtmlSequence(entitys)
 
 
@@ -93,7 +91,7 @@ def get_many_series(self: "ComApi", *series: Tuple[str, datetime]) -> Generator[
 
         last_modified_time = serie.metadata["LastModifiedTimeStamp"]
         if last_modified_time <= serie_info[1]:
-            yield Series(serie_info[0], "Not modified", None, None, None)
+            yield Series(serie_info[0], "Not modified", None, None, None, None)
             continue
 
         yield serie
@@ -163,9 +161,9 @@ def get_unified_series(
 
     ret = UnifiedSeriesList([to_obj(request.AddedSeries[x].Name, y) for x, y in enumerate(com_series)], dates)
 
-    errors = ret.get_errors()
-    raise_error = self.raise_error if raise_error is None else raise_error
-    if raise_error and len(errors) != 0:
-        raise GetEntitiesError(errors)
+    if self.raise_error if raise_error is None else raise_error:
+        errors = [EntityErrorInfo(x, y) for x, y in ret.get_errors().items()]
+        if errors:
+            raise GetEntitiesError(errors)
 
     return ret
