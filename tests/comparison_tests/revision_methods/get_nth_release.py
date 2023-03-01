@@ -27,6 +27,7 @@ def test_1(data: Tuple[int, List[str]], web: WebApi, com: ComApi, test_metadata:
     nth, series_names = data
     for web_r, com_r in zip(web.get_nth_release(nth, *series_names), com.get_nth_release(nth, *series_names)):
         test_metadata(web_r, com_r)
+        assert com_r.values_metadata == web_r.values_metadata
         assert com_r == web_r
 
 
@@ -55,6 +56,7 @@ def test_2(data: Tuple[int, List[str]], web: WebApi, com: ComApi, test_metadata:
         com.get_nth_release(nth, *series_names, include_times_of_change=True),
     ):
         test_metadata(web_r, com_r)
+        assert com_r.values_metadata == web_r.values_metadata
         assert com_r == web_r
 
 

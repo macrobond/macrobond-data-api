@@ -56,6 +56,9 @@ class WorkItem:
     def __bool__(self) -> bool:
         return self.hade_error
 
+    def __lt__(self, other: Any) -> bool:
+        return self.hade_error and not other.hade_error
+
     @property
     def name(self) -> str:
         return self.__class__.__name__.lower()
@@ -153,7 +156,7 @@ def run(*work: Callable[[bool, str], WorkItem], in_sequence: bool = True) -> NoR
     print("")
 
     print("--- WorkItems ---")
-    for work_item in work_items:
+    for work_item in sorted(work_items):
         print(work_item.name + " " + work_item.symbole)
         if work_item.hade_error:
             print(work_item.out)

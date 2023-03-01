@@ -144,7 +144,14 @@ def get_nth_release(
 
         values = [None if isnan(x) else x for x in series.Values]  # type: ignore
         dates = _datetime_to_datetime_timezone(series.DatesAtStartOfPeriod)
-        values_metadata = _fill_values_metadata_from_series(series) if include_times_of_change else None
+
+        if include_times_of_change:
+            if series_with_revisions.HasRevisions:
+                values_metadata = _fill_values_metadata_from_series(series)
+            else:
+                values_metadata = [{}] * len(values)
+        else:
+            values_metadata = None
 
         return Series(series_name, None, _fill_metadata_from_entity(series), values_metadata, values, dates)
 

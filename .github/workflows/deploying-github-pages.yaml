@@ -45,7 +45,7 @@ jobs:
       run: python scripts/set_up_dev_environment.py
 
     - name: Build Pdoc3
-      run: python scripts/pdoc3.py
+      run: python scripts/pdoc3.py --no_server
 
     - name: Setup Pages
       uses: actions/configure-pages@v3

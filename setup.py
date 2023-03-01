@@ -55,7 +55,7 @@ __url__ = "''' + URL + '''"
 with open(version_info_path, "w+", encoding="utf-8") as fh:
     fh.write(PACKAGE_INFO)
 
-REQUESTS_VERSION = "2.28.1"
+REQUESTS_VERSION = "2.28.2"
 
 setuptools.setup(
     name="macrobond-data-api",
@@ -83,27 +83,28 @@ setuptools.setup(
         "requests>=" + REQUESTS_VERSION,
         "python-dateutil>=2.8.2",
         "ijson>=3.1.4",
-        "typing_extensions>=4.4.0",
+        "typing_extensions>=4.5.0",
         "pywin32>=305; os_name=='nt'",
     ],
     extras_require={
         "extra": ["matplotlib", "statsmodels", "scikit-learn", "pandas"],
         "dev": [
-            "mypy==1.0.0",
+            "mypy==1.0.1",
             "pylint==2.15.8",
             "pycodestyle==2.10.0",
             "pdoc3==0.10.0",
             "build>=0.10.0",
             "pytest==7.2.1",
             "pytest-xdist==3.2.0",
-            "coverage>=7.1.0",
+            "coverage>=7.2.1",
             "black[jupyter]==23.1.0",
             "requests[socks]>=" + REQUESTS_VERSION,
+            "nbconvert==7.2.9",
             # types
             "types-pywin32==305.0.0.7",
             "types-python-dateutil==2.8.19.6",
             "types-requests==2.28.11.8",
-            "types-setuptools==67.2.0.1",
+            "types-setuptools==67.4.0.3",
         ],
         "socks": ["requests[socks]>=" + REQUESTS_VERSION],
     },

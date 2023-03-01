@@ -9,7 +9,7 @@
             "args": [
                 "scripts/set_up_dev_environment.py"
             ],
-            "detail": "Install all depends"
+            "detail": "Install all dependencies"
         },
         {
             "label": "Create venv",
@@ -53,7 +53,8 @@
         {
             "label": "Pdoc3",
             "args": [
-                "scripts/pdoc3.py"
+                "scripts/pdoc3.py",
+                "--${input:pdoc3_server}"
             ],
             "presentation": {
                 "clear": true
@@ -61,20 +62,12 @@
             "detail": "generate documentation"
         },
         {
-            "label": "Pdoc3 server",
-            "args": [
-                "scripts/pdoc3_server.py"
-            ],
-            "presentation": {
-                "clear": true
-            },
-        },
-        {
             "label": "py coverage",
             "args": [
                 "scripts/coverage.py",
                 "--${input:coverage_tool}"
             ],
+            "detail": "Generate code coverage"
         },
         {
             "label": "Build",
@@ -96,6 +89,14 @@
                 "--generate"
             ],
             "detail": "Generate code for the duplicated code in web and com"
+        },
+        {
+            "label": "jupyter",
+            "args": [
+                "scripts/jupyter.py",
+                "--${input:jupyter}"
+            ],
+            "detail": "Verify or scrub jupyter files"
         }
     ],
     "inputs": [
@@ -135,6 +136,26 @@
             ],
             "description": "Which tool ?",
             "default": "all"
+        },
+        {
+            "id": "pdoc3_server",
+            "type": "pickString",
+            "options": [
+                "server",
+                "no_server",
+            ],
+            "description": "Run pdoc3 with server ?",
+            "default": "server"
+        },
+        {
+            "id": "jupyter",
+            "type": "pickString",
+            "options": [
+                "verify",
+                "scrub",
+            ],
+            "description": "Verify or scrub files",
+            "default": "scrub"
         }
     ]
 }

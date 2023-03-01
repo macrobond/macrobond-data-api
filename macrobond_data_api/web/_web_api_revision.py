@@ -16,6 +16,7 @@ from macrobond_data_api.common.types import (
     VintageValues,
     SeriesWithVintagesErrorCode,
     RevisionHistoryRequest,
+    ValuesMetadata,
 )
 from macrobond_data_api.common.types._repr_html_sequence import _ReprHtmlSequence
 from ._split_in_to_chunks import split_in_to_chunks
@@ -27,7 +28,6 @@ from .session import ProblemDetailsException, Session, _raise_on_error
 
 if TYPE_CHECKING:  # pragma: no cover
     from .web_api import WebApi
-
     from .web_types import (
         SeriesWithRevisionsInfoResponse,
         VintageSeriesResponse,
@@ -140,11 +140,16 @@ def get_nth_release(
         dates = [_str_to_datetime_ignoretz(x) for x in cast(List[str], response["dates"])]
         values = [float(x) if x else None for x in cast(List[Optional[int]], response["values"])]
         metadata = session._create_metadata(response["metadata"])
-        values_metadata = (
-            [{"timesOfChange": _optional_str_to_datetime(x)} for x in cast(List[str], response["timesOfChange"])]
-            if include_times_of_change and "timesOfChange" in response
-            else None
-        )
+        if include_times_of_change:
+            timesOfChange = response.get("timesOfChange")
+            if not timesOfChange or (len(values) != 0 and _optional_str_to_datetime(timesOfChange[0]) is None):
+                values_metadata: Optional[ValuesMetadata] = [{}] * len(values)
+            else:
+                values_metadata = [
+                    {"RevisionTimeStamp": _optional_str_to_datetime(x)} for x in cast(List[str], timesOfChange)
+                ]
+        else:
+            values_metadata = None
 
         return Series(name, "", cast(Dict[str, Any], metadata), values_metadata, values, dates)
 

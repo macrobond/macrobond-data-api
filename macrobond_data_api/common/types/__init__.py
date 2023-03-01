@@ -38,3 +38,5 @@ from .metadata import Metadata
 from .series_with_vintages import SeriesWithVintages, VintageValues, SeriesWithVintagesErrorCode
 
 from .revision_history_request import RevisionHistoryRequest
+
+from .values_metadata import ValuesMetadata
