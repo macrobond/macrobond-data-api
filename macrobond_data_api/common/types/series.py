@@ -27,6 +27,7 @@ class Series(Entity):
 
     __slots__ = ("values_metadata", "values", "dates")
 
+    values_metadata: Optional["ValuesMetadata"]
     values: Sequence[Optional[float]]
     dates: Sequence[datetime]
 
