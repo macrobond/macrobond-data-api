@@ -22,4 +22,6 @@
     "python.linting.pycodestyleEnabled": true,
     "python.formatting.provider": "black",
     "diffEditor.ignoreTrimWhitespace": false,
+
+    "task.autoDetect": "off"
 }

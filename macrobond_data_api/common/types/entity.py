@@ -108,7 +108,7 @@ class Entity:
         import pandas  # pylint: disable=import-outside-toplevel
 
         name = name if name else self.name
-        return pandas.Series(self.metadata.values(), self.metadata.keys(), name=name)
+        return pandas.Series(self.metadata.values(), self.metadata.keys(), name=name, dtype="object")
 
     def _repr_html_(self) -> str:
         return self.metadata_to_pd_series().to_frame()._repr_html_()

@@ -1,7 +1,7 @@
 # pylint: disable = invalid-name , missing-module-docstring
 # mypy: disable_error_code = empty-body
 
-from typing import List, Tuple, Optional
+from typing import List, Tuple
 from datetime import datetime
 
 from .entity import Entity
@@ -12,7 +12,7 @@ class Series(Entity):
     """Interface for a Macrobond time series."""
 
     @property
-    def Values(self) -> Tuple[Optional[float], ...]:
+    def Values(self) -> Tuple[float, ...]:
         """The values of the series."""
 
     @property

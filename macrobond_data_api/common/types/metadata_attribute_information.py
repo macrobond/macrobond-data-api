@@ -151,7 +151,7 @@ class MetadataAttributeInformation:
         """The information represented as a Pandas DataFrame"""
         import pandas  # pylint: disable=import-outside-toplevel
 
-        return pandas.DataFrame([self.to_dict()])
+        return pandas.DataFrame([self.to_dict()], dtype="object")
 
     def _repr_html_(self) -> str:
         return self.to_pd_data_frame()._repr_html_()

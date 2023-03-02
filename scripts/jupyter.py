@@ -53,6 +53,9 @@ class JupyterVerify(WorkItem):
             self.print(josn_outputs)
             self.hade_error = True
 
+        if self.hade_error:
+            print("run task jupyter scrub to fix")
+
 
 class JupyterScrub(WorkItem):
     async def run(self) -> None:

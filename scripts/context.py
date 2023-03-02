@@ -5,13 +5,8 @@ import time
 from typing import Any, Callable, List, NoReturn, Optional, cast, Sequence
 
 
-def error_print(text: str) -> None:
-    sys.stderr.write(text)
-    sys.stderr.flush()
-
-
-def warning_print(text: str) -> None:
-    print("Warning: " + text)
+def encode_if(str_: str, else_if: str) -> str:
+    return str_ if sys.stdout.encoding == "utf-8" else else_if
 
 
 class _ShellCommand:
@@ -28,13 +23,11 @@ class _ShellCommand:
         if self.ignore_exit_code:
             ret += ", ignore_exit_code: True,"
 
+        ret += " "
         if self.ignore_exit_code is False:
-            if self.exit_code == 0:
-                ret += " ✅"
-            else:
-                ret += " ❌"
+            ret += encode_if("✅", "(Ok)") if self.exit_code == 0 else encode_if("❌", "(Error)")
         else:
-            ret += " ❔"
+            ret += encode_if("❔", "(?)")
 
         ret += f" exit code: {self.exit_code}"
 
@@ -65,7 +58,7 @@ class WorkItem:
 
     @property
     def symbole(self) -> str:
-        return "❌" if self.hade_error else "✅"
+        return encode_if("❌", "(Error)") if self.hade_error else encode_if("✅", "(Ok)")
 
     async def _run(self) -> None:
         await self.run()
@@ -164,9 +157,9 @@ def run(*work: Callable[[bool, str], WorkItem], in_sequence: bool = True) -> NoR
     print("")
 
     if any(work_items):
-        print("Hade Errors ❌")
+        print("Hade Errors " + encode_if("❌", "(Error)"))
         sys.exit(1)
 
-    print("No Errors ✅")
+    print("No Errors " + encode_if("✅", "(Ok)"))
 
     sys.exit()

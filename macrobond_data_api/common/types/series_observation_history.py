@@ -33,8 +33,8 @@ class SeriesObservationHistory:
     def __init__(
         self,
         observation_date: datetime,
-        values: Sequence[Optional[float]],
-        time_stamps: Sequence[Optional[datetime]],
+        values: List[Optional[float]],
+        time_stamps: List[Optional[datetime]],
     ) -> None:
         self.observation_date = observation_date
         """The date of the observation"""
@@ -61,13 +61,13 @@ class SeriesObservationHistory:
     def to_pd_data_frame(self) -> "DataFrame":
         import pandas  # pylint: disable=import-outside-toplevel
 
-        return pandas.DataFrame({"values": self.values}, self.time_stamps)
+        return pandas.DataFrame({"values": self.values}, self.time_stamps, dtype="float64")
 
     def to_pd_series(self, name: str = None) -> "Series":
         import pandas  # pylint: disable=import-outside-toplevel
 
         name = name if name else str(self.observation_date)
-        return pandas.Series(self.values, self.time_stamps, name=name)
+        return pandas.Series(self.values, self.time_stamps, name=name, dtype="float64")
 
     def _repr_html_(self) -> str:
         return self.to_pd_data_frame()._repr_html_()

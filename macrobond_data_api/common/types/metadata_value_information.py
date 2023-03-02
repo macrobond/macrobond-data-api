@@ -79,12 +79,10 @@ class MetadataValueInformationItem:
 
 @dataclass(init=False)
 class MetadataValueInformation(Sequence[MetadataValueInformationItem]):
-    # fmt: off
     """
-    The result of a call to `macrobond_data_api.common.api.Api.metadata_get_value_information`.  
+    The result of a call to `macrobond_data_api.common.api.Api.metadata_get_value_information`.
     Contains information about the requested metadata attribute values.
     """
-    # fmt: on
 
     __slots__ = ("attribute_name", "entities")
 
@@ -93,7 +91,7 @@ class MetadataValueInformation(Sequence[MetadataValueInformationItem]):
 
     def __init__(
         self,
-        entities: Sequence[MetadataValueInformationItem],
+        entities: List[MetadataValueInformationItem],
         attribute_name: str,
     ) -> None:
         super().__init__()
@@ -106,7 +104,7 @@ class MetadataValueInformation(Sequence[MetadataValueInformationItem]):
         """The information represented as a Pandas DataFrame"""
         import pandas  # pylint: disable=import-outside-toplevel
 
-        return pandas.DataFrame(self.to_dict())
+        return pandas.DataFrame(self.to_dict(), dtype="object")
 
     def to_dict(self) -> List[TypedDictMetadataValueInformationItem]:
         """The information represented as a dictionary"""

@@ -37,6 +37,14 @@ def _datetime_to_datetime_timezone(dates: Sequence[datetime]) -> List[datetime]:
     return [datetime(x.year, x.month, x.day, x.hour, x.minute, x.second, x.microsecond) for x in dates]
 
 
+def _datetime_to_datetime_timezone_and_skip_com_datetime_min(dates: Sequence[datetime]) -> List[Optional[datetime]]:
+    return [_skip_com_datetime_min(x) for x in dates]
+
+
+def _skip_com_datetime_min(d: datetime) -> Optional[datetime]:
+    return None if d.year == 1899 and d.month == 12 and d.day == 30 else datetime(d.year, d.month, d.day)
+
+
 def _remove_padding(
     series: "ComSeries",
 ) -> Tuple[List[Optional[float]], Tuple[datetime, ...]]:
@@ -46,17 +54,20 @@ def _remove_padding(
     for value in series_values:
         if value is None or not isnan(value):
             break
-        padding_front = padding_front + 1
+        padding_front += 1
 
     padding_back = 0
     for value in series_values[::-1]:
         if value is None or not isnan(value):
             break
-        padding_back = padding_back + 1
+        padding_back += 1
 
     padding_back = len(series_values) - padding_back
 
-    return (list(series_values[padding_front:padding_back]), series.DatesAtStartOfPeriod[padding_front:padding_back])
+    values = [None if isnan(x) else x for x in series_values[padding_front:padding_back]]  # type: ignore
+    dates = series.DatesAtStartOfPeriod[padding_front:padding_back]
+
+    return (values, dates)
 
 
 def get_revision_info(self: "ComApi", *series_names: str, raise_error: bool = None) -> Sequence[RevisionInfo]:
@@ -187,10 +198,18 @@ def get_all_vintage_series(self: "ComApi", series_name: str) -> GetAllVintageSer
             raise ValueError("Series not found: " + series_name)
         raise Exception(series_with_revisions.ErrorMessage)
 
-    return GetAllVintageSeriesResult(
-        [to_obj(x, series_name) for x in series_with_revisions.GetCompleteHistory()],
-        series_name,
-    )
+    complete_history = series_with_revisions.GetCompleteHistory()
+
+    if not series_with_revisions.HasRevisions:
+        series = complete_history[0]
+        values = [None if isnan(x) else x for x in series.Values]  # type: ignore
+        dates = _datetime_to_datetime_timezone(series.DatesAtStartOfPeriod)
+        return GetAllVintageSeriesResult(
+            [VintageSeries(series_name, None, _fill_metadata_from_entity(series), None, values, dates, None)],
+            series_name,
+        )
+
+    return GetAllVintageSeriesResult([to_obj(x, series_name) for x in complete_history], series_name)
 
 
 def get_observation_history(self: "ComApi", series_name: str, *times: datetime) -> Sequence[SeriesObservationHistory]:
@@ -203,8 +222,11 @@ def get_observation_history(self: "ComApi", series_name: str, *times: datetime) 
 
     def to_obj(time: datetime) -> SeriesObservationHistory:
         series = series_with_revisions.GetObservationHistory(time)
-        dates = _datetime_to_datetime_timezone(series.DatesAtStartOfPeriod)
-        return SeriesObservationHistory(time, series.Values, dates)
+        observation_date = cast(datetime, series.Metadata.GetFirstValue("ObservationDate"))
+        observation_date = datetime(observation_date.year, observation_date.month, observation_date.day)
+        values = [None if isnan(x) else x for x in series.Values]
+        dates = _datetime_to_datetime_timezone_and_skip_com_datetime_min(series.DatesAtStartOfPeriod)
+        return SeriesObservationHistory(observation_date, values, dates)
 
     return _ReprHtmlSequence([to_obj(x) for x in times])
 

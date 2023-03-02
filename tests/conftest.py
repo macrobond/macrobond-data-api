@@ -137,13 +137,19 @@ def _test(
 
             assert len(keys) != 0
 
-        for key in keys:
-            if key == "DisplayUnit":
-                continue
+        if "DisplayUnit" in keys:
+            keys.remove("DisplayUnit")
 
+        for key in keys:
             if isinstance(web_obj.metadata[key], datetime):
-                web_datetime = _remove_microsecond(web_obj.metadata[key]).astimezone(timezone.utc)
-                com_datetime = _remove_microsecond(com_obj.metadata[key]).astimezone(timezone.utc)
+                web_datetime = _remove_microsecond(web_obj.metadata[key])
+                if web_datetime.tzinfo:
+                    web_datetime = web_datetime.astimezone(timezone.utc)
+
+                com_datetime = _remove_microsecond(com_obj.metadata[key])
+                if com_datetime.tzinfo:
+                    com_datetime = com_datetime.astimezone(timezone.utc)
+
                 if web_datetime != com_datetime:
                     diff = (web_datetime - com_datetime).total_seconds()
                     if diff == 0:

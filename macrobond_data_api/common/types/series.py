@@ -83,7 +83,7 @@ class Series(Entity):
         import pandas  # pylint: disable=import-outside-toplevel
 
         name = name if name else self.name
-        return pandas.Series(self.values, self.dates, name=name)
+        return pandas.Series(self.values, self.dates, name=name, dtype="float64")
 
     def _repr_html_(self) -> str:
         return self.metadata_to_pd_series().to_frame()._repr_html_()

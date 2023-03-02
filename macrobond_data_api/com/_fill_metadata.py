@@ -17,7 +17,18 @@ if TYPE_CHECKING:  # pragma: no cover
 
 def _get_val(name: str, values: Sequence[Any]) -> Any:
     if isinstance(values[0], TimeType):
-        if name == "LastModifiedTimeStamp":
+        if name in ("OriginalStartDate", "OriginalEndDate"):
+            datetime_ = values[0]
+            return datetime(
+                datetime_.year,
+                datetime_.month,
+                datetime_.day,
+                datetime_.hour,
+                datetime_.minute,
+                datetime_.second,
+                datetime_.microsecond,
+            )
+        if name in ("LastModifiedTimeStamp"):
             datetime_ = values[0]
             return datetime(
                 datetime_.year,

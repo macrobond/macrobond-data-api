@@ -1,6 +1,7 @@
 import sys
 from context import run, WorkItem
 from code_generation import Verify
+from jupyter import JupyterVerify
 
 from pdoc3 import Pdoc3
 
@@ -23,19 +24,19 @@ class PyCodeStyle(WorkItem):
 
 class Black(WorkItem):
     async def run(self) -> None:
-        await self.python_run("black", "--extend-exclude macrobond_data_api_python_env .")
+        await self.python_run("black", "--extend-exclude .env .")
 
 
 class BlackCheck(WorkItem):
     async def run(self) -> None:
-        await self.python_run("black", "--extend-exclude macrobond_data_api_python_env --check --diff .")
+        await self.python_run("black", "--extend-exclude .env --check --diff .")
 
 
 def main() -> None:
     command = sys.argv[1] if len(sys.argv) <= 2 else None
 
     if command == "--all":
-        run(Verify, BlackCheck, Mypy, Pylint, PyCodeStyle, Pdoc3, in_sequence=False)
+        run(Verify, BlackCheck, Mypy, Pylint, PyCodeStyle, Pdoc3, JupyterVerify, in_sequence=False)
 
     if command == "--verify":
         run(Verify)
@@ -54,6 +55,12 @@ def main() -> None:
 
     if command == "--pdoc3":
         run(Pdoc3)
+
+    if command == "--jupyter-verify":
+        run(JupyterVerify)
+
+    if command == "--format-code":
+        run(Black)
 
     if command:
         print("bad args " + command)

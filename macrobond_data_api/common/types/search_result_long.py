@@ -20,7 +20,7 @@ class SearchResultLong(Sequence[str]):
     entities: Sequence[str]
     is_truncated: bool
 
-    def __init__(self, entities: Sequence[str], is_truncated: bool) -> None:
+    def __init__(self, entities: List[str], is_truncated: bool) -> None:
         super().__init__()
         self.entities = entities
         self.is_truncated = is_truncated
@@ -41,7 +41,7 @@ class SearchResultLong(Sequence[str]):
         """
         import pandas  # pylint: disable=import-outside-toplevel
 
-        return pandas.DataFrame(self.entities)
+        return pandas.DataFrame(self.entities, dtype="string")
 
     def _repr_html_(self) -> str:
         return self.to_pd_data_frame()._repr_html_()

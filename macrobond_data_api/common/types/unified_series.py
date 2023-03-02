@@ -52,7 +52,7 @@ class UnifiedSeries:
         name: str,
         error_message: str,
         metadata: "Metadata",
-        values: Sequence[Optional[float]],
+        values: List[Optional[float]],
     ) -> None:
         self.name = name
         """The name of the requested series."""
@@ -108,8 +108,8 @@ class UnifiedSeriesList(Sequence[UnifiedSeries]):
 
     def __init__(
         self,
-        series: Sequence[UnifiedSeries],
-        dates: Sequence[datetime],
+        series: List[UnifiedSeries],
+        dates: List[datetime],
     ) -> None:
         super().__init__()
         self.series = series
@@ -129,7 +129,7 @@ class UnifiedSeriesList(Sequence[UnifiedSeries]):
     def to_pd_data_frame(self) -> "DataFrame":
         import pandas  # pylint: disable=import-outside-toplevel
 
-        return pandas.DataFrame({kv.name: kv.values for kv in self}, self.dates)
+        return pandas.DataFrame({kv.name: kv.values for kv in self}, self.dates, dtype="float64")
 
     def _repr_html_(self) -> str:
         return self.to_pd_data_frame()._repr_html_()

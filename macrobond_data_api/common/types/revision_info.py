@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 from datetime import datetime
-from typing import TYPE_CHECKING, Optional, Sequence
+from typing import TYPE_CHECKING, Optional, Sequence, List
 
 from typing_extensions import TypedDict
 
@@ -53,7 +53,7 @@ class RevisionInfo:
         has_revisions: bool,
         time_stamp_of_first_revision: Optional[datetime],
         time_stamp_of_last_revision: Optional[datetime],
-        vintage_time_stamps: Sequence[datetime],
+        vintage_time_stamps: List[datetime],
     ) -> None:
         self.name = name
         """The name of the series"""
@@ -94,7 +94,7 @@ class RevisionInfo:
         """Returns a Pandas dataframe with the information about the series revisions."""
         import pandas  # pylint: disable=import-outside-toplevel
 
-        return pandas.DataFrame(self.to_dict())
+        return pandas.DataFrame(self.to_dict(), dtype="object")
 
     def _repr_html_(self) -> str:
         return self.to_pd_data_frame()._repr_html_()

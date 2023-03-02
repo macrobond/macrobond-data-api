@@ -46,7 +46,7 @@ def _create_series(com_series: "ComSeries", name: str) -> Series:
         None,
         _fill_metadata_from_entity(com_series),
         None,
-        list(com_series.Values),
+        [None if isnan(x) else x for x in com_series.Values],
         _datetime_to_datetime(com_series.DatesAtStartOfPeriod),
     )
 
@@ -156,7 +156,7 @@ def get_unified_series(
             name,
             "",
             _fill_metadata_from_entity(com_one_series),
-            [None if x is not None and isnan(x) else x for x in com_one_series.Values],
+            [None if isnan(x) else x for x in com_one_series.Values],
         )
 
     ret = UnifiedSeriesList([to_obj(request.AddedSeries[x].Name, y) for x, y in enumerate(com_series)], dates)

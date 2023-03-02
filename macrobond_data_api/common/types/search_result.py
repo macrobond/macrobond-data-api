@@ -21,7 +21,7 @@ class SearchResult(Sequence["Metadata"]):
     entities: Sequence["Metadata"]
     is_truncated: bool
 
-    def __init__(self, entities: Sequence["Metadata"], is_truncated: bool) -> None:
+    def __init__(self, entities: List["Metadata"], is_truncated: bool) -> None:
         super().__init__()
         self.entities = entities
         """

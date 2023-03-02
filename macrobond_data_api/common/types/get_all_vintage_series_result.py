@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from typing import TYPE_CHECKING, Any, Dict, Sequence, overload
+from typing import TYPE_CHECKING, Any, Dict, Sequence, overload, List
 
 from macrobond_data_api.common.types.vintage_series import VintageSeries
 
@@ -23,7 +23,7 @@ class GetAllVintageSeriesResult(Sequence[VintageSeries]):
     series: Sequence[VintageSeries]
     series_name: str
 
-    def __init__(self, series: Sequence[VintageSeries], series_name: str) -> None:
+    def __init__(self, series: List[VintageSeries], series_name: str) -> None:
         super().__init__()
         self.series = series
         """A sequence of time series corresponding to the vintages."""

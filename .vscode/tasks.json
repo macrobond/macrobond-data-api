@@ -32,7 +32,8 @@
         {
             "label": "Black",
             "args": [
-                "scripts/black.py"
+                "scripts/lint_tools.py",
+                "--format-code"
             ],
             "presentation": {
                 "clear": true
@@ -120,7 +121,8 @@
                 "mypy",
                 "pylint",
                 "py_code_style",
-                "pdoc3"
+                "pdoc3",
+                "jupyter-verify"
             ],
             "description": "Which tool ?",
             "default": "all"

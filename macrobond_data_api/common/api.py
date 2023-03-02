@@ -81,6 +81,7 @@ class Api(ABC):
 
     @abstractmethod
     def metadata_list_values(self, name: str) -> MetadataValueInformation:
+        # fmt: off
         """
         List all metadata attribute values of an attribute that uses a value list.
 
@@ -108,10 +109,10 @@ class Api(ABC):
             print(metadata_list_values("RateType").to_pd_data_frame())
         ```
         """
+        # fmt: on
 
     @abstractmethod
     def metadata_get_attribute_information(self, *names: str) -> Sequence[MetadataAttributeInformation]:
-        # pylint: disable=line-too-long
         # fmt: off
         """
         Get information about metadata attributes.
@@ -145,7 +146,6 @@ class Api(ABC):
 
     @abstractmethod
     def metadata_get_value_information(self, *name_val: Tuple[str, str]) -> Sequence[MetadataValueInformationItem]:
-        # pylint: disable=line-too-long
         # fmt: off
         """
         Get information about metadata values.
@@ -181,6 +181,7 @@ class Api(ABC):
 
     @abstractmethod
     def get_revision_info(self, *series_names: str, raise_error: bool = None) -> Sequence[RevisionInfo]:
+        # fmt: off
         """
         Get information about if revision history is available for a series
         and a list of revision timestamps.
@@ -199,11 +200,13 @@ class Api(ABC):
         `Sequence[macrobond_data_api.common.types.revision_info.RevisionInfo]`
         The result is in the sane order as in the request.
         """
+        # fmt: on
 
     @abstractmethod
     def get_vintage_series(
         self, time: datetime, *series_names: str, raise_error: bool = None
     ) -> Sequence[VintageSeries]:
+        # fmt: off
         """
         Fetch vintage series.
 
@@ -223,11 +226,13 @@ class Api(ABC):
         `Sequence[macrobond_data_api.common.types.vintage_series.VintageSeries]`
         The result is in the same order as in the request.
         """
+        # fmt: on
 
     @abstractmethod
     def get_nth_release(
         self, nth: int, *series_names: str, include_times_of_change: bool = False, raise_error: bool = None
     ) -> Sequence[Series]:
+        # fmt: off
         """
         Fetcha series where each value is the nth change of the value.
 
@@ -247,9 +252,11 @@ class Api(ABC):
         `Sequence[macrobond_data_api.common.types.series.Series]`
         The result is in the same order as in the request.
         """
+        # fmt: on
 
     @abstractmethod
     def get_all_vintage_series(self, series_name: str) -> GetAllVintageSeriesResult:
+        # fmt: off
         """
         Get all vintages of a series.
 
@@ -262,9 +269,11 @@ class Api(ABC):
         -------
         `macrobond_data_api.common.types.get_all_vintage_series_result.GetAllVintageSeriesResult`
         """
+        # fmt: on
 
     @abstractmethod
     def get_observation_history(self, series_name: str, *times: datetime) -> Sequence[SeriesObservationHistory]:
+        # fmt: off
         """
         Get the revision of an observation.
 
@@ -279,11 +288,13 @@ class Api(ABC):
         -------
         `Sequence[macrobond_data_api.common.types.series_observation_history.SeriesObservationHistory]`
         """
+        # fmt: on
 
     @abstractmethod
     def get_many_series_with_revisions(
         self, requests: Sequence[RevisionHistoryRequest], include_not_modified: bool = False
     ) -> Generator[SeriesWithVintages, None, None]:
+        # fmt: off
         """
         Download all revisions for one or more series.
         Specify a callback to receive the response series by series.
@@ -307,6 +318,7 @@ class Api(ABC):
         -------
         `Generator[macrobond_data_api.common.types.series_with_vintages.SeriesWithVintages]`
         """
+        # fmt: on
 
     # Search
 
@@ -321,6 +333,7 @@ class Api(ABC):
         include_discontinued: bool = False,
         no_metadata: bool = False,
     ) -> SearchResult:
+        # fmt: off
         """
         Search for time series and other entitites.
 
@@ -348,6 +361,7 @@ class Api(ABC):
         -------
         `macrobond_data_api.common.types.search_result.SearchResult`
         """
+        # fmt: on
         return self.entity_search_multi_filter(
             SearchFilter(
                 text=text,
@@ -365,6 +379,7 @@ class Api(ABC):
     def entity_search_multi_filter(
         self, *filters: SearchFilter, include_discontinued: bool = False, no_metadata: bool = False
     ) -> SearchResult:
+        # fmt: off
         """
         Search for time series and other entitites.
         You can pass more than one search filter. In this case the filters have to use different
@@ -384,11 +399,13 @@ class Api(ABC):
         -------
         `macrobond_data_api.common.types.search_result.SearchResult`
         """
+        # fmt: on
 
     # Series
 
     @abstractmethod
     def get_one_series(self, series_name: str, raise_error: bool = None) -> Series:
+        # fmt: off
         """
         Download one series.
 
@@ -408,9 +425,11 @@ class Api(ABC):
         -------
         `macrobond_data_api.common.types.series.Series`
         """
+        # fmt: on
 
     @abstractmethod
     def get_series(self, *series_names: str, raise_error: bool = None) -> Sequence[Series]:
+        # fmt: off
         """
         Download one or more series.
 
@@ -432,9 +451,11 @@ class Api(ABC):
         `Sequence[macrobond_data_api.common.types.series.Series]`
         The result is in the same order as in the request.
         """
+        # fmt: on
 
     @abstractmethod
     def get_one_entity(self, entity_name: str, raise_error: bool = None) -> Entity:
+        # fmt: off
         """
         Download one entity.
 
@@ -454,9 +475,11 @@ class Api(ABC):
         -------
         `macrobond_data_api.common.types.entity.Entity`
         """
+        # fmt: on
 
     @abstractmethod
     def get_entities(self, *entity_names: str, raise_error: bool = None) -> Sequence[Entity]:
+        # fmt: off
         """
         Download one or more entities.
 
@@ -478,9 +501,11 @@ class Api(ABC):
         `Sequence[macrobond_data_api.common.types.entity.Entity]`
         The result is in the same order as in the request.
         """
+        # fmt: on
 
     @abstractmethod
     def get_many_series(self, *series: Tuple[str, datetime]) -> Generator[Optional[Series], None, None]:
+        # fmt: off
         """
 
         Parameters
@@ -492,6 +517,7 @@ class Api(ABC):
         -------
         `Generator[Optional[macrobond_data_api.common.types.series.Series]]`
         """
+        # fmt: on
 
     @abstractmethod
     def get_unified_series(
@@ -505,6 +531,7 @@ class Api(ABC):
         end_point: StartOrEndPoint = None,
         raise_error: bool = None
     ) -> UnifiedSeriesList:
+        # fmt: off
         """
         Get one or more series and convert them to a common frequency and calendar.
 
@@ -537,3 +564,4 @@ class Api(ABC):
         `macrobond_data_api.common.types.unified_series.UnifiedSeries`
         The result is in the same order as in the request.
         """
+        # fmt: on
