@@ -54,7 +54,7 @@ class SeriesObservationHistory:
     def to_dict(self) -> Dict[str, Any]:
         return {
             "ObservationDate": self.observation_date,
-            "Values": self.values,
+            "Value": self.values,
             "TimeStamps": self.time_stamps,
         }
 

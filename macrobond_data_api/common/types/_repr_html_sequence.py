@@ -1,4 +1,4 @@
-from typing import Generic, Sequence, TypeVar, overload
+from typing import Generic, Sequence, TypeVar, overload, cast, List
 
 from macrobond_data_api.common.types import (
     MetadataAttributeInformation,
@@ -42,7 +42,9 @@ class _ReprHtmlSequence(Sequence[_TypeVar], Generic[_TypeVar]):
         if len(self.items) > 1 and len(set((type(x) for x in self.items))) == 1:
             t = type(self.items[0])
             if t in (MetadataAttributeInformation, MetadataValueInformationItem, RevisionInfo):
-                display(pandas.concat([x.to_pd_data_frame() for x in self.items]))  # type: ignore
+                display(
+                    pandas.concat([x.to_pd_data_frame() for x in cast(List[MetadataAttributeInformation], self.items)])
+                )
                 return
 
         for x in self.items:

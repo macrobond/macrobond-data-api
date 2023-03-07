@@ -127,4 +127,4 @@ class MetadataValueInformation(Sequence[MetadataValueInformationItem]):
     def _repr_html_(self) -> str:
         frame = self.to_pd_data_frame()
         del frame["attribute_name"]
-        return f"<h1>{self.attribute_name}</h1>" + frame._repr_html_()
+        return f"<p>{self.attribute_name}</p>" + frame._repr_html_()

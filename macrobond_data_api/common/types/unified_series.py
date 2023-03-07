@@ -129,7 +129,19 @@ class UnifiedSeriesList(Sequence[UnifiedSeries]):
     def to_pd_data_frame(self) -> "DataFrame":
         import pandas  # pylint: disable=import-outside-toplevel
 
-        return pandas.DataFrame({kv.name: kv.values for kv in self}, self.dates, dtype="float64")
+        return pandas.DataFrame(
+            {
+                **{"Date": self.dates},
+                **{
+                    "Error: " + kv.error_message
+                    if kv.is_error
+                    else kv.name: [None] * len(self.dates)  # type: ignore
+                    if kv.is_error
+                    else kv.values
+                    for kv in self
+                },
+            }
+        )
 
     def _repr_html_(self) -> str:
         return self.to_pd_data_frame()._repr_html_()

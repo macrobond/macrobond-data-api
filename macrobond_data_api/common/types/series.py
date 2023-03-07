@@ -12,7 +12,7 @@ SeriesColumnsLiterals = Literal[EntityColumnsLiterals, "Values", "Dates"]
 SeriesColumns = List[SeriesColumnsLiterals]
 
 if TYPE_CHECKING:  # pragma: no cover
-    from pandas import Series as PdSeries  # type: ignore
+    from pandas import Series as PdSeries, DataFrame  # type: ignore
     from .metadata import Metadata
     from .values_metadata import ValuesMetadata
 
@@ -79,11 +79,31 @@ class Series(Entity):
         self._add_metadata(ret)
         return ret
 
-    def values_to_pd_series(self, name: str = None) -> "PdSeries":
+    def values_to_pd_series(self) -> "PdSeries":
         import pandas  # pylint: disable=import-outside-toplevel
 
-        name = name if name else self.name
-        return pandas.Series(self.values, self.dates, name=name, dtype="float64")
+        return pandas.Series(data=self.values, name="Values", dtype="float64")
+
+    def dates_to_pd_series(self) -> "PdSeries":
+        import pandas  # pylint: disable=import-outside-toplevel
+
+        a = pandas.Series(data=self.dates, name="Dates")
+        return a
+
+    def dates_and_values_to_pd_data_frame(self) -> "DataFrame":
+        import pandas  # pylint: disable=import-outside-toplevel
+
+        if self.is_error:
+            ...
+        return pandas.DataFrame(
+            {
+                "Date": self.dates_to_pd_series(),
+                "Value": self.values_to_pd_series(),
+            }
+        )
 
     def _repr_html_(self) -> str:
-        return self.metadata_to_pd_series().to_frame()._repr_html_()
+        if self.is_error:
+            return f"<p>{self.name}</p><p>error_message: {self.error_message}</p>"
+        html = self.dates_and_values_to_pd_data_frame()._repr_html_()
+        return f"<p>{self.name}</p>{html}"
