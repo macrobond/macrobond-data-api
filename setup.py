@@ -100,6 +100,7 @@ setuptools.setup(
             "black[jupyter]==23.1.0",
             "requests[socks]>=" + REQUESTS_VERSION,
             "nbconvert==7.2.9",
+            "ipython>=7.34.0",
             # types
             "types-pywin32==305.0.0.7",
             "types-python-dateutil==2.8.19.6",
