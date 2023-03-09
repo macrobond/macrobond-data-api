@@ -36,10 +36,12 @@ class GetAllVintageSeriesResult(Sequence[VintageSeries]):
         """
         import pandas  # pylint: disable=import-outside-toplevel
 
-        data = [x.values_to_pd_series() for x in self]
-        data_frame = pandas.concat(data, axis=1, keys=[s.revision_time_stamp for s in self])
-        data_frame = data_frame.sort_index()
-        return data_frame
+        return pandas.DataFrame(
+            {
+                **{"dates": self.series[len(self.series) - 1].dates},
+                **{x.revision_time_stamp: x.values_to_pd_series() for x in self.series},  # type: ignore
+            }
+        )
 
     def to_dict(self) -> Dict[str, Any]:
         """
@@ -48,7 +50,8 @@ class GetAllVintageSeriesResult(Sequence[VintageSeries]):
         return {"series_name": self.series_name, "series": [x.to_dict() for x in self]}
 
     def _repr_html_(self) -> str:
-        return self.to_pd_data_frame()._repr_html_()
+        html = self.to_pd_data_frame()._repr_html_()
+        return f"<p>{self.series_name}</p>{html}"
 
     @overload
     def __getitem__(self, i: int) -> VintageSeries:
