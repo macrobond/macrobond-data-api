@@ -97,8 +97,8 @@ class Series(Entity):
             ...
         return pandas.DataFrame(
             {
-                "Date": self.dates_to_pd_series(),
-                "Value": self.values_to_pd_series(),
+                "dates": self.dates_to_pd_series(),
+                "values": self.values_to_pd_series(),
             }
         )
 
