@@ -43,7 +43,7 @@ class FakeApi(Api):
         raise NotImplementedError()
 
     def get_vintage_series(
-        self, time: datetime, *series_names: str, raise_error: bool = None
+        self, time: datetime, *series_names: str, include_times_of_change: bool = False, raise_error: bool = None
     ) -> Sequence[VintageSeries]:
         raise NotImplementedError()
 

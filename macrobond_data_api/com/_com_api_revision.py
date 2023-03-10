@@ -99,7 +99,7 @@ def get_revision_info(self: "ComApi", *series_names: str, raise_error: bool = No
 
 
 def get_vintage_series(
-    self: "ComApi", time: datetime, *series_names: str, raise_error: bool = None
+    self: "ComApi", time: datetime, *series_names: str, include_times_of_change: bool = False, raise_error: bool = None
 ) -> Sequence[VintageSeries]:
     def to_obj(series_name: str) -> VintageSeries:
         series_with_revisions = self.database.FetchOneSeriesWithRevisions(series_name)
@@ -119,11 +119,19 @@ def get_vintage_series(
 
         values, dates = _remove_padding(series)
 
+        if include_times_of_change:
+            if series_with_revisions.HasRevisions:
+                values_metadata = _fill_values_metadata_from_series(series, True)
+            else:
+                values_metadata = [{}] * len(values)
+        else:
+            values_metadata = None
+
         return VintageSeries(
             series_name,
             "",
             _fill_metadata_from_entity(series),
-            None,
+            values_metadata,
             values,
             _datetime_to_datetime_timezone(dates),
             None,

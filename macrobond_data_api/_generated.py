@@ -198,6 +198,8 @@ def get_nth_release(
         The nth change of each value.
     series_names : str
         One or more names of series.
+    include_times_of_change : bool
+        Include information of the time each values was last changed.
     raise_error : bool
         If True, accessing the resulting series raises a GetEntitiesError.
         If False you should inspect the is_error property of the result instead.
@@ -378,7 +380,9 @@ def get_unified_series(
     )
 
 
-def get_vintage_series(time: datetime, *series_names: str, raise_error: bool = None) -> Sequence[VintageSeries]:
+def get_vintage_series(
+    time: datetime, *series_names: str, include_times_of_change: bool = False, raise_error: bool = None
+) -> Sequence[VintageSeries]:
     """
     Fetch vintage series.
 
@@ -388,6 +392,8 @@ def get_vintage_series(time: datetime, *series_names: str, raise_error: bool = N
         The time of the vintage to return.
     series_names : str
         One or more names of series.
+    include_times_of_change : bool
+        Include information of the time each values was last changed.
     raise_error : bool
         If True, accessing the resulting series raises a GetEntitiesError.
         If False you should inspect the is_error property of the result instead.
@@ -398,7 +404,9 @@ def get_vintage_series(time: datetime, *series_names: str, raise_error: bool = N
     `Sequence[macrobond_data_api.common.types.vintage_series.VintageSeries]`
     The result is in the same order as in the request.
     """
-    return _get_api().get_vintage_series(time, *series_names, raise_error=raise_error)
+    return _get_api().get_vintage_series(
+        time, *series_names, include_times_of_change=include_times_of_change, raise_error=raise_error
+    )
 
 
 def metadata_get_attribute_information(*names: str) -> Sequence[MetadataAttributeInformation]:

@@ -91,7 +91,11 @@ def get_revision_info(self: "WebApi", *series_names: str, raise_error: Optional[
 
 
 def get_vintage_series(
-    self: "WebApi", time: datetime, *series_names: str, raise_error: Optional[bool] = None
+    self: "WebApi",
+    time: datetime,
+    *series_names: str,
+    include_times_of_change: bool = False,
+    raise_error: Optional[bool] = None
 ) -> Sequence[VintageSeries]:
     def to_obj(response: "VintageSeriesResponse", series_name: str) -> VintageSeries:
         error_message = response.get("errorText")
@@ -108,13 +112,26 @@ def get_vintage_series(
         values = [float(x) if x else None for x in cast(List[Optional[int]], response["values"])]
         dates = [_str_to_datetime_ignoretz(x) for x in cast(List[str], response["dates"])]
 
+        if include_times_of_change:
+            timesOfChange = response.get("timesOfChange")
+            if timesOfChange:
+                values_metadata = [
+                    {"RevisionTimeStamp": _optional_str_to_datetime(x)} for x in cast(List[str], timesOfChange)
+                ]
+            else:
+                values_metadata = [{}] * len(values)
+        else:
+            values_metadata = None
+
         vintage_time_stamp = (
             _str_to_datetime(cast(str, response["vintageTimeStamp"])) if "vintageTimeStamp" in response else None
         )
 
-        return VintageSeries(series_name, None, metadata, None, values, dates, vintage_time_stamp)
+        return VintageSeries(series_name, None, metadata, values_metadata, values, dates, vintage_time_stamp)
 
-    response = self.session.series.fetch_vintage_series(time, *series_names, get_times_of_change=False)
+    response = self.session.series.fetch_vintage_series(
+        time, *series_names, get_times_of_change=include_times_of_change
+    )
 
     series = [to_obj(x, y) for x, y in zip(response, series_names)]
 

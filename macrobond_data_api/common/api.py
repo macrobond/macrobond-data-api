@@ -204,7 +204,7 @@ class Api(ABC):
 
     @abstractmethod
     def get_vintage_series(
-        self, time: datetime, *series_names: str, raise_error: bool = None
+        self, time: datetime, *series_names: str, include_times_of_change: bool = False, raise_error: bool = None
     ) -> Sequence[VintageSeries]:
         # fmt: off
         """
@@ -216,6 +216,8 @@ class Api(ABC):
             The time of the vintage to return.
         series_names : str
             One or more names of series.
+        include_times_of_change : bool
+            Include information of the time each values was last changed.
         raise_error : bool
             If True, accessing the resulting series raises a GetEntitiesError.
             If False you should inspect the is_error property of the result instead.
@@ -242,6 +244,8 @@ class Api(ABC):
             The nth change of each value.
         series_names : str
             One or more names of series.
+        include_times_of_change : bool
+            Include information of the time each values was last changed.
         raise_error : bool
             If True, accessing the resulting series raises a GetEntitiesError.
             If False you should inspect the is_error property of the result instead.

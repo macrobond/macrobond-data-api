@@ -58,8 +58,11 @@ def _get_val(name: str, values: Sequence[Any]) -> Any:
     return values[0] if len(values) == 1 else list(values)
 
 
-def _fill_metadata_from_metadata(com_metadata: "ComMetadata") -> Dict:
-    return {x: _get_val(x, com_metadata.GetValues(x)) for x, _ in com_metadata.ListNames()}
+def _fill_metadata_from_metadata(com_metadata: "ComMetadata", add_empty_revision_time_stamp: bool = False) -> Dict:
+    metadata = {x: _get_val(x, com_metadata.GetValues(x)) for x, _ in com_metadata.ListNames()}
+    if add_empty_revision_time_stamp and "RevisionTimeStamp" not in metadata:
+        metadata["RevisionTimeStamp"] = None
+    return metadata
 
 
 def _fill_metadata_from_entity(com_entity: "ComEntity") -> "Metadata":
@@ -68,5 +71,7 @@ def _fill_metadata_from_entity(com_entity: "ComEntity") -> "Metadata":
     return ret
 
 
-def _fill_values_metadata_from_series(com_series: "ComSeries") -> "ValuesMetadata":
-    return [_fill_metadata_from_metadata(x) for x in com_series.ValuesMetadata]
+def _fill_values_metadata_from_series(
+    com_series: "ComSeries", add_empty_revision_time_stamp: bool = False
+) -> "ValuesMetadata":
+    return [_fill_metadata_from_metadata(x, add_empty_revision_time_stamp) for x in com_series.ValuesMetadata]
