@@ -48,9 +48,9 @@ class JupyterVerify(WorkItem):
     async def run(self) -> None:
         directory = os.path.join(os.getcwd(), "examples")
         print("directory " + directory)
-        for path, josn_outputs in verify_directory(directory):
+        for path, _ in verify_directory(directory):
             self.print('Error "' + path + '" has outputs')
-            self.print(josn_outputs)
+            # self.>print(josn_outputs)
             self.hade_error = True
 
         if self.hade_error:

@@ -117,16 +117,10 @@ class ComClient(Client["ComApi"]):
         if version == (0, 0, 0):
             return
 
-        major, minor, _ = version
-
-        if major > 1:
+        if version >= (1, 25, 0):
             return
 
-        if major == 0:
-            raise ComClientVersionException("Unsupported version " + (".".join([str(x) for x in version])))
-
-        if minor < 25:
-            raise ComClientVersionException("Unsupported version " + (".".join([str(x) for x in version])))
+        raise ComClientVersionException("Unsupported version " + (".".join([str(x) for x in version])))
 
     def close(self) -> None:
         """
