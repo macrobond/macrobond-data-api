@@ -55,8 +55,6 @@ __url__ = "''' + URL + '''"
 with open(version_info_path, "w+", encoding="utf-8") as fh:
     fh.write(PACKAGE_INFO)
 
-REQUESTS_VERSION = "2.28.2"
-
 setuptools.setup(
     name="macrobond-data-api",
     packages=setuptools.find_packages(include=["macrobond_data_api", "macrobond_data_api.*"]),
@@ -80,7 +78,7 @@ setuptools.setup(
     install_requires=[
         "keyring>=23.11.0",
         "Authlib>=1.2.0",
-        "requests>=" + REQUESTS_VERSION,
+        "requests>=2.28.2",  # don't forget to upgrade all instances of requests
         "python-dateutil>=2.8.2",
         "ijson>=3.1.4",
         "typing_extensions>=4.5.0",
@@ -89,25 +87,25 @@ setuptools.setup(
     extras_require={
         "extra": ["matplotlib", "statsmodels", "scikit-learn", "pandas"],
         "dev": [
-            "mypy==1.0.1",
+            "mypy==1.1.1",
             "pylint==2.15.8",
             "pycodestyle==2.10.0",
             "pdoc3==0.10.0",
             "build>=0.10.0",
-            "pytest==7.2.1",
+            "pytest==7.2.2",
             "pytest-xdist==3.2.0",
             "coverage>=7.2.1",
             "black[jupyter]==23.1.0",
-            "requests[socks]>=" + REQUESTS_VERSION,
+            "requests[socks]>=2.28.2",
             "nbconvert==7.2.9",
             "ipython>=7.34.0",
             # types
-            "types-pywin32==305.0.0.7",
-            "types-python-dateutil==2.8.19.6",
-            "types-requests==2.28.11.8",
-            "types-setuptools==67.4.0.3",
+            "types-pywin32==305.0.0.10",
+            "types-python-dateutil==2.8.19.10",
+            "types-requests==2.28.11.15",
+            "types-setuptools==67.6.0.0",
         ],
-        "socks": ["requests[socks]>=" + REQUESTS_VERSION],
+        "socks": ["requests[socks]>=2.28.2"],
     },
     project_urls={
         "Documentation": "https://macrobond.github.io/macrobond-data-api",
