@@ -62,13 +62,13 @@ usgdp = mb_api.get_one_series("usgdp")
 from macrobond_data_api.web import WebClient
 
 with WebClient('client id', 'client secret') as api:
-    series = api.series.get_one_series('usgdp')
+    series = api.get_one_series('usgdp')
 
 # com
 from macrobond_data_api.com import ComClient
 
 with ComClient() as api:
-    series = api.series.get_one_series('usgdp')
+    series = api.get_one_series('usgdp')
 ```
 
 ## Features
