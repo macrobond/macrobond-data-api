@@ -78,7 +78,7 @@ setuptools.setup(
     install_requires=[
         "keyring>=23.11.0",
         "Authlib>=1.2.0",
-        "requests>=2.28.2",  # don't forget to upgrade all instances of requests
+        "requests>=2.28.2",
         "python-dateutil>=2.8.2",
         "ijson>=3.1.4",
         "typing_extensions>=4.5.0",
@@ -99,7 +99,6 @@ setuptools.setup(
             "requests[socks]>=2.28.2",
             "nbconvert==7.2.9",
             "ipython>=7.34.0",
-            # types
             "types-pywin32==305.0.0.10",
             "types-python-dateutil==2.8.19.10",
             "types-requests==2.28.11.15",
