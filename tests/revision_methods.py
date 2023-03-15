@@ -62,16 +62,16 @@ class TestCommon:
         time_stamp = cast(datetime, web.get_revision_info("usgdp")[0].time_stamp_of_first_revision)
         assert 0 == len(
             PdSeries.compare(
-                web.get_vintage_series(time_stamp, "usgdp")[0].values_to_pd_series(),
-                com.get_vintage_series(time_stamp, "usgdp")[0].values_to_pd_series(),
+                web.get_vintage_series(time_stamp, "usgdp")[0].values_to_pd_data_frame(),
+                com.get_vintage_series(time_stamp, "usgdp")[0].values_to_pd_data_frame(),
             )
         ), "usgdp"
 
         time_stamp = cast(datetime, web.get_revision_info("ustrad4488")[0].time_stamp_of_first_revision)
         assert 0 == len(
             PdSeries.compare(
-                web.get_vintage_series(time_stamp, "ustrad4488")[0].values_to_pd_series(),
-                com.get_vintage_series(time_stamp, "ustrad4488")[0].values_to_pd_series(),
+                web.get_vintage_series(time_stamp, "ustrad4488")[0].values_to_pd_data_frame(),
+                com.get_vintage_series(time_stamp, "ustrad4488")[0].values_to_pd_data_frame(),
             )
         ), "ustrad4488"
 
@@ -80,22 +80,22 @@ class TestCommon:
     def test_get_nth_release_values_to_pd_series(self, web: WebApi, com: ComApi) -> None:
         assert 0 == len(
             PdSeries.compare(
-                web.get_nth_release(3, "usgdp")[0].values_to_pd_series(),
-                com.get_nth_release(3, "usgdp")[0].values_to_pd_series(),
+                web.get_nth_release(3, "usgdp")[0].values_to_pd_data_frame(),
+                com.get_nth_release(3, "usgdp")[0].values_to_pd_data_frame(),
             )
         ), "usgdp"
 
         assert 0 == len(
             PdSeries.compare(
-                web.get_nth_release(3, "ustrad4488")[0].values_to_pd_series(),
-                com.get_nth_release(3, "ustrad4488")[0].values_to_pd_series(),
+                web.get_nth_release(3, "ustrad4488")[0].values_to_pd_data_frame(),
+                com.get_nth_release(3, "ustrad4488")[0].values_to_pd_data_frame(),
             )
         ), "ustrad4488"
 
         assert 0 == len(
             PdSeries.compare(
-                web.get_nth_release(3, "ct_au_e_ao_c_22_v")[0].values_to_pd_series(),
-                com.get_nth_release(3, "ct_au_e_ao_c_22_v")[0].values_to_pd_series(),
+                web.get_nth_release(3, "ct_au_e_ao_c_22_v")[0].values_to_pd_data_frame(),
+                com.get_nth_release(3, "ct_au_e_ao_c_22_v")[0].values_to_pd_data_frame(),
             )
         ), "ct_au_e_ao_c_22_v"
 
@@ -138,8 +138,8 @@ class TestCommon:
 
         assert 0 == len(
             PdSeries.compare(
-                web.get_all_vintage_series("ct_au_e_ao_c_22_v")[0].values_to_pd_series(),
-                com.get_all_vintage_series("ct_au_e_ao_c_22_v")[0].values_to_pd_series(),
+                web.get_all_vintage_series("ct_au_e_ao_c_22_v")[0].values_to_pd_data_frame(),
+                com.get_all_vintage_series("ct_au_e_ao_c_22_v")[0].values_to_pd_data_frame(),
             )
         ), "ct_au_e_ao_c_22_v"
 

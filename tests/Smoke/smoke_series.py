@@ -12,14 +12,12 @@ from macrobond_data_api.common.types import RevisionHistoryRequest
 def test(api: Api) -> None:  # pylint: disable=unused-argument
     # Get_one_series
     result1 = api.get_one_series("usgdp")
-    str(result1.values_to_pd_series())
-    str(result1.metadata_to_pd_series())
+    str(result1.values_to_pd_data_frame())
     result1.to_dict()
 
     # Get_series
     result2 = api.get_series("usgdp")[0]
-    str(result2.values_to_pd_series())
-    str(result2.metadata_to_pd_series())
+    str(result2.values_to_pd_data_frame())
     result2.to_dict()
 
     # Get_one_entity

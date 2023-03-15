@@ -38,8 +38,11 @@ class GetAllVintageSeriesResult(Sequence[VintageSeries]):
 
         return pandas.DataFrame(
             {
-                **{"dates": self.series[len(self.series) - 1].dates},
-                **{x.revision_time_stamp: x.values_to_pd_series() for x in self.series},  # type: ignore
+                **{"date": self.series[len(self.series) - 1].dates},
+                **{
+                    x.revision_time_stamp: pandas.Series(data=x.values, name="Value", dtype="float64")  # type: ignore
+                    for x in self.series
+                },
             }
         )
 

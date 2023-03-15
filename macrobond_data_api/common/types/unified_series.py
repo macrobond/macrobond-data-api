@@ -131,7 +131,7 @@ class UnifiedSeriesList(Sequence[UnifiedSeries]):
 
         return pandas.DataFrame(
             {
-                **{"dates": self.dates},
+                **{"date": self.dates},
                 **{
                     "Error: " + kv.error_message
                     if kv.is_error

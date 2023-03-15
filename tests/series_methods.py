@@ -155,22 +155,22 @@ class TestCommon:
     def test_get_one_series_values_to_pd_series(self, web: WebApi, com: ComApi) -> None:
         assert 0 == len(
             PdSeries.compare(
-                web.get_one_series("usgdp").values_to_pd_series(),
-                com.get_one_series("usgdp").values_to_pd_series(),
+                web.get_one_series("usgdp").values_to_pd_data_frame(),
+                com.get_one_series("usgdp").values_to_pd_data_frame(),
             )
         )
 
         assert 0 == len(
             PdSeries.compare(
-                web.get_one_series("ustrad4488").values_to_pd_series(),
-                com.get_one_series("ustrad4488").values_to_pd_series(),
+                web.get_one_series("ustrad4488").values_to_pd_data_frame(),
+                com.get_one_series("ustrad4488").values_to_pd_data_frame(),
             )
         )
 
         assert 0 == len(
             PdSeries.compare(
-                web.get_one_series("ct_au_e_ao_c_22_v").values_to_pd_series(),
-                com.get_one_series("ct_au_e_ao_c_22_v").values_to_pd_series(),
+                web.get_one_series("ct_au_e_ao_c_22_v").values_to_pd_data_frame(),
+                com.get_one_series("ct_au_e_ao_c_22_v").values_to_pd_data_frame(),
             )
         )
 

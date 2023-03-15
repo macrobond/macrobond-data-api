@@ -24,7 +24,7 @@ def test_2(name: str, web: WebApi, com: ComApi, test_metadata: Any) -> None:
 
     test_metadata(web_r, com_r)
 
-    assert_series_equal(web_r.values_to_pd_series(), com_r.values_to_pd_series())
+    assert_series_equal(web_r.values_to_pd_data_frame(), com_r.values_to_pd_data_frame())
 
 
 @pytest.mark.parametrize("name", test_data)

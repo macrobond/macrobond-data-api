@@ -66,6 +66,9 @@ class Series(Entity):
             self.dates = cast(Sequence[datetime], dates)
 
     def to_dict(self) -> Dict[str, Any]:
+        """
+        The series content as a dictionary of "Name", "Values" and "Dates".
+        """
         if self.is_error:
             return {
                 "Name": self.name,
@@ -79,31 +82,23 @@ class Series(Entity):
         self._add_metadata(ret)
         return ret
 
-    def values_to_pd_series(self) -> "PdSeries":
-        import pandas  # pylint: disable=import-outside-toplevel
-
-        return pandas.Series(data=self.values, name="Values", dtype="float64")
-
-    def dates_to_pd_series(self) -> "PdSeries":
-        import pandas  # pylint: disable=import-outside-toplevel
-
-        a = pandas.Series(data=self.dates, name="Dates")
-        return a
-
-    def dates_and_values_to_pd_data_frame(self) -> "DataFrame":
+    def values_to_pd_data_frame(self) -> "DataFrame":
+        """
+        A Pandas DataFrame with the with a series called "date" and one called "value"
+        """
         import pandas  # pylint: disable=import-outside-toplevel
 
         if self.is_error:
             ...
         return pandas.DataFrame(
             {
-                "dates": self.dates_to_pd_series(),
-                "values": self.values_to_pd_series(),
+                "date": self.dates,
+                "value": self.values,
             }
         )
 
     def _repr_html_(self) -> str:
         if self.is_error:
             return f"<p>{self.name}</p><p>error_message: {self.error_message}</p>"
-        html = self.dates_and_values_to_pd_data_frame()._repr_html_()
+        html = self.values_to_pd_data_frame()._repr_html_()
         return f"<p>{self.name}</p>{html}"

@@ -23,19 +23,19 @@ def test_com_and_web(api: Api) -> None:
         raise ValueError("last_revision is None")
 
     result2 = api.get_vintage_series(last_revision, "gbgdp")[0]
-    str(result2.values_to_pd_series())
+    str(result2.values_to_pd_data_frame())
     str(result2.metadata_to_pd_series())
     result2.to_dict()
 
     # Get_nth_release
     result3 = api.get_nth_release(4, "gbgdp")[0]
-    str(result3.values_to_pd_series())
+    str(result3.values_to_pd_data_frame())
     str(result3.metadata_to_pd_series())
     result3.to_dict()
 
     #    # Get_all_vintage_series
     result4 = api.get_all_vintage_series("usgdp")[0]
-    str(result4.values_to_pd_series())
+    str(result4.values_to_pd_data_frame())
     str(result4.metadata_to_pd_series())
     result4.to_dict()
 
@@ -48,18 +48,18 @@ def test_com_and_web(api: Api) -> None:
 
 def test_common(web: WebApi, com: ComApi) -> None:
     PdSeries.compare(
-        web.get_all_vintage_series("usgdp")[0].values_to_pd_series(),
-        com.get_all_vintage_series("usgdp")[0].values_to_pd_series(),
+        web.get_all_vintage_series("usgdp")[0].values_to_pd_data_frame(),
+        com.get_all_vintage_series("usgdp")[0].values_to_pd_data_frame(),
     )
 
     PdSeries.compare(
-        web.get_all_vintage_series("ustrad4488")[0].values_to_pd_series(),
-        com.get_all_vintage_series("ustrad4488")[0].values_to_pd_series(),
+        web.get_all_vintage_series("ustrad4488")[0].values_to_pd_data_frame(),
+        com.get_all_vintage_series("ustrad4488")[0].values_to_pd_data_frame(),
     )
 
     PdSeries.compare(
-        web.get_all_vintage_series("ct_au_e_ao_c_22_v")[0].values_to_pd_series(),
-        com.get_all_vintage_series("ct_au_e_ao_c_22_v")[0].values_to_pd_series(),
+        web.get_all_vintage_series("ct_au_e_ao_c_22_v")[0].values_to_pd_data_frame(),
+        com.get_all_vintage_series("ct_au_e_ao_c_22_v")[0].values_to_pd_data_frame(),
     )
 
     # get_many_series_with_revisions
