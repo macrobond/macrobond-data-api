@@ -37,7 +37,7 @@ class VintageValues:
 
 class SeriesWithVintagesErrorCode(IntEnum):
     PARTIAL_CONTENT = 206
-    """The item was not modified and is not included in the response"""
+    """This is an incremental update that includes only revisions added"""
 
     NOT_MODIFIED = 304
     """The item was not modified and is not included in the response"""
