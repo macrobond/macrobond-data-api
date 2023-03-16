@@ -1,5 +1,3 @@
-# pylint: disable = missing-module-docstring
-
 from enum import IntEnum
 
 

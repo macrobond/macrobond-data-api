@@ -4,7 +4,7 @@ from typing import Generator, List, Optional, Tuple, Union, TYPE_CHECKING, Seque
 from datetime import datetime
 
 
-from macrobond_data_api.common.enums import SeriesWeekdays, SeriesFrequency, CalendarMergeMode
+from macrobond_data_api.common.enums import SeriesWeekdays, SeriesFrequency, CalendarMergeMode, StatusCode
 
 from macrobond_data_api.common.types import (
     SeriesEntry,
@@ -15,10 +15,10 @@ from macrobond_data_api.common.types import (
     UnifiedSeriesList,
     UnifiedSeries,
 )
-
 from macrobond_data_api.common.types._repr_html_sequence import _ReprHtmlSequence
 
 from ._fill_metadata import _fill_metadata_from_entity
+from ._error_message_to_status_code import _error_message_to_status_code
 
 if TYPE_CHECKING:  # pragma: no cover
     from .com_api import ComApi
@@ -34,16 +34,17 @@ def _datetime_to_datetime(dates: Sequence[datetime]) -> List[datetime]:
 
 def _create_entity(com_entity: "ComEntity", name: str) -> Entity:
     if com_entity.IsError:
-        return Entity(name, com_entity.ErrorMessage, None)
-    return Entity(name, None, _fill_metadata_from_entity(com_entity))
+        return Entity(name, com_entity.ErrorMessage, _error_message_to_status_code(com_entity), None)
+    return Entity(name, None, StatusCode.OK, _fill_metadata_from_entity(com_entity))
 
 
 def _create_series(com_series: "ComSeries", name: str) -> Series:
     if com_series.IsError:
-        return Series(name, com_series.ErrorMessage, None, None, None, None)
+        return Series(name, com_series.ErrorMessage, _error_message_to_status_code(com_series), None, None, None, None)
     return Series(
         name,
         None,
+        StatusCode.OK,
         _fill_metadata_from_entity(com_series),
         None,
         [None if isnan(x) else x for x in com_series.Values],
@@ -91,7 +92,7 @@ def get_many_series(self: "ComApi", *series: Tuple[str, datetime]) -> Generator[
 
         last_modified_time = serie.metadata["LastModifiedTimeStamp"]
         if last_modified_time <= serie_info[1]:
-            yield Series(serie_info[0], "Not modified", None, None, None, None)
+            yield Series(serie_info[0], "Not modified", StatusCode.NOT_MODIFIED, None, None, None, None)
             continue
 
         yield serie

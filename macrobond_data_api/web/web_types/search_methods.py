@@ -1,5 +1,3 @@
-# pylint: disable = missing-module-docstring
-
 from typing import cast, List, Dict, TYPE_CHECKING
 
 if TYPE_CHECKING:  # pragma: no cover

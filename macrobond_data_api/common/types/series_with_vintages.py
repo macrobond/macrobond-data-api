@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from datetime import datetime
 from typing import Optional, List
 
-from enum import IntEnum
+from macrobond_data_api.common.enums import StatusCode
 
 from .metadata import Metadata
 
@@ -35,41 +35,18 @@ class VintageValues:
         self.values = values
 
 
-class SeriesWithVintagesErrorCode(IntEnum):
-    PARTIAL_CONTENT = 206
-    """This is an incremental update that includes only revisions added"""
-
-    NOT_MODIFIED = 304
-    """The item was not modified and is not included in the response"""
-
-    FORBIDDEN = 403
-    """Access to the item was denied"""
-
-    NOT_FOUND = 404
-    """The item was not found"""
-
-    OTHER = 500
-    """There was an error and it is described in the error text"""
-
-
 @dataclass(init=False)
 class SeriesWithVintages:
     """A time series with times of change"""
 
-    __slots__ = ("error_text", "error_code", "metadata", "vintages")
+    __slots__ = ("error_text", "status_code", "metadata", "vintages")
 
     error_text: Optional[str]
     """The error text if there was an error or not specified if there was no error"""
 
-    error_code: Optional[SeriesWithVintagesErrorCode]
+    status_code: StatusCode
     """
     Set if there was an error and not specified if there was no error
-
-    206 = PartialContent (The item was not modified and is not included in the response)
-    304 = NotModified (The item was not modified and is not included in the response)
-    403 = Forbidden (Access to the item was denied)
-    404 = NotFound (The item was not found)
-    500 = Other (There was an error and it is described in the error text)
     """
 
     metadata: Optional[Metadata]
@@ -133,11 +110,11 @@ class SeriesWithVintages:
     def __init__(
         self,
         error_text: Optional[str],
-        error_code: Optional[SeriesWithVintagesErrorCode],
+        status_code: StatusCode,
         metadata: Optional[Metadata],
         vintages: List[VintageValues],
     ) -> None:
         self.error_text = error_text
-        self.error_code = error_code
+        self.status_code = status_code
         self.metadata = metadata
         self.vintages = vintages

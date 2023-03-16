@@ -12,14 +12,15 @@ from macrobond_data_api.common.types import (
     GetAllVintageSeriesResult,
     SeriesObservationHistory,
     SeriesWithVintages,
-    SeriesWithVintagesErrorCode,
     RevisionHistoryRequest,
     VintageValues,
 )
+from macrobond_data_api.common.enums import StatusCode
 
 from macrobond_data_api.common.types._repr_html_sequence import _ReprHtmlSequence
 
 from ._fill_metadata import _fill_metadata_from_entity, _fill_values_metadata_from_series
+from ._error_message_to_status_code import _error_message_to_status_code
 
 if TYPE_CHECKING:  # pragma: no cover
     from .com_api import ComApi
@@ -105,7 +106,16 @@ def get_vintage_series(
         series_with_revisions = self.database.FetchOneSeriesWithRevisions(series_name)
 
         if series_with_revisions.IsError:
-            return VintageSeries(series_name, series_with_revisions.ErrorMessage, None, None, None, None, None)
+            return VintageSeries(
+                series_name,
+                series_with_revisions.ErrorMessage,
+                _error_message_to_status_code(series_with_revisions),
+                None,
+                None,
+                None,
+                None,
+                None,
+            )
 
         try:
             series = series_with_revisions.GetVintage(time)
@@ -115,7 +125,16 @@ def get_vintage_series(
             raise os_error
 
         if series.IsError:
-            return VintageSeries(series_name, series.ErrorMessage, None, None, None, None, None)
+            return VintageSeries(
+                series_name,
+                series.ErrorMessage,
+                _error_message_to_status_code(series),
+                None,
+                None,
+                None,
+                None,
+                None,
+            )
 
         values, dates = _remove_padding(series)
 
@@ -130,6 +149,7 @@ def get_vintage_series(
         return VintageSeries(
             series_name,
             "",
+            StatusCode.OK,
             _fill_metadata_from_entity(series),
             values_metadata,
             values,
@@ -155,11 +175,21 @@ def get_nth_release(
         series_with_revisions = self.database.FetchOneSeriesWithRevisions(series_name)
 
         if series_with_revisions.IsError:
-            return Series(series_name, series_with_revisions.ErrorMessage, None, None, None, None)
+            return Series(
+                series_name,
+                series_with_revisions.ErrorMessage,
+                _error_message_to_status_code(series_with_revisions),
+                None,
+                None,
+                None,
+                None,
+            )
 
         series = series_with_revisions.GetNthRelease(nth)
         if series.IsError:
-            return Series(series_name, series.ErrorMessage, None, None, None, None)
+            return Series(
+                series_name, series.ErrorMessage, _error_message_to_status_code(series), None, None, None, None
+            )
 
         values = [None if isnan(x) else x for x in series.Values]  # type: ignore
         dates = _datetime_to_datetime_timezone(series.DatesAtStartOfPeriod)
@@ -172,7 +202,9 @@ def get_nth_release(
         else:
             values_metadata = None
 
-        return Series(series_name, None, _fill_metadata_from_entity(series), values_metadata, values, dates)
+        return Series(
+            series_name, None, StatusCode.OK, _fill_metadata_from_entity(series), values_metadata, values, dates
+        )
 
     series = [to_obj(x) for x in series_names]
 
@@ -185,13 +217,16 @@ def get_nth_release(
 def get_all_vintage_series(self: "ComApi", series_name: str) -> GetAllVintageSeriesResult:
     def to_obj(com_series: "ComSeries", name: str) -> VintageSeries:
         if com_series.IsError:
-            return VintageSeries(name, com_series.ErrorMessage, None, None, None, None, None)
+            return VintageSeries(
+                name, com_series.ErrorMessage, _error_message_to_status_code(series), None, None, None, None, None
+            )
 
         values, dates = _remove_padding(com_series)
 
         return VintageSeries(
             name,
             None,
+            StatusCode.OK,
             _fill_metadata_from_entity(com_series),
             None,
             values,
@@ -213,7 +248,11 @@ def get_all_vintage_series(self: "ComApi", series_name: str) -> GetAllVintageSer
         values = [None if isnan(x) else x for x in series.Values]  # type: ignore
         dates = _datetime_to_datetime_timezone(series.DatesAtStartOfPeriod)
         return GetAllVintageSeriesResult(
-            [VintageSeries(series_name, None, _fill_metadata_from_entity(series), None, values, dates, None)],
+            [
+                VintageSeries(
+                    series_name, None, StatusCode.OK, _fill_metadata_from_entity(series), None, values, dates, None
+                )
+            ],
             series_name,
         )
 
@@ -292,7 +331,7 @@ def get_many_series_with_revisions(
 
         if series_with_revisions.IsError:
             if series_with_revisions.ErrorMessage == "Not found":
-                yield SeriesWithVintages("Not found", SeriesWithVintagesErrorCode.NOT_FOUND, None, [])
+                yield SeriesWithVintages("Not found", StatusCode.NOT_FOUND, None, [])
                 continue
             raise Exception(series_with_revisions.ErrorMessage)
 
@@ -307,7 +346,7 @@ def get_many_series_with_revisions(
         ):
             if not include_not_modified:
                 continue
-            yield SeriesWithVintages("Not modified", SeriesWithVintagesErrorCode.NOT_MODIFIED, None, [])
+            yield SeriesWithVintages("Not modified", StatusCode.NOT_MODIFIED, None, [])
             continue
 
         can_do_incremental_response = request.last_revision is not None
@@ -315,7 +354,7 @@ def get_many_series_with_revisions(
         if can_do_incremental_response and not request.if_modified_since:
             yield SeriesWithVintages(
                 "If lastRevision is specified, then ifModifiedSince must also be included",
-                SeriesWithVintagesErrorCode.OTHER,
+                StatusCode.OTHER,
                 None,
                 [],
             )
@@ -350,14 +389,14 @@ def get_many_series_with_revisions(
             if index != -1:
                 yield SeriesWithVintages(
                     "Incremental update",
-                    SeriesWithVintagesErrorCode.PARTIAL_CONTENT,
+                    StatusCode.PARTIAL_CONTENT,
                     metadata,
                     list(_create_vintage_values(index, vintage_dates, complete_history)),
                 )
                 continue
         yield SeriesWithVintages(
             None,
-            None,
+            StatusCode.OK,
             metadata,
             list(_create_vintage_values(0, vintage_dates, complete_history)),
         )

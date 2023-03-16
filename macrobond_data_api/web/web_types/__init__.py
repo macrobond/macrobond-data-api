@@ -9,8 +9,6 @@ from .series_tree_methods import SeriesTreeMethods
 from .http_exception import HttpException
 from .problem_details_exception import ProblemDetailsException
 
-from .status_response import ResponseErrorCode
-
 from .entity_info_for_display_response import (
     EntityInfoForDisplayItem,
     EntityInfoForDisplayGroup,

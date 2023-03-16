@@ -1,5 +1,3 @@
-# pylint: disable = missing-module-docstring
-
 from typing import Optional, List
 
 from .search_request_base import SearchRequestBase

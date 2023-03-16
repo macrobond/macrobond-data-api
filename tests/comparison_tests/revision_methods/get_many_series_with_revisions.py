@@ -1,7 +1,8 @@
-from typing import Any, Optional, List
+from typing import Any, List
 from datetime import datetime, timezone, timedelta
 import pytest
-from macrobond_data_api.common.types import RevisionHistoryRequest, SeriesWithVintagesErrorCode
+from macrobond_data_api.common.types import RevisionHistoryRequest
+from macrobond_data_api.common.enums import StatusCode
 from macrobond_data_api.web import WebApi
 from macrobond_data_api.com import ComApi
 
@@ -25,7 +26,7 @@ def _test_data_2(com: ComApi) -> Any:
 def _test_revision_history_request(web: WebApi, com: ComApi, test_metadata: Any) -> Any:
     def test(
         request: RevisionHistoryRequest,
-        error_code: Optional[SeriesWithVintagesErrorCode],
+        status_code: StatusCode,
         include_not_modified: bool = True,
         results_len: int = 1,
     ) -> None:
@@ -39,8 +40,8 @@ def _test_revision_history_request(web: WebApi, com: ComApi, test_metadata: Any)
         for web_r, com_r in zip(web_list, com_list):
             test_metadata(web_r, com_r, can_be_none=True)
 
-            assert com_r.error_code == web_r.error_code
-            assert com_r.error_code == error_code
+            assert com_r.status_code == web_r.status_code
+            assert com_r.status_code == status_code
 
             assert len(com_r.vintages) == len(web_r.vintages)
             assert com_r.vintages[:1] == web_r.vintages[:1]
@@ -81,7 +82,7 @@ def test_out_liers(requests: List[RevisionHistoryRequest], web: WebApi, com: Com
         web_r.metadata = {}
         com_r.metadata = {}
 
-        assert com_r.error_code == web_r.error_code
+        assert com_r.status_code == web_r.status_code
 
         assert len(com_r.vintages) == len(com_r.vintages)
 
@@ -95,8 +96,8 @@ def test_1(test_data: Any, test_revision_history_request: Any) -> None:
     for vintage in test_data:
         metadata = vintage.metadata
         request = RevisionHistoryRequest(metadata["PrimName"], if_modified_since=metadata["LastModifiedTimeStamp"])
-        test_revision_history_request(request, SeriesWithVintagesErrorCode.NOT_MODIFIED, include_not_modified=True)
-        test_revision_history_request(request, None, include_not_modified=False, results_len=0)
+        test_revision_history_request(request, StatusCode.NOT_MODIFIED, include_not_modified=True)
+        test_revision_history_request(request, StatusCode.OK, include_not_modified=False, results_len=0)
 
 
 def test_2(test_data: Any, test_revision_history_request: Any) -> None:
@@ -108,7 +109,7 @@ def test_2(test_data: Any, test_revision_history_request: Any) -> None:
         request = RevisionHistoryRequest(
             metadata["PrimName"], if_modified_since=metadata["LastModifiedTimeStamp"] - timedelta(seconds=1)
         )
-        test_revision_history_request(request, None)
+        test_revision_history_request(request, StatusCode.OK)
 
 
 def test_3(test_data: Any, test_revision_history_request: Any) -> None:
@@ -124,7 +125,7 @@ def test_3(test_data: Any, test_revision_history_request: Any) -> None:
             last_revision_adjustment=metadata["LastRevisionAdjustmentTimeStamp"],
             last_revision=vintage.revision_time_stamp,
         )
-        test_revision_history_request(request, SeriesWithVintagesErrorCode.PARTIAL_CONTENT)
+        test_revision_history_request(request, StatusCode.PARTIAL_CONTENT)
 
 
 def test_4(test_data: Any, test_revision_history_request: Any) -> None:
@@ -139,19 +140,19 @@ def test_4(test_data: Any, test_revision_history_request: Any) -> None:
             last_revision_adjustment=metadata["LastRevisionAdjustmentTimeStamp"] - timedelta(seconds=1),
             last_revision=vintage.revision_time_stamp,
         )
-        test_revision_history_request(request, None)
+        test_revision_history_request(request, StatusCode.OK)
 
 
 def test_5(test_data: Any, test_revision_history_request: Any) -> None:
     metadata = test_data[0].metadata
     request = RevisionHistoryRequest(metadata["PrimName"])
-    test_revision_history_request(request, None)
+    test_revision_history_request(request, StatusCode.OK)
 
 
 def test_6(test_data_2: Any, test_revision_history_request: Any) -> None:
     metadata = test_data_2.metadata
     request = RevisionHistoryRequest(metadata["PrimName"])
-    test_revision_history_request(request, None)
+    test_revision_history_request(request, StatusCode.OK)
 
 
 def test_7(test_data_2: Any, test_revision_history_request: Any) -> None:
@@ -160,7 +161,7 @@ def test_7(test_data_2: Any, test_revision_history_request: Any) -> None:
         metadata["PrimName"],
         if_modified_since=metadata["LastModifiedTimeStamp"] + timedelta(seconds=1),
     )
-    test_revision_history_request(request, SeriesWithVintagesErrorCode.NOT_MODIFIED)
+    test_revision_history_request(request, StatusCode.NOT_MODIFIED)
 
 
 def test_8(test_data_2: Any, test_revision_history_request: Any) -> None:
@@ -179,12 +180,12 @@ def test_9(test_data_2: Any, test_revision_history_request: Any) -> None:
         if_modified_since=metadata["LastModifiedTimeStamp"],
         last_revision=metadata["LastRevisionTimeStamp"] + timedelta(seconds=1),
     )
-    test_revision_history_request(request, SeriesWithVintagesErrorCode.NOT_MODIFIED)
+    test_revision_history_request(request, StatusCode.NOT_MODIFIED)
 
 
 def test_10(test_revision_history_request: Any) -> None:
     request = RevisionHistoryRequest("bad name")
-    test_revision_history_request(request, SeriesWithVintagesErrorCode.NOT_FOUND)
+    test_revision_history_request(request, StatusCode.NOT_FOUND)
 
 
 # TODO @mb-jp uese this test ?

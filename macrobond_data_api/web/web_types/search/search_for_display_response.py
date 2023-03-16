@@ -1,5 +1,3 @@
-# pylint: disable = missing-module-docstring
-
 from .search_response import SearchResponse
 
 

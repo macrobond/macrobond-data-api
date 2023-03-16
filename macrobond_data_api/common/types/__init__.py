@@ -35,7 +35,7 @@ from .get_all_vintage_series_result import GetAllVintageSeriesResult
 
 from .metadata import Metadata
 
-from .series_with_vintages import SeriesWithVintages, VintageValues, SeriesWithVintagesErrorCode
+from .series_with_vintages import SeriesWithVintages, VintageValues
 
 from .revision_history_request import RevisionHistoryRequest
 

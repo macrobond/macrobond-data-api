@@ -1,5 +1,3 @@
-# pylint: disable = missing-module-docstring
-
 from typing import List, Sequence, cast, TYPE_CHECKING
 
 from datetime import datetime

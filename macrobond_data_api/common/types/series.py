@@ -4,15 +4,16 @@ from datetime import datetime
 from typing import Any, Dict, Optional, List, Sequence, TYPE_CHECKING, cast
 from typing_extensions import Literal
 
-from .entity import Entity, EntityColumnsLiterals
+from macrobond_data_api.common.enums import StatusCode
 
+from .entity import Entity, EntityColumnsLiterals
 
 SeriesColumnsLiterals = Literal[EntityColumnsLiterals, "Values", "Dates"]
 
 SeriesColumns = List[SeriesColumnsLiterals]
 
 if TYPE_CHECKING:  # pragma: no cover
-    from pandas import Series as PdSeries, DataFrame  # type: ignore
+    from pandas import DataFrame  # type: ignore
     from .metadata import Metadata
     from .values_metadata import ValuesMetadata
 
@@ -35,12 +36,13 @@ class Series(Entity):
         self,
         name: str,
         error_message: Optional[str],
+        status_code: StatusCode,
         metadata: Optional["Metadata"],
         values_metadata: Optional["ValuesMetadata"],
         values: Optional[List[Optional[float]]],
         dates: Optional[List[datetime]],
     ) -> None:
-        super().__init__(name, error_message, metadata)
+        super().__init__(name, error_message, status_code, metadata)
 
         self.values_metadata = values_metadata
         """

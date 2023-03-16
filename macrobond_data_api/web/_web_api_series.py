@@ -5,10 +5,7 @@ from dateutil import parser
 
 from macrobond_data_api.common.types._repr_html_sequence import _ReprHtmlSequence
 
-from macrobond_data_api.common.types import SeriesEntry
-
-from macrobond_data_api.common.enums import SeriesWeekdays, SeriesFrequency, CalendarMergeMode
-
+from macrobond_data_api.common.enums import SeriesWeekdays, SeriesFrequency, CalendarMergeMode, StatusCode
 from macrobond_data_api.common.types import (
     GetEntitiesError,
     EntityErrorInfo,
@@ -16,6 +13,7 @@ from macrobond_data_api.common.types import (
     Entity,
     UnifiedSeries,
     UnifiedSeriesList,
+    SeriesEntry,
 )
 
 from .session import Session
@@ -52,18 +50,18 @@ def _create_entity(response: "EntityResponse", name: str, session: Session) -> E
     error_text = response.get("errorText")
 
     if error_text:
-        return Entity(name, error_text, None)
+        return Entity(name, error_text, StatusCode(cast(int, response["errorCode"])), None)
 
     metadata = session._create_metadata(response["metadata"])
 
-    return Entity(name, None, cast(Dict[str, Any], metadata))
+    return Entity(name, None, StatusCode.OK, cast(Dict[str, Any], metadata))
 
 
 def _create_series(response: "SeriesResponse", name: str, session: Session) -> Series:
     error_text = response.get("errorText")
 
     if error_text:
-        return Series(name, error_text, None, None, None, None)
+        return Series(name, error_text, StatusCode(cast(int, response["errorCode"])), None, None, None, None)
 
     dates = [_str_to_datetime_no_utc(x) for x in cast(List[str], response["dates"])]
 
@@ -72,7 +70,7 @@ def _create_series(response: "SeriesResponse", name: str, session: Session) -> S
     metadata = session._create_metadata(response["metadata"])
 
     # values = cast(Tuple[Optional[float]], response["values"])
-    return Series(name, "", metadata, None, values, dates)
+    return Series(name, "", StatusCode.OK, metadata, None, values, dates)
 
 
 def get_one_series(self: "WebApi", series_name: str, raise_error: Optional[bool] = None) -> Series:

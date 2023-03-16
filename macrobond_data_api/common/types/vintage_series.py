@@ -5,6 +5,7 @@ from typing import List, Optional, TYPE_CHECKING
 from typing_extensions import Literal
 from dateutil import parser
 
+from macrobond_data_api.common.enums import StatusCode
 from .series import Series, SeriesColumnsLiterals
 
 if TYPE_CHECKING:  # pragma: no cover
@@ -30,13 +31,14 @@ class VintageSeries(Series):
         self,
         name: str,
         error_message: Optional[str],
+        status_code: StatusCode,
         metadata: Optional["Metadata"],
         values_metadata: Optional["ValuesMetadata"],
         values: Optional[List[Optional[float]]],
         dates: Optional[List[datetime]],
         _revision_time_stamp: Optional[datetime],
     ) -> None:
-        super().__init__(name, error_message, metadata, values_metadata, values, dates)
+        super().__init__(name, error_message, status_code, metadata, values_metadata, values, dates)
         self._revision_time_stamp = _revision_time_stamp
 
     @property

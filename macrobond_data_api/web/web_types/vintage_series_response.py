@@ -1,5 +1,3 @@
-# pylint: disable = missing-module-docstring
-
 from typing import Optional
 
 from .series_with_times_of_change_response import SeriesWithTimesOfChangeResponse

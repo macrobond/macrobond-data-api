@@ -2,8 +2,10 @@ from dataclasses import dataclass
 from typing import Any, Dict, List, Optional, TYPE_CHECKING
 from typing_extensions import Literal
 
+from macrobond_data_api.common.enums import StatusCode
+
 if TYPE_CHECKING:  # pragma: no cover
-    from pandas import Series, DataFrame  # type: ignore
+    from pandas import Series  # type: ignore
     from .metadata import Metadata
 
 
@@ -22,10 +24,11 @@ class Entity:
     Represents a Macrobond entity.
     """
 
-    __slots__ = ("name", "error_message", "metadata")
+    __slots__ = ("name", "error_message", "status_code", "metadata")
 
     name: str
     error_message: str
+    status_code: StatusCode
     metadata: "Metadata"
 
     @property
@@ -76,6 +79,7 @@ class Entity:
         self,
         name: str,
         error_message: Optional[str],
+        status_code: StatusCode,
         metadata: Optional["Metadata"],
     ) -> None:
         self.name = name
@@ -83,6 +87,9 @@ class Entity:
 
         self.error_message = error_message if error_message else ""
         """Contains an error message if `Entity.is_error` is True."""
+
+        self.status_code = status_code
+        """The status code of the Entity"""
 
         self.metadata = metadata if metadata else {}
         """The metadata of the entity."""

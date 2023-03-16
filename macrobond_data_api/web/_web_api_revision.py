@@ -14,10 +14,10 @@ from macrobond_data_api.common.types import (
     GetAllVintageSeriesResult,
     SeriesWithVintages,
     VintageValues,
-    SeriesWithVintagesErrorCode,
     RevisionHistoryRequest,
     ValuesMetadata,
 )
+from macrobond_data_api.common.enums import StatusCode
 from macrobond_data_api.common.types._repr_html_sequence import _ReprHtmlSequence
 from ._split_in_to_chunks import split_in_to_chunks
 
@@ -100,7 +100,9 @@ def get_vintage_series(
     def to_obj(response: "VintageSeriesResponse", series_name: str) -> VintageSeries:
         error_message = response.get("errorText")
         if error_message:
-            return VintageSeries(series_name, error_message, None, None, None, None, None)
+            return VintageSeries(
+                series_name, error_message, StatusCode(cast(int, response["errorCode"])), None, None, None, None, None
+            )
 
         metadata = self.session._create_metadata(response["metadata"])
 
@@ -127,7 +129,9 @@ def get_vintage_series(
             _str_to_datetime(cast(str, response["vintageTimeStamp"])) if "vintageTimeStamp" in response else None
         )
 
-        return VintageSeries(series_name, None, metadata, values_metadata, values, dates, vintage_time_stamp)
+        return VintageSeries(
+            series_name, None, StatusCode.OK, metadata, values_metadata, values, dates, vintage_time_stamp
+        )
 
     response = self.session.series.fetch_vintage_series(
         time, *series_names, get_times_of_change=include_times_of_change
@@ -152,7 +156,7 @@ def get_nth_release(
         error_text = response.get("errorText")
 
         if error_text:
-            return Series(name, error_text, None, None, None, None)
+            return Series(name, error_text, StatusCode(cast(int, response["errorCode"])), None, None, None, None)
 
         dates = [_str_to_datetime_ignoretz(x) for x in cast(List[str], response["dates"])]
         values = [float(x) if x else None for x in cast(List[Optional[int]], response["values"])]
@@ -168,7 +172,7 @@ def get_nth_release(
         else:
             values_metadata = None
 
-        return Series(name, "", cast(Dict[str, Any], metadata), values_metadata, values, dates)
+        return Series(name, "", StatusCode.OK, cast(Dict[str, Any], metadata), values_metadata, values, dates)
 
     if len(series_names) == 0:
         raise ValueError("No series names")
@@ -189,7 +193,9 @@ def get_all_vintage_series(self: "WebApi", series_name: str) -> GetAllVintageSer
     def to_obj(response: "VintageSeriesResponse", series_name: str) -> VintageSeries:
         error_message = response.get("errorText")
         if error_message:
-            return VintageSeries(series_name, error_message, None, None, None, None, None)
+            return VintageSeries(
+                series_name, error_message, StatusCode(cast(int, response["errorCode"])), None, None, None, None, None
+            )
 
         metadata = self.session._create_metadata(response["metadata"])
         values = [float(x) if x else None for x in cast(List[Optional[int]], response["values"])]
@@ -199,7 +205,7 @@ def get_all_vintage_series(self: "WebApi", series_name: str) -> GetAllVintageSer
             _str_to_datetime(cast(str, response["vintageTimeStamp"])) if "vintageTimeStamp" in response else None
         )
 
-        return VintageSeries(series_name, None, metadata, None, values, dates, vintage_time_stamp)
+        return VintageSeries(series_name, None, StatusCode.OK, metadata, None, values, dates, vintage_time_stamp)
 
     try:
         response = self.session.series.get_fetch_all_vintage_series(series_name)
@@ -269,10 +275,10 @@ def get_many_series_with_revisions(
             ijson_items = ijson.items(response.raw, "item")
             item: "SeriesWithVintagesResponse"
             for item in ijson_items:
-                _error_code = item.get("errorCode")
-                error_code = SeriesWithVintagesErrorCode(_error_code) if _error_code else None
+                error_code = item.get("errorCode")
+                status_code = StatusCode(error_code) if error_code else StatusCode.OK
 
-                if not include_not_modified and error_code == SeriesWithVintagesErrorCode.NOT_MODIFIED:
+                if not include_not_modified and status_code == StatusCode.NOT_MODIFIED:
                     continue
 
                 _metadata = item.get("metadata")
@@ -281,4 +287,4 @@ def get_many_series_with_revisions(
                 _vintages = item.get("vintages")
                 vintages = [_create_vintage_values(x) for x in _vintages] if _vintages else []
 
-                yield SeriesWithVintages(item.get("errorText"), error_code, metadata, vintages)
+                yield SeriesWithVintages(item.get("errorText"), status_code, metadata, vintages)

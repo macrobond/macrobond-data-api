@@ -1,5 +1,3 @@
-# pylint: disable = missing-module-docstring
-
 from typing import Any, Optional, List, Dict
 from typing_extensions import TypedDict
 
