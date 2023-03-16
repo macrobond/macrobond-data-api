@@ -234,6 +234,10 @@ def main() -> None:
                     "'''",
                     "",
                     ("from ._generated import " + (",".join(x.name for x in generator.functions))),
+                    "",
+                    "__all__ = [",
+                    ",".join('"' + x.name + '"' for x in generator.functions),
+                    "]",
                 ],
             )
         ),

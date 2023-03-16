@@ -114,28 +114,99 @@
     <dd>${show_desc(f)}</dd>
   </%def>
 
-  <header>
-  % if http_server:
-    <nav class="http-server-breadcrumbs">
-      <% parts = module.name.split('.')[:-1] %>
-      % for i, m in enumerate(parts):
-        <% parent = '.'.join(parts[:i+1]) %>
-        % if i != 0:
-        :: 
-        % endif:
-        <a href="/${parent.replace('.', '/')}/">${parent}</a>
-      % endfor
-    </nav>
-  % endif
-  <h1 class="title">${'Namespace' if module.is_namespace else  \
-                      'Package' if module.is_package and not module.supermodule else \
-                      'Module'} <code>${module.name}</code></h1>
-  </header>
+  % if not module_list and module.name == 'macrobond_data_api':
+    % if http_server:
+      <nav class="http-server-breadcrumbs">
+        <a href="/">All packages</a>
+        <% parts = module.name.split('.')[:-1] %>
+        % for i, m in enumerate(parts):
+          <% parent = '.'.join(parts[:i+1]) %>
+          :: <a href="/${parent.replace('.', '/')}/">${parent}</a>
+        % endfor
+      </nav>
+    % endif
 
-  <section id="section-intro">
-  ${module.docstring | to_html}
-  ${show_source(module)}
-  </section>
+    <div style="margin-bottom: 3rem;">
+      <header>
+        <h1 class="title">${'Namespace' if module.is_namespace else  \
+                      'Package' if module.is_package and not module.supermodule else \
+                      'Module'} <code>${module.name}</code> the Macrobond Data API for Python</h1>
+      </header>
+
+      ${show_source(module)}
+
+      <p>
+          The Macrobond Data API for Python is used to access the world’s most extensive macroeconomic, aggregate financial and sector database provided by <a href="http://www.macrobond.com">Macrobond</a>.
+          Exposes a common API in Python for the <a href="https://help.macrobond.com/technical-information/the-macrobond-data-web-api-feed/">Macrobond Web</a> and <a href="https://help.macrobond.com/technical-information/the-macrobond-api-for-python/">Client data</a> APIs
+      </p>
+      <p>
+          You have to be a licensed user and have a Data+ or data feed user account in order to use the API.
+      </p>
+    </div>
+
+    <div style="margin-bottom: 3rem;">
+      <h2>Installing macrobond-data-api and Supported Versions</h2>
+      <p>
+        Supported versions of Python are currently 3.7 - 3.11.
+      </p>
+      <p>
+        The package is available at <a href="https://pypi.org/project/macrobond-data-api/">PiPy</a> and can be installed using this command:
+      </p>
+      <pre style="display: inline;padding: 0;"><code2>python -m pip install macrobond-data-api</code2></pre>
+    </div>
+
+    <div style="margin-bottom: 3rem;">
+      <h2>Using of system keyring</h2>
+      <p>
+        When using WebClient it is recommended to use the system keyring.
+        This can be done easily by running the include script using this command:
+      </p>
+      <pre style="display: inline;padding: 0;"><code2>python -c "from macrobond_data_api.util import *; save_credential_to_keyring()"</code2></pre>
+    </div>
+
+    <div style="margin-bottom: 3rem;">
+      <h3>Supported keyrings</h3>
+      <ul>
+        <li>macOS <a href="https://en.wikipedia.org/wiki/Keychain_%28software%29">Keychain</a></li>
+        <li>Freedesktop <a href="http://standards.freedesktop.org/secret-service/">Secret Service</a> supports many DE including GNOME (requires <a href="https://pypi.python.org/pypi/secretstorage">secretstorage</a>)</li>
+        <li>KDE4 &amp; KDE5 <a href="https://en.wikipedia.org/wiki/KWallet">KWallet</a> (requires <a href="https://pypi.python.org/pypi/dbus-python">dbus</a>)</li>
+        <li><a href="https://docs.microsoft.com/en-us/windows/uwp/security/credential-locker">Windows Credential Locker</a></li>
+      </ul>
+    </div>
+
+    <div style="margin-bottom: 3rem;">
+        <h2>Examples</h2>
+        <p>You can find examples how to use the API <a href="https://github.com/macrobond/data-api-python/tree/main/examples">here</a>.</p>
+    </div>
+
+    <div style="margin-bottom: 3rem;">
+        <h2>Getting support</h2>
+        <a href="https://help.macrobond.com/support/">Support options</a>
+    </div>
+
+  % else:
+    <header>
+    % if http_server:
+      <nav class="http-server-breadcrumbs">
+        <a href="/">All packages</a>
+        <% parts = module.name.split('.')[:-1] %>
+        % for i, m in enumerate(parts):
+          <% parent = '.'.join(parts[:i+1]) %>
+          :: <a href="/${parent.replace('.', '/')}/">${parent}</a>
+        % endfor
+      </nav>
+    % endif
+    <h1 class="title">${'Namespace' if module.is_namespace else  \
+                        'Package' if module.is_package and not module.supermodule else \
+                        'Module'} <code>${module.name}</code></h1>
+
+    </header>
+
+    <section id="section-intro">
+    ${module.docstring | to_html}
+    ${show_source(module)}
+    </section>
+  % endif
 
   <section>
     % if submodules:
@@ -365,100 +436,104 @@
   </nav>
 </%def>
 
+<!doctype html>
+<html lang="${html_lang}">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+  <meta name="generator" content="pdoc ${pdoc.__version__}" />
+  
 <%
     module_list = 'modules' in context.keys()  # Whether we're showing module list in server mode
 %>
 
-% if not module_list and module.name == 'macrobond_data_api':
-  <%include file="main.mako" args="link=link, show_source=show_source, show_desc=show_desc"/>
-% else:
+  <style>
+    pre code2 {
+      font-style: normal;
+      font-family: "Droid Sans Mono","Inconsolata","Menlo","Consolas","Bitstream Vera Sans Mono","Courier",monospace;
+      background: #292929;
+      color: #fafafa;
+      font-size: 18px;
+      padding: 18px;
+      border-radius: 8px
+    }
+  </style>
 
-  <!doctype html>
-  <html lang="${html_lang}">
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
-    <meta name="generator" content="pdoc ${pdoc.__version__}" />
-
-    <link rel="icon" href="https://assets-global.website-files.com/5fe1e5ab342569725c29e137/6023ddbbc894d982d390185a_circular-32.png" sizes="32x32" type="image/png">
-
-    % if module_list:
-      <title>Python module list</title>
-      <meta name="description" content="A list of documented Python modules." />
-    % else:
-      <title>${module.name} API documentation</title>
-      <meta name="description" content="${module.docstring | glimpse, trim, h}" />
-    % endif
-
-    <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
-    <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
-    % if syntax_highlighting:
-      <link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/${hljs_style}.min.css" crossorigin>
-    %endif
-
-    <%namespace name="css" file="css.mako" />
-    <style>${css.mobile()}</style>
-    <style media="screen and (min-width: 700px)">${css.desktop()}</style>
-    <style media="print">${css.print()}</style>
-
-    % if google_analytics:
-      <script>
-      window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
-      ga('create', '${google_analytics}', 'auto'); ga('send', 'pageview');
-      </script><script async src='https://www.google-analytics.com/analytics.js'></script>
-    % endif
-
-    % if google_search_query:
-      <link rel="preconnect" href="https://www.google.com">
-      <script async src="https://cse.google.com/cse.js?cx=017837193012385208679:pey8ky8gdqw"></script>
-      <style>
-          .gsc-control-cse {padding:0 !important;margin-top:1em}
-          body.gsc-overflow-hidden #sidebar {overflow: visible;}
-      </style>
-    % endif
-
-    % if latex_math:
-      <script async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS_CHTML" integrity="sha256-kZafAc6mZvK3W3v1pHOcUix30OHQN6pU/NO2oFkqZVw=" crossorigin></script>
-    % endif
-
-    % if syntax_highlighting:
-      <script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js" integrity="sha256-Uv3H6lx7dJmRfRvH8TH6kJD1TSK1aFcwgx+mdg3epi8=" crossorigin></script>
-      <script>window.addEventListener('DOMContentLoaded', () => hljs.initHighlighting())</script>
-    % endif
-
-    <%include file="head.mako"/>
-  </head>
-  <body>
-  <main>
-    <%include file="github-corner.mako"/>
-    % if module_list:
-      <article id="content">
-        ${show_module_list(modules)}
-      </article>
-    % else:
-      <article id="content">
-        ${show_module(module)}
-      </article>
-      ${module_index(module)}
-    % endif
-  </main>
-
-  <footer id="footer">
-      <%include file="credits.mako"/>
-      <p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> ${pdoc.__version__}</a>.</p>
-  </footer>
-
-  % if http_server and module:  ## Auto-reload on file change in dev mode
-      <script>
-      setInterval(() =>
-          fetch(window.location.href, {
-              method: "HEAD",
-              cache: "no-store",
-              headers: {"If-None-Match": "${os.stat(module.obj.__file__).st_mtime}"},
-          }).then(response => response.ok && window.location.reload()), 700);
-      </script>
+  % if module_list:
+    <title>Python module list</title>
+    <meta name="description" content="A list of documented Python modules." />
+  % else:
+    <title>${module.name} API documentation</title>
+    <meta name="description" content="${module.docstring | glimpse, trim, h}" />
   % endif
-  </body>
-  </html>
 
+  <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
+  <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
+  % if syntax_highlighting:
+    <link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/${hljs_style}.min.css" crossorigin>
+  %endif
+
+  <%namespace name="css" file="css.mako" />
+  <style>${css.mobile()}</style>
+  <style media="screen and (min-width: 700px)">${css.desktop()}</style>
+  <style media="print">${css.print()}</style>
+
+  % if google_analytics:
+    <script>
+    window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+    ga('create', '${google_analytics}', 'auto'); ga('send', 'pageview');
+    </script><script async src='https://www.google-analytics.com/analytics.js'></script>
+  % endif
+
+  % if google_search_query:
+    <link rel="preconnect" href="https://www.google.com">
+    <script async src="https://cse.google.com/cse.js?cx=017837193012385208679:pey8ky8gdqw"></script>
+    <style>
+        .gsc-control-cse {padding:0 !important;margin-top:1em}
+        body.gsc-overflow-hidden #sidebar {overflow: visible;}
+    </style>
+  % endif
+
+  % if latex_math:
+    <script async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS_CHTML" integrity="sha256-kZafAc6mZvK3W3v1pHOcUix30OHQN6pU/NO2oFkqZVw=" crossorigin></script>
+  % endif
+
+  % if syntax_highlighting:
+    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js" integrity="sha256-Uv3H6lx7dJmRfRvH8TH6kJD1TSK1aFcwgx+mdg3epi8=" crossorigin></script>
+    <script>window.addEventListener('DOMContentLoaded', () => hljs.initHighlighting())</script>
+  % endif
+
+  <%include file="head.mako"/>
+</head>
+<body>
+<main>
+  <%include file="github-corner.mako"/>
+  % if module_list:
+    <article id="content">
+      ${show_module_list(modules)}
+    </article>
+  % else:
+    <article id="content">
+      ${show_module(module)}
+    </article>
+    ${module_index(module)}
+  % endif
+</main>
+
+<footer id="footer">
+    <%include file="credits.mako"/>
+    <p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> ${pdoc.__version__}</a>.</p>
+</footer>
+
+% if http_server and module:  ## Auto-reload on file change in dev mode
+    <script>
+    setInterval(() =>
+        fetch(window.location.href, {
+            method: "HEAD",
+            cache: "no-store",
+            headers: {"If-None-Match": "${os.stat(module.obj.__file__).st_mtime}"},
+        }).then(response => response.ok && window.location.reload()), 700);
+    </script>
 % endif
+</body>
+</html>
