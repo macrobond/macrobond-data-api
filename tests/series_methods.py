@@ -1,4 +1,6 @@
-from pandas import Series as PdSeries, DataFrame  # type: ignore
+from pandas import DataFrame  # type: ignore
+from pandas.testing import assert_frame_equal  # type: ignore
+
 import pytest
 
 from macrobond_data_api.common import Api
@@ -153,25 +155,18 @@ class TestCommon:
     # get_one_series
 
     def test_get_one_series_values_to_pd_series(self, web: WebApi, com: ComApi) -> None:
-        assert 0 == len(
-            PdSeries.compare(
-                web.get_one_series("usgdp").values_to_pd_data_frame(),
-                com.get_one_series("usgdp").values_to_pd_data_frame(),
-            )
+        assert_frame_equal(
+            web.get_one_series("usgdp").values_to_pd_data_frame(), com.get_one_series("usgdp").values_to_pd_data_frame()
         )
 
-        assert 0 == len(
-            PdSeries.compare(
-                web.get_one_series("ustrad4488").values_to_pd_data_frame(),
-                com.get_one_series("ustrad4488").values_to_pd_data_frame(),
-            )
+        assert_frame_equal(
+            web.get_one_series("ustrad4488").values_to_pd_data_frame(),
+            com.get_one_series("ustrad4488").values_to_pd_data_frame(),
         )
 
-        assert 0 == len(
-            PdSeries.compare(
-                web.get_one_series("ct_au_e_ao_c_22_v").values_to_pd_data_frame(),
-                com.get_one_series("ct_au_e_ao_c_22_v").values_to_pd_data_frame(),
-            )
+        assert_frame_equal(
+            web.get_one_series("ct_au_e_ao_c_22_v").values_to_pd_data_frame(),
+            com.get_one_series("ct_au_e_ao_c_22_v").values_to_pd_data_frame(),
         )
 
     # get_unified_series

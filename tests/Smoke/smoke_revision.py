@@ -1,6 +1,7 @@
 from datetime import datetime, timezone
 
-from pandas import Series as PdSeries  # type: ignore
+from pandas.testing import assert_frame_equal  # type: ignore
+
 import pytest
 from macrobond_data_api.common import Api
 from macrobond_data_api.common.types import RevisionHistoryRequest
@@ -47,17 +48,17 @@ def test_com_and_web(api: Api) -> None:
 
 
 def test_common(web: WebApi, com: ComApi) -> None:
-    PdSeries.compare(
+    assert_frame_equal(
         web.get_all_vintage_series("usgdp")[0].values_to_pd_data_frame(),
         com.get_all_vintage_series("usgdp")[0].values_to_pd_data_frame(),
     )
 
-    PdSeries.compare(
+    assert_frame_equal(
         web.get_all_vintage_series("ustrad4488")[0].values_to_pd_data_frame(),
         com.get_all_vintage_series("ustrad4488")[0].values_to_pd_data_frame(),
     )
 
-    PdSeries.compare(
+    assert_frame_equal(
         web.get_all_vintage_series("ct_au_e_ao_c_22_v")[0].values_to_pd_data_frame(),
         com.get_all_vintage_series("ct_au_e_ao_c_22_v")[0].values_to_pd_data_frame(),
     )

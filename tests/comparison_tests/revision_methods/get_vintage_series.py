@@ -1,6 +1,6 @@
 from typing import Any
 import pytest
-from pandas.testing import assert_series_equal  # type: ignore
+from pandas.testing import assert_series_equal, assert_frame_equal  # type: ignore
 
 from macrobond_data_api.web import WebApi
 from macrobond_data_api.com import ComApi
@@ -33,7 +33,7 @@ def test_2(name: str, web: WebApi, com: ComApi, test_metadata: Any) -> None:
 
     test_metadata(web_r, com_r)
 
-    assert_series_equal(web_r.values_to_pd_data_frame(), com_r.values_to_pd_data_frame())
+    assert_frame_equal(web_r.values_to_pd_data_frame(), com_r.values_to_pd_data_frame())
 
 
 @pytest.mark.parametrize("name", test_data)
