@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from datetime import datetime
 from typing import Any, Dict, List, Optional, TYPE_CHECKING
 from typing_extensions import Literal
 
@@ -68,6 +69,11 @@ class Entity:
         if isinstance(entity_type, list):
             entity_type = entity_type[0]
         return entity_type
+
+    @property
+    def last_modified(self) -> datetime:
+        """The time of the last modification of the entity."""
+        return self.metadata["LastModifiedTimeStamp"]
 
     @property
     def is_discontinued(self) -> bool:
