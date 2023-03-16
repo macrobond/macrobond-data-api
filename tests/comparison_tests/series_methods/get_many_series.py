@@ -1,4 +1,4 @@
-from typing import Any, List, Tuple, cast, Generator
+from typing import Any, List, Tuple, cast, Generator, Optional
 from datetime import datetime, timedelta
 import pytest
 from macrobond_data_api.web import WebApi
@@ -6,7 +6,7 @@ from macrobond_data_api.com import ComApi
 
 
 @pytest.fixture(scope="module", name="test_data")
-def _test_data(com: ComApi) -> Generator[List[Tuple[str, datetime]], None, None]:
+def _test_data(com: ComApi) -> Generator[List[Tuple[bool, str, Optional[datetime]]], None, None]:
     usgdp_time_stamps = [
         cast(datetime, x.metadata["LastModifiedTimeStamp"]) for x in com.get_all_vintage_series("usgdp")
     ]
@@ -14,24 +14,33 @@ def _test_data(com: ComApi) -> Generator[List[Tuple[str, datetime]], None, None]
     imffdi_time_stamps = cast(datetime, com.get_one_series("imffdi_218_fd_fie_ix").metadata["LastModifiedTimeStamp"])
 
     yield [
-        ("usgdp", (usgdp_time_stamps[:1][0] - timedelta(seconds=1))),
-        ("usgdp", usgdp_time_stamps[:1][0]),
-        ("usgdp", usgdp_time_stamps[-1:][0]),
-        ("imffdi_218_fd_fie_ix", imffdi_time_stamps - timedelta(seconds=1)),
-        ("imffdi_218_fd_fie_ix", imffdi_time_stamps),
-        ("bad name", imffdi_time_stamps),
+        (False, "usgdp", (usgdp_time_stamps[:1][0] - timedelta(seconds=1))),
+        (True, "usgdp", usgdp_time_stamps[:1][0]),
+        (True, "usgdp", usgdp_time_stamps[-1:][0]),
+        (True, "usgdp", None),
+        (True, "imffdi_218_fd_fie_ix", imffdi_time_stamps - timedelta(seconds=1)),
+        (True, "imffdi_218_fd_fie_ix", imffdi_time_stamps),
+        (True, "imffdi_218_fd_fie_ix", None),
+        (True, "bad name", imffdi_time_stamps),
+        (True, "bad name", None),
     ]
 
 
-@pytest.mark.parametrize("data", [(0, False), (1, True), (2, True), (3, True), (4, True), (5, True)])
-def test_1(data: Any, web: WebApi, com: ComApi, test_data: Any, test_metadata: Any) -> None:
-    series = test_data[data[0]]
+index_list = list(range(9))
+
+
+@pytest.mark.parametrize("index_", index_list)
+def test_1(index_: Any, web: WebApi, com: ComApi, test_data: Any, test_metadata: Any) -> None:
+    assert len(index_list) == len(test_data)
+
+    can_be_empty = test_data[index_][0]
+    series = test_data[index_][1:]
 
     web_list = list(web.get_many_series(series))
     com_list = list(com.get_many_series(series))
 
     for web_r, com_r in zip(web_list, com_list):
-        test_metadata(web_r, com_r, can_be_empty=data[1])
+        test_metadata(web_r, com_r, can_be_empty=can_be_empty)
 
         assert web_r == com_r
 

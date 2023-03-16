@@ -97,7 +97,7 @@ def get_entities(self: "WebApi", *entity_names: str, raise_error: Optional[bool]
     return _ReprHtmlSequence(entitys)
 
 
-def get_many_series(self: "WebApi", *series: Tuple[str, datetime]) -> Generator[Optional[Series], None, None]:
+def get_many_series(self: "WebApi", *series: Tuple[str, Optional[datetime]]) -> Generator[Optional[Series], None, None]:
     if len(series) == 0:
         yield from ()
 
@@ -107,7 +107,9 @@ def get_many_series(self: "WebApi", *series: Tuple[str, datetime]) -> Generator[
         raise ValueError("duplicate of series")
 
     for chunk in split_in_to_chunks(series, 200):
-        requests: List["EntityRequest"] = [{"name": x[0], "ifModifiedSince": x[1].isoformat()} for x in chunk]
+        requests: List["EntityRequest"] = [
+            {"name": x[0], "ifModifiedSince": x[1].isoformat() if x[1] else None} for x in chunk
+        ]
         response_list = self.session.series.post_fetch_series(*requests)
         for response, request in zip(response_list, requests):
             yield _create_series(response, request["name"], self.session)

@@ -508,13 +508,13 @@ class Api(ABC):
         # fmt: on
 
     @abstractmethod
-    def get_many_series(self, *series: Tuple[str, datetime]) -> Generator[Optional[Series], None, None]:
+    def get_many_series(self, *series: Tuple[str, Optional[datetime]]) -> Generator[Optional[Series], None, None]:
         # fmt: off
         """
 
         Parameters
         ----------
-        *series: `Tuple[str, datetime.datetime]`
+        *series: `Tuple[str, Optional[datetime.datetime]]`
             A sequence of series requests.
 
         Returns

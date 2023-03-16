@@ -143,11 +143,11 @@ def get_entities(*entity_names: str, raise_error: bool = None) -> Sequence[Entit
     return _get_api().get_entities(*entity_names, raise_error=raise_error)
 
 
-def get_many_series(*series: Tuple[str, datetime]) -> Generator[Optional[Series], None, None]:
+def get_many_series(*series: Tuple[str, Optional[datetime]]) -> Generator[Optional[Series], None, None]:
     """
     Parameters
     ----------
-    *series: `Tuple[str, datetime.datetime]`
+    *series: `Tuple[str, Optional[datetime.datetime]]`
         A sequence of series requests.
 
     Returns

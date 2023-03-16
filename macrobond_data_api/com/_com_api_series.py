@@ -76,7 +76,7 @@ def get_entities(self: "ComApi", *entity_names: str, raise_error: bool = None) -
     return _ReprHtmlSequence(entitys)
 
 
-def get_many_series(self: "ComApi", *series: Tuple[str, datetime]) -> Generator[Optional[Series], None, None]:
+def get_many_series(self: "ComApi", *series: Tuple[str, Optional[datetime]]) -> Generator[Optional[Series], None, None]:
     if len(series) == 0:
         yield from ()
 
@@ -90,10 +90,11 @@ def get_many_series(self: "ComApi", *series: Tuple[str, datetime]) -> Generator[
             yield serie
             continue
 
-        last_modified_time = serie.metadata["LastModifiedTimeStamp"]
-        if last_modified_time <= serie_info[1]:
-            yield Series(serie_info[0], "Not modified", StatusCode.NOT_MODIFIED, None, None, None, None)
-            continue
+        if serie_info[1]:
+            last_modified_time = serie.metadata["LastModifiedTimeStamp"]
+            if last_modified_time <= serie_info[1]:
+                yield Series(serie_info[0], "Not modified", StatusCode.NOT_MODIFIED, None, None, None, None)
+                continue
 
         yield serie
 
