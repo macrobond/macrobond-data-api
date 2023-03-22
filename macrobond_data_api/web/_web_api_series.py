@@ -46,6 +46,22 @@ def _str_to_datetime_no_utc(datetime_str: str) -> datetime:
     return parser.parse(datetime_str, ignoretz=True)
 
 
+def _parse_iso8601(datetime_str: str) -> datetime:
+    fields = [ 1, 1, 1, 0, 0, 0 ]
+    delims = [ "-", "-", "T", ":", ":" ]
+    try:
+        for i in range(len(delims)):
+            d = datetime_str.index(delims[i])
+            fields[i] = int(datetime_str[:d])
+            datetime_str = datetime_str[d+1:]
+        fields[len(delims)-1] = int(datetime_str)
+    except ValueError:
+        fields[i] = int(datetime_str)
+        pass
+
+    return datetime(*fields)
+
+
 def _create_entity(response: "EntityResponse", name: str, session: Session) -> Entity:
     error_text = response.get("errorText")
 
@@ -63,7 +79,7 @@ def _create_series(response: "SeriesResponse", name: str, session: Session) -> S
     if error_text:
         return Series(name, error_text, StatusCode(cast(int, response["errorCode"])), None, None, None, None)
 
-    dates = [_str_to_datetime_no_utc(x) for x in cast(List[str], response["dates"])]
+    dates = [_parse_iso8601(x) for x in cast(List[str], response["dates"])]
 
     values = [float(x) if x else None for x in cast(List[Optional[float]], response["values"])]
 
@@ -161,7 +177,7 @@ def get_unified_series(
 
     str_dates = response.get("dates")
 
-    dates = [_str_to_datetime_no_utc(x) for x in str_dates] if str_dates else []
+    dates = [_parse_iso8601(x) for x in str_dates] if str_dates else []
 
     series: List[UnifiedSeries] = []
     for i, one_series in enumerate(response["series"]):
