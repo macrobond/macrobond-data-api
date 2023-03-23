@@ -7,7 +7,7 @@ from typing_extensions import Literal
 from macrobond_data_api.common.enums import StatusCode
 from .series import Series, SeriesColumnsLiterals
 
-from ..utils import parse_iso8601
+from ._parse_iso8601 import _parse_iso8601
 
 if TYPE_CHECKING:  # pragma: no cover
     from .metadata import Metadata
@@ -55,4 +55,4 @@ class VintageSeries(Series):
         if isinstance(revision_time_stamp, list):
             revision_time_stamp = revision_time_stamp[0]
 
-        return parse_iso8601(revision_time_stamp) if isinstance(revision_time_stamp, str) else revision_time_stamp
+        return _parse_iso8601(revision_time_stamp) if isinstance(revision_time_stamp, str) else revision_time_stamp

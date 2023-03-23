@@ -16,7 +16,7 @@ from macrobond_data_api.common.types import (
     ValuesMetadata,
 )
 from macrobond_data_api.common.enums import StatusCode
-from macrobond_data_api.common.utils import parse_iso8601
+from macrobond_data_api.common.types._parse_iso8601 import _parse_iso8601
 from macrobond_data_api.common.types._repr_html_sequence import _ReprHtmlSequence
 from ._split_in_to_chunks import split_in_to_chunks
 
@@ -38,7 +38,7 @@ if TYPE_CHECKING:  # pragma: no cover
 
 
 def _optional_str_to_datetime(datetime_str: Optional[str]) -> Optional[datetime]:
-    return parse_iso8601(datetime_str) if datetime_str else None
+    return _parse_iso8601(datetime_str) if datetime_str else None
 
 
 def int_to_float_or_none(int_: Optional[int]) -> Optional[float]:
@@ -57,7 +57,7 @@ def get_revision_info(self: "WebApi", *series_names: str, raise_error: Optional[
 
         stores_revisions = serie["storesRevisions"]
 
-        vintage_time_stamps = [parse_iso8601(x) for x in serie["vintageTimeStamps"]] if stores_revisions else []
+        vintage_time_stamps = [_parse_iso8601(x) for x in serie["vintageTimeStamps"]] if stores_revisions else []
 
         return RevisionInfo(
             name,
@@ -99,7 +99,7 @@ def get_vintage_series(
             raise ValueError("Invalid time")
 
         values = [float(x) if x else None for x in cast(List[Optional[int]], response["values"])]
-        dates = [parse_iso8601(x) for x in cast(List[str], response["dates"])]
+        dates = [_parse_iso8601(x) for x in cast(List[str], response["dates"])]
 
         if include_times_of_change:
             timesOfChange = response.get("timesOfChange")
@@ -113,7 +113,7 @@ def get_vintage_series(
             values_metadata = None
 
         vintage_time_stamp = (
-            parse_iso8601(cast(str, response["vintageTimeStamp"])) if "vintageTimeStamp" in response else None
+            _parse_iso8601(cast(str, response["vintageTimeStamp"])) if "vintageTimeStamp" in response else None
         )
 
         return VintageSeries(
@@ -145,7 +145,7 @@ def get_nth_release(
         if error_text:
             return Series(name, error_text, StatusCode(cast(int, response["errorCode"])), None, None, None, None)
 
-        dates = [parse_iso8601(x) for x in cast(List[str], response["dates"])]
+        dates = [_parse_iso8601(x) for x in cast(List[str], response["dates"])]
         values = [float(x) if x else None for x in cast(List[Optional[int]], response["values"])]
         metadata = session._create_metadata(response["metadata"])
         if include_times_of_change:
@@ -186,10 +186,10 @@ def get_all_vintage_series(self: "WebApi", series_name: str) -> GetAllVintageSer
 
         metadata = self.session._create_metadata(response["metadata"])
         values = [float(x) if x else None for x in cast(List[Optional[int]], response["values"])]
-        dates = [parse_iso8601(x) for x in cast(List[str], response["dates"])]
+        dates = [_parse_iso8601(x) for x in cast(List[str], response["dates"])]
 
         vintage_time_stamp = (
-            parse_iso8601(cast(str, response["vintageTimeStamp"])) if "vintageTimeStamp" in response else None
+            _parse_iso8601(cast(str, response["vintageTimeStamp"])) if "vintageTimeStamp" in response else None
         )
 
         return VintageSeries(series_name, None, StatusCode.OK, metadata, None, values, dates, vintage_time_stamp)
@@ -215,7 +215,7 @@ def get_observation_history(self: "WebApi", series_name: str, *times: datetime) 
     return _ReprHtmlSequence(
         [
             SeriesObservationHistory(
-                parse_iso8601(x["observationDate"]),
+                _parse_iso8601(x["observationDate"]),
                 [float(y) if y else None for y in x["values"]],
                 [_optional_str_to_datetime(y) for y in x["timeStamps"]],
             )
@@ -226,7 +226,7 @@ def get_observation_history(self: "WebApi", series_name: str, *times: datetime) 
 
 def _create_vintage_values(vintage_values: "VintageValuesResponse") -> VintageValues:
     _vintage_time_stamp = vintage_values.get("vintageTimeStamp")
-    vintage_time_stamp = parse_iso8601(_vintage_time_stamp) if _vintage_time_stamp else None
+    vintage_time_stamp = _parse_iso8601(_vintage_time_stamp) if _vintage_time_stamp else None
 
     dates = [datetime(int(x[0:4]), int(x[5:7]), int(x[8:10])) for x in vintage_values["dates"]]
 

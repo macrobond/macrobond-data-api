@@ -2,7 +2,7 @@ from datetime import datetime
 from typing import TYPE_CHECKING, Any, Dict, Generator, List, Optional, Sequence, Tuple, Union, cast
 
 from macrobond_data_api.common.types._repr_html_sequence import _ReprHtmlSequence
-from macrobond_data_api.common.utils import parse_iso8601
+from macrobond_data_api.common.types._parse_iso8601 import _parse_iso8601
 
 from macrobond_data_api.common.enums import SeriesWeekdays, SeriesFrequency, CalendarMergeMode, StatusCode
 from macrobond_data_api.common.types import (
@@ -50,7 +50,7 @@ def _create_series(response: "SeriesResponse", name: str, session: Session) -> S
     if error_text:
         return Series(name, error_text, StatusCode(cast(int, response["errorCode"])), None, None, None, None)
 
-    dates = [parse_iso8601(x) for x in cast(List[str], response["dates"])]
+    dates = [_parse_iso8601(x) for x in cast(List[str], response["dates"])]
 
     values = [float(x) if x else None for x in cast(List[Optional[float]], response["values"])]
 
@@ -148,7 +148,7 @@ def get_unified_series(
 
     str_dates = response.get("dates")
 
-    dates = [parse_iso8601(x) for x in str_dates] if str_dates else []
+    dates = [_parse_iso8601(x) for x in str_dates] if str_dates else []
 
     series: List[UnifiedSeries] = []
     for i, one_series in enumerate(response["series"]):

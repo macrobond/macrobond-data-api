@@ -1,9 +1,6 @@
 from datetime import datetime, timezone, timedelta, date, time
 from typing import Optional, Tuple
-
-
-class FormatException(Exception):
-    pass
+from .format_exception import FormatException
 
 
 def _parse_date(s: str) -> Tuple[date, str]:
@@ -96,7 +93,7 @@ def _parse_time(s: str, tz: Optional[timezone]) -> time:  # pylint: disable=too-
     return time(hour, minute, second, ms, tzinfo=tz)
 
 
-def parse_iso8601(s: str) -> datetime:
+def _parse_iso8601(s: str) -> datetime:
     parsed_date, s = _parse_date(s)
     if s and s[0] == "T":
         z = s.find("Z", 1)

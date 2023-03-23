@@ -5,7 +5,7 @@ import ijson  # type: ignore
 
 
 from macrobond_data_api.common.types import SearchResultLong
-from macrobond_data_api.common.utils import parse_iso8601
+from macrobond_data_api.common.types._parse_iso8601 import _parse_iso8601
 
 
 from .web_types.subscription_list_state import SubscriptionListState
@@ -38,11 +38,11 @@ def _get_subscription_list_iterative_pars_body(
         if prefix == "timeStampForIfModifiedSince":
             if event != "string":
                 raise Exception("bad format: timeStampForIfModifiedSince is not a string")
-            time_stamp_for_if_modified_since = parse_iso8601(value)
+            time_stamp_for_if_modified_since = _parse_iso8601(value)
         elif prefix == "downloadFullListOnOrAfter":
             if event != "string":
                 raise Exception("bad format: downloadFullListOnOrAfter is not a string")
-            download_full_list_on_or_after = parse_iso8601(value)
+            download_full_list_on_or_after = _parse_iso8601(value)
         elif prefix == "state":
             if event != "number":
                 raise Exception("bad format: state is not a number")
@@ -86,7 +86,7 @@ def _get_subscription_list_iterative_pars_items(
         elif prefix == "entities.item.modified":
             if event != "string":
                 raise Exception("bad format: entities.item.modified is not a string")
-            modified = parse_iso8601(value)
+            modified = _parse_iso8601(value)
 
     if len(items) != 0:
         return items_callback(body, items) is not False

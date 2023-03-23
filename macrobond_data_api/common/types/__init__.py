@@ -40,3 +40,5 @@ from .series_with_vintages import SeriesWithVintages, VintageValues
 from .revision_history_request import RevisionHistoryRequest
 
 from .values_metadata import ValuesMetadata
+
+from .format_exception import FormatException
