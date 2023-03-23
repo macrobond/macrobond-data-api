@@ -2,7 +2,7 @@ from dataclasses import dataclass
 
 from typing import List, Sequence, TYPE_CHECKING, overload
 
-from dateutil import parser
+from macrobond_data_api.common.utils import parse_iso8601
 
 from .subscription_list_state import SubscriptionListState
 from .subscription_list_item import SubscriptionListItem
@@ -22,11 +22,11 @@ class SubscriptionList(Sequence[SubscriptionListItem], SubscriptionBody):
         download_full = response.get("downloadFullListOnOrAfter")
         SubscriptionBody.__init__(
             self,
-            parser.parse(response["timeStampForIfModifiedSince"]),
-            parser.parse(download_full) if download_full is not None else None,
+            parse_iso8601(response["timeStampForIfModifiedSince"]),
+            parse_iso8601(download_full) if download_full is not None else None,
             SubscriptionListState(response["state"]),
         )
-        self.items = [SubscriptionListItem(x["name"], parser.parse(x["modified"])) for x in response["entities"]]
+        self.items = [SubscriptionListItem(x["name"], parse_iso8601(x["modified"])) for x in response["entities"]]
 
     @overload
     def __getitem__(self, i: int) -> SubscriptionListItem:
