@@ -2,7 +2,6 @@ from math import isnan
 from typing import Generator, Optional, Tuple, List, TYPE_CHECKING, Sequence, cast
 
 from datetime import datetime, timezone
-from dateutil.tz import tzutc
 
 from macrobond_data_api.common.types import (
     RevisionInfo,
@@ -294,7 +293,7 @@ def _create_vintage_values(
             vintage_date.minute,
             vintage_date.second,
             vintage_date.microsecond,
-            tzutc(),
+            timezone.utc,
         )
         values, dates = _remove_padding(series)
         yield VintageValues(vintage_date, _datetime_to_datetime_timezone(dates), values)

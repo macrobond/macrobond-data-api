@@ -2,7 +2,8 @@ from datetime import datetime, timezone
 from typing import TYPE_CHECKING, Any, Dict, Optional
 
 from json import load as json_load
-from dateutil import parser, tz
+
+from macrobond_data_api.common.utils import parse_iso8601
 
 from ..common.enums import MetadataAttributeType
 from .web_types.metadata import MetadataAttributeTypeRestriction
@@ -60,8 +61,8 @@ class _MetadataTypeDirectory:
             if type_info.value_type == MetadataAttributeType.TIME_STAMP:
                 if type_info.value_restriction == MetadataAttributeTypeRestriction.DATE:
                     return datetime(int(obj[0:4]), int(obj[5:7]), int(obj[8:10]))
-                time = parser.parse(obj)
-                if time.tzinfo == tz.tzutc():
+                time = parse_iso8601(obj)
+                if time.tzinfo == timezone.utc:
                     time = datetime(
                         time.year,
                         time.month,
