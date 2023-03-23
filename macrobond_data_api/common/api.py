@@ -508,7 +508,9 @@ class Api(ABC):
         # fmt: on
 
     @abstractmethod
-    def get_many_series(self, *series: Tuple[str, Optional[datetime]]) -> Generator[Optional[Series], None, None]:
+    def get_many_series(
+        self, *series: Tuple[str, Optional[datetime]], include_not_modified: bool = False
+    ) -> Generator[Optional[Series], None, None]:
         # fmt: off
         """
 
@@ -516,6 +518,8 @@ class Api(ABC):
         ----------
         *series: `Tuple[str, Optional[datetime.datetime]]`
             A sequence of series requests.
+        include_not_modified: `bool`
+            Set this value to True in order to include NotNodified series.
 
         Returns
         -------

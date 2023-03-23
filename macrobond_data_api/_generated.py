@@ -143,18 +143,22 @@ def get_entities(*entity_names: str, raise_error: bool = None) -> Sequence[Entit
     return _get_api().get_entities(*entity_names, raise_error=raise_error)
 
 
-def get_many_series(*series: Tuple[str, Optional[datetime]]) -> Generator[Optional[Series], None, None]:
+def get_many_series(
+    *series: Tuple[str, Optional[datetime]], include_not_modified: bool = False
+) -> Generator[Optional[Series], None, None]:
     """
     Parameters
     ----------
     *series: `Tuple[str, Optional[datetime.datetime]]`
         A sequence of series requests.
+    include_not_modified: `bool`
+        Set this value to True in order to include NotNodified series.
 
     Returns
     -------
     `Generator[Optional[macrobond_data_api.common.types.series.Series]]`
     """
-    return _get_api().get_many_series(*series)
+    return _get_api().get_many_series(*series, include_not_modified=include_not_modified)
 
 
 def get_many_series_with_revisions(

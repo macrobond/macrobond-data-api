@@ -84,7 +84,9 @@ def get_entities(self: "WebApi", *entity_names: str, raise_error: Optional[bool]
     return _ReprHtmlSequence(entitys)
 
 
-def get_many_series(self: "WebApi", *series: Tuple[str, Optional[datetime]]) -> Generator[Optional[Series], None, None]:
+def get_many_series(
+    self: "WebApi", *series: Tuple[str, Optional[datetime]], include_not_modified: bool = False
+) -> Generator[Optional[Series], None, None]:
     if len(series) == 0:
         yield from ()
 
@@ -99,7 +101,10 @@ def get_many_series(self: "WebApi", *series: Tuple[str, Optional[datetime]]) -> 
         ]
         response_list = self.session.series.post_fetch_series(*requests)
         for response, request in zip(response_list, requests):
-            yield _create_series(response, request["name"], self.session)
+            ret = _create_series(response, request["name"], self.session)
+            if ret.status_code == StatusCode.NOT_MODIFIED and not include_not_modified:
+                continue
+            yield ret
 
 
 def get_unified_series(

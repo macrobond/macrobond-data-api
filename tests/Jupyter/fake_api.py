@@ -106,7 +106,9 @@ class FakeApi(Api):
     def get_entities(self, *entity_names: str, raise_error: bool = None) -> Sequence[Entity]:
         raise NotImplementedError()
 
-    def get_many_series(self, *series: Tuple[str, Optional[datetime]]) -> Generator[Optional[Series], None, None]:
+    def get_many_series(
+        self, *series: Tuple[str, Optional[datetime]], include_not_modified: bool = False
+    ) -> Generator[Optional[Series], None, None]:
         raise NotImplementedError()
 
     def get_unified_series(
