@@ -47,19 +47,18 @@ def _str_to_datetime_no_utc(datetime_str: str) -> datetime:
 
 
 def _parse_iso8601(datetime_str: str) -> datetime:
-    fields = [ 1, 1, 1, 0, 0, 0 ]
-    delims = [ "-", "-", "T", ":", ":" ]
+    fields = [1, 1, 1, 0, 0, 0]
+    delims = ["-", "-", "T", ":", ":"]
     try:
-        for i in range(len(delims)):
-            d = datetime_str.index(delims[i])
+        for i, delim in enumerate(delims):
+            d = datetime_str.index(delim)
             fields[i] = int(datetime_str[:d])
-            datetime_str = datetime_str[d+1:]
-        fields[len(delims)-1] = int(datetime_str)
+            datetime_str = datetime_str[d + 1 :]
+        fields[len(delims) - 1] = int(datetime_str)
     except ValueError:
         fields[i] = int(datetime_str)
-        pass
 
-    return datetime(*fields)
+    return datetime(*fields)  # type: ignore[arg-type]
 
 
 def _create_entity(response: "EntityResponse", name: str, session: Session) -> Entity:
