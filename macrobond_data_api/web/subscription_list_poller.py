@@ -16,6 +16,21 @@ class _AbortException(Exception):
 
 
 class SubscriptionListPoller(ABC):
+    """
+    Run a loop polling for changed series in the subscription list.
+    Derive from this class and override `on_full_listing_start`, `on_full_listing_items`, `on_full_listing_stop`,
+    `on_incremental_start`, `on_incremental_items` and `on_incremental_stop`.
+
+    Parameters
+    ----------
+    api : WebApi
+        The API instance to use.
+    download_full_list_on_or_after : datetime
+        The saved value of `download_full_list_on_or_after` from the previous run. `None` on first run.
+    time_stamp_for_if_modified_since: datetime
+        The saved value of `time_stamp_for_if_modified_since` from the previous run. `None`on first run.
+    """
+
     def __init__(
         self,
         api: WebApi,
@@ -23,12 +38,15 @@ class SubscriptionListPoller(ABC):
         time_stamp_for_if_modified_since: Optional[datetime] = None,
         _sleep: Callable[[int], None] = time.sleep,
     ) -> None:
+        self.up_to_date_delay = 15 * 60
+        """ The time to wait, in seconds, between polls. """
+        self.incomplete_delay = 15
+        """ The time to wait, in seconds, between continuing partial updates. """
+        self.on_error_delay = 30
+        """ The time to wait, in seconds, before retrying after an error. """
         self._api = api
         self._sleep = _sleep
         self._abort = False
-        self.up_to_date_delay = 15 * 60
-        self.incomplete_delay = 60
-        self.on_error_delay = 10
         self._download_full_list_on_or_after = download_full_list_on_or_after
         self._time_stamp_for_if_modified_since = time_stamp_for_if_modified_since
 
@@ -38,13 +56,22 @@ class SubscriptionListPoller(ABC):
 
     @property
     def download_full_list_on_or_after(self) -> Optional[datetime]:
+        """
+        The time of the scheduled next full listing. Save this value after processing and pass in constructor for
+        the next run.
+        """
         return self._download_full_list_on_or_after
 
     @property
     def time_stamp_for_if_modified_since(self) -> Optional[datetime]:
+        """
+        This value is used internall to keep track of the the time of the last detected modification.
+        Save this value after processing and pass in constructor for the next run.
+        """
         return self._time_stamp_for_if_modified_since
 
     def start(self) -> None:
+        """Start processing. It will continue to run until `abort` is called."""
         self._abort = False
         while not self._abort:
             if not self._time_stamp_for_if_modified_since or (
@@ -77,7 +104,7 @@ class SubscriptionListPoller(ABC):
                 try:
                     sub = self._api.get_subscription_list_iterative(
                         _body_callback,
-                        self.on_full_listing_itmes,
+                        self.on_full_listing_items,
                         None,
                     )
                     if not sub:
@@ -93,10 +120,10 @@ class SubscriptionListPoller(ABC):
                     self._sleep(self.on_error_delay)
         except _AbortException as ex:
             if is_stated:
-                self.on_listing_stop(True, cast(Exception, ex.__cause__))
+                self.on_incremental_stop(True, cast(Exception, ex.__cause__))
         except Exception as ex:  # pylint: disable=broad-except
             if is_stated:
-                self.on_listing_stop(False, ex)
+                self.on_incremental_stop(False, ex)
         return None
 
     def _run_listing(self, if_modified_since: datetime, max_attempts: int = 3) -> Optional["SubscriptionBody"]:
@@ -104,14 +131,14 @@ class SubscriptionListPoller(ABC):
 
         def _body_callback(body: "SubscriptionBody") -> None:
             is_stated = True  # pylint: disable=unused-variable
-            self.on_listing_start(body)
+            self.on_incremental_start(body)
 
         try:
             for attempt in range(1, max_attempts):
                 try:
                     sub = self._api.get_subscription_list_iterative(
                         _body_callback,
-                        self.on_listing_items,
+                        self.on_incremental_items,
                         if_modified_since,
                     )
                     break
@@ -126,7 +153,7 @@ class SubscriptionListPoller(ABC):
                 raise ValueError("subscription is None")
 
             if sub.state == SubscriptionListState.UP_TO_DATE:
-                self.on_listing_stop(False, None)
+                self.on_incremental_stop(False, None)
                 return sub
 
             self._sleep(self.incomplete_delay)
@@ -134,10 +161,10 @@ class SubscriptionListPoller(ABC):
             return self._run_listing_incomplete(sub.time_stamp_for_if_modified_since, is_stated, max_attempts)
         except _AbortException as ex:
             if is_stated:
-                self.on_listing_stop(True, cast(Exception, ex.__cause__))
+                self.on_incremental_stop(True, cast(Exception, ex.__cause__))
         except Exception as ex:  # pylint: disable=broad-except
             if is_stated:
-                self.on_listing_stop(False, ex)
+                self.on_incremental_stop(False, ex)
         return None
 
     def _run_listing_incomplete(
@@ -149,7 +176,7 @@ class SubscriptionListPoller(ABC):
                     try:
                         sub = self._api.get_subscription_list_iterative(
                             lambda _: None,
-                            self.on_listing_items,
+                            self.on_incremental_items,
                             if_modified_since,
                         )
 
@@ -157,7 +184,7 @@ class SubscriptionListPoller(ABC):
                             raise ValueError("subscription is None")
 
                         if sub.state == SubscriptionListState.UP_TO_DATE:
-                            self.on_listing_stop(False, None)
+                            self.on_incremental_stop(False, None)
                             return sub
 
                         self._sleep(self.incomplete_delay)
@@ -171,39 +198,56 @@ class SubscriptionListPoller(ABC):
                         self._sleep(self.on_error_delay)
         except _AbortException as ex:
             if is_stated:
-                self.on_listing_stop(True, cast(Exception, ex.__cause__))
+                self.on_incremental_stop(True, cast(Exception, ex.__cause__))
         except Exception as ex:  # pylint: disable=broad-except
             if is_stated:
-                self.on_listing_stop(False, ex)
+                self.on_incremental_stop(False, ex)
         return None
 
     # full_listing
 
     @abstractmethod
     def on_full_listing_start(self, subscription: "SubscriptionBody") -> None:
-        ...
+        """This override is called when a full listing starts."""
 
     @abstractmethod
-    def on_full_listing_itmes(self, subscription: "SubscriptionBody", items: List["SubscriptionListItem"]) -> None:
-        ...
+    def on_full_listing_items(self, subscription: "SubscriptionBody", items: List["SubscriptionListItem"]) -> None:
+        """This override is called repeatedly with one or more items until all items are listed."""
 
     @abstractmethod
-    def on_full_listing_stop(self, is_abortd: bool, exception: Optional[Exception]) -> None:
-        ...
+    def on_full_listing_stop(self, is_aborted: bool, exception: Optional[Exception]) -> None:
+        """
+        This override is called when the full listing is stopped.
+        Parameters
+        ----------
+        is_aborted : bool
+            The processing was aborted.
+        exception : Optional[Exception]
+            If not None, there was an exception.
+        """
 
     # listing
 
     @abstractmethod
-    def on_listing_start(self, subscription: "SubscriptionBody") -> None:
-        ...
+    def on_incremental_start(self, subscription: "SubscriptionBody") -> None:
+        """This override is called when an incremental listing starts."""
 
     @abstractmethod
-    def on_listing_items(self, subscription: "SubscriptionBody", items: List["SubscriptionListItem"]) -> None:
-        ...
+    def on_incremental_items(self, subscription: "SubscriptionBody", items: List["SubscriptionListItem"]) -> None:
+        """This override is called repeatedly with one or more items until all updated items are listed."""
 
     @abstractmethod
-    def on_listing_stop(self, is_abortd: bool, exception: Optional[Exception]) -> None:
-        ...
+    def on_incremental_stop(self, is_aborted: bool, exception: Optional[Exception]) -> None:
+        """
+        This override is called when the incremental listing is stopped.
+        Parameters
+        ----------
+        is_aborted : bool
+            The processing was aborted.
+        exception : Optional[Exception]
+            If not None, there was an exception.
+        """
 
     def abort(self) -> None:
+        """Call this method to stop processing."""
         self._abort = True
