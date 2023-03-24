@@ -120,10 +120,10 @@ class SubscriptionListPoller(ABC):
                     self._sleep(self.on_error_delay)
         except _AbortException as ex:
             if is_stated:
-                self.on_incremental_stop(True, cast(Exception, ex.__cause__))
+                self.on_full_listing_stop(True, cast(Exception, ex.__cause__))
         except Exception as ex:  # pylint: disable=broad-except
             if is_stated:
-                self.on_incremental_stop(False, ex)
+                self.on_full_listing_stop(False, ex)
         return None
 
     def _run_listing(self, if_modified_since: datetime, max_attempts: int = 3) -> Optional["SubscriptionBody"]:
