@@ -15,8 +15,9 @@ class _AbortException(Exception):
     ...
 
 
-class SubscriptionListPoller(ABC):
+class _SubscriptionListPoller(ABC):
     """
+    This is work in progress and might change soon.
     Run a loop polling for changed series in the subscription list.
     Derive from this class and override `on_full_listing_start`, `on_full_listing_items`, `on_full_listing_stop`,
     `on_incremental_start`, `on_incremental_items` and `on_incremental_stop`.
