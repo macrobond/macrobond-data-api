@@ -43,6 +43,8 @@ APIs
 You have to be a licensed user and have a Data+ or data feed user account in
 order to use the API.
 
+[***Examples in Jupyter Notebooks*** to help you get started](https://github.com/macrobond/macrobond-data-api/tree/main/examples)
+
 [***API reference***](https://macrobond.github.io/macrobond-data-api/)
 
 ## Basic usage
