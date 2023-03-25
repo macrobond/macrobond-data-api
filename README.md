@@ -7,8 +7,6 @@
 
 <h1 align="center">Macrobond Data API for Python</h1>
 
-<h1 align="center">This software is in beta !</h1>
-
 <p align="center">
     <a href="https://pypi.org/project/macrobond-data-api/">
         <img alt="PyPI" src="https://img.shields.io/pypi/v/macrobond-data-api">
