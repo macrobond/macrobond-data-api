@@ -21,7 +21,7 @@ def scrub_directory(directory_path: str) -> Generator[str, None, None]:
             if not outputs or len(outputs) == 0:
                 continue
             hade_output = True
-            cell["outputs"] = dict()
+            cell["outputs"] = []
         if hade_output:
             with open(path, "w", encoding="UTF8") as file:
                 file.write(json.dumps(json_obj, indent=1) + "\n")
