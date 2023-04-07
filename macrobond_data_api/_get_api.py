@@ -13,14 +13,12 @@ def _get_api() -> "Api":
     if __MACROBOND_DATA_API_CURRENT_API is not None:
         return __MACROBOND_DATA_API_CURRENT_API
 
-    import keyring as _keyring  # pylint: disable=import-outside-toplevel
     from macrobond_data_api.web.web_client import (  # pylint: disable=import-outside-toplevel
-        DEFAULT_SERVICE_NAME,
         WebClient,
+        _has_credentials_in_keyring,
     )
 
-    credential = _keyring.get_credential(DEFAULT_SERVICE_NAME, "")
-    if credential:
+    if _has_credentials_in_keyring():
         __MACROBOND_DATA_API_CURRENT_API = WebClient().open()
         return __MACROBOND_DATA_API_CURRENT_API
 

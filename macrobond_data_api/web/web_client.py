@@ -17,6 +17,71 @@ except ImportError as ex:
     _keyring_import_error = ex
 
 
+class KeyringException(Exception):
+    pass
+
+
+def _get_credentials_from_keyring(  # pylint: disable=too-many-branches
+    service_name: str, username: Optional[str]
+) -> Tuple[str, str]:
+    if username == "":
+        raise ValueError('username is set to ""')
+
+    if _keyring_import_error:
+        raise _keyring_import_error
+
+    keyring_name = _keyring.get_keyring().name
+
+    if sys.platform.startswith("darwin"):
+        credentials = _keyring.get_credential(service_name, DARWIN_USERNAME)
+        if not credentials:
+            raise KeyringException(f"Can not find the key in keyring {keyring_name}")
+
+        json_obj = json.loads(credentials.password)
+
+        if not isinstance(dict, json_obj):
+            raise KeyringException(f"Bad format, password is not a json objekt in keyring {keyring_name}")
+
+        if "username" not in json_obj:
+            raise KeyringException(f"Bad format, the json objekt is missing username in keyring {keyring_name}")
+
+        if "password" not in json_obj:
+            raise KeyringException(f"Bad format, the json objekt is missing password in keyring  {keyring_name}")
+
+        if username is None:
+            username = json_obj["username"]
+
+        password = json_obj["password"]
+    else:
+        credentials = _keyring.get_credential(service_name, None)
+
+        if credentials is None:
+            raise KeyringException(f"Can not find the key in keyring {_keyring.get_keyring()}")
+
+        if username is None:
+            username = credentials.username
+
+        password = credentials.password
+
+    if username == "":
+        raise KeyringException(f'Username is set to "" in keyring {keyring_name}')
+
+    if password == "":
+        raise KeyringException(f'Password is set to "" in keyring {keyring_name}')
+
+    return username, password
+
+
+def _has_credentials_in_keyring(service_name: Optional[str] = None) -> bool:
+    if not service_name:
+        service_name = DEFAULT_SERVICE_NAME
+    try:
+        _get_credentials_from_keyring(service_name, None)
+        return True
+    except KeyringException:
+        return False
+
+
 class WebClient(Client["WebApi"]):
     """
     WebClient to get data from the web
@@ -80,7 +145,7 @@ class WebClient(Client["WebApi"]):
         super().__init__()
 
         if password is None:
-            credentials = self.__get_credentials_from_keyring(service_name, username)
+            credentials = _get_credentials_from_keyring(service_name, username)
             username = credentials[0]
             password = credentials[1]
         else:
@@ -107,45 +172,3 @@ class WebClient(Client["WebApi"]):
 
     def close(self) -> None:
         self.__session.close()
-
-    def __get_credentials_from_keyring(self, service_name: str, username: Optional[str]) -> Tuple[str, str]:
-        if _keyring_import_error:
-            raise _keyring_import_error
-
-        keyring_name = _keyring.get_keyring().name
-
-        if sys.platform.startswith("darwin"):
-            credentials = _keyring.get_credential(service_name, DARWIN_USERNAME)
-            if not credentials:
-                raise ValueError(f"can not find the key in keyring {keyring_name}")
-
-            if credentials.password == "":
-                raise ValueError(f"can not find the key in keyring {keyring_name}")
-
-            json_obj = json.loads(credentials.password)
-
-            if not isinstance(dict, json_obj):
-                raise ValueError(f"can not find the key in keyring {keyring_name}")
-
-            if "username" not in json_obj:
-                raise ValueError(f"can not find the key in keyring {keyring_name}")
-
-            if "password" not in json_obj:
-                raise ValueError(f"can not find the key in keyring {keyring_name}")
-
-            if username is None:
-                username = json_obj["username"]
-
-            password = json_obj["password"]
-        else:
-            credentials = _keyring.get_credential(service_name, "")
-
-            if credentials is None:
-                raise ValueError(f"can not find the key in keyring {_keyring.get_keyring()}")
-
-            if username is None:
-                username = credentials.username
-
-            password = credentials.password
-
-        return username, password

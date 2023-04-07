@@ -57,7 +57,7 @@ def _test_revision_history_request(web: WebApi, com: ComApi, test_metadata: Any)
     [
         [],
         [RevisionHistoryRequest("usgdp")],
-        [RevisionHistoryRequest("usgdp", if_modified_since=datetime(1, 1, 1, tzinfo=timezone.utc))],
+        [RevisionHistoryRequest("usgdp", if_modified_since=datetime(2000, 1, 1, tzinfo=timezone.utc))],
         [RevisionHistoryRequest("usgdp", if_modified_since=datetime(9000, 1, 1, tzinfo=timezone.utc))],
         [RevisionHistoryRequest("usgdp", last_revision=datetime(1, 1, 1, tzinfo=timezone.utc))],
         [RevisionHistoryRequest("usgdp", last_revision=datetime(9000, 1, 1, tzinfo=timezone.utc))],
