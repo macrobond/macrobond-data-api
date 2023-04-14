@@ -99,12 +99,12 @@ class SubscriptionList:
         keys : Sequence[str]
             A sequence of primary keys to register to the subscription list.
         """
-        keys = set(keys)
-        self._session.post_or_raise("v1/subscriptionlist/remove", json=keys)
+        keySet = set(keys)
+        self._session.post_or_raise("v1/subscriptionlist/remove", json=keySet)
         timeout = datetime.now(timezone.utc) + timedelta(minutes=1)
         while (
             datetime.now(timezone.utc) < timeout
-            and set(self._session.post_or_raise("v1/subscriptionlist/check_if_not_included", json=keys).json()) != keys
+            and set(self._session.post_or_raise("v1/subscriptionlist/check_if_not_included", json=keys).json()) != keySet
         ):
             time.sleep(1)
 
