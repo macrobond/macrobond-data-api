@@ -6,9 +6,6 @@ from macrobond_data_api.common.types._parse_iso8601 import _parse_iso8601
 
 from .session import Session
 
-POLL_INTERVAL = timedelta(seconds=15)
-
-
 class SubscriptionList:
     """
     Class for polling and manipulating subscription lists. Subscription lists can be used to poll for updates at a specific frequency.
@@ -42,7 +39,7 @@ class SubscriptionList:
         Specifies the time interval between polls.
         """
 
-        self._last_poll = datetime.now(timezone.utc)
+        self._next_poll = datetime.now(timezone.utc)
 
     def _call_subscription_list(self, endpoint: str, keys: Sequence[str]) -> None:
         if not isinstance(keys, Sequence):
@@ -102,13 +99,12 @@ class SubscriptionList:
         keys : Sequence[str]
             A sequence of primary keys to register to the subscription list.
         """
-        if not isinstance(keys, Sequence):
-            raise TypeError("keys is not a sequence")
+        keys = set(keys)
         self._session.post_or_raise("v1/subscriptionlist/remove", json=keys)
         timeout = datetime.now(timezone.utc) + timedelta(minutes=1)
         while (
             datetime.now(timezone.utc) < timeout
-            and self._session.post_or_raise("v1/subscriptionlist/check_if_not_included", json=keys).json() != keys
+            and set(self._session.post_or_raise("v1/subscriptionlist/check_if_not_included", json=keys).json()) != keys
         ):
             time.sleep(1)
 
@@ -121,15 +117,16 @@ class SubscriptionList:
         Optional[Dict[str, datetime]]
             A dictionary of primary keys that has been updated, and the corresponding last update date.
         """
-        interval = self._last_poll - datetime.now(timezone.utc)
+        interval = self._next_poll - datetime.now(timezone.utc)
         if interval > timedelta():
             time.sleep(interval.days * 86400 + interval.seconds + interval.microseconds / 1000000)
 
         data = self._session.get_or_raise(
             "v1/subscriptionlist/get_updates", params={"ifModifiedSince": self.last_modified.isoformat()}
         ).json()
+
         if data["noMoreChanges"]:
-            self._last_poll = datetime.now(timezone.utc) + self.poll_interval
+            self._next_poll = datetime.now(timezone.utc) + self.poll_interval
 
         self.last_modified = _parse_iso8601(data["timeStampForIfModifiedSince"])
         return {entity["name"]: _parse_iso8601(entity["modified"]) for entity in data["entities"]}
