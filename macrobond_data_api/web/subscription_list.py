@@ -6,6 +6,7 @@ from macrobond_data_api.common.types._parse_iso8601 import _parse_iso8601
 
 from .session import Session
 
+
 class SubscriptionList:
     """
     Class for polling and manipulating subscription lists. Subscription lists can be used to poll for updates at a specific frequency.
@@ -104,7 +105,8 @@ class SubscriptionList:
         timeout = datetime.now(timezone.utc) + timedelta(minutes=1)
         while (
             datetime.now(timezone.utc) < timeout
-            and set(self._session.post_or_raise("v1/subscriptionlist/check_if_not_included", json=keys).json()) != keySet
+            and set(self._session.post_or_raise("v1/subscriptionlist/check_if_not_included", json=keys).json())
+            != keySet
         ):
             time.sleep(1)
 
