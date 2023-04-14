@@ -1,6 +1,6 @@
 import time
 from datetime import datetime, timezone, timedelta
-from typing import Iterable, List, Dict, Optional
+from typing import Sequence, List, Dict, Optional
 
 from macrobond_data_api.common.types._parse_iso8601 import _parse_iso8601
 
@@ -22,7 +22,7 @@ class SubscriptionList:
 
     with WebClient() as api:
         subscription_list = api.subscription_list(datetime.now(timezone.utc))
-        subscription_list.set(["SEK", "NOK"])
+        subscription_list.set(['sek', 'nok'])
         while True:
             result = subscription_list.poll()
             for key, date in result.items()
@@ -30,21 +30,29 @@ class SubscriptionList:
     ```
     """
 
-    _last_poll: Optional[datetime]
-
-    def __init__(self, session: Session, last_modified: datetime):
+    def __init__(self, session: Session, last_modified: datetime, poll_interval: timedelta = timedelta(seconds=15)):
         self._session = session
         self.last_modified = last_modified
         """
         Stores the date for when the subscription list was last modified.
         """
-        self._last_poll = None
 
-    def _call_subscription_list(self, endpoint: str, keys: Iterable[str]) -> None:
-        if not isinstance(keys, Iterable):
-            raise TypeError("keys is not iterable")
+        self.poll_interval = poll_interval
+        """
+        Specifies the time interval between polls.
+        """
+
+        self._last_poll = datetime.now(timezone.utc)
+
+    def _call_subscription_list(self, endpoint: str, keys: Sequence[str]) -> None:
+        if not isinstance(keys, Sequence):
+            raise TypeError("keys is not a sequence")
         self._session.post_or_raise(endpoint, json=keys)
-        while self._session.post_or_raise("v1/subscriptionlist/check_if_not_included", json=keys).json():
+        timeout = datetime.now(timezone.utc) + timedelta(minutes=1)
+        while (
+            datetime.now(timezone.utc) < timeout
+            and self._session.post_or_raise("v1/subscriptionlist/check_if_not_included", json=keys).json()
+        ):
             time.sleep(1)
 
     def list_subscriptions(self) -> List[str]:
@@ -57,7 +65,7 @@ class SubscriptionList:
         """
         return self._session.get_or_raise("v1/subscriptionlist/list").json()
 
-    def set_subscriptions(self, keys: Iterable[str]) -> None:
+    def set_subscriptions(self, keys: Sequence[str]) -> None:
         """
         Register series to the subscription list. This will erase all previous values in the subscription list.
 
@@ -65,12 +73,12 @@ class SubscriptionList:
 
         Parameters
         ----------
-        keys : Iterable[str]
-            An iterable of primary keys to register to the subscription list.
+        keys : Sequence[str]
+            A sequence of primary keys to register to the subscription list.
         """
         self._call_subscription_list("v1/subscriptionlist/set", keys)
 
-    def add_subscriptions(self, keys: Iterable[str]) -> None:
+    def add_subscriptions(self, keys: Sequence[str]) -> None:
         """
         Register series to the subscription list. Series that has been registered previously will be kept.
 
@@ -78,12 +86,12 @@ class SubscriptionList:
 
         Parameters
         ----------
-        keys : Iterable[str]
-            An iterable of primary keys to register to the subscription list.
+        keys : Sequence[str]
+            A sequence of primary keys to register to the subscription list.
         """
         self._call_subscription_list("v1/subscriptionlist/add", keys)
 
-    def remove_subscriptions(self, keys: Iterable[str]) -> None:
+    def remove_subscriptions(self, keys: Sequence[str]) -> None:
         """
         Unregister series that has been previously registered to the subscription list.
 
@@ -91,10 +99,18 @@ class SubscriptionList:
 
         Parameters
         ----------
-        keys : Iterable[str]
-            An iterable of primary keys to unregister from the subscription list.
+        keys : Sequence[str]
+            A sequence of primary keys to register to the subscription list.
         """
-        self._call_subscription_list("v1/subscriptionlist/remove", keys)
+        if not isinstance(keys, Sequence):
+            raise TypeError("keys is not a sequence")
+        self._session.post_or_raise("v1/subscriptionlist/remove", json=keys)
+        timeout = datetime.now(timezone.utc) + timedelta(minutes=1)
+        while (
+            datetime.now(timezone.utc) < timeout
+            and self._session.post_or_raise("v1/subscriptionlist/check_if_not_included", json=keys).json() != keys
+        ):
+            time.sleep(1)
 
     def poll(self) -> Dict[str, datetime]:
         """
@@ -105,16 +121,15 @@ class SubscriptionList:
         Optional[Dict[str, datetime]]
             A dictionary of primary keys that has been updated, and the corresponding last update date.
         """
-        interval = (self._last_poll or datetime.now(timezone.utc)) - datetime.now(timezone.utc)
+        interval = self._last_poll - datetime.now(timezone.utc)
         if interval > timedelta():
             time.sleep(interval.days * 86400 + interval.seconds + interval.microseconds / 1000000)
 
         data = self._session.get_or_raise(
             "v1/subscriptionlist/get_updates", params={"ifModifiedSince": self.last_modified.isoformat()}
         ).json()
-        self._last_poll = datetime.now(timezone.utc) + POLL_INTERVAL
         if data["noMoreChanges"]:
-            return {}
+            self._last_poll = datetime.now(timezone.utc) + self.poll_interval
 
         self.last_modified = _parse_iso8601(data["timeStampForIfModifiedSince"])
         return {entity["name"]: _parse_iso8601(entity["modified"]) for entity in data["entities"]}
