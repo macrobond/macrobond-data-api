@@ -1,6 +1,6 @@
 import time
 from datetime import datetime, timezone, timedelta
-from typing import Sequence, List, Dict, Optional
+from typing import Sequence, List, Dict
 
 from macrobond_data_api.common.types._parse_iso8601 import _parse_iso8601
 
