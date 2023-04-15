@@ -65,40 +65,41 @@ class SubscriptionList:
 
     def set_subscriptions(self, keys: Sequence[str]) -> None:
         """
-        Register series to the subscription list. This will erase all previous values in the subscription list.
+        Set what series to include in the subscription list.
+        This will replace all previous series in the list.
 
-        .. Important:: This function is not re-entrant!
+        .. Important:: You should not make several calls in parallel that modifies the list.
 
         Parameters
         ----------
         keys : Sequence[str]
-            A sequence of primary keys to register to the subscription list.
+            A sequence of series names.
         """
         self._call_subscription_list("v1/subscriptionlist/set", keys)
 
     def add_subscriptions(self, keys: Sequence[str]) -> None:
         """
-        Register series to the subscription list. Series that has been registered previously will be kept.
+        Add one or more series to the subscription list.
 
-        .. Important:: This function is not re-entrant!
+        .. Important:: You should not make several calls in parallel that modifies the list.
 
         Parameters
         ----------
         keys : Sequence[str]
-            A sequence of primary keys to register to the subscription list.
+            A sequence of series names.
         """
         self._call_subscription_list("v1/subscriptionlist/add", keys)
 
     def remove_subscriptions(self, keys: Sequence[str]) -> None:
         """
-        Unregister series that has been previously registered to the subscription list.
+        Remove one or more series from the subscription list.
 
-        .. Important:: This function is not re-entrant!
+        .. Important:: You should not make several calls in parallel that modifies the list.
 
         Parameters
         ----------
         keys : Sequence[str]
-            A sequence of primary keys to register to the subscription list.
+            A sequence of series names.
         """
         key_set = set(keys)
         self._session.post_or_raise("v1/subscriptionlist/remove", json=key_set)
