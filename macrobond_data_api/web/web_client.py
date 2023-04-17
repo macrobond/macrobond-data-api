@@ -155,6 +155,7 @@ class WebClient(Client["WebApi"]):
         if scopes is None:
             scopes = []
 
+        self.has_closed = False
         self.__api: Optional["WebApi"] = None
         self.__session = _Session(
             username, password, *scopes, api_url=api_url, authorization_url=authorization_url, proxy=proxy
@@ -165,6 +166,8 @@ class WebClient(Client["WebApi"]):
         return bool(self.__api)
 
     def open(self) -> "WebApi":
+        if self.has_closed:
+            raise ValueError("WebClient can not be reopend")
         if self.__api is None:
             self.__session.fetch_token()
             self.__api = WebApi(self.__session)
@@ -172,3 +175,5 @@ class WebClient(Client["WebApi"]):
 
     def close(self) -> None:
         self.__session.close()
+        self.__api = None
+        self.has_closed = True

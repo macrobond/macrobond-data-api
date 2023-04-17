@@ -39,6 +39,8 @@ class WebApi(Api):
 
     @property
     def session(self) -> Session:
+        if not self.__session._is_open:
+            raise ValueError("WebApi is not open")
         return self.__session
 
     # metadata

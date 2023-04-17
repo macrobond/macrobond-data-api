@@ -1,7 +1,9 @@
+from datetime import datetime
 from typing import List, TYPE_CHECKING
 
 from macrobond_data_api.common.types import SearchResult
 from ._fill_metadata import _fill_metadata_from_entity
+from ._fix_datetime import _fix_datetime
 
 
 if TYPE_CHECKING:  # pragma: no cover
@@ -31,9 +33,15 @@ def entity_search_multi_filter(
             query.Text = _filter.text
 
         for key in _filter.must_have_values:
-            query.AddAttributeValueFilter(key, _filter.must_have_values[key])
+            val = _filter.must_have_values[key]
+            if isinstance(val, datetime):
+                val = _fix_datetime(val)
+            query.AddAttributeValueFilter(key, val)
 
         for key in _filter.must_not_have_values:
+            val = _filter.must_not_have_values[key]
+            if isinstance(val, datetime):
+                val = _fix_datetime(val)
             query.AddAttributeValueFilter(key, _filter.must_not_have_values[key], False)
 
         for attribute in _filter.must_have_attributes:

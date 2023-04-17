@@ -134,19 +134,30 @@ class Session:
 
         self._metadata_type_directory = _MetadataTypeDirectory(self)
 
+        self._is_open = True
+
     def _is_https_url(self, url: str) -> bool:
         return url.lower().startswith("https://")
 
     def close(self) -> None:
+        if not self._is_open:
+            return
         self.auth2_session.close()
         self._metadata_type_directory.close()
+        self._is_open = False
 
     def fetch_token(self) -> None:
+        if not self._is_open:
+            raise ValueError("Session is not open")
+
         if self.token_endpoint is None:
             self.__token_endpoint = self.discovery(self.authorization_url)
         self.auth2_session.fetch_token(self.token_endpoint, proxies=self.__proxies)
 
     def get(self, url: str, params: dict = None, stream: bool = False) -> "Response":
+        if not self._is_open:
+            raise ValueError("Session is not open")
+
         def http() -> "Response":
             return self.auth2_session.get(
                 url=self.api_url + url,
@@ -170,6 +181,9 @@ class Session:
         return response
 
     def post(self, url: str, params: dict = None, json: object = None, stream: bool = False) -> "Response":
+        if not self._is_open:
+            raise ValueError("Session is not open")
+
         def http() -> "Response":
             return self.auth2_session.post(
                 url=self.api_url + url,
@@ -195,6 +209,9 @@ class Session:
         return response
 
     def discovery(self, url: str) -> str:
+        if not self._is_open:
+            raise ValueError("Session is not open")
+
         response = self.auth2_session.request(
             "get", url + ".well-known/openid-configuration", True, proxies=self.__proxies
         )

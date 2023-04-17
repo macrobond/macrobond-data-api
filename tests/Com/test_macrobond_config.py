@@ -25,6 +25,10 @@ def test_macrobond_config() -> None:
 
     with OpenKey(HKEY_USERS, sub_key) as regkey:
         val = QueryValueEx(regkey, "PreferredServer")
-        assert (
-            val[0] == "https://app.macrobondfinancial.com/app"
+        assert val[0] in (
+            "https://app.macrobondfinancial.com/app",
+            "https://app1.macrobondfinancial.com/app",
+            "https://app2.macrobondfinancial.com/app",
+            "https://app3.macrobondfinancial.com/app",
+            "https://app4.macrobondfinancial.com/app",
         ), "Macrobond is not configured to go against the prod environment"

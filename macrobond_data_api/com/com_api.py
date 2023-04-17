@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Optional
 
 from macrobond_data_api.common import Api
 
@@ -39,17 +39,21 @@ __pdoc__ = {
 
 
 class ComApi(Api):
+    _connection: Optional["Connection"]
+
     def __init__(self, connection: "Connection") -> None:
         super().__init__()
-        self.__connection = connection
+        self._connection = connection
 
     @property
     def connection(self) -> "Connection":
-        return self.__connection
+        if self._connection is None:
+            raise ValueError("ComApi is not open")
+        return self._connection
 
     @property
     def database(self) -> "Database":
-        return self.__connection.Database
+        return self.connection.Database
 
     # metadata
 

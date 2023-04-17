@@ -20,6 +20,7 @@ from macrobond_data_api.common.types._repr_html_sequence import _ReprHtmlSequenc
 
 from ._fill_metadata import _fill_metadata_from_entity, _fill_values_metadata_from_series
 from ._error_message_to_status_code import _error_message_to_status_code
+from ._fix_datetime import _fix_datetime, _fix_optional_datetime
 
 if TYPE_CHECKING:  # pragma: no cover
     from .com_api import ComApi
@@ -101,6 +102,8 @@ def get_revision_info(self: "ComApi", *series_names: str, raise_error: bool = No
 def get_vintage_series(
     self: "ComApi", time: datetime, *series_names: str, include_times_of_change: bool = False, raise_error: bool = None
 ) -> Sequence[VintageSeries]:
+    time = _fix_datetime(time)
+
     def to_obj(series_name: str) -> VintageSeries:
         series_with_revisions = self.database.FetchOneSeriesWithRevisions(series_name)
 
@@ -259,6 +262,7 @@ def get_all_vintage_series(self: "ComApi", series_name: str) -> GetAllVintageSer
 
 
 def get_observation_history(self: "ComApi", series_name: str, *times: datetime) -> Sequence[SeriesObservationHistory]:
+    times = tuple(_fix_datetime(x) for x in times)
     series_with_revisions = self.database.FetchOneSeriesWithRevisions(series_name)
 
     if series_with_revisions.IsError:
@@ -326,6 +330,10 @@ def get_many_series_with_revisions(
         yield from ()
 
     for request in requests:
+        request.if_modified_since = _fix_optional_datetime(request.if_modified_since)
+        request.last_revision = _fix_optional_datetime(request.last_revision)
+        request.last_revision_adjustment = _fix_optional_datetime(request.last_revision_adjustment)
+
         series_with_revisions = self.database.FetchOneSeriesWithRevisions(request.name)
 
         if series_with_revisions.IsError:

@@ -51,6 +51,7 @@ class ComClient(Client["ComApi"]):
 
     def __init__(self) -> None:
         super().__init__()
+        self.has_closed = False
         self.__api: Optional["ComApi"] = None
 
     @property
@@ -58,6 +59,9 @@ class ComClient(Client["ComApi"]):
         return bool(self.__api)
 
     def open(self) -> "ComApi":
+        if self.has_closed:
+            raise ValueError("ComClient can not be reopend")
+
         if _win32com_import_error:
             raise _win32com_import_error
 
@@ -128,6 +132,8 @@ class ComClient(Client["ComApi"]):
         Opening and closing sessions can be slow,
         so it is usually not a good idea to open and close them for each request
         """
+        self.has_closed = True
         if self.__api:
             self.__api.connection.Close()
+            self.__api._connection = None
             self.__api = None
