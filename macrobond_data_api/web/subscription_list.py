@@ -114,6 +114,8 @@ class SubscriptionList:
     def poll(self) -> Dict[str, datetime]:
         """
         Polls for any changes on the series in the subscription list.
+        If there are no updates, the method will return an empty list after the poll intervall time. This gives an
+        opportinity to abort the polling loop.
 
         Returns
         -------
@@ -122,7 +124,7 @@ class SubscriptionList:
         """
         interval = self._next_poll - datetime.now(timezone.utc)
         if interval > timedelta():
-            time.sleep(interval.days * 86400 + interval.seconds + interval.microseconds / 1000000)
+            time.sleep(interval.total_seconds())
 
         data = self._session.get_or_raise(
             "v1/subscriptionlist/get_updates", params={"ifModifiedSince": self.last_modified.isoformat()}
