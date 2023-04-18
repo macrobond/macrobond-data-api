@@ -23,7 +23,7 @@ class SubscriptionList:
         subscription_list.set(['sek', 'nok'])
         while True:
             result = subscription_list.poll()
-            for key, date in result.items()
+            for key, date in result.items():
                 print(f'Series "{key}", last updated "{date}"')
     ```
     """
@@ -42,7 +42,7 @@ class SubscriptionList:
 
         self._next_poll = datetime.now(timezone.utc)
 
-    def _call_subscription_list(self, endpoint: str, keys: Sequence[str]) -> None:
+    def _call(self, endpoint: str, keys: Sequence[str]) -> None:
         if not isinstance(keys, Sequence):
             raise TypeError("keys is not a sequence")
         self._session.post_or_raise(endpoint, json=keys)
@@ -53,7 +53,7 @@ class SubscriptionList:
         ):
             time.sleep(1)
 
-    def list_subscriptions(self) -> List[str]:
+    def list(self) -> List[str]:
         """
         Lists series currently registered in the subscription list.
 
@@ -63,7 +63,7 @@ class SubscriptionList:
         """
         return self._session.get_or_raise("v1/subscriptionlist/list").json()
 
-    def set_subscriptions(self, keys: Sequence[str]) -> None:
+    def set(self, keys: Sequence[str]) -> None:
         """
         Set what series to include in the subscription list.
         This will replace all previous series in the list.
@@ -75,9 +75,9 @@ class SubscriptionList:
         keys : Sequence[str]
             A sequence of series names.
         """
-        self._call_subscription_list("v1/subscriptionlist/set", keys)
+        self._call("v1/subscriptionlist/set", keys)
 
-    def add_subscriptions(self, keys: Sequence[str]) -> None:
+    def add(self, keys: Sequence[str]) -> None:
         """
         Add one or more series to the subscription list.
 
@@ -88,9 +88,9 @@ class SubscriptionList:
         keys : Sequence[str]
             A sequence of series names.
         """
-        self._call_subscription_list("v1/subscriptionlist/add", keys)
+        self._call("v1/subscriptionlist/add", keys)
 
-    def remove_subscriptions(self, keys: Sequence[str]) -> None:
+    def remove(self, keys: Sequence[str]) -> None:
         """
         Remove one or more series from the subscription list.
 
@@ -102,7 +102,7 @@ class SubscriptionList:
             A sequence of series names.
         """
         key_set = set(keys)
-        self._session.post_or_raise("v1/subscriptionlist/remove", json=key_set)
+        self._session.post_or_raise("v1/subscriptionlist/remove", json=keys)
         timeout = datetime.now(timezone.utc) + timedelta(minutes=1)
         while (
             datetime.now(timezone.utc) < timeout
