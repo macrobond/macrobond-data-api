@@ -11,6 +11,7 @@ import pandas  # type: ignore
 from macrobond_data_api.web.session import Session
 from macrobond_data_api.common import Api
 from macrobond_data_api.web import WebClient, WebApi
+from macrobond_data_api.web.web_client import API_URL_DEFAULT, AUTHORIZATION_URL_DEFAULT
 from macrobond_data_api.com import ComClient, ComApi
 
 
@@ -35,9 +36,10 @@ def _web_client_fixture() -> Generator[WebClient, None, None]:
         with open(conf_path, "r", encoding="utf-8") as f:
             conf: dict = {}
             exec(f.read(), conf)  # pylint: disable=exec-used
-            if "api_url" in conf:
-                yield WebClient(api_url=conf["api_url"])
-                return
+            api_url = conf.get("api_url", API_URL_DEFAULT)
+            authorization_url = conf.get("authorization_url", AUTHORIZATION_URL_DEFAULT)
+            yield WebClient(api_url=api_url, authorization_url=authorization_url)
+            return
 
     yield WebClient()
 
