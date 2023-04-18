@@ -273,6 +273,14 @@ def get_observation_history(self: "ComApi", series_name: str, *times: datetime) 
     def to_obj(time: datetime) -> SeriesObservationHistory:
         series = series_with_revisions.GetObservationHistory(time)
         observation_date = cast(datetime, series.Metadata.GetFirstValue("ObservationDate"))
+
+        # todo (2023-04-18) remove in the future, when the version is no longer supported by macrobond_data_api
+        if observation_date is None:
+            raise Exception(
+                "Your version of the Macrobond application does not support get_observation_history. "
+                + "Please upgrade to a later version."
+            )
+
         observation_date = datetime(observation_date.year, observation_date.month, observation_date.day)
         values = [None if isnan(x) else x for x in series.Values]
         dates = _datetime_to_datetime_timezone_and_skip_com_datetime_min(series.DatesAtStartOfPeriod)
