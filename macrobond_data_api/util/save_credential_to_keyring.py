@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 import sys
 import json
+import traceback
 from getpass import getpass
 
 import keyring
-from macrobond_data_api.web.web_client import (
-    DEFAULT_SERVICE_NAME,
-    DARWIN_USERNAME,
-)
+from keyring.backends.fail import Keyring as fail_keyring_backend
+from keyring.backends.null import Keyring as null_keyring_backend
+from macrobond_data_api.web.web_client import DEFAULT_SERVICE_NAME, DARWIN_USERNAME, WebClient
 
 
 def _inquiry(question: str, default: str = "yes") -> bool:
@@ -40,6 +40,25 @@ def _remove_duplicates(service_name: str, username: str, warn_before_removing: b
             return False
         keyring.delete_password(service_name, old_credential.username)
         old_credential = keyring.get_credential(service_name, username)
+    return True
+
+
+def _test_keyring_backend() -> bool:
+    try:
+        keyring_backend = keyring.get_keyring()
+    except Exception:  # pylint: disable=broad-exception-caught
+        print(traceback.format_exc())
+        print("Error: failed to get keyring")
+        return False
+
+    if isinstance(keyring_backend, null_keyring_backend):
+        print("Error: keyring_backend is null_keyring_backend")
+        return False
+
+    if isinstance(keyring_backend, fail_keyring_backend):
+        print("Error: keyring_backend is fail_keyring_backend")
+        return False
+
     return True
 
 
@@ -91,6 +110,10 @@ def save_credential_to_keyring(warn_before_removing: bool = True, ask_for_servic
     """
     # pylint: enable=line-too-long
     # fmt: on
+
+    if not _test_keyring_backend():
+        return False
+
     is_darwin = sys.platform.startswith("darwin")
     keyring_name = keyring.get_keyring().name
 
@@ -112,15 +135,32 @@ def save_credential_to_keyring(warn_before_removing: bool = True, ask_for_servic
         return False
 
     username = input("Please enter Macrobond Web Api username: ")
-
     password = getpass("Please enter Macrobond Web Api password: ")
+
+    print("Testing username and password")
+    try:
+        with WebClient(username=username, password=password) as api:
+            api.metadata_get_attribute_information("PrimName")
+    except Exception:  # pylint: disable=broad-exception-caught
+        print(traceback.format_exc())
+        print("Error: failed testing username and password")
+        return False
 
     if is_darwin:
         keyring.set_password(service_name, DARWIN_USERNAME, json.dumps({"username": username, "password": password}))
     else:
         keyring.set_password(service_name, username, password)
 
-    print(f'successfully saved to the keyring with the service name: "{ service_name }" in {keyring_name}')
+    print("Testing keyring")
+    try:
+        with WebClient() as api:
+            api.metadata_get_attribute_information("PrimName")
+    except Exception:  # pylint: disable=broad-exception-caught
+        print(traceback.format_exc())
+        print("Error: failed testing keyring")
+        return False
+
+    print(f'Successfully saved to the keyring with the service name: "{ service_name }" in {keyring_name}')
 
     return True
 

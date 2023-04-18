@@ -80,7 +80,7 @@
         {
             "label": "Save credential to keyring",
             "args": [
-                "macrobond_financial/util/save_credential_to_keyring.py"
+                "macrobond_data_api/util/save_credential_to_keyring.py"
             ],
         },
         {
