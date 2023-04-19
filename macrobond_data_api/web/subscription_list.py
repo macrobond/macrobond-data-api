@@ -42,17 +42,6 @@ class SubscriptionList:
 
         self._next_poll = datetime.now(timezone.utc)
 
-    def _call(self, endpoint: str, keys: Sequence[str]) -> None:
-        if not isinstance(keys, Sequence):
-            raise TypeError("keys is not a sequence")
-        self._session.post_or_raise(endpoint, json=keys)
-        timeout = datetime.now(timezone.utc) + timedelta(minutes=1)
-        while (
-            datetime.now(timezone.utc) < timeout
-            and self._session.post_or_raise("v1/subscriptionlist/check_if_not_included", json=keys).json()
-        ):
-            time.sleep(1)
-
     def list(self) -> List[str]:
         """
         Lists series currently registered in the subscription list.
@@ -61,6 +50,9 @@ class SubscriptionList:
         -------
         `List[str]`
         """
+        if not self._session._is_open:
+            raise ValueError("WebApi is not open")
+
         return self._session.get_or_raise("v1/subscriptionlist/list").json()
 
     def set(self, keys: Sequence[str]) -> None:
@@ -75,6 +67,9 @@ class SubscriptionList:
         keys : Sequence[str]
             A sequence of series names.
         """
+        if not self._session._is_open:
+            raise ValueError("WebApi is not open")
+
         self._call("v1/subscriptionlist/set", keys)
 
     def add(self, keys: Sequence[str]) -> None:
@@ -88,6 +83,9 @@ class SubscriptionList:
         keys : Sequence[str]
             A sequence of series names.
         """
+        if not self._session._is_open:
+            raise ValueError("WebApi is not open")
+
         self._call("v1/subscriptionlist/add", keys)
 
     def remove(self, keys: Sequence[str]) -> None:
@@ -101,6 +99,9 @@ class SubscriptionList:
         keys : Sequence[str]
             A sequence of series names.
         """
+        if not self._session._is_open:
+            raise ValueError("WebApi is not open")
+
         key_set = set(keys)
         self._session.post_or_raise("v1/subscriptionlist/remove", json=keys)
         timeout = datetime.now(timezone.utc) + timedelta(minutes=1)
@@ -122,6 +123,9 @@ class SubscriptionList:
         Optional[Dict[str, datetime]]
             A dictionary of primary keys that has been updated, and the corresponding last update date.
         """
+        if not self._session._is_open:
+            raise ValueError("WebApi is not open")
+
         interval = self._next_poll - datetime.now(timezone.utc)
         if interval > timedelta():
             time.sleep(interval.total_seconds())
@@ -135,3 +139,14 @@ class SubscriptionList:
 
         self.last_modified = _parse_iso8601(data["timeStampForIfModifiedSince"])
         return {entity["name"]: _parse_iso8601(entity["modified"]) for entity in data["entities"]}
+
+    def _call(self, endpoint: str, keys: Sequence[str]) -> None:
+        if not isinstance(keys, Sequence):
+            raise TypeError("keys is not a sequence")
+        self._session.post_or_raise(endpoint, json=keys)
+        timeout = datetime.now(timezone.utc) + timedelta(minutes=1)
+        while (
+            datetime.now(timezone.utc) < timeout
+            and self._session.post_or_raise("v1/subscriptionlist/check_if_not_included", json=keys).json()
+        ):
+            time.sleep(1)

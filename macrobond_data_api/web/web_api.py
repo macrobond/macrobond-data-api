@@ -85,4 +85,7 @@ class WebApi(Api):
         """
         Retrieves the subscription list with the specified date since last update.
         """
+        if not self.__session._is_open:
+            raise ValueError("WebApi is not open")
+
         return SubscriptionList(self.__session, last_modified)
