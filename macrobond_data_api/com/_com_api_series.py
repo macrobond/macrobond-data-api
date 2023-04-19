@@ -53,10 +53,11 @@ def _create_series(com_series: "ComSeries", name: str) -> Series:
 
 
 def get_one_series(self: "ComApi", series_name: str, raise_error: bool = None) -> Series:
-    return self.get_series(series_name, raise_error=raise_error)[0]
+    return self.get_series([series_name], raise_error=raise_error)[0]
 
 
-def get_series(self: "ComApi", *series_names: str, raise_error: Optional[bool] = None) -> Sequence[Series]:
+def get_series(self: "ComApi", series_names: Sequence[str], raise_error: Optional[bool] = None) -> Sequence[Series]:
+    series_names = tuple(series_names)
     com_series = self.database.FetchSeries(series_names)
     series = [_create_series(x, y) for x, y in zip(com_series, series_names)]
     if self.raise_error if raise_error is None else raise_error:
@@ -65,10 +66,11 @@ def get_series(self: "ComApi", *series_names: str, raise_error: Optional[bool] =
 
 
 def get_one_entity(self: "ComApi", entity_name: str, raise_error: bool = None) -> Entity:
-    return self.get_entities(entity_name, raise_error=raise_error)[0]
+    return self.get_entities([entity_name], raise_error=raise_error)[0]
 
 
-def get_entities(self: "ComApi", *entity_names: str, raise_error: bool = None) -> Sequence[Entity]:
+def get_entities(self: "ComApi", entity_names: Sequence[str], raise_error: bool = None) -> Sequence[Entity]:
+    entity_names = tuple(entity_names)
     com_entitys = self.database.FetchEntities(entity_names)
     entitys = [_create_entity(x, y) for x, y in zip(com_entitys, entity_names)]
     if self.raise_error if raise_error is None else raise_error:
@@ -77,17 +79,19 @@ def get_entities(self: "ComApi", *entity_names: str, raise_error: bool = None) -
 
 
 def get_many_series(
-    self: "ComApi", *series: Tuple[str, Optional[datetime]], include_not_modified: bool = False
-) -> Generator[Optional[Series], None, None]:
+    self: "ComApi", series: Sequence[Union[str, Tuple[str, Optional[datetime]]]], include_not_modified: bool = False
+) -> Generator[Series, None, None]:
     if len(series) == 0:
         yield from ()
 
-    names = {x[0] for x in series}
+    series_as_tuple: List[Tuple[str, Optional[datetime]]] = [(x, None) if isinstance(x, str) else x for x in series]
 
-    if len(names) != len(series):
+    names = {x[0] for x in series_as_tuple}
+
+    if len(names) != len(series_as_tuple):
         raise ValueError("duplicate of series")
 
-    for serie, serie_info in zip(self.get_series(*[x[0] for x in series], raise_error=False), series):
+    for serie, serie_info in zip(self.get_series([x[0] for x in series_as_tuple], raise_error=False), series_as_tuple):
         if serie.is_error:
             yield serie
             continue

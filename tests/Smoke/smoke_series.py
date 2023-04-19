@@ -16,7 +16,7 @@ def test(api: Api) -> None:  # pylint: disable=unused-argument
     result1.to_dict()
 
     # Get_series
-    result2 = api.get_series("usgdp")[0]
+    result2 = api.get_series(["usgdp"])[0]
     str(result2.values_to_pd_data_frame())
     result2.to_dict()
 
@@ -26,7 +26,7 @@ def test(api: Api) -> None:  # pylint: disable=unused-argument
     result3.to_dict()
 
     # Get_entities
-    result4 = api.get_entities("usgdp")[0]
+    result4 = api.get_entities(["usgdp"])[0]
     str(result4.metadata_to_pd_series())
     result4.to_dict()
 

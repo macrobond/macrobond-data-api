@@ -97,18 +97,18 @@ class FakeApi(Api):
     def get_one_series(self, series_name: str, raise_error: bool = None) -> Series:
         raise NotImplementedError()
 
-    def get_series(self, *series_names: str, raise_error: bool = None) -> Sequence[Series]:
+    def get_series(self, series_names: Sequence[str], raise_error: bool = None) -> Sequence[Series]:
         raise NotImplementedError()
 
     def get_one_entity(self, entity_name: str, raise_error: bool = None) -> Entity:
         raise NotImplementedError()
 
-    def get_entities(self, *entity_names: str, raise_error: bool = None) -> Sequence[Entity]:
+    def get_entities(self, entity_names: Sequence[str], raise_error: bool = None) -> Sequence[Entity]:
         raise NotImplementedError()
 
     def get_many_series(
-        self, *series: Tuple[str, Optional[datetime]], include_not_modified: bool = False
-    ) -> Generator[Optional[Series], None, None]:
+        self, series: Sequence[Union[str, Tuple[str, Optional[datetime]]]], include_not_modified: bool = False
+    ) -> Generator[Series, None, None]:
         raise NotImplementedError()
 
     def get_unified_series(
