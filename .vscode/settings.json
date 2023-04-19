@@ -23,5 +23,7 @@
     "python.formatting.provider": "black",
     "diffEditor.ignoreTrimWhitespace": false,
 
-    "task.autoDetect": "off"
+    "task.autoDetect": "off",
+
+    "git.commandsToLog":["push","commit"]
 }
