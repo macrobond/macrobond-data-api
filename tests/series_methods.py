@@ -34,7 +34,7 @@ def test_get_one_series(api: Api) -> None:
 
 @pytest.mark.parametrize("api", ["web", "com"], indirect=True)
 def test_get_series(api: Api) -> None:
-    series = api.get_series("usgdp", "uscpi", "noseries!", raise_error=False)
+    series = api.get_series(["usgdp", "uscpi", "noseries!"], raise_error=False)
 
     # test.assertEqual(series[0].name, 'usgdp', 'name')
     assert series[0].primary_name == "usnaac0169"
@@ -55,7 +55,7 @@ def test_get_series(api: Api) -> None:
     # test raise_get_entities_error=True
 
     with pytest.raises(GetEntitiesError, match="failed to retrieve:\n\tnoseries! error_message: Not found"):
-        api.get_series("usgdp", "noseries!")
+        api.get_series(["usgdp", "noseries!"])
 
 
 @pytest.mark.parametrize("api", ["web", "com"], indirect=True)
@@ -93,7 +93,7 @@ def test_get_one_entity(api: Api) -> None:
 
 @pytest.mark.parametrize("api", ["web", "com"], indirect=True)
 def test_get_entities(api: Api) -> None:
-    entities = api.get_entities("usgdp", "uscpi", "noseries!", raise_error=False)
+    entities = api.get_entities(["usgdp", "uscpi", "noseries!"], raise_error=False)
 
     # test.assertEqual(series[0].name, 'usgdp', 'name')
     assert entities[0].primary_name == "usnaac0169"
@@ -113,7 +113,7 @@ def test_get_entities(api: Api) -> None:
     # test raise_get_entities_error=True
 
     with pytest.raises(GetEntitiesError, match="failed to retrieve:\n\tnoseries! error_message: Not found"):
-        api.get_entities("usgdp", "noseries!")
+        api.get_entities(["usgdp", "noseries!"])
 
 
 @pytest.mark.parametrize("api", ["web", "com"], indirect=True)

@@ -432,7 +432,7 @@ class Api(ABC):
         # fmt: on
 
     @abstractmethod
-    def get_series(self, *series_names: str, raise_error: bool = None) -> Sequence[Series]:
+    def get_series(self, series_names: Sequence[str], raise_error: bool = None) -> Sequence[Series]:
         # fmt: off
         """
         Download one or more series.
@@ -443,8 +443,8 @@ class Api(ABC):
 
         Parameters
         ----------
-        *series_names : str
-            One or more names of series.
+        series_names : Sequence[str]
+            Names of series.
         raise_error : bool
             If True, accessing the resulting series raises a GetEntitiesError.
             If False you should inspect the is_error property of the result instead.
@@ -482,7 +482,7 @@ class Api(ABC):
         # fmt: on
 
     @abstractmethod
-    def get_entities(self, *entity_names: str, raise_error: bool = None) -> Sequence[Entity]:
+    def get_entities(self, entity_names: Sequence[str], raise_error: bool = None) -> Sequence[Entity]:
         # fmt: off
         """
         Download one or more entities.
@@ -493,8 +493,8 @@ class Api(ABC):
 
         Parameters
         ----------
-        *entity_names : str
-            One or more names of entities.
+        entity_names : Sequence[str]
+            Names of entities.
         raise_error : bool
             If True, accessing the resulting entities raises a GetEntitiesError.
             If False you should inspect the is_error property of the result instead.
@@ -509,15 +509,15 @@ class Api(ABC):
 
     @abstractmethod
     def get_many_series(
-        self, *series: Tuple[str, Optional[datetime]], include_not_modified: bool = False
-    ) -> Generator[Optional[Series], None, None]:
+        self, series: Sequence[Union[str, Tuple[str, Optional[datetime]]]], include_not_modified: bool = False
+    ) -> Generator[Series, None, None]:
         # fmt: off
         """
 
         Parameters
         ----------
-        *series: `Tuple[str, Optional[datetime.datetime]]`
-            A sequence of series requests.
+        series: `Sequence[Union[str, Tuple[str, Optional[datetime]]]]`
+            A sequence of series.
         include_not_modified: `bool`
             Set this value to True in order to include NotNodified series.
 

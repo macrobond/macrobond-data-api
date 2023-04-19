@@ -61,10 +61,10 @@ def _create_series(response: "SeriesResponse", name: str, session: Session) -> S
 
 
 def get_one_series(self: "WebApi", series_name: str, raise_error: Optional[bool] = None) -> Series:
-    return self.get_series(series_name, raise_error=raise_error)[0]
+    return self.get_series([series_name], raise_error=raise_error)[0]
 
 
-def get_series(self: "WebApi", *series_names: str, raise_error: Optional[bool] = None) -> Sequence[Series]:
+def get_series(self: "WebApi", series_names: Sequence[str], raise_error: Optional[bool] = None) -> Sequence[Series]:
     response = self.session.series.get_fetch_series(*series_names)
     series = [_create_series(x, y, self.session) for x, y in zip(response, series_names)]
     if self.raise_error if raise_error is None else raise_error:
@@ -73,10 +73,10 @@ def get_series(self: "WebApi", *series_names: str, raise_error: Optional[bool] =
 
 
 def get_one_entity(self: "WebApi", entity_name: str, raise_error: Optional[bool] = None) -> Entity:
-    return self.get_entities(entity_name, raise_error=raise_error)[0]
+    return self.get_entities([entity_name], raise_error=raise_error)[0]
 
 
-def get_entities(self: "WebApi", *entity_names: str, raise_error: Optional[bool] = None) -> Sequence[Entity]:
+def get_entities(self: "WebApi", entity_names: Sequence[str], raise_error: Optional[bool] = None) -> Sequence[Entity]:
     response = self.session.series.fetch_entities(*entity_names)
     entitys = [_create_entity(x, y, self.session) for x, y in zip(response, entity_names)]
     if self.raise_error if raise_error is None else raise_error:
@@ -85,17 +85,19 @@ def get_entities(self: "WebApi", *entity_names: str, raise_error: Optional[bool]
 
 
 def get_many_series(
-    self: "WebApi", *series: Tuple[str, Optional[datetime]], include_not_modified: bool = False
-) -> Generator[Optional[Series], None, None]:
+    self: "WebApi", series: Sequence[Union[str, Tuple[str, Optional[datetime]]]], include_not_modified: bool = False
+) -> Generator[Series, None, None]:
     if len(series) == 0:
         yield from ()
 
-    names = {x[0] for x in series}
+    series_as_tuple: List[Tuple[str, Optional[datetime]]] = [(x, None) if isinstance(x, str) else x for x in series]
 
-    if len(names) != len(series):
+    names = {x[0] for x in series_as_tuple}
+
+    if len(names) != len(series_as_tuple):
         raise ValueError("duplicate of series")
 
-    for chunk in split_in_to_chunks(series, 200):
+    for chunk in split_in_to_chunks(series_as_tuple, 200):
         requests: List["EntityRequest"] = [
             {"name": x[0], "ifModifiedSince": x[1].isoformat() if x[1] else None} for x in chunk
         ]
