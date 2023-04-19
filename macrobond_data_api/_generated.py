@@ -150,7 +150,7 @@ def get_many_series(
     Parameters
     ----------
     series: `Sequence[Union[str, Tuple[str, Optional[datetime]]]]`
-        A sequence of series.
+        A sequence of series names or a sequence of name plus a timestamp for the last modification.
     include_not_modified: `bool`
         Set this value to True in order to include NotNodified series.
 
