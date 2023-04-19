@@ -3,18 +3,16 @@ from typing import TYPE_CHECKING, Any, List, Optional, Callable, Tuple
 
 import ijson  # type: ignore
 
-
 from macrobond_data_api.common.types import SearchResultLong
 from macrobond_data_api.common.types._parse_iso8601 import _parse_iso8601
 
-
 from .web_types.subscription_list_state import SubscriptionListState
 from .web_types.subscription_list_item import SubscriptionListItem
-from .web_types.subscription_list import SubscriptionList
+from .web_types.subscription_list import SubscriptionList as OldSubscriptionList
 from .web_types.subscription_body import SubscriptionBody
 
-
 from .session import _raise_on_error
+from .subscription_list import SubscriptionList
 
 if TYPE_CHECKING:  # pragma: no cover
     from macrobond_data_api.common.types import SearchFilter
@@ -93,7 +91,7 @@ def _get_subscription_list_iterative_pars_items(
     return True
 
 
-def get_subscription_list(self: "WebApi", if_modified_since: datetime = None) -> SubscriptionList:
+def get_subscription_list(self: "WebApi", if_modified_since: datetime = None) -> OldSubscriptionList:
     # pylint: disable=line-too-long
     """
     Get the items in the subscription list.
@@ -113,7 +111,7 @@ def get_subscription_list(self: "WebApi", if_modified_since: datetime = None) ->
     `macrobond_data_api.web.web_types.subscription_list.SubscriptionList`
     """
     # pylint: enable=line-too-long
-    return SubscriptionList(self.session.series.get_subscription_list(if_modified_since))
+    return OldSubscriptionList(self.session.series.get_subscription_list(if_modified_since))
 
 
 # TODO: @mb-jp ree add cooment to get_subscription_list_iterative , when SubscriptionListPoller is done
@@ -234,3 +232,13 @@ def entity_search_multi_filter_long(
     response = self.session.search.post_entities(request)
 
     return SearchResultLong([x["Name"] for x in response["results"]], response.get("isTruncated") is True)
+
+
+def subscription_list(self: "WebApi", last_modified: datetime) -> SubscriptionList:
+    """
+    Retrieves the subscription list with the specified date since last update.
+    """
+    if not self.__session._is_open:
+        raise ValueError("WebApi is not open")
+
+    return SubscriptionList(self.__session, last_modified)

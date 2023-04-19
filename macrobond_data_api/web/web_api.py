@@ -1,9 +1,11 @@
-from datetime import datetime
-
 from macrobond_data_api.common import Api
 
-from ._web_only_api import entity_search_multi_filter_long, get_subscription_list, get_subscription_list_iterative
-
+from ._web_only_api import (
+    entity_search_multi_filter_long,
+    get_subscription_list,
+    get_subscription_list_iterative,
+    subscription_list,
+)
 from ._web_api_metadata import metadata_list_values, metadata_get_attribute_information, metadata_get_value_information
 
 from ._web_api_revision import (
@@ -25,9 +27,6 @@ from ._web_api_series import (
 )
 
 from ._web_api_search import entity_search_multi_filter
-
-from .subscription_list import SubscriptionList
-
 from .session import Session
 
 
@@ -67,6 +66,7 @@ class WebApi(Api):
     get_subscription_list = get_subscription_list
     get_subscription_list_iterative = get_subscription_list_iterative
     entity_search_multi_filter_long = entity_search_multi_filter_long
+    subscription_list = subscription_list
 
     # Search
 
@@ -80,12 +80,3 @@ class WebApi(Api):
     get_entities = get_entities
     get_many_series = get_many_series
     get_unified_series = get_unified_series
-
-    def subscription_list(self, last_modified: datetime) -> SubscriptionList:
-        """
-        Retrieves the subscription list with the specified date since last update.
-        """
-        if not self.__session._is_open:
-            raise ValueError("WebApi is not open")
-
-        return SubscriptionList(self.__session, last_modified)
