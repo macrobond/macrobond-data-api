@@ -35,9 +35,10 @@ def _test_regedit_assembly() -> Optional[str]:
             QueryValueEx(regkey, "Assembly")
     except OSError:
         return (
-            'Could not find the registration key "HKEY_CLASSES_ROOT\\'
+            'The Macrobond application is probably not installed.\n'
+            + '(Could not find the registry key "HKEY_CLASSES_ROOT\\'
             + sub_key
-            + '\\Assembly",\nThis indicates that Macrobond is not installed.'
+            + '\\Assembly")\n'
         )
     return None
 
@@ -49,9 +50,11 @@ def _test_regedit_username() -> Optional[str]:
             QueryValueEx(regkey, "UserName")
     except OSError:
         return (
-            'Could not find the registration key "HKEY_CURRENT_USER\\'
+            'The Macrobond application does not seem to be logged in. Please start the application and verify that '
+            + 'it works properly.\n'
+            + '(Could not find the registry key "HKEY_CURRENT_USER\\'
             + sub_key
-            + '\\UserName",\nThis indicates that Macrobond is not logged in.'
+            + '\\UserName")\n'
         )
     return None
 
@@ -104,7 +107,7 @@ class ComClient(Client["ComApi"]):
 
     def open_and_hint(self, hints: List[str]) -> "ComApi":
         if self.has_closed:
-            raise ValueError("ComClient can not be reopend")
+            raise ValueError("ComClient cannot be reopend")
 
         if _win32com_import_error:
             raise _win32com_import_error
