@@ -35,7 +35,7 @@ def _test_regedit_assembly() -> Optional[str]:
             QueryValueEx(regkey, "Assembly")
     except OSError:
         return (
-            'The Macrobond application is probably not installed.\n'
+            "The Macrobond application is probably not installed.\n"
             + '(Could not find the registry key "HKEY_CLASSES_ROOT\\'
             + sub_key
             + '\\Assembly")\n'
@@ -50,8 +50,8 @@ def _test_regedit_username() -> Optional[str]:
             QueryValueEx(regkey, "UserName")
     except OSError:
         return (
-            'The Macrobond application does not seem to be logged in. Please start the application and verify that '
-            + 'it works properly.\n'
+            "The Macrobond application does not seem to be logged in. Please start the application and verify that "
+            + "it works properly.\n"
             + '(Could not find the registry key "HKEY_CURRENT_USER\\'
             + sub_key
             + '\\UserName")\n'
