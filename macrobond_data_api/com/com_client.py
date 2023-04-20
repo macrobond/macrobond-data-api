@@ -28,8 +28,47 @@ except ImportError:
     ...
 
 
+def _test_regedit_assembly() -> Optional[str]:
+    sub_key = "CLSID\\{F22A9A5C-E6F2-4FA8-8D1B-E928AB5DDF9B}\\InprocServer32"
+    try:
+        with OpenKey(HKEY_CLASSES_ROOT, sub_key) as regkey:
+            QueryValueEx(regkey, "Assembly")
+    except OSError:
+        return (
+            'Could not find the registration key "HKEY_CLASSES_ROOT\\'
+            + sub_key
+            + '\\Assembly",\nThis indicates that Macrobond is not installed.'
+        )
+    return None
+
+
+def _test_regedit_username() -> Optional[str]:
+    sub_key = "Software\\Macrobond Financial\\Communication\\Connector"
+    try:
+        with OpenKey(HKEY_CURRENT_USER, sub_key) as regkey:
+            QueryValueEx(regkey, "UserName")
+    except OSError:
+        return (
+            'Could not find the registration key "HKEY_CURRENT_USER\\'
+            + sub_key
+            + '\\UserName",\nThis indicates that Macrobond is not logged in.'
+        )
+    return None
+
+
 class ComClientVersionException(Exception):
     pass
+
+
+class HintException(Exception):
+    def __init__(self, hint: str):
+        self.hint = hint
+
+    def __str__(self) -> str:
+        return repr(self.hint)
+
+    def squash(self) -> "HintException":
+        return self
 
 
 class ComClient(Client["ComApi"]):
@@ -59,6 +98,22 @@ class ComClient(Client["ComApi"]):
         return bool(self.__api)
 
     def open(self) -> "ComApi":
+        error_hints: List[str] = []
+        try:
+            return self.open_and_hint(error_hints)
+        except Exception:
+            if len(error_hints) != 0:
+                print("\n\nERROR in ComClient.open()", file=sys.stderr)
+
+            for hint in error_hints:
+                print("\n" + hint, file=sys.stderr)
+
+            if len(error_hints) != 0:
+                print("", file=sys.stderr)
+
+            raise
+
+    def open_and_hint(self, error_hints: List[str]) -> "ComApi":
         if self.has_closed:
             raise ValueError("ComClient can not be reopend")
 
@@ -72,43 +127,13 @@ class ComClient(Client["ComApi"]):
             try:
                 connection: "Connection" = cast("Connection", _client.Dispatch("Macrobond.Connection"))
             except com_error:
-                hints: List[str] = []
+                new_hint = _test_regedit_assembly()
+                if new_hint:
+                    error_hints.append(new_hint)
 
-                sub_key = "CLSID\\{F22A9A5C-E6F2-4FA8-8D1B-E928AB5DDF9B}\\InprocServer32"
-                try:
-                    with OpenKey(HKEY_CLASSES_ROOT, sub_key) as regkey:
-                        QueryValueEx(regkey, "Assembly")
-                except OSError:
-                    hints.append(
-                        (
-                            'Could not find the registration key "HKEY_CLASSES_ROOT\\'
-                            + sub_key
-                            + '\\Assembly",\nThis indicates that Macrobond is not installed.'
-                        )
-                    )
-
-                sub_key = "Software\\Macrobond Financial\\Communication\\Connector"
-                try:
-                    with OpenKey(HKEY_CURRENT_USER, sub_key) as regkey:
-                        QueryValueEx(regkey, "UserName")
-                except OSError:
-                    hints.append(
-                        (
-                            'Could not find the registration key "HKEY_CURRENT_USER\\'
-                            + sub_key
-                            + '\\UserName",\nThis indicates that Macrobond is not logged in.'
-                        )
-                    )
-
-                if len(hints) != 0:
-                    print("\n\nERROR in ComClient.open()", file=sys.stderr)
-
-                for hint in hints:
-                    print("\n" + hint, file=sys.stderr)
-
-                if len(hints) != 0:
-                    print("", file=sys.stderr)
-
+                new_hint = _test_regedit_username()
+                if new_hint:
+                    error_hints.append(new_hint)
                 raise
 
             ComClient._test_version(connection.Version)
