@@ -60,17 +60,6 @@ class ComClientVersionException(Exception):
     pass
 
 
-class HintException(Exception):
-    def __init__(self, hint: str):
-        self.hint = hint
-
-    def __str__(self) -> str:
-        return repr(self.hint)
-
-    def squash(self) -> "HintException":
-        return self
-
-
 class ComClient(Client["ComApi"]):
     """
     ComClient to get data via the Macrobond desktop API
@@ -113,7 +102,7 @@ class ComClient(Client["ComApi"]):
 
             raise
 
-    def open_and_hint(self, error_hints: List[str]) -> "ComApi":
+    def open_and_hint(self, hints: List[str]) -> "ComApi":
         if self.has_closed:
             raise ValueError("ComClient can not be reopend")
 
@@ -129,11 +118,11 @@ class ComClient(Client["ComApi"]):
             except com_error:
                 new_hint = _test_regedit_assembly()
                 if new_hint:
-                    error_hints.append(new_hint)
+                    hints.append(new_hint)
 
                 new_hint = _test_regedit_username()
                 if new_hint:
-                    error_hints.append(new_hint)
+                    hints.append(new_hint)
                 raise
 
             ComClient._test_version(connection.Version)

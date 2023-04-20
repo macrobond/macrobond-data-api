@@ -14,7 +14,7 @@ def _get_api() -> "Api":
     if __MACROBOND_DATA_API_CURRENT_API:
         return __MACROBOND_DATA_API_CURRENT_API
 
-    error_hints: List[str] = []
+    hints: List[str] = []
 
     try:
         from macrobond_data_api.web.web_client import (  # pylint: disable=import-outside-toplevel
@@ -23,19 +23,17 @@ def _get_api() -> "Api":
         )
 
         if _has_credentials_in_keyring():
-            error_hints.append("Trying to open a WebClient.")
+            hints.append("Trying to open a WebClient.")
             try:
                 __MACROBOND_DATA_API_CURRENT_API = WebClient().open()
                 return __MACROBOND_DATA_API_CURRENT_API
             except Exception:
-                error_hints.append("Failed to open a WebClient.")
+                hints.append("Failed to open a WebClient.")
                 raise
-        help_url = "https://github.com/macrobond/macrobond-data-api#using-of-system-keyring"
-        error_hints.append(
+        hints.append(
             "Did not find any Key in the keyring, so we can not use the WebClient.\n"
             + 'If you had expected system would use WebClient, try rnning the "save_credential_to_keyring()" learn more: '
-            + help_url
-            + " ."
+            + "https://github.com/macrobond/macrobond-data-api#using-of-system-keyring"
         )
 
         if os.name == "nt":
@@ -43,22 +41,22 @@ def _get_api() -> "Api":
                 ComClient,
             )
 
-            error_hints.append("Trying to open a ComClient")
+            hints.append("Trying to open a ComClient")
             try:
-                __MACROBOND_DATA_API_CURRENT_API = ComClient().open_and_hint(error_hints)
+                __MACROBOND_DATA_API_CURRENT_API = ComClient().open_and_hint(hints)
                 return __MACROBOND_DATA_API_CURRENT_API
             except Exception:
-                error_hints.append("Failed to open a ComClient.")
+                hints.append("Failed to open a ComClient.")
                 raise
         else:
-            error_hints.append("This system is not running Windows, so we can not use the ComClient.")
+            hints.append("This system is not running Windows, so we can not use the ComClient.")
 
-        error_hints.append("Did not find any suitable client to use.")
+        hints.append("Did not find any suitable client to use.")
 
         raise Exception("Cant get api.")
 
     except Exception:
-        for e in error_hints:
+        for e in hints:
             print(e, file=sys.stderr)
         print("", file=sys.stderr)
 
