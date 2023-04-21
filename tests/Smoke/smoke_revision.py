@@ -23,13 +23,13 @@ def test_com_and_web(api: Api) -> None:
     if not last_revision:
         raise ValueError("last_revision is None")
 
-    result2 = api.get_vintage_series(last_revision, "gbgdp")[0]
+    result2 = api.get_vintage_series(last_revision, ["gbgdp"])[0]
     str(result2.values_to_pd_data_frame())
     str(result2.metadata_to_pd_series())
     result2.to_dict()
 
     # Get_nth_release
-    result3 = api.get_nth_release(4, "gbgdp")[0]
+    result3 = api.get_nth_release(4, ["gbgdp"])[0]
     str(result3.values_to_pd_data_frame())
     str(result3.metadata_to_pd_series())
     result3.to_dict()

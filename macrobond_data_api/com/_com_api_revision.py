@@ -99,8 +99,20 @@ def get_revision_info(self: "ComApi", *series_names: str, raise_error: bool = No
     return _ReprHtmlSequence([to_obj(x, y) for x, y in zip(series_names, series)])
 
 
+def get_one_vintage_series(
+    self: "ComApi", time: datetime, series_name: str, include_times_of_change: bool = False, raise_error: bool = None
+) -> VintageSeries:
+    return self.get_vintage_series(
+        time, [series_name], include_times_of_change=include_times_of_change, raise_error=raise_error
+    )[0]
+
+
 def get_vintage_series(
-    self: "ComApi", time: datetime, *series_names: str, include_times_of_change: bool = False, raise_error: bool = None
+    self: "ComApi",
+    time: datetime,
+    series_names: Sequence[str],
+    include_times_of_change: bool = False,
+    raise_error: bool = None,
 ) -> Sequence[VintageSeries]:
     time = _fix_datetime(time)
 
@@ -167,8 +179,20 @@ def get_vintage_series(
     return _ReprHtmlSequence(series)
 
 
+def get_one_nth_release(
+    self: "ComApi", nth: int, series_name: str, include_times_of_change: bool = False, raise_error: bool = None
+) -> Series:
+    return self.get_nth_release(
+        nth, [series_name], include_times_of_change=include_times_of_change, raise_error=raise_error
+    )[0]
+
+
 def get_nth_release(
-    self: "ComApi", nth: int, *series_names: str, include_times_of_change: bool = False, raise_error: bool = None
+    self: "ComApi",
+    nth: int,
+    series_names: Sequence[str],
+    include_times_of_change: bool = False,
+    raise_error: bool = None,
 ) -> Sequence[Series]:
     if len(series_names) == 0:
         raise ValueError("No series names")

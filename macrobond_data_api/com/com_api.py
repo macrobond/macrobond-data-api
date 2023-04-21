@@ -10,9 +10,11 @@ from ._com_api_metadata import (
 
 from ._com_api_revision import (
     get_all_vintage_series,
+    get_one_nth_release,
     get_nth_release,
     get_observation_history,
     get_revision_info,
+    get_one_vintage_series,
     get_vintage_series,
     get_many_series_with_revisions,
 )
@@ -64,7 +66,9 @@ class ComApi(Api):
     # revision
 
     get_revision_info = get_revision_info
+    get_one_vintage_series = get_one_vintage_series
     get_vintage_series = get_vintage_series
+    get_one_nth_release = get_one_nth_release
     get_nth_release = get_nth_release
     get_all_vintage_series = get_all_vintage_series
     get_observation_history = get_observation_history
