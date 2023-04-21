@@ -210,14 +210,14 @@ class Api(ABC):
     ) -> VintageSeries:
         # fmt: off
         """
-        Fetch one vintage series.
+        Get one vintage series.
 
         Parameters
         ----------
         time : datetime
             The time of the vintage to return.
-        series_names : str
-            The names of series.
+        series_name : str
+            The name of the series.
         include_times_of_change : bool
             Include information of the time each values was last changed.
         raise_error : bool
@@ -241,14 +241,14 @@ class Api(ABC):
     ) -> Sequence[VintageSeries]:
         # fmt: off
         """
-        Fetch vintage series.
+        Get one or more vintage series.
 
         Parameters
         ----------
         time : datetime
             The time of the vintage to return.
         series_names : str
-            The names of series.
+            The names of the series.
         include_times_of_change : bool
             Include information of the time each values was last changed.
         raise_error : bool
@@ -269,14 +269,14 @@ class Api(ABC):
     ) -> Series:
         # fmt: off
         """
-        Fetcha series where each value is the nth change of the value.
+        Get a series where each value is the nth change of the value.
 
         Parameters
         ----------
         time : nth
             The nth change of each value.
-        series_names : str
-            The names of series.
+        series_name : str
+            The name of the series.
         include_times_of_change : bool
             Include information of the time each values was last changed.
         raise_error : bool
@@ -296,14 +296,14 @@ class Api(ABC):
     ) -> Sequence[Series]:
         # fmt: off
         """
-        Fetcha series where each value is the nth change of the value.
+        Get one or more series where each value is the nth change of the value.
 
         Parameters
         ----------
         time : nth
             The nth change of each value.
         series_names : str
-            The names of series.
+            The names of the series.
         include_times_of_change : bool
             Include information of the time each values was last changed.
         raise_error : bool
@@ -504,7 +504,7 @@ class Api(ABC):
         Parameters
         ----------
         series_names : Sequence[str]
-            Names of series.
+            The names of the series.
         raise_error : bool
             If True, accessing the resulting series raises a GetEntitiesError.
             If False you should inspect the is_error property of the result instead.
@@ -554,7 +554,7 @@ class Api(ABC):
         Parameters
         ----------
         entity_names : Sequence[str]
-            Names of entities.
+            The names of the entities.
         raise_error : bool
             If True, accessing the resulting entities raises a GetEntitiesError.
             If False you should inspect the is_error property of the result instead.
