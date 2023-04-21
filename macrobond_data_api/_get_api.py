@@ -42,7 +42,7 @@ def _get_api() -> "Api":
                 ComClient,
             )
 
-            hints.append("Trying to open a ComClient")
+            hints.append("Trying to open a ComClient.")
             try:
                 __MACROBOND_DATA_API_CURRENT_API = ComClient().open_and_hint(hints)
                 return __MACROBOND_DATA_API_CURRENT_API
@@ -54,11 +54,11 @@ def _get_api() -> "Api":
 
         hints.append("Did not find any suitable client to use.")
 
-        raise Exception("Could not find an API implementation.")
+        raise Exception("Did not find any suitable client to use.")
 
     except Exception:
         for e in hints:
-            print(e, file=sys.stderr)
+            print("\n" + str(e), file=sys.stderr)
         print("", file=sys.stderr)
 
         raise
