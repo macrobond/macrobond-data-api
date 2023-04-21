@@ -191,7 +191,7 @@ def get_many_series_with_revisions(
 
 
 def get_nth_release(
-    nth: int, *series_names: str, include_times_of_change: bool = False, raise_error: bool = None
+    nth: int, series_names: Sequence[str], include_times_of_change: bool = False, raise_error: bool = None
 ) -> Sequence[Series]:
     """
     Fetcha series where each value is the nth change of the value.
@@ -201,7 +201,7 @@ def get_nth_release(
     time : nth
         The nth change of each value.
     series_names : str
-        One or more names of series.
+        The names of series.
     include_times_of_change : bool
         Include information of the time each values was last changed.
     raise_error : bool
@@ -214,9 +214,7 @@ def get_nth_release(
     `Sequence[macrobond_data_api.common.types.series.Series]`
     The result is in the same order as in the request.
     """
-    return _get_api().get_nth_release(
-        nth, *series_names, include_times_of_change=include_times_of_change, raise_error=raise_error
-    )
+    return _get_api().get_nth_release(nth, series_names, include_times_of_change, raise_error)
 
 
 def get_observation_history(series_name: str, *times: datetime) -> Sequence[SeriesObservationHistory]:
@@ -260,6 +258,32 @@ def get_one_entity(entity_name: str, raise_error: bool = None) -> Entity:
     return _get_api().get_one_entity(entity_name, raise_error)
 
 
+def get_one_nth_release(
+    nth: int, series_name: str, include_times_of_change: bool = False, raise_error: bool = None
+) -> Series:
+    """
+    Fetcha series where each value is the nth change of the value.
+
+    Parameters
+    ----------
+    time : nth
+        The nth change of each value.
+    series_names : str
+        The names of series.
+    include_times_of_change : bool
+        Include information of the time each values was last changed.
+    raise_error : bool
+        If True, accessing the resulting series raises a GetEntitiesError.
+        If False you should inspect the is_error property of the result instead.
+        If None, it will use the global value `macrobond_data_api.common.api.Api.raise_error`
+
+    Returns
+    -------
+    `macrobond_data_api.common.types.series.Series`
+    """
+    return _get_api().get_one_nth_release(nth, series_name, include_times_of_change, raise_error)
+
+
 def get_one_series(series_name: str, raise_error: bool = None) -> Series:
     """
     Download one series.
@@ -281,6 +305,32 @@ def get_one_series(series_name: str, raise_error: bool = None) -> Series:
     `macrobond_data_api.common.types.series.Series`
     """
     return _get_api().get_one_series(series_name, raise_error)
+
+
+def get_one_vintage_series(
+    time: datetime, series_name: str, include_times_of_change: bool = False, raise_error: bool = None
+) -> VintageSeries:
+    """
+    Fetch one vintage series.
+
+    Parameters
+    ----------
+    time : datetime
+        The time of the vintage to return.
+    series_names : str
+        The names of series.
+    include_times_of_change : bool
+        Include information of the time each values was last changed.
+    raise_error : bool
+        If True, accessing the resulting series raises a GetEntitiesError.
+        If False you should inspect the is_error property of the result instead.
+        If None, it will use the global value `macrobond_data_api.common.api.Api.raise_error`
+
+    Returns
+    -------
+    `macrobond_data_api.common.types.vintage_series.VintageSeries`
+    """
+    return _get_api().get_one_vintage_series(time, series_name, include_times_of_change, raise_error)
 
 
 def get_revision_info(*series_names: str, raise_error: bool = None) -> Sequence[RevisionInfo]:
@@ -385,7 +435,10 @@ def get_unified_series(
 
 
 def get_vintage_series(
-    time: datetime, *series_names: str, include_times_of_change: bool = False, raise_error: bool = None
+    time: datetime,
+    series_names: Sequence[str],
+    include_times_of_change: bool = False,
+    raise_error: bool = None,
 ) -> Sequence[VintageSeries]:
     """
     Fetch vintage series.
@@ -395,7 +448,7 @@ def get_vintage_series(
     time : datetime
         The time of the vintage to return.
     series_names : str
-        One or more names of series.
+        The names of series.
     include_times_of_change : bool
         Include information of the time each values was last changed.
     raise_error : bool
@@ -408,9 +461,7 @@ def get_vintage_series(
     `Sequence[macrobond_data_api.common.types.vintage_series.VintageSeries]`
     The result is in the same order as in the request.
     """
-    return _get_api().get_vintage_series(
-        time, *series_names, include_times_of_change=include_times_of_change, raise_error=raise_error
-    )
+    return _get_api().get_vintage_series(time, series_names, include_times_of_change, raise_error)
 
 
 def metadata_get_attribute_information(*names: str) -> Sequence[MetadataAttributeInformation]:

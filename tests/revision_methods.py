@@ -18,19 +18,19 @@ def test_get_observation_history(api: Api) -> None:
 @pytest.mark.parametrize("api", ["web", "com"], indirect=True)
 def test_get_vintage_series_error(api: Api) -> None:
     with pytest.raises(GetEntitiesError, match="failed to retrieve:\n\tnoseries! error_message: Not found"):
-        api.get_vintage_series(datetime(2021, 4, 1), "noseries!")
+        api.get_vintage_series(datetime(2021, 4, 1), ["noseries!"])
 
 
 @pytest.mark.parametrize("api", ["web", "com"], indirect=True)
 def test_get_vintage_series_error_time(api: Api) -> None:
     with pytest.raises(ValueError, match="Invalid time"):
-        api.get_vintage_series(datetime(1800, 4, 1), "gbgdp")
+        api.get_vintage_series(datetime(1800, 4, 1), ["gbgdp"])
 
 
 @pytest.mark.parametrize("api", ["web", "com"], indirect=True)
 def test_get_nth_release_values_is_float(api: Api) -> None:
     for i in range(2):
-        obj = api.get_nth_release(i, "gbgdp")[0]
+        obj = api.get_nth_release(i, ["gbgdp"])[0]
         assert isinstance(obj.values[0], float)
 
 
@@ -62,32 +62,32 @@ class TestCommon:
     def test_get_vintage_series_values_to_pd_series(self, web: WebApi, com: ComApi) -> None:
         time_stamp = cast(datetime, web.get_revision_info("usgdp")[0].time_stamp_of_first_revision)
         assert_frame_equal(
-            web.get_vintage_series(time_stamp, "usgdp")[0].values_to_pd_data_frame(),
-            com.get_vintage_series(time_stamp, "usgdp")[0].values_to_pd_data_frame(),
+            web.get_vintage_series(time_stamp, ["usgdp"])[0].values_to_pd_data_frame(),
+            com.get_vintage_series(time_stamp, ["usgdp"])[0].values_to_pd_data_frame(),
         )
 
         time_stamp = cast(datetime, web.get_revision_info("ustrad4488")[0].time_stamp_of_first_revision)
         assert_frame_equal(
-            web.get_vintage_series(time_stamp, "ustrad4488")[0].values_to_pd_data_frame(),
-            com.get_vintage_series(time_stamp, "ustrad4488")[0].values_to_pd_data_frame(),
+            web.get_vintage_series(time_stamp, ["ustrad4488"])[0].values_to_pd_data_frame(),
+            com.get_vintage_series(time_stamp, ["ustrad4488"])[0].values_to_pd_data_frame(),
         )
 
     # get_nth_release
 
     def test_get_nth_release_values_to_pd_series(self, web: WebApi, com: ComApi) -> None:
         assert_frame_equal(
-            web.get_nth_release(3, "usgdp")[0].values_to_pd_data_frame(),
-            com.get_nth_release(3, "usgdp")[0].values_to_pd_data_frame(),
+            web.get_nth_release(3, ["usgdp"])[0].values_to_pd_data_frame(),
+            com.get_nth_release(3, ["usgdp"])[0].values_to_pd_data_frame(),
         )
 
         assert_frame_equal(
-            web.get_nth_release(3, "ustrad4488")[0].values_to_pd_data_frame(),
-            com.get_nth_release(3, "ustrad4488")[0].values_to_pd_data_frame(),
+            web.get_nth_release(3, ["ustrad4488"])[0].values_to_pd_data_frame(),
+            com.get_nth_release(3, ["ustrad4488"])[0].values_to_pd_data_frame(),
         )
 
         assert_frame_equal(
-            web.get_nth_release(3, "ct_au_e_ao_c_22_v")[0].values_to_pd_data_frame(),
-            com.get_nth_release(3, "ct_au_e_ao_c_22_v")[0].values_to_pd_data_frame(),
+            web.get_nth_release(3, ["ct_au_e_ao_c_22_v"])[0].values_to_pd_data_frame(),
+            com.get_nth_release(3, ["ct_au_e_ao_c_22_v"])[0].values_to_pd_data_frame(),
         )
 
     # get_all_vintage_series

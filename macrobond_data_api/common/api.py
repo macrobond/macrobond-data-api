@@ -57,7 +57,9 @@ class Api(ABC):
 
     Series revision methods:  
         `macrobond_data_api.common.api.Api.get_revision_info`  
+        `macrobond_data_api.common.api.Api.get_one_vintage_series`  
         `macrobond_data_api.common.api.Api.get_vintage_series`  
+        `macrobond_data_api.common.api.Api.get_one_nth_release`  
         `macrobond_data_api.common.api.Api.get_nth_release`  
         `macrobond_data_api.common.api.Api.get_all_vintage_series`  
         `macrobond_data_api.common.api.Api.get_observation_history`  
@@ -203,8 +205,39 @@ class Api(ABC):
         # fmt: on
 
     @abstractmethod
+    def get_one_vintage_series(
+        self, time: datetime, series_name: str, include_times_of_change: bool = False, raise_error: bool = None
+    ) -> VintageSeries:
+        # fmt: off
+        """
+        Fetch one vintage series.
+
+        Parameters
+        ----------
+        time : datetime
+            The time of the vintage to return.
+        series_names : str
+            The names of series.
+        include_times_of_change : bool
+            Include information of the time each values was last changed.
+        raise_error : bool
+            If True, accessing the resulting series raises a GetEntitiesError.
+            If False you should inspect the is_error property of the result instead.
+            If None, it will use the global value `macrobond_data_api.common.api.Api.raise_error`
+
+        Returns
+        -------
+        `macrobond_data_api.common.types.vintage_series.VintageSeries`
+        """
+        # fmt: on
+
+    @abstractmethod
     def get_vintage_series(
-        self, time: datetime, *series_names: str, include_times_of_change: bool = False, raise_error: bool = None
+        self,
+        time: datetime,
+        series_names: Sequence[str],
+        include_times_of_change: bool = False,
+        raise_error: bool = None,
     ) -> Sequence[VintageSeries]:
         # fmt: off
         """
@@ -215,7 +248,7 @@ class Api(ABC):
         time : datetime
             The time of the vintage to return.
         series_names : str
-            One or more names of series.
+            The names of series.
         include_times_of_change : bool
             Include information of the time each values was last changed.
         raise_error : bool
@@ -231,8 +264,35 @@ class Api(ABC):
         # fmt: on
 
     @abstractmethod
+    def get_one_nth_release(
+        self, nth: int, series_name: str, include_times_of_change: bool = False, raise_error: bool = None
+    ) -> Series:
+        # fmt: off
+        """
+        Fetcha series where each value is the nth change of the value.
+
+        Parameters
+        ----------
+        time : nth
+            The nth change of each value.
+        series_names : str
+            The names of series.
+        include_times_of_change : bool
+            Include information of the time each values was last changed.
+        raise_error : bool
+            If True, accessing the resulting series raises a GetEntitiesError.
+            If False you should inspect the is_error property of the result instead.
+            If None, it will use the global value `macrobond_data_api.common.api.Api.raise_error`
+
+        Returns
+        -------
+        `macrobond_data_api.common.types.series.Series`
+        """
+        # fmt: on
+
+    @abstractmethod
     def get_nth_release(
-        self, nth: int, *series_names: str, include_times_of_change: bool = False, raise_error: bool = None
+        self, nth: int, series_names: Sequence[str], include_times_of_change: bool = False, raise_error: bool = None
     ) -> Sequence[Series]:
         # fmt: off
         """
@@ -243,7 +303,7 @@ class Api(ABC):
         time : nth
             The nth change of each value.
         series_names : str
-            One or more names of series.
+            The names of series.
         include_times_of_change : bool
             Include information of the time each values was last changed.
         raise_error : bool

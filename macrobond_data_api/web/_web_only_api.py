@@ -159,7 +159,7 @@ def get_subscription_list_iterative(
     if if_modified_since:
         params["ifModifiedSince"] = if_modified_since.isoformat()
 
-    with self.__session.get("v1/series/getsubscriptionlist", params=params, stream=True) as response:
+    with self._session.get("v1/series/getsubscriptionlist", params=params, stream=True) as response:
         _raise_on_error(response)
         ijson_parse = ijson.parse(response.raw)
 
@@ -238,7 +238,7 @@ def subscription_list(self: "WebApi", last_modified: datetime) -> SubscriptionLi
     """
     Retrieves the subscription list with the specified date since last update.
     """
-    if not self.__session._is_open:
+    if not self._session._is_open:
         raise ValueError("WebApi is not open")
 
-    return SubscriptionList(self.__session, last_modified)
+    return SubscriptionList(self._session, last_modified)

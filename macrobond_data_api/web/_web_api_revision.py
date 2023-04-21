@@ -77,12 +77,24 @@ def get_revision_info(self: "WebApi", *series_names: str, raise_error: Optional[
     return _ReprHtmlSequence([to_obj(x, y) for x, y in zip(series_names, response)])
 
 
+def get_one_vintage_series(
+    self: "WebApi",
+    time: datetime,
+    series_name: str,
+    include_times_of_change: bool = False,
+    raise_error: Optional[bool] = None,
+) -> VintageSeries:
+    return self.get_vintage_series(
+        time, [series_name], include_times_of_change=include_times_of_change, raise_error=raise_error
+    )[0]
+
+
 def get_vintage_series(
     self: "WebApi",
     time: datetime,
-    *series_names: str,
+    series_names: Sequence[str],
     include_times_of_change: bool = False,
-    raise_error: Optional[bool] = None
+    raise_error: Optional[bool] = None,
 ) -> Sequence[VintageSeries]:
     def to_obj(response: "VintageSeriesResponse", series_name: str) -> VintageSeries:
         error_message = response.get("errorText")
@@ -132,12 +144,24 @@ def get_vintage_series(
     return _ReprHtmlSequence(series)
 
 
+def get_one_nth_release(
+    self: "WebApi",
+    nth: int,
+    series_name: str,
+    include_times_of_change: bool = False,
+    raise_error: Optional[bool] = None,
+) -> Series:
+    return self.get_nth_release(
+        nth, [series_name], include_times_of_change=include_times_of_change, raise_error=raise_error
+    )[0]
+
+
 def get_nth_release(
     self: "WebApi",
     nth: int,
-    *series_names: str,
+    series_names: Sequence[str],
     include_times_of_change: bool = False,
-    raise_error: Optional[bool] = None
+    raise_error: Optional[bool] = None,
 ) -> Sequence[Series]:
     def to_obj(response: "SeriesWithTimesOfChangeResponse", name: str, session: Session) -> Series:
         error_text = response.get("errorText")

@@ -10,8 +10,10 @@ from ._web_api_metadata import metadata_list_values, metadata_get_attribute_info
 
 from ._web_api_revision import (
     get_all_vintage_series,
+    get_one_nth_release,
     get_nth_release,
     get_revision_info,
+    get_one_vintage_series,
     get_vintage_series,
     get_observation_history,
     get_many_series_with_revisions,
@@ -38,13 +40,13 @@ __pdoc__ = {
 class WebApi(Api):
     def __init__(self, session: Session) -> None:
         super().__init__()
-        self.__session = session
+        self._session = session
 
     @property
     def session(self) -> Session:
-        if not self.__session._is_open:
+        if not self._session._is_open:
             raise ValueError("WebApi is not open")
-        return self.__session
+        return self._session
 
     # metadata
 
@@ -55,7 +57,9 @@ class WebApi(Api):
     # revision
 
     get_revision_info = get_revision_info
+    get_one_vintage_series = get_one_vintage_series
     get_vintage_series = get_vintage_series
+    get_one_nth_release = get_one_nth_release
     get_nth_release = get_nth_release
     get_all_vintage_series = get_all_vintage_series
     get_observation_history = get_observation_history

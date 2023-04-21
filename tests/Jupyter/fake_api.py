@@ -42,13 +42,27 @@ class FakeApi(Api):
     def get_revision_info(self, *series_names: str, raise_error: bool = None) -> Sequence[RevisionInfo]:
         raise NotImplementedError()
 
+    def get_one_vintage_series(
+        self, time: datetime, series_name: str, include_times_of_change: bool = False, raise_error: bool = None
+    ) -> VintageSeries:
+        raise NotImplementedError()
+
     def get_vintage_series(
-        self, time: datetime, *series_names: str, include_times_of_change: bool = False, raise_error: bool = None
+        self,
+        time: datetime,
+        series_names: Sequence[str],
+        include_times_of_change: bool = False,
+        raise_error: bool = None,
     ) -> Sequence[VintageSeries]:
         raise NotImplementedError()
 
+    def get_one_nth_release(
+        self, nth: int, series_name: str, include_times_of_change: bool = False, raise_error: bool = None
+    ) -> Series:
+        raise NotImplementedError()
+
     def get_nth_release(
-        self, nth: int, *series_names: str, include_times_of_change: bool = False, raise_error: bool = None
+        self, nth: int, series_names: Sequence[str], include_times_of_change: bool = False, raise_error: bool = None
     ) -> Sequence[Series]:
         raise NotImplementedError()
 
