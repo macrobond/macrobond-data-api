@@ -107,8 +107,7 @@ class SubscriptionList:
         timeout = datetime.now(timezone.utc) + timedelta(minutes=1)
         while (
             datetime.now(timezone.utc) < timeout
-            and set(self._session.post_or_raise("v1/subscriptionlist/check_if_not_included", json=keys).json())
-            != key_set
+            and set(self._session.post_or_raise("v1/subscriptionlist/checkifnotincluded", json=keys).json()) != key_set
         ):
             time.sleep(1)
 
@@ -131,7 +130,7 @@ class SubscriptionList:
             time.sleep(interval.total_seconds())
 
         data = self._session.get_or_raise(
-            "v1/subscriptionlist/get_updates", params={"ifModifiedSince": self.last_modified.isoformat()}
+            "v1/subscriptionlist/getupdates", params={"ifModifiedSince": self.last_modified.isoformat()}
         ).json()
 
         if data["noMoreChanges"]:
@@ -147,6 +146,6 @@ class SubscriptionList:
         timeout = datetime.now(timezone.utc) + timedelta(minutes=1)
         while (
             datetime.now(timezone.utc) < timeout
-            and self._session.post_or_raise("v1/subscriptionlist/check_if_not_included", json=keys).json()
+            and self._session.post_or_raise("v1/subscriptionlist/checkifnotincluded", json=keys).json()
         ):
             time.sleep(1)
