@@ -18,7 +18,10 @@ def test_macrobond_config() -> None:
     if _winreg_import_error:
         raise _winreg_import_error
 
-    sub_key = "Software\\Macrobond Financial\\" + "Communication\\CommunicationState"
+    sub_key = (
+        "Software\\Macrobond Financial\\"
+        + "Communication\\CommunicationState"
+    )
 
     with OpenKey(HKEY_CURRENT_USER, sub_key) as regkey:
         val = QueryValueEx(regkey, "PreferredServer")
