@@ -3,7 +3,7 @@ from dataclasses import dataclass
 
 
 @dataclass(init=False)
-class SubscriptionListItem:
+class DataPackageListItem:
     __slots__ = ("name", "modified")
 
     name: str

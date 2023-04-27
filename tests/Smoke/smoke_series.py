@@ -1,7 +1,7 @@
 from typing import List
 
 import pytest  # type: ignore[attr-defined]
-from macrobond_data_api.web.web_types import SubscriptionBody, SubscriptionListItem
+from macrobond_data_api.web.web_types import DataPackageBody, DataPackageListItem
 from macrobond_data_api.common import Api
 from macrobond_data_api.web import WebApi
 from macrobond_data_api.common.types import RevisionHistoryRequest
@@ -38,25 +38,25 @@ def test(api: Api) -> None:  # pylint: disable=unused-argument
 
 class TestWeb:
     @pytest.mark.usefixtures("assert_no_warnings")
-    def test_get_subscription_list(self, web: WebApi) -> None:
+    def test_get_data_package_list(self, web: WebApi) -> None:
         pytest.skip("needs access")
-        result = web.get_subscription_list()  # pylint: disable=unused-variable
+        result = web.get_data_package_list()  # pylint: disable=unused-variable
         breakpoint()  # pylint: disable=forgotten-debug-statement
 
     @pytest.mark.usefixtures("assert_no_warnings")
-    def test_get_subscription_list_iterative(self, web: WebApi) -> None:
+    def test_get_data_package_list_iterative(self, web: WebApi) -> None:
         pytest.skip("needs access")
 
-        def empty_method_1(body: SubscriptionBody) -> bool:  # pylint: disable=unused-argument
+        def empty_method_1(body: DataPackageBody) -> bool:  # pylint: disable=unused-argument
             return True
 
         def empty_method_2(
-            body: SubscriptionBody,  # pylint: disable=unused-argument
-            items: List[SubscriptionListItem],  # pylint: disable=unused-argument
+            body: DataPackageBody,  # pylint: disable=unused-argument
+            items: List[DataPackageListItem],  # pylint: disable=unused-argument
         ) -> bool:
             return True
 
-        web.get_subscription_list_iterative(empty_method_1, empty_method_2)
+        web.get_data_package_list_iterative(empty_method_1, empty_method_2)
 
     @pytest.mark.usefixtures("assert_no_warnings")
     @pytest.mark.parametrize("api", ["web", "com"], indirect=True)

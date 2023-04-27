@@ -2,8 +2,8 @@ from macrobond_data_api.common import Api
 
 from ._web_only_api import (
     entity_search_multi_filter_long,
-    get_subscription_list,
-    get_subscription_list_iterative,
+    get_data_package_list,
+    get_data_package_list_iterative,
     subscription_list,
 )
 from ._web_api_metadata import metadata_list_values, metadata_get_attribute_information, metadata_get_value_information
@@ -67,8 +67,8 @@ class WebApi(Api):
 
     # web only
 
-    get_subscription_list = get_subscription_list
-    get_subscription_list_iterative = get_subscription_list_iterative
+    get_data_package_list = get_data_package_list
+    get_data_package_list_iterative = get_data_package_list_iterative
     entity_search_multi_filter_long = entity_search_multi_filter_long
     subscription_list = subscription_list
 
