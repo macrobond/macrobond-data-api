@@ -178,7 +178,7 @@ def get_nth_release(
                 values_metadata: Optional[ValuesMetadata] = [{}] * len(values)
             else:
                 values_metadata = [
-                    {"RevisionTimeStamp": _optional_str_to_datetime(x)} for x in cast(List[str], timesOfChange)
+                    {"RevisionTimeStamp": _parse_iso8601(x)} if x else {} for x in cast(List[str], timesOfChange)
                 ]
         else:
             values_metadata = None
