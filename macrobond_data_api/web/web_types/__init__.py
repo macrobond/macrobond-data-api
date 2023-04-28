@@ -47,8 +47,8 @@ from .series_with_vintages_response import SeriesWithVintagesResponse
 
 from .vintage_values_response import VintageValuesResponse
 
-from .subscription_list_state import SubscriptionListState
+from .data_package_list_state import DataPackageListState
 
-from .subscription_list_item import SubscriptionListItem
+from .data_pacakge_list_item import DataPackageListItem
 
-from .subscription_body import SubscriptionBody
+from .data_package_body import DataPackageBody

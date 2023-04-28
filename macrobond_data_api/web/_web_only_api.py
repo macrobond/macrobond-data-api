@@ -6,10 +6,10 @@ import ijson  # type: ignore
 from macrobond_data_api.common.types import SearchResultLong
 from macrobond_data_api.common.types._parse_iso8601 import _parse_iso8601
 
-from .web_types.subscription_list_state import SubscriptionListState
-from .web_types.subscription_list_item import SubscriptionListItem
-from .web_types.subscription_list import SubscriptionList as OldSubscriptionList
-from .web_types.subscription_body import SubscriptionBody
+from .web_types.data_package_list_state import DataPackageListState
+from .web_types.data_pacakge_list_item import DataPackageListItem
+from .web_types.data_package_list import DataPackageList
+from .web_types.data_package_body import DataPackageBody
 
 from .session import _raise_on_error
 from .subscription_list import SubscriptionList
@@ -26,12 +26,12 @@ __pdoc__ = {
 }
 
 
-def _get_subscription_list_iterative_pars_body(
+def _get_data_package_list_iterative_pars_body(
     ijson_parse: Any,
-) -> Tuple[Optional[datetime], Optional[datetime], Optional[SubscriptionListState]]:
+) -> Tuple[Optional[datetime], Optional[datetime], Optional[DataPackageListState]]:
     time_stamp_for_if_modified_since: Optional[datetime] = None
     download_full_list_on_or_after: Optional[datetime] = None
-    state: Optional[SubscriptionListState] = None
+    state: Optional[DataPackageListState] = None
     for prefix, event, value in ijson_parse:
         if prefix == "timeStampForIfModifiedSince":
             if event != "string":
@@ -44,7 +44,7 @@ def _get_subscription_list_iterative_pars_body(
         elif prefix == "state":
             if event != "number":
                 raise Exception("bad format: state is not a number")
-            state = SubscriptionListState(value)
+            state = DataPackageListState(value)
         elif event == "start_array":
             if prefix != "entities":
                 raise Exception("bad format: event start_array do not have a prefix of entities")
@@ -52,15 +52,15 @@ def _get_subscription_list_iterative_pars_body(
     return time_stamp_for_if_modified_since, download_full_list_on_or_after, state
 
 
-def _get_subscription_list_iterative_pars_items(
+def _get_data_package_list_iterative_pars_items(
     ijson_parse: Any,
-    items_callback: Callable[[SubscriptionBody, List[SubscriptionListItem]], Optional[bool]],
+    items_callback: Callable[[DataPackageBody, List[DataPackageListItem]], Optional[bool]],
     buffer_size: int,
-    body: SubscriptionBody,
+    body: DataPackageBody,
 ) -> bool:
     name = ""
     modified: Optional[datetime] = None
-    items: List[SubscriptionListItem] = []
+    items: List[DataPackageListItem] = []
 
     for prefix, event, value in ijson_parse:
         if event == "end_map":
@@ -68,7 +68,7 @@ def _get_subscription_list_iterative_pars_items(
                 raise Exception("bad format: name was not found")
             if modified is None:
                 raise Exception("bad format: modified was not found")
-            items.append(SubscriptionListItem(name, modified))
+            items.append(DataPackageListItem(name, modified))
             name = ""
             modified = None
             if len(items) == buffer_size:
@@ -91,11 +91,11 @@ def _get_subscription_list_iterative_pars_items(
     return True
 
 
-def get_subscription_list(self: "WebApi", if_modified_since: datetime = None) -> OldSubscriptionList:
+def get_data_package_list(self: "WebApi", if_modified_since: datetime = None) -> DataPackageList:
     # pylint: disable=line-too-long
     """
-    Get the items in the subscription list.
-    .. Important:: For large lists you might want to use `macrobond_data_api.web.web_api.WebApi.get_subscription_list_iterative`.
+    Get the items in the data package.
+    .. Important:: For large lists you might want to use `macrobond_data_api.web.web_api.WebApi.get_datapackage_list_iterative`.
 
     Typically you want to pass the date of time_stamp_for_if_modified_since from response of the previous call
     to get incremental updates.
@@ -111,7 +111,7 @@ def get_subscription_list(self: "WebApi", if_modified_since: datetime = None) ->
     `macrobond_data_api.web.web_types.subscription_list.SubscriptionList`
     """
     # pylint: enable=line-too-long
-    return OldSubscriptionList(self.session.series.get_subscription_list(if_modified_since))
+    return DataPackageList(self.session.series.get_data_package_list(if_modified_since))
 
 
 # TODO: @mb-jp ree add cooment to get_subscription_list_iterative , when SubscriptionListPoller is done
@@ -119,16 +119,16 @@ def get_subscription_list(self: "WebApi", if_modified_since: datetime = None) ->
 # want to use `macrobond_data_api.web.subscription_list_poller.SubscriptionListPoller`.
 
 
-def get_subscription_list_iterative(
+def get_data_package_list_iterative(
     self: "WebApi",
-    body_callback: Callable[[SubscriptionBody], Optional[bool]],
-    items_callback: Callable[[SubscriptionBody, List[SubscriptionListItem]], Optional[bool]],
+    body_callback: Callable[[DataPackageBody], Optional[bool]],
+    items_callback: Callable[[DataPackageBody, List[DataPackageListItem]], Optional[bool]],
     if_modified_since: datetime = None,
     buffer_size: int = 200,
-) -> Optional[SubscriptionBody]:
+) -> Optional[DataPackageBody]:
     # pylint: disable=line-too-long
     """
-    Process the subscription list in batches.
+    Process the data package list in batches.
     This is more efficient since the complete list does not have to be in memory.
 
     Typically you want to pass the date of time_stamp_for_if_modified_since from response of the previous call
@@ -136,10 +136,10 @@ def get_subscription_list_iterative(
 
     Parameters
     ----------
-    body_callback : `Callable[[macrobond_data_api.web.web_types.subscription_body.SubscriptionBody], Optional[bool]]`
+    body_callback : `Callable[[macrobond_data_api.web.web_types.data_package_body.DataPackageBody], Optional[bool]]`
         The callback for the body. This call comes first. Return True to continue processing.
 
-    items_callback : Callable[[macrobond_data_api.web.web_types.subscription_body.SubscriptionBody, List[macrobond_data_api.web.web_types.subscription_list_item.SubscriptionListItem]], Optional[bool]]
+    items_callback : Callable[[macrobond_data_api.web.web_types.data_package_body.DataPackageBody, List[macrobond_data_api.web.web_types.data_package_list_item.DataPackageListItem]], Optional[bool]]
         The callback for each batch of items. Return True to continue processing.
 
     if_modified_since : datetime
@@ -150,11 +150,11 @@ def get_subscription_list_iterative(
         The maximum number of items to include in each callback
     Returns
     -------
-    `macrobond_data_api.web.web_types.subscription_body.SubscriptionBody`
+    `macrobond_data_api.web.web_types.data_package_body.DataPackageBody`
     """
     # pylint: enable=line-too-long
     params = {}
-    body: Optional[SubscriptionBody] = None
+    body: Optional[DataPackageBody] = None
 
     if if_modified_since:
         params["ifModifiedSince"] = if_modified_since.isoformat()
@@ -167,7 +167,7 @@ def get_subscription_list_iterative(
             time_stamp_for_if_modified_since,
             download_full_list_on_or_after,
             state,
-        ) = _get_subscription_list_iterative_pars_body(ijson_parse)
+        ) = _get_data_package_list_iterative_pars_body(ijson_parse)
 
         if state is None:
             raise Exception("bad format: state was not found")
@@ -176,11 +176,11 @@ def get_subscription_list_iterative(
         if not if_modified_since and download_full_list_on_or_after is None:
             raise Exception("bad format: downloadFullListOnOrAfter was not found")
 
-        body = SubscriptionBody(time_stamp_for_if_modified_since, download_full_list_on_or_after, state)
+        body = DataPackageBody(time_stamp_for_if_modified_since, download_full_list_on_or_after, state)
         if body_callback(body) is False:
             return None
 
-        if _get_subscription_list_iterative_pars_items(ijson_parse, items_callback, buffer_size, body) is False:
+        if _get_data_package_list_iterative_pars_items(ijson_parse, items_callback, buffer_size, body) is False:
             return None
 
         return body

@@ -3,7 +3,7 @@
 from enum import IntEnum
 
 
-class SubscriptionListState(IntEnum):
+class DataPackageListState(IntEnum):
     """The statate of the subscription list."""
 
     FULL_LISTING = 0
@@ -26,15 +26,14 @@ class SubscriptionListState(IntEnum):
 
     def __repr__(self) -> str:
         if self == self.FULL_LISTING:
-            return f"SubscriptionList State {int(self)}, A complete listing of all series."
+            return f"DataPacakgeList State {int(self)}, A complete listing of all series."
 
         if self == self.UP_TO_DATE:
             return (
-                f"SubscriptionList State {int(self)},"
-                + " The list contains all updates since the specified start date."
+                f"DataPacakgeList State {int(self)}," + " The list contains all updates since the specified start date."
             )
 
         if self == self.INCOMPLETE:
-            return f"SubscriptionList State {int(self)}, The list might not contain all updates."
+            return f"DataPacakgeList State {int(self)}, The list might not contain all updates."
 
-        return f"SubscriptionList State {int(self)}"
+        return f"DataPacakgeList State {int(self)}"

@@ -5,20 +5,20 @@ import time
 from typing import List, Optional, cast, TYPE_CHECKING, Callable
 
 from macrobond_data_api.web import WebApi
-from .web_types.subscription_list_state import SubscriptionListState
+from .web_types.data_package_list_state import DataPackageListState
 
 if TYPE_CHECKING:  # pragma: no cover
-    from .web_types import SubscriptionBody, SubscriptionListItem
+    from .web_types import DataPackageBody, DataPackageListItem
 
 
 class _AbortException(Exception):
     ...
 
 
-class _SubscriptionListPoller(ABC):
+class _DataPackageListPoller(ABC):
     """
     This is work in progress and might change soon.
-    Run a loop polling for changed series in the subscription list.
+    Run a loop polling for changed series in the data package list.
     Derive from this class and override `on_full_listing_start`, `on_full_listing_items`, `on_full_listing_stop`,
     `on_incremental_start`, `on_incremental_items` and `on_incremental_stop`.
 
@@ -93,17 +93,17 @@ class _SubscriptionListPoller(ABC):
 
             self._sleep(self.up_to_date_delay)
 
-    def _run_full_listing(self, max_attempts: int = 3) -> Optional["SubscriptionBody"]:
+    def _run_full_listing(self, max_attempts: int = 3) -> Optional["DataPackageBody"]:
         is_stated = False
 
-        def _body_callback(body: "SubscriptionBody") -> None:
+        def _body_callback(body: "DataPackageBody") -> None:
             is_stated = True  # pylint: disable=unused-variable
             self.on_full_listing_start(body)
 
         try:
             for attempt in range(1, max_attempts):
                 try:
-                    sub = self._api.get_subscription_list_iterative(
+                    sub = self._api.get_data_package_list_iterative(
                         _body_callback,
                         self.on_full_listing_items,
                         None,
@@ -127,17 +127,17 @@ class _SubscriptionListPoller(ABC):
                 self.on_full_listing_stop(False, ex)
         return None
 
-    def _run_listing(self, if_modified_since: datetime, max_attempts: int = 3) -> Optional["SubscriptionBody"]:
+    def _run_listing(self, if_modified_since: datetime, max_attempts: int = 3) -> Optional["DataPackageBody"]:
         is_stated = False
 
-        def _body_callback(body: "SubscriptionBody") -> None:
+        def _body_callback(body: "DataPackageBody") -> None:
             is_stated = True  # pylint: disable=unused-variable
             self.on_incremental_start(body)
 
         try:
             for attempt in range(1, max_attempts):
                 try:
-                    sub = self._api.get_subscription_list_iterative(
+                    sub = self._api.get_data_package_list_iterative(
                         _body_callback,
                         self.on_incremental_items,
                         if_modified_since,
@@ -153,7 +153,7 @@ class _SubscriptionListPoller(ABC):
             if not sub:
                 raise ValueError("subscription is None")
 
-            if sub.state == SubscriptionListState.UP_TO_DATE:
+            if sub.state == DataPackageListState.UP_TO_DATE:
                 self.on_incremental_stop(False, None)
                 return sub
 
@@ -170,12 +170,12 @@ class _SubscriptionListPoller(ABC):
 
     def _run_listing_incomplete(
         self, if_modified_since: datetime, is_stated: bool, max_attempts: int = 3
-    ) -> Optional["SubscriptionBody"]:
+    ) -> Optional["DataPackageBody"]:
         try:
             while True:
                 for attempt in range(1, max_attempts):
                     try:
-                        sub = self._api.get_subscription_list_iterative(
+                        sub = self._api.get_data_package_list_iterative(
                             lambda _: None,
                             self.on_incremental_items,
                             if_modified_since,
@@ -184,7 +184,7 @@ class _SubscriptionListPoller(ABC):
                         if not sub:
                             raise ValueError("subscription is None")
 
-                        if sub.state == SubscriptionListState.UP_TO_DATE:
+                        if sub.state == DataPackageListState.UP_TO_DATE:
                             self.on_incremental_stop(False, None)
                             return sub
 
@@ -208,11 +208,11 @@ class _SubscriptionListPoller(ABC):
     # full_listing
 
     @abstractmethod
-    def on_full_listing_start(self, subscription: "SubscriptionBody") -> None:
+    def on_full_listing_start(self, subscription: "DataPackageBody") -> None:
         """This override is called when a full listing starts."""
 
     @abstractmethod
-    def on_full_listing_items(self, subscription: "SubscriptionBody", items: List["SubscriptionListItem"]) -> None:
+    def on_full_listing_items(self, subscription: "DataPackageBody", items: List["DataPackageListItem"]) -> None:
         """This override is called repeatedly with one or more items until all items are listed."""
 
     @abstractmethod
@@ -230,11 +230,11 @@ class _SubscriptionListPoller(ABC):
     # listing
 
     @abstractmethod
-    def on_incremental_start(self, subscription: "SubscriptionBody") -> None:
+    def on_incremental_start(self, subscription: "DataPackageBody") -> None:
         """This override is called when an incremental listing starts."""
 
     @abstractmethod
-    def on_incremental_items(self, subscription: "SubscriptionBody", items: List["SubscriptionListItem"]) -> None:
+    def on_incremental_items(self, subscription: "DataPackageBody", items: List["DataPackageListItem"]) -> None:
         """This override is called repeatedly with one or more items until all updated items are listed."""
 
     @abstractmethod

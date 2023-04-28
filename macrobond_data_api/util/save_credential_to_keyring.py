@@ -46,7 +46,7 @@ def _remove_duplicates(service_name: str, username: str, warn_before_removing: b
 def _test_keyring_backend() -> bool:
     try:
         keyring_backend = keyring.get_keyring()
-    except Exception:  # pylint: disable=broad-exception-caught
+    except Exception:  # pylint: disable=W0703
         print(traceback.format_exc())
         print("Error: failed to get keyring")
         return False
@@ -141,7 +141,7 @@ def save_credential_to_keyring(warn_before_removing: bool = True, ask_for_servic
     try:
         with WebClient(username=username, password=password) as api:
             api.metadata_get_attribute_information("PrimName")
-    except Exception:  # pylint: disable=broad-exception-caught
+    except Exception:  # pylint: disable=W0703
         print(traceback.format_exc())
         print("Error: failed testing username and password")
         return False
@@ -155,7 +155,7 @@ def save_credential_to_keyring(warn_before_removing: bool = True, ask_for_servic
     try:
         with WebClient() as api:
             api.metadata_get_attribute_information("PrimName")
-    except Exception:  # pylint: disable=broad-exception-caught
+    except Exception:  # pylint: disable=W0703
         print(traceback.format_exc())
         print("Error: failed testing keyring")
         return False

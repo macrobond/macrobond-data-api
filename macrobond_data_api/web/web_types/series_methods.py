@@ -263,7 +263,7 @@ class SeriesMethods:
         return cast(List["SeriesObservationHistoryResponse"], response.json())
 
     # Get /v1/series/getsubscriptionlist
-    def get_subscription_list(self, if_modified_since: datetime = None) -> "FeedEntitiesResponse":
+    def get_data_package_list(self, if_modified_since: datetime = None) -> "FeedEntitiesResponse":
         """
         Get a list of entities in the subscription list and timestamps when they were last changed.
         You can specify a timestamp to see what has changed since then. For this the

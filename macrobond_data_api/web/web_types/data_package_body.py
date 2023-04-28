@@ -4,22 +4,22 @@ from typing import Optional
 
 from datetime import datetime
 
-from .subscription_list_state import SubscriptionListState
+from .data_package_list_state import DataPackageListState
 
 
 @dataclass(init=False)
-class SubscriptionBody:
+class DataPackageBody:
     __slots__ = ("time_stamp_for_if_modified_since", "download_full_list_on_or_after", "state")
 
     time_stamp_for_if_modified_since: datetime
     download_full_list_on_or_after: Optional[datetime]
-    state: SubscriptionListState
+    state: DataPackageListState
 
     def __init__(
         self,
         time_stamp_for_if_modified_since: datetime,
         download_full_list_on_or_after: Optional[datetime],
-        state: SubscriptionListState,
+        state: DataPackageListState,
     ) -> None:
         self.time_stamp_for_if_modified_since = time_stamp_for_if_modified_since
         """
