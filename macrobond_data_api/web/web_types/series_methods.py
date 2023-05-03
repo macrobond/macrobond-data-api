@@ -262,7 +262,7 @@ class SeriesMethods:
         )
         return cast(List["SeriesObservationHistoryResponse"], response.json())
 
-    # Get /v1/series/getsubscriptionlist
+    # Get /v1/series/getdatapackagelist
     def get_data_package_list(self, if_modified_since: datetime = None) -> "FeedEntitiesResponse":
         """
         Get a list of entities in the subscription list and timestamps when they were last changed.
@@ -285,7 +285,7 @@ class SeriesMethods:
         if if_modified_since:
             params["ifModifiedSince"] = if_modified_since.isoformat()
 
-        response = self.__session.get_or_raise("v1/series/getsubscriptionlist", params=params)
+        response = self.__session.get_or_raise("v1/series/getdatapackagelist", params=params)
         return cast("FeedEntitiesResponse", response.json())
 
     # Get /v1/series/entityinfofordisplay

@@ -159,7 +159,7 @@ def get_data_package_list_iterative(
     if if_modified_since:
         params["ifModifiedSince"] = if_modified_since.isoformat()
 
-    with self._session.get("v1/series/getsubscriptionlist", params=params, stream=True) as response:
+    with self._session.get("v1/series/datapackagelist", params=params, stream=True) as response:
         _raise_on_error(response)
         ijson_parse = ijson.parse(response.raw)
 
