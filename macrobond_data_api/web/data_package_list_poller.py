@@ -4,7 +4,7 @@ from datetime import datetime, timezone
 import time
 from typing import List, Optional, cast, TYPE_CHECKING, Callable
 
-from macrobond_data_api.web import WebApi
+from .web_api import WebApi
 from .web_types.data_package_list_state import DataPackageListState
 
 if TYPE_CHECKING:  # pragma: no cover
@@ -15,7 +15,7 @@ class _AbortException(Exception):
     ...
 
 
-class _DataPackageListPoller(ABC):
+class DataPackageListPoller(ABC):
     """
     This is work in progress and might change soon.
     Run a loop polling for changed series in the data package list.
@@ -73,6 +73,7 @@ class _DataPackageListPoller(ABC):
 
     def start(self) -> None:
         """Start processing. It will continue to run until `abort` is called."""
+        self._test_access()
         self._abort = False
         while not self._abort:
             if not self._time_stamp_for_if_modified_since or (
@@ -92,6 +93,12 @@ class _DataPackageListPoller(ABC):
                 return
 
             self._sleep(self.up_to_date_delay)
+
+    def _test_access(self) -> None:
+        params = {"ifModifiedSince": datetime(3000, 1, 1, tzinfo=timezone.utc)}
+        response = self._api.session.get("v1/series/getdatapackagelist", params=params)
+        if response.status_code == 403:
+            raise Exception("Needs access - The account is not set up to use DataPackageList")
 
     def _run_full_listing(self, max_attempts: int = 3) -> Optional["DataPackageBody"]:
         is_stated = False

@@ -1,3 +1,4 @@
+from datetime import datetime, timezone
 from typing import List
 
 import pytest  # type: ignore[attr-defined]
@@ -36,16 +37,24 @@ def test(api: Api) -> None:  # pylint: disable=unused-argument
     result5.to_dict()
 
 
+def _test_access(web: WebApi) -> None:
+    params = {"ifModifiedSince": datetime(3000, 1, 1, tzinfo=timezone.utc)}
+    response = web.session.get("v1/series/getdatapackagelist", params=params)
+    if response.status_code == 403:
+        pytest.skip("Needs access - The account is not set up to use a subscription list")
+
+
 class TestWeb:
     @pytest.mark.usefixtures("assert_no_warnings")
     def test_get_data_package_list(self, web: WebApi) -> None:
-        pytest.skip("needs access")
+        _test_access(web)
+
         result = web.get_data_package_list()  # pylint: disable=unused-variable
         breakpoint()  # pylint: disable=forgotten-debug-statement
 
     @pytest.mark.usefixtures("assert_no_warnings")
     def test_get_data_package_list_iterative(self, web: WebApi) -> None:
-        pytest.skip("needs access")
+        _test_access(web)
 
         def empty_method_1(body: DataPackageBody) -> bool:  # pylint: disable=unused-argument
             return True
@@ -61,7 +70,5 @@ class TestWeb:
     @pytest.mark.usefixtures("assert_no_warnings")
     @pytest.mark.parametrize("api", ["web", "com"], indirect=True)
     def test_get_many_series_with_revisions(self, api: Api) -> None:
-        pytest.skip("needs access")
-
         for _ in api.get_many_series_with_revisions([RevisionHistoryRequest("usgdp"), RevisionHistoryRequest("uscpi")]):
             ...
