@@ -51,4 +51,6 @@ from .data_package_list_state import DataPackageListState
 
 from .data_pacakge_list_item import DataPackageListItem
 
+from .data_package_list import DataPackageList
+
 from .data_package_body import DataPackageBody

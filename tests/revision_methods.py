@@ -22,9 +22,9 @@ def test_get_vintage_series_error(api: Api) -> None:
 
 
 @pytest.mark.parametrize("api", ["web", "com"], indirect=True)
-def test_get_vintage_series_error_time(api: Api) -> None:
-    with pytest.raises(ValueError, match="Invalid time"):
-        api.get_vintage_series(datetime(1800, 4, 1), ["gbgdp"])
+def test_get_vintage_series_revision_time_stamp_is_none(api: Api) -> None:
+    data = api.get_vintage_series(datetime(1970, 4, 1), ["gbgdp"])
+    assert data[0].revision_time_stamp is None
 
 
 @pytest.mark.parametrize("api", ["web", "com"], indirect=True)
