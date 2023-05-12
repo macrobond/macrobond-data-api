@@ -105,11 +105,6 @@ def get_vintage_series(
 
         metadata = self.session._create_metadata(response["metadata"])
 
-        revision_time_stamp = cast(str, metadata.get("RevisionTimeStamp"))
-
-        if not revision_time_stamp or time != revision_time_stamp:
-            raise ValueError("Invalid time")
-
         values = [float(x) if x else None for x in cast(List[Optional[int]], response["values"])]
         dates = [_parse_iso8601(x) for x in cast(List[str], response["dates"])]
 

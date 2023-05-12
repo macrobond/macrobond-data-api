@@ -95,7 +95,7 @@ def get_data_package_list(self: "WebApi", if_modified_since: datetime = None) ->
     # pylint: disable=line-too-long
     """
     Get the items in the data package.
-    .. Important:: For large lists you might want to use `macrobond_data_api.web.web_api.WebApi.get_datapackage_list_iterative`.
+    .. Important:: For large lists you might want to use `macrobond_data_api.web.web_api.WebApi.get_data_package_list_iterative`.
 
     Typically you want to pass the date of time_stamp_for_if_modified_since from response of the previous call
     to get incremental updates.
@@ -108,7 +108,7 @@ def get_data_package_list(self: "WebApi", if_modified_since: datetime = None) ->
 
     Returns
     -------
-    `macrobond_data_api.web.web_types.subscription_list.SubscriptionList`
+    `macrobond_data_api.web.web_types.data_package_list.DataPackageList`
     """
     # pylint: enable=line-too-long
     return DataPackageList(self.session.series.get_data_package_list(if_modified_since))
@@ -139,7 +139,7 @@ def get_data_package_list_iterative(
     body_callback : `Callable[[macrobond_data_api.web.web_types.data_package_body.DataPackageBody], Optional[bool]]`
         The callback for the body. This call comes first. Return True to continue processing.
 
-    items_callback : Callable[[macrobond_data_api.web.web_types.data_package_body.DataPackageBody, List[macrobond_data_api.web.web_types.data_package_list_item.DataPackageListItem]], Optional[bool]]
+    items_callback : Callable[[macrobond_data_api.web.web_types.data_package_body.DataPackageBody, List[macrobond_data_api.web.web_types.data_pacakge_list_item.DataPackageListItem]], Optional[bool]]
         The callback for each batch of items. Return True to continue processing.
 
     if_modified_since : datetime
