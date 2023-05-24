@@ -30,7 +30,7 @@ class SubscriptionList:
 
     def __init__(self, session: Session, last_modified: datetime, poll_interval: timedelta = timedelta(seconds=15)):
         self._session = session
-        self.last_modified = last_modified
+        self.last_modified = last_modified - timedelta(seconds=5)
         """
         Stores the date for when the subscription list was last modified.
         """

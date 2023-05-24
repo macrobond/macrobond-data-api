@@ -5,7 +5,15 @@ from pandas.testing import assert_frame_equal  # type: ignore
 from macrobond_data_api.web import WebApi
 from macrobond_data_api.com import ComApi
 
-test_data = ["ustrad4488", "usgdp", "uscpi", "ct_au_e_ao_c_22_v", "wocaes0868", "weceti_se_0007"]
+test_data = [
+    "ustrad4488",
+    "usgdp",
+    "uscpi",
+    "ct_au_e_ao_c_22_v",
+    "wocaes0868",
+    "weceti_se_0007",
+    "bls_ipujn51112_w011000000",
+]
 
 
 @pytest.mark.parametrize("name", test_data)
