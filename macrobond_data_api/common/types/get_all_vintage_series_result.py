@@ -36,15 +36,24 @@ class GetAllVintageSeriesResult(Sequence[VintageSeries]):
         """
         import pandas  # pylint: disable=import-outside-toplevel
 
-        return pandas.DataFrame(
+        df = pandas.DataFrame(
             {
                 **{"date": self.series[len(self.series) - 1].dates},
-                **{
-                    x.revision_time_stamp: pandas.Series(data=x.values, name="Value", dtype="float64")  # type: ignore
-                    for x in self.series
-                },
             }
         )
+
+        for x in self.series:
+            df_to_merge = pandas.DataFrame(
+                {
+                    **{"date": x.dates},
+                    **{
+                        x.revision_time_stamp: pandas.Series(data=x.values, name="Value", dtype="float64")  # type: ignore
+                    },
+                }
+            )
+            df = df.merge(df_to_merge, how="left", left_on="date", right_on="date")
+
+        return df
 
     def to_dict(self) -> Dict[str, Any]:
         """
