@@ -18,10 +18,16 @@ def test_parse_iso8601() -> None:
     assert _parse_iso8601("2000-02-03T04:05") == datetime(2000, 2, 3, 4, 5)
     assert _parse_iso8601("20000203T040506") == datetime(2000, 2, 3, 4, 5, 6)
     assert _parse_iso8601("2000-02-03T04:05:06") == datetime(2000, 2, 3, 4, 5, 6)
-    assert _parse_iso8601("20000203T040506.700") == datetime(2000, 2, 3, 4, 5, 6, 700)
-    assert _parse_iso8601("2000-02-03T04:05:06.700") == datetime(2000, 2, 3, 4, 5, 6, 700)
-    assert _parse_iso8601("20000203T040506,700") == datetime(2000, 2, 3, 4, 5, 6, 700)
-    assert _parse_iso8601("2000-02-03T04:05:06,700") == datetime(2000, 2, 3, 4, 5, 6, 700)
+    assert _parse_iso8601("20000203T040506.7") == datetime(2000, 2, 3, 4, 5, 6, 700000)
+    assert _parse_iso8601("2000-02-03T04:05:06.7") == datetime(2000, 2, 3, 4, 5, 6, 700000)
+    assert _parse_iso8601("20000203T040506.70") == datetime(2000, 2, 3, 4, 5, 6, 700000)
+    assert _parse_iso8601("2000-02-03T04:05:06.70") == datetime(2000, 2, 3, 4, 5, 6, 700000)
+    assert _parse_iso8601("20000203T040506.700") == datetime(2000, 2, 3, 4, 5, 6, 700000)
+    assert _parse_iso8601("2000-02-03T04:05:06.700") == datetime(2000, 2, 3, 4, 5, 6, 700000)
+    assert _parse_iso8601("20000203T040506.700000") == datetime(2000, 2, 3, 4, 5, 6, 700000)
+    assert _parse_iso8601("2000-02-03T04:05:06.700000") == datetime(2000, 2, 3, 4, 5, 6, 700000)
+    assert _parse_iso8601("20000203T040506,700") == datetime(2000, 2, 3, 4, 5, 6, 700000)
+    assert _parse_iso8601("2000-02-03T04:05:06,700") == datetime(2000, 2, 3, 4, 5, 6, 700000)
     assert _parse_iso8601("20000203T040506Z") == datetime(2000, 2, 3, 4, 5, 6, tzinfo=timezone.utc)
     assert _parse_iso8601("2000-02-03T04:05:06Z") == datetime(2000, 2, 3, 4, 5, 6, tzinfo=timezone.utc)
     assert _parse_iso8601("20000203T040506+01") == datetime(2000, 2, 3, 4, 5, 6, tzinfo=timezone(timedelta(hours=1)))
@@ -80,8 +86,6 @@ def test_parse_iso8601() -> None:
         _parse_iso8601("2000T01:02:0304")
     with pytest.raises(FormatException, match="Millisecond is missing or malformatted"):
         _parse_iso8601("2000T01:02:03.")
-    with pytest.raises(FormatException, match="Millisecond is missing or malformatted"):
-        _parse_iso8601("2000T01:02:03.4")
     with pytest.raises(FormatException, match="Missing : in extended format"):
         _parse_iso8601("2000T01:0203")
     with pytest.raises(FormatException, match="Missing : in extended format"):
