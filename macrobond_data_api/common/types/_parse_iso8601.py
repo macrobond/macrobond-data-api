@@ -87,9 +87,11 @@ def _parse_time(s: str, tz: Optional[timezone]) -> time:  # pylint: disable=too-
 
     if s[6] not in [".", ","]:
         raise FormatException("Millisecond must be delimited by . or ,")
-    if len(s) < 10 or not s[7:10].isascii() or not s[7:10].isdigit():
+
+    if len(s) < 8 or not s[7:].isascii() or not s[7:].isdigit():
         raise FormatException("Millisecond is missing or malformatted")
-    ms = int(s[7:10])
+    exp = 10 ** (6 - (len(s) - 7))
+    ms = int(int(s[7:]) * exp)
     return time(hour, minute, second, ms, tzinfo=tz)
 
 
