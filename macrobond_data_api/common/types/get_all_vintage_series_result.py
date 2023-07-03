@@ -43,14 +43,11 @@ class GetAllVintageSeriesResult(Sequence[VintageSeries]):
         )
 
         for x in self.series:
-            df_to_merge = pandas.DataFrame(
-                {
-                    **{"date": x.dates},
-                    **{
-                        x.revision_time_stamp: pandas.Series(data=x.values, name="Value", dtype="float64")  # type: ignore
-                    },
-                }
-            )
+            arg: Any = {
+                **{"date": x.dates},
+                **{x.revision_time_stamp: pandas.Series(data=x.values, name="Value", dtype="float64")},
+            }
+            df_to_merge = pandas.DataFrame(arg)
             df = df.merge(df_to_merge, how="left", left_on="date", right_on="date")
 
         return df
