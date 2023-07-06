@@ -1,6 +1,7 @@
-from typing import Any, TYPE_CHECKING, Sequence, Dict
+from typing import Any, TYPE_CHECKING, Sequence
 from datetime import datetime, timezone
 
+from ._metadata import _Metadata
 
 try:
     from pywintypes import TimeType
@@ -8,10 +9,10 @@ except ImportError as ex:
     ...
 
 if TYPE_CHECKING:  # pragma: no cover
+    from .com_api import ComApi
     from .com_types import Entity as ComEntity
     from .com_types import Series as ComSeries
     from .com_types import Metadata as ComMetadata
-    from macrobond_data_api.common.types.metadata import Metadata
     from macrobond_data_api.common.types.values_metadata import ValuesMetadata
 
 
@@ -58,20 +59,25 @@ def _get_val(name: str, values: Sequence[Any]) -> Any:
     return values[0] if len(values) == 1 else list(values)
 
 
-def _fill_metadata_from_metadata(com_metadata: "ComMetadata", add_empty_revision_time_stamp: bool = False) -> Dict:
-    metadata = {x: _get_val(x, com_metadata.GetValues(x)) for x, _ in com_metadata.ListNames()}
+def _fill_metadata_from_metadata(
+    com_metadata: "ComMetadata", api: "ComApi", add_empty_revision_time_stamp: bool = False
+) -> _Metadata:
+    metadata = _Metadata(
+        {x: _get_val(x, com_metadata.GetValues(x)) for x, _ in com_metadata.ListNames()}, api._metadata_type_directory
+    )
     if add_empty_revision_time_stamp and "RevisionTimeStamp" not in metadata:
         metadata["RevisionTimeStamp"] = None
     return metadata
 
 
-def _fill_metadata_from_entity(com_entity: "ComEntity") -> "Metadata":
-    ret = _fill_metadata_from_metadata(com_entity.Metadata)
-    ret.setdefault("FullDescription", com_entity.Title)
+def _fill_metadata_from_entity(com_entity: "ComEntity", api: "ComApi") -> _Metadata:
+    ret = _fill_metadata_from_metadata(com_entity.Metadata, api)
+    if "FullDescription" not in ret:
+        ret["FullDescription"] = com_entity.Title
     return ret
 
 
 def _fill_values_metadata_from_series(
-    com_series: "ComSeries", add_empty_revision_time_stamp: bool = False
+    com_series: "ComSeries", api: "ComApi", add_empty_revision_time_stamp: bool = False
 ) -> "ValuesMetadata":
-    return [_fill_metadata_from_metadata(x, add_empty_revision_time_stamp) for x in com_series.ValuesMetadata]
+    return [_fill_metadata_from_metadata(x, api, add_empty_revision_time_stamp) for x in com_series.ValuesMetadata]

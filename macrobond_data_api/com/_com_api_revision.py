@@ -154,7 +154,7 @@ def get_vintage_series(
 
         if include_times_of_change:
             if series_with_revisions.HasRevisions:
-                values_metadata = _fill_values_metadata_from_series(series, True)
+                values_metadata = _fill_values_metadata_from_series(series, self, True)
             else:
                 values_metadata = [{}] * len(values)
         else:
@@ -164,7 +164,7 @@ def get_vintage_series(
             series_name,
             "",
             StatusCode.OK,
-            _fill_metadata_from_entity(series),
+            _fill_metadata_from_entity(series, self),
             values_metadata,
             values,
             _datetime_to_datetime_timezone(dates),
@@ -222,14 +222,20 @@ def get_nth_release(
 
         if include_times_of_change:
             if series_with_revisions.HasRevisions:
-                values_metadata = _fill_values_metadata_from_series(series)
+                values_metadata = _fill_values_metadata_from_series(series, self)
             else:
                 values_metadata = [{}] * len(values)
         else:
             values_metadata = None
 
         return Series(
-            series_name, None, StatusCode.OK, _fill_metadata_from_entity(series), values_metadata, values, dates
+            series_name,
+            None,
+            StatusCode.OK,
+            _fill_metadata_from_entity(series, self),
+            values_metadata,
+            values,
+            dates,
         )
 
     series = [to_obj(x) for x in series_names]
@@ -253,7 +259,7 @@ def get_all_vintage_series(self: "ComApi", series_name: str) -> GetAllVintageSer
             name,
             None,
             StatusCode.OK,
-            _fill_metadata_from_entity(com_series),
+            _fill_metadata_from_entity(com_series, self),
             None,
             values,
             _datetime_to_datetime_timezone(dates),
@@ -276,7 +282,14 @@ def get_all_vintage_series(self: "ComApi", series_name: str) -> GetAllVintageSer
         return GetAllVintageSeriesResult(
             [
                 VintageSeries(
-                    series_name, None, StatusCode.OK, _fill_metadata_from_entity(series), None, values, dates, None
+                    series_name,
+                    None,
+                    StatusCode.OK,
+                    _fill_metadata_from_entity(series, self),
+                    None,
+                    values,
+                    dates,
+                    None,
                 )
             ],
             series_name,
@@ -375,7 +388,7 @@ def get_many_series_with_revisions(
             raise Exception(series_with_revisions.ErrorMessage)
 
         head = series_with_revisions.Head
-        metadata = _fill_metadata_from_entity(head)
+        metadata = _fill_metadata_from_entity(head, self)
         last_modified_time = metadata["LastModifiedTimeStamp"]
 
         if (

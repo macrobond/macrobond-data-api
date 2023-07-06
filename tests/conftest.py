@@ -159,14 +159,7 @@ def _test(
 
                 assert web_datetime == com_datetime, "key " + key
             else:
-                if (
-                    isinstance(web_obj.metadata[key], list)
-                    and not isinstance(com_obj.metadata[key], list)
-                    and len(web_obj.metadata[key]) == 1
-                ):
-                    assert web_obj.metadata[key][0] == com_obj.metadata[key], "key " + key
-                else:
-                    assert web_obj.metadata[key] == com_obj.metadata[key], "key " + key
+                assert web_obj.metadata[key] == com_obj.metadata[key], "key " + key
 
         web_obj.metadata = {}
         com_obj.metadata = {}
