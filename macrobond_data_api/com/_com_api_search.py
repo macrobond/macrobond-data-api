@@ -13,8 +13,6 @@ if TYPE_CHECKING:  # pragma: no cover
 
     from .com_types import SearchQuery
 
-    from .com_types import Entity as ComEntity
-
 
 def entity_search_multi_filter(
     self: "ComApi",
@@ -55,4 +53,4 @@ def entity_search_multi_filter(
         querys.append(query)
 
     result = self.database.Search(querys)
-    return SearchResult([_fill_metadata_from_entity(x) for x in result.Entities], result.IsTruncated)
+    return SearchResult([_fill_metadata_from_entity(x, self) for x in result.Entities], result.IsTruncated)

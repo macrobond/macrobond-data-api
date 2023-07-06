@@ -32,20 +32,20 @@ def _datetime_to_datetime(dates: Sequence[datetime]) -> List[datetime]:
     return [datetime(x.year, x.month, x.day, x.hour, x.minute, x.second, x.microsecond) for x in dates]
 
 
-def _create_entity(com_entity: "ComEntity", name: str) -> Entity:
+def _create_entity(com_entity: "ComEntity", name: str, api: "ComApi") -> Entity:
     if com_entity.IsError:
         return Entity(name, com_entity.ErrorMessage, _error_message_to_status_code(com_entity), None)
-    return Entity(name, None, StatusCode.OK, _fill_metadata_from_entity(com_entity))
+    return Entity(name, None, StatusCode.OK, _fill_metadata_from_entity(com_entity, api))
 
 
-def _create_series(com_series: "ComSeries", name: str) -> Series:
+def _create_series(com_series: "ComSeries", name: str, api: "ComApi") -> Series:
     if com_series.IsError:
         return Series(name, com_series.ErrorMessage, _error_message_to_status_code(com_series), None, None, None, None)
     return Series(
         name,
         None,
         StatusCode.OK,
-        _fill_metadata_from_entity(com_series),
+        _fill_metadata_from_entity(com_series, api),
         None,
         [None if isnan(x) else x for x in com_series.Values],
         _datetime_to_datetime(com_series.DatesAtStartOfPeriod),
@@ -59,7 +59,7 @@ def get_one_series(self: "ComApi", series_name: str, raise_error: bool = None) -
 def get_series(self: "ComApi", series_names: Sequence[str], raise_error: Optional[bool] = None) -> Sequence[Series]:
     series_names = tuple(series_names)
     com_series = self.database.FetchSeries(series_names)
-    series = [_create_series(x, y) for x, y in zip(com_series, series_names)]
+    series = [_create_series(x, y, self) for x, y in zip(com_series, series_names)]
     if self.raise_error if raise_error is None else raise_error:
         GetEntitiesError._raise_if([(x, y.error_message) for x, y in zip(series_names, series)])
     return _ReprHtmlSequence(series)
@@ -72,7 +72,7 @@ def get_one_entity(self: "ComApi", entity_name: str, raise_error: bool = None) -
 def get_entities(self: "ComApi", entity_names: Sequence[str], raise_error: bool = None) -> Sequence[Entity]:
     entity_names = tuple(entity_names)
     com_entitys = self.database.FetchEntities(entity_names)
-    entitys = [_create_entity(x, y) for x, y in zip(com_entitys, entity_names)]
+    entitys = [_create_entity(x, y, self) for x, y in zip(com_entitys, entity_names)]
     if self.raise_error if raise_error is None else raise_error:
         GetEntitiesError._raise_if([(x, y.error_message) for x, y in zip(entity_names, entitys)])
     return _ReprHtmlSequence(entitys)
@@ -164,7 +164,7 @@ def get_unified_series(
         return UnifiedSeries(
             name,
             "",
-            _fill_metadata_from_entity(com_one_series),
+            _fill_metadata_from_entity(com_one_series, self),
             [None if isnan(x) else x for x in com_one_series.Values],
         )
 

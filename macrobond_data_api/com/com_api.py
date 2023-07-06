@@ -2,6 +2,8 @@ from typing import TYPE_CHECKING, Optional
 
 from macrobond_data_api.common import Api
 
+from ._metadata_directory import _MetadataTypeDirectory
+
 from ._com_api_metadata import (
     metadata_get_attribute_information,
     metadata_get_value_information,
@@ -46,6 +48,7 @@ class ComApi(Api):
     def __init__(self, connection: "Connection") -> None:
         super().__init__()
         self._connection = connection
+        self._metadata_type_directory = _MetadataTypeDirectory(connection)
 
     @property
     def connection(self) -> "Connection":
