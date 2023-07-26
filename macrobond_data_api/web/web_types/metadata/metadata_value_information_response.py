@@ -1,5 +1,4 @@
-from typing import Optional, Any, List
-from typing_extensions import TypedDict
+from typing import Optional, Any, List, TypedDict
 
 
 class MetadataValueInformationItem(TypedDict, total=False):

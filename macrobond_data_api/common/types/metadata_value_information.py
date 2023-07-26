@@ -1,6 +1,5 @@
 from dataclasses import dataclass
-from typing import Any, Optional, List, TYPE_CHECKING, Sequence, overload
-from typing_extensions import TypedDict, Literal
+from typing import Any, Optional, List, TYPE_CHECKING, Sequence, overload, Literal, TypedDict
 
 __pdoc__ = {
     "TypedDictMetadataValueInformationItem.__init__": False,

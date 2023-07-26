@@ -1,6 +1,4 @@
-from typing import List, Optional
-from typing_extensions import TypedDict
-
+from typing import List, Optional, TypedDict
 
 from .metadata import MetadataAttributeTypeRestriction
 

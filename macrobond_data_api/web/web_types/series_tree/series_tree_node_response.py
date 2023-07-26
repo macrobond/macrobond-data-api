@@ -1,6 +1,4 @@
-from typing import Union, List
-
-from typing_extensions import TypedDict
+from typing import Union, List, TypedDict
 
 
 class SeriesTreeNodeResponse(TypedDict):

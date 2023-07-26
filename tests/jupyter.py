@@ -3,9 +3,7 @@ import os
 import pathlib
 import subprocess
 import sys
-from typing import Dict, List, Optional
-
-from typing_extensions import TypedDict
+from typing import Dict, List, Optional, TypedDict
 
 import pytest
 

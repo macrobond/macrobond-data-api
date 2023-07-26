@@ -1,5 +1,4 @@
-from typing import Optional, Dict, Any, List
-from typing_extensions import TypedDict
+from typing import Optional, Dict, Any, List, TypedDict
 
 from .vintage_values_response import VintageValuesResponse
 

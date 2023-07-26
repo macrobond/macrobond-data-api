@@ -1,5 +1,4 @@
-from typing import Any, Optional, List, Dict
-from typing_extensions import TypedDict
+from typing import Any, Optional, List, Dict, TypedDict
 
 
 class SearchResponse(TypedDict):

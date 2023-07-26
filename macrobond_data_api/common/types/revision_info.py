@@ -1,8 +1,6 @@
 from dataclasses import dataclass
 from datetime import datetime
-from typing import TYPE_CHECKING, Optional, Sequence, List
-
-from typing_extensions import TypedDict
+from typing import TYPE_CHECKING, Optional, Sequence, List, TypedDict
 
 if TYPE_CHECKING:  # pragma: no cover
     from pandas import DataFrame  # type: ignore
