@@ -633,3 +633,67 @@ class Api(ABC):
         The result is in the same order as in the request.
         """
         # fmt: on
+
+    # In-house series
+
+    @abstractmethod
+    def upload_series(
+        self,
+        name: str,
+        description: str,
+        region: str,
+        category: str,
+        frequency: SeriesFrequency,
+        values: Sequence[Optional[float]],
+        start_date_or_dates: Union[datetime, Sequence[datetime]],
+        dayMask: SeriesWeekdays = SeriesWeekdays.MONDAY_TO_FRIDAY,
+        metadata: Optional[dict] = None,
+        forecast_flags: Optional[Sequence[bool]] = None,
+    ) -> None:
+        # fmt: off
+        """
+        Upload an in-house time series.
+
+        Parameters
+        ----------
+        name : str
+            The name of the series.
+        description : str
+            The description of the series.
+        region : str
+            The region of the series.
+        category : str
+            The category of the series.
+        frequency : `macrobond_data_api.common.enums.series_frequency.SeriesFrequency`
+            The frequency of the series.
+        values : `Sequence[Optional[float]]`
+            The values of the series.
+        start_date_or_dates : `Union[datetime, Sequence[datetime]]`
+            The start date of the series or dates of the series.
+        dayMask : `macrobond_data_api.common.enums.series_weekdays.SeriesWeekdays`
+            The days of the week used for daily series. The default is Monday to Friday.
+        metadata : `Optional[dict]`
+            The metadata of the series.
+        forecast_flags : `Optional[Sequence[bool]]`
+            The forecast flags of the series.
+
+        Returns
+        -------
+        `None`
+        """
+        # fmt: on
+
+    @abstractmethod
+    def delete_serie(self, series_name: str) -> None:
+        """
+        Delete one series.
+
+        Parameters
+        ----------
+        series_name : str
+            The name of the series.
+
+        Returns
+        -------
+        `None`
+        """

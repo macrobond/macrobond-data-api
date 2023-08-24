@@ -34,7 +34,7 @@ def test_com_and_web(api: Api) -> None:
     str(result3.metadata_to_pd_series())
     result3.to_dict()
 
-    #    # Get_all_vintage_series
+    # Get_all_vintage_series
     result4 = api.get_all_vintage_series("usgdp")[0]
     str(result4.values_to_pd_data_frame())
     str(result4.metadata_to_pd_series())
