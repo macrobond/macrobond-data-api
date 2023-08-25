@@ -128,9 +128,10 @@ class ComClient(Client["ComApi"]):
                     hints.append(new_hint)
                 raise
 
-            ComClient._test_version(connection.Version)
+            version = connection.Version
+            ComClient._test_version(version)
 
-            self.__api = ComApi(connection)
+            self.__api = ComApi(connection, version)
         return self.__api
 
     @staticmethod

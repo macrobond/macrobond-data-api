@@ -16,7 +16,7 @@ if TYPE_CHECKING:  # pragma: no cover
     from macrobond_data_api.common.types.values_metadata import ValuesMetadata
 
 
-def _get_val(name: str, values: Sequence[Any]) -> Any:
+def _get_val_old(name: str, values: Sequence[Any]) -> Any:
     if isinstance(values[0], TimeType):
         if name in ("OriginalStartDate", "OriginalEndDate"):
             datetime_ = values[0]
@@ -47,12 +47,32 @@ def _get_val(name: str, values: Sequence[Any]) -> Any:
     return values[0] if len(values) == 1 else list(values)
 
 
+def _get_val_new(name: str, values: Sequence[Any]) -> Any:
+    if isinstance(values[0], TimeType):
+        if name in ("OriginalEndDate", "OriginalStartDate"):
+            return datetime(values[0].year, values[0].month, values[0].day)
+        values = [
+            datetime(x.year, x.month, x.day, x.hour, x.minute, x.second, x.microsecond).astimezone(timezone.utc)
+            for x in values
+        ]
+        return values[0] if len(values) == 1 else values
+    return values[0] if len(values) == 1 else list(values)
+
+
 def _fill_metadata_from_metadata(
     com_metadata: "ComMetadata", api: "ComApi", add_empty_revision_time_stamp: bool = False
 ) -> _Metadata:
-    metadata = _Metadata(
-        {x: _get_val(x, com_metadata.GetValues(x)) for x, _ in com_metadata.ListNames()}, api._metadata_type_directory
-    )
+    if api._old_metadata_handling:
+        metadata = _Metadata(
+            {x: _get_val_old(x, com_metadata.GetValues(x)) for x, _ in com_metadata.ListNames()},
+            api._metadata_type_directory,
+        )
+    else:
+        metadata = _Metadata(
+            {x: _get_val_new(x, com_metadata.GetValues(x)) for x, _ in com_metadata.ListNames()},
+            api._metadata_type_directory,
+        )
+
     if add_empty_revision_time_stamp and "RevisionTimeStamp" not in metadata:
         metadata["RevisionTimeStamp"] = None
     return metadata
