@@ -29,6 +29,8 @@ def _average(sequence: Sequence[float]) -> float:
 
 
 class _Resultet:
+    _test_body = bytearray(("0123456789" * 101) + "012345", "us-ascii")
+
     def __init__(
         self,
         size_kB: int,
@@ -90,9 +92,33 @@ class _ResultetList:
                     ),
                 )
 
+            try:
+                self.test_data(response.content)
+            except ValueError as ex:
+                return _Resultet(self.size_kB, ex)
+
             return _Resultet(self.size_kB, None, content_length_kb, response.elapsed, total_time, response.status_code)
         except requests.exceptions.RequestException as ex:
             return _Resultet(self.size_kB, ex)
+
+    def test_data(self, content: bytes) -> None:
+        segments = content.split(b">")
+
+        if len(segments) != self.size_kB + 1:
+            raise ValueError("Wrong number of segments")
+
+        segments.pop(len(segments) - 1)
+
+        for i, segment in enumerate(segments):
+            header = bytes(f"<{str(i).zfill(5)}:", "us-ascii")
+            if not segment.startswith(header):
+                raise ValueError("Wrong segment header")
+
+            if len(segment) != 1023:
+                raise ValueError("Wrong segment length")
+
+            if segment[7:] != _Resultet._test_body:
+                raise ValueError("Wrong body length")
 
     def display_resultets(self) -> None:
         resultes = [x for x in self.reslults if x.error is None]
@@ -163,6 +189,7 @@ def transfer_performance_test(sizes_kB: Optional[Sequence[int]] = None, times: i
 
 
 if __name__ == "__main__":
+    # transfer_performance_test([2], 1)
     # transfer_performance_test([50_000], 1)
     transfer_performance_test()
     # transfer_performance_test([20_000], 100)
