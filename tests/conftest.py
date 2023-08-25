@@ -70,10 +70,8 @@ def _api(request: FixtureRequest) -> Api:
 @fixture(scope="function", name="lock_test")
 def _test_lock() -> Generator[None, None, None]:
     path = os.path.join(os.getcwd(), "tests", "py_test.lock")
-    print("acquire")
     with FileLock(path, timeout=30):
         yield None
-    print("clone")
 
 
 @fixture(scope="function", name="assert_no_warnings")
@@ -170,10 +168,12 @@ def _test_metadata_implment(
                     com_datetime = com_datetime.astimezone(timezone.utc)
 
                 if web_datetime != com_datetime:
-                    diff = (web_datetime - com_datetime).total_seconds()
-                    if diff == 0:
-                        continue
-
+                    try:
+                        diff = (web_datetime - com_datetime).total_seconds()
+                        if diff == 0:
+                            continue
+                    except TypeError:
+                        ...
                 assert web_datetime == com_datetime, "key " + key
             else:
                 assert web_obj.metadata[key] == com_obj.metadata[key], "key " + key

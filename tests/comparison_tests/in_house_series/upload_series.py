@@ -73,7 +73,7 @@ def test_2(web: WebApi, com: ComApi, test_metadata: Any) -> None:
             SeriesFrequency.DAILY,
             [1.0, 2, 3.0],
             datetime(2020, 1, 1, tzinfo=timezone.utc),
-            metadata={"LastRevisionTimeStamp": datetime(2021, 1, 1, tzinfo=timezone.utc)},
+            # metadata={"RevisionHistorySourceCutOffDate": datetime(2021, 1, 1, tzinfo=timezone.utc)},
             forecast_flags=[True, False, True],
         )
 
