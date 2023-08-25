@@ -5,8 +5,7 @@ import pytest
 
 _winreg_import_error: Optional[ImportError] = None
 try:
-    # winreg is not available on linux so mypy will fail on build server as it is runiong on linux
-    from winreg import OpenKey, QueryValueEx, HKEY_CURRENT_USER  # type: ignore
+    from winreg import OpenKey, QueryValueEx, HKEY_CURRENT_USER
 except ImportError as ex:
     _winreg_import_error = ex
 

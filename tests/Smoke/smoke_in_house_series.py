@@ -1,7 +1,7 @@
 from datetime import datetime, timezone
 
 
-import pytest  # type: ignore[attr-defined]
+import pytest 
 from macrobond_data_api.common import Api
 from macrobond_data_api.common.enums import SeriesFrequency
 

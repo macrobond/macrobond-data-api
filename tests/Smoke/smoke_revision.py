@@ -1,6 +1,6 @@
 from datetime import datetime, timezone
 
-from pandas.testing import assert_frame_equal  # type: ignore
+from pandas.testing import assert_frame_equal
 
 import pytest
 from macrobond_data_api.common import Api

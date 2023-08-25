@@ -1,4 +1,4 @@
-import pandas as pd  # type: ignore
+import pandas as pd
 from macrobond_data_api.com import ComClient
 
 

@@ -8,7 +8,7 @@ __pdoc__ = {
 }
 
 if TYPE_CHECKING:  # pragma: no cover
-    from pandas import DataFrame  # type: ignore
+    from pandas import DataFrame
     from ..enums import MetadataAttributeType
 
 MetadataAttributeInformationColumns = List[

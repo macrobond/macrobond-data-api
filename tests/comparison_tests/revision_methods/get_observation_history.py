@@ -1,7 +1,7 @@
 from datetime import datetime
 from typing import Optional
 import pytest
-from pandas.testing import assert_frame_equal, assert_series_equal  # type: ignore
+from pandas.testing import assert_frame_equal, assert_series_equal
 
 from macrobond_data_api.web import WebApi
 from macrobond_data_api.com import ComApi

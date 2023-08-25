@@ -5,7 +5,7 @@ from typing import Any, Dict, List, Optional, TYPE_CHECKING, Literal
 from macrobond_data_api.common.enums import StatusCode
 
 if TYPE_CHECKING:  # pragma: no cover
-    from pandas import Series  # type: ignore
+    from pandas import Series
     from .metadata import Metadata
 
 

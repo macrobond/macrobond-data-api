@@ -1,7 +1,7 @@
 from datetime import datetime, timezone
 from typing import List
 
-import pytest  # type: ignore[attr-defined]
+import pytest
 from macrobond_data_api.web.web_types import DataPackageBody, DataPackageListItem
 from macrobond_data_api.common import Api
 from macrobond_data_api.web import WebApi

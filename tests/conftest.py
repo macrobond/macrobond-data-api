@@ -7,7 +7,7 @@ import warnings
 from filelock import FileLock
 
 from pytest import fixture, FixtureRequest
-import pandas  # type: ignore
+import pandas
 
 from macrobond_data_api.web.session import Session
 from macrobond_data_api.common import Api

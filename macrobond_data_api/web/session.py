@@ -1,7 +1,7 @@
 from typing import Callable, Dict, Optional, Any, TYPE_CHECKING, Sequence, cast
 
-from authlib.integrations.requests_client import OAuth2Session  # type: ignore
-from authlib.integrations.base_client.errors import InvalidTokenError  # type: ignore
+from authlib.integrations.requests_client import OAuth2Session
+from authlib.integrations.base_client.errors import InvalidTokenError
 from macrobond_data_api.common.types import Metadata
 
 from .web_types import (
@@ -20,7 +20,7 @@ from ._metadata import _Metadata
 
 _socks_import_error: Optional[ImportError] = None
 try:
-    import socks as _  # type: ignore
+    import socks as _
 except ImportError as ex:
     _socks_import_error = ex
 
