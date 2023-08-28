@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING, Optional, Tuple
 
 from macrobond_data_api.common import Api
 
@@ -46,10 +46,12 @@ __pdoc__ = {
 
 class ComApi(Api):
     _connection: Optional["Connection"]
+    _old_metadata_handling: bool
 
-    def __init__(self, connection: "Connection") -> None:
+    def __init__(self, connection: "Connection", com_version: Tuple[int, int, int]) -> None:
         super().__init__()
         self._connection = connection
+        self._old_metadata_handling = com_version != (0, 0, 0) and com_version <= (1, 27, 7)
         self._metadata_type_directory = _MetadataTypeDirectory(connection)
 
     @property
