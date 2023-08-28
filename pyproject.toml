@@ -7,7 +7,7 @@ no_implicit_optional = false
 disallow_untyped_defs = true
 
 [[tool.mypy.overrides]]
-module = ["pandas.*", "ijson.*", "winreg.*", "authlib.*", "socks.*"]
+module = ["pandas.*", "ijson.*", "authlib.*", "socks.*"]
 ignore_missing_imports = true
 
 [tool.black]

@@ -22,7 +22,8 @@ except ImportError as ex:
     _pywintypes_import_error = ex
 
 try:
-    from winreg import OpenKey, QueryValueEx, HKEY_CLASSES_ROOT, HKEY_CURRENT_USER
+    # winreg is not available on linux so mypy will fail on build server as it is runiong on linux
+    from winreg import OpenKey, QueryValueEx, HKEY_CLASSES_ROOT, HKEY_CURRENT_USER  # type: ignore
 except ImportError:
     ...
 
