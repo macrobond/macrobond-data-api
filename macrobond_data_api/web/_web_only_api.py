@@ -1,7 +1,7 @@
 from datetime import datetime
 from typing import TYPE_CHECKING, Any, List, Optional, Callable, Tuple
 
-import ijson  # type: ignore
+import ijson
 
 from macrobond_data_api.common.types import SearchResultLong
 from macrobond_data_api.common.types._parse_iso8601 import _parse_iso8601

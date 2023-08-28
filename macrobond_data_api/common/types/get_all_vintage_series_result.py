@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING, Any, Dict, Sequence, overload, List
 from macrobond_data_api.common.types.vintage_series import VintageSeries
 
 if TYPE_CHECKING:  # pragma: no cover
-    from pandas import DataFrame  # type: ignore
+    from pandas import DataFrame
 
 __pdoc__ = {
     "GetAllVintageSeriesResult.__init__": False,

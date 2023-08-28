@@ -6,6 +6,10 @@ build-backend = "setuptools.build_meta"
 no_implicit_optional = false
 disallow_untyped_defs = true
 
+[[tool.mypy.overrides]]
+module = ["pandas.*", "ijson.*", "winreg.*", "authlib.*", "socks.*"]
+ignore_missing_imports = true
+
 [tool.black]
 line-length = 120
 

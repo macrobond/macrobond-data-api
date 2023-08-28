@@ -1,7 +1,7 @@
 from datetime import datetime
 from typing import TYPE_CHECKING, Any, Dict, Generator, List, Optional, Sequence, cast
 
-import ijson  # type: ignore
+import ijson
 
 from macrobond_data_api.common.types import (
     RevisionInfo,

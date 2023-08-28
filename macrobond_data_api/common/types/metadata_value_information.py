@@ -8,7 +8,7 @@ __pdoc__ = {
 }
 
 if TYPE_CHECKING:  # pragma: no cover
-    from pandas import DataFrame  # type: ignore
+    from pandas import DataFrame
 
 MetadataValueInformationColumns = List[Literal["attribute_name", "value", "description", "comment"]]
 
