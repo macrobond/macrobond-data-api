@@ -1,6 +1,5 @@
-from typing import Optional, List
+from typing import Optional, List, TypedDict
 from enum import IntEnum
-from typing_extensions import TypedDict
 
 from ....common.enums import MetadataAttributeType
 

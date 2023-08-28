@@ -1,5 +1,4 @@
-from typing import Optional, List
-from typing_extensions import TypedDict
+from typing import Optional, List, TypedDict
 
 from .search_filter import SearchFilter
 

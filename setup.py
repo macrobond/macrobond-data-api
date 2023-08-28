@@ -72,15 +72,14 @@ setuptools.setup(
         "License :: OSI Approved :: MIT License",
         "Programming Language :: Python :: 3 :: Only",
         "Programming Language :: Python :: 3",
-        "Programming Language :: Python :: 3.7",
+        "Programming Language :: Python :: 3.8",
     ],
-    python_requires=">=3.7",
+    python_requires=">=3.8",
     install_requires=[
         "keyring>=23.11.0",
         "Authlib>=1.2.0",
         "requests>=2.31.0",
         "ijson>=3.1.4",
-        "typing_extensions>=4.5.0",
         "pywin32>=305; os_name=='nt'",
     ],
     extras_require={

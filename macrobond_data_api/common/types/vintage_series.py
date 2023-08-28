@@ -1,8 +1,7 @@
 from dataclasses import dataclass
 from datetime import datetime
 
-from typing import List, Optional, TYPE_CHECKING
-from typing_extensions import Literal
+from typing import List, Optional, TYPE_CHECKING, Literal
 
 from macrobond_data_api.common.enums import StatusCode
 from .series import Series, SeriesColumnsLiterals

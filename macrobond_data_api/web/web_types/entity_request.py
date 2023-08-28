@@ -1,5 +1,4 @@
-from typing import Optional
-from typing_extensions import TypedDict
+from typing import Optional, TypedDict
 
 
 class EntityRequest(TypedDict, total=False):

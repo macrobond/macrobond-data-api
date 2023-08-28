@@ -1,7 +1,6 @@
 from dataclasses import dataclass
 
-from typing import Optional, List, TYPE_CHECKING
-from typing_extensions import TypedDict, Literal
+from typing import Optional, List, TYPE_CHECKING, Literal, TypedDict
 
 __pdoc__ = {
     "MetadataAttributeInformation.__init__": False,
