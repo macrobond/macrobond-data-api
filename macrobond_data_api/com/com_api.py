@@ -32,6 +32,8 @@ from ._com_api_series import (
     get_unified_series,
 )
 
+from ._com_api_in_house_series import delete_serie, upload_series
+
 if TYPE_CHECKING:  # pragma: no cover
     from macrobond_data_api.com.com_types import Connection
 
@@ -89,3 +91,8 @@ class ComApi(Api):
     get_entities = get_entities
     get_many_series = get_many_series
     get_unified_series = get_unified_series
+
+    # In-house series
+
+    upload_series = upload_series
+    delete_serie = delete_serie
