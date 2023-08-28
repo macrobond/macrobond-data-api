@@ -22,8 +22,6 @@ from ._split_in_to_chunks import split_in_to_chunks
 
 from .session import ProblemDetailsException, Session, _raise_on_error
 
-# from .series_with_vintages import SeriesWithVintages
-
 
 if TYPE_CHECKING:  # pragma: no cover
     from .web_api import WebApi
