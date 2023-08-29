@@ -84,6 +84,10 @@ class MetadataInformation:
         listen using the ListAllValues function.
         """
 
+    @property
+    def Restriction(self) -> str:
+        "Potential restriction of the data type. Can be 'date', 'json' or 'positive'."
+
     def GetValuePresentationText(self, value: object) -> str:
         """Format the value as a text."""
 
