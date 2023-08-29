@@ -1,5 +1,5 @@
 import pytest
-from pandas.testing import assert_frame_equal  # type: ignore
+from pandas.testing import assert_frame_equal
 
 from macrobond_data_api.web import WebApi
 from macrobond_data_api.com import ComApi

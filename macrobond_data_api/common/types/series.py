@@ -1,8 +1,7 @@
 from dataclasses import dataclass
 from datetime import datetime
 
-from typing import Any, Dict, Optional, List, Sequence, TYPE_CHECKING, cast
-from typing_extensions import Literal
+from typing import Any, Dict, Optional, List, Sequence, TYPE_CHECKING, cast, Literal
 
 from macrobond_data_api.common.enums import StatusCode
 
@@ -13,7 +12,7 @@ SeriesColumnsLiterals = Literal[EntityColumnsLiterals, "Values", "Dates"]
 SeriesColumns = List[SeriesColumnsLiterals]
 
 if TYPE_CHECKING:  # pragma: no cover
-    from pandas import DataFrame  # type: ignore
+    from pandas import DataFrame
     from .metadata import Metadata
     from .values_metadata import ValuesMetadata
 

@@ -1,5 +1,5 @@
-from pandas import DataFrame  # type: ignore
-from pandas.testing import assert_frame_equal  # type: ignore
+from pandas import DataFrame
+from pandas.testing import assert_frame_equal
 
 import pytest
 

@@ -1,12 +1,13 @@
 from datetime import datetime, timezone
 import os
-from typing import Any, Sequence, Union
+from typing import Any, Sequence, Union, Generator
 import collections.abc
 import warnings
-from pyparsing import Generator
+
+from filelock import FileLock
 
 from pytest import fixture, FixtureRequest
-import pandas  # type: ignore
+import pandas
 
 from macrobond_data_api.web.session import Session
 from macrobond_data_api.common import Api
@@ -66,6 +67,13 @@ def _api(request: FixtureRequest) -> Api:
     return request.getfixturevalue(request.param)
 
 
+@fixture(scope="function", name="lock_test")
+def _test_lock() -> Generator[None, None, None]:
+    path = os.path.join(os.getcwd(), "tests", "py_test.lock")
+    with FileLock(path, timeout=30):
+        yield None
+
+
 @fixture(scope="function", name="assert_no_warnings")
 def _assert_no_warnings(capsys: Any) -> Generator[None, None, None]:
     with warnings.catch_warnings(record=True) as wlist:
@@ -96,7 +104,7 @@ def _assert_no_warnings_all(capsys: Any) -> Generator[None, None, None]:
 
 @fixture(scope="session", name="test_metadata")
 def _test_metadata() -> Any:
-    return _test
+    return _test_metadata_implment
 
 
 def _remove_microsecond(datetime_: datetime) -> datetime:
@@ -112,12 +120,16 @@ def _remove_microsecond(datetime_: datetime) -> datetime:
     )
 
 
-def _test(
+def _test_metadata_implment(
     web: Union[Sequence[object], object],
     com: Union[Sequence[object], object],
     can_be_none: bool = False,
     can_be_empty: bool = False,
+    ignore_keys: Sequence[object] = None,
 ) -> None:
+    if ignore_keys is None:
+        ignore_keys = []
+
     if not isinstance(web, collections.abc.Sequence):
         web = [web]
         assert not isinstance(com, collections.abc.Sequence)
@@ -143,6 +155,9 @@ def _test(
             keys.remove("DisplayUnit")
 
         for key in keys:
+            if key in ignore_keys:
+                continue
+
             if isinstance(web_obj.metadata[key], datetime):
                 web_datetime = _remove_microsecond(web_obj.metadata[key])
                 if web_datetime.tzinfo:
@@ -153,10 +168,12 @@ def _test(
                     com_datetime = com_datetime.astimezone(timezone.utc)
 
                 if web_datetime != com_datetime:
-                    diff = (web_datetime - com_datetime).total_seconds()
-                    if diff == 0:
-                        continue
-
+                    try:
+                        diff = (web_datetime - com_datetime).total_seconds()
+                        if diff == 0:
+                            continue
+                    except TypeError:
+                        ...
                 assert web_datetime == com_datetime, "key " + key
             else:
                 assert web_obj.metadata[key] == com_obj.metadata[key], "key " + key

@@ -1,5 +1,4 @@
-from typing import Optional, Tuple
-from typing_extensions import TypedDict
+from typing import Optional, Tuple, TypedDict
 
 
 class VintageValuesResponse(TypedDict, total=False):

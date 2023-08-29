@@ -1,7 +1,7 @@
 from typing import Callable, Dict, Optional, Any, TYPE_CHECKING, Sequence, cast
 
-from authlib.integrations.requests_client import OAuth2Session  # type: ignore
-from authlib.integrations.base_client.errors import InvalidTokenError  # type: ignore
+from authlib.integrations.requests_client import OAuth2Session
+from authlib.integrations.base_client.errors import InvalidTokenError
 from macrobond_data_api.common.types import Metadata
 
 from .web_types import (
@@ -9,6 +9,7 @@ from .web_types import (
     SearchMethods,
     SeriesMethods,
     SeriesTreeMethods,
+    InHouseSeriesMethods,
     HttpException,
     ProblemDetailsException,
 )
@@ -19,7 +20,7 @@ from ._metadata import _Metadata
 
 _socks_import_error: Optional[ImportError] = None
 try:
-    import socks as _  # type: ignore
+    import socks as _
 except ImportError as ex:
     _socks_import_error = ex
 
@@ -34,12 +35,12 @@ __pdoc__ = {
 }
 
 
-def _raise_on_error(response: "Response", non_error_status: Sequence[int] = None) -> None:
+def _raise_on_error(response: "Response", non_error_status: Sequence[int] = None) -> "Response":
     if non_error_status is None:
         non_error_status = [200]
 
     if response.status_code in non_error_status:
-        return
+        return response
 
     content_type = response.headers.get("Content-Type")
 
@@ -73,6 +74,11 @@ class Session:
     def series_tree(self) -> SeriesTreeMethods:
         """Operations related to the visual series database tree structure"""
         return self.__series_tree
+
+    @property
+    def in_house_series(self) -> InHouseSeriesMethods:
+        """Additional operations for in-house series"""
+        return self.__in_house_series
 
     @property
     def api_url(self) -> str:
@@ -131,6 +137,7 @@ class Session:
         self.__search = SearchMethods(self)
         self.__series = SeriesMethods(self)
         self.__series_tree = SeriesTreeMethods(self)
+        self.__in_house_series = InHouseSeriesMethods(self)
 
         self._metadata_type_directory = _MetadataTypeDirectory(self)
 
@@ -155,19 +162,7 @@ class Session:
         self.auth2_session.fetch_token(self.token_endpoint, proxies=self.__proxies)
 
     def get(self, url: str, params: dict = None, stream: bool = False) -> "Response":
-        if not self._is_open:
-            raise ValueError("Session is not open")
-
-        def http() -> "Response":
-            return self.auth2_session.get(
-                url=self.api_url + url,
-                params=params,
-                stream=stream,
-                proxies=self.__proxies,
-                headers={"Accept": "application/json"},
-            )
-
-        return self.__if_status_code_401_fetch_token_and_retry(http)
+        return self._request("GET", url, params, None, stream)
 
     def get_or_raise(
         self,
@@ -176,25 +171,10 @@ class Session:
         non_error_status: Sequence[int] = None,
         stream: bool = False,
     ) -> "Response":
-        response = self.get(url, params, stream=stream)
-        _raise_on_error(response, non_error_status)
-        return response
+        return _raise_on_error(self.get(url, params, stream=stream), non_error_status)
 
     def post(self, url: str, params: dict = None, json: object = None, stream: bool = False) -> "Response":
-        if not self._is_open:
-            raise ValueError("Session is not open")
-
-        def http() -> "Response":
-            return self.auth2_session.post(
-                url=self.api_url + url,
-                params=params,
-                json=json,
-                stream=stream,
-                proxies=self.__proxies,
-                headers={"Accept": "application/json"},
-            )
-
-        return self.__if_status_code_401_fetch_token_and_retry(http)
+        return self._request("POST", url, params, json, stream)
 
     def post_or_raise(
         self,
@@ -204,16 +184,43 @@ class Session:
         non_error_status: Sequence[int] = None,
         stream: bool = False,
     ) -> "Response":
-        response = self.post(url, params, json, stream=stream)
-        _raise_on_error(response, non_error_status)
-        return response
+        return _raise_on_error(self.post(url, params, json, stream=stream), non_error_status)
+
+    def delete(self, url: str, params: dict = None, stream: bool = False) -> "Response":
+        return self._request("DELETE", url, params, None, stream)
+
+    def delete_or_raise(
+        self,
+        url: str,
+        params: dict = None,
+        non_error_status: Sequence[int] = None,
+        stream: bool = False,
+    ) -> "Response":
+        return _raise_on_error(self.delete(url, params, stream=stream), non_error_status)
+
+    def _request(self, method: str, url: str, params: Optional[dict], json: object, stream: bool) -> "Response":
+        if not self._is_open:
+            raise ValueError("Session is not open")
+
+        def http() -> "Response":
+            return self.auth2_session.request(
+                method,
+                self.api_url + url,
+                params=params,
+                json=json,
+                stream=stream,
+                proxies=self.__proxies,
+                headers={"Accept": "application/json"},
+            )
+
+        return self.__if_status_code_401_fetch_token_and_retry(http)
 
     def discovery(self, url: str) -> str:
         if not self._is_open:
             raise ValueError("Session is not open")
 
         response = self.auth2_session.request(
-            "get", url + ".well-known/openid-configuration", True, proxies=self.__proxies
+            "GET", url + ".well-known/openid-configuration", True, proxies=self.__proxies
         )
         if response.status_code != 200:
             raise Exception("discovery Exception, status code is not 200")

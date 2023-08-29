@@ -1,5 +1,3 @@
-from typing import TYPE_CHECKING
-
 from .search_methods import SearchMethods
 
 from .series_methods import SeriesMethods
@@ -54,3 +52,9 @@ from .data_pacakge_list_item import DataPackageListItem
 from .data_package_list import DataPackageList
 
 from .data_package_body import DataPackageBody
+
+from .series_storage_location_response import SeriesStorageLocationResponse
+
+from .series_request import SeriesRequest
+
+from .in_house_series_methods import InHouseSeriesMethods

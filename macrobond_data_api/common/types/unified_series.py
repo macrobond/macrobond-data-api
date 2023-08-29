@@ -1,9 +1,7 @@
 from dataclasses import dataclass
-from typing import Any, Dict, List, Sequence, Optional, TYPE_CHECKING, overload
+from typing import Any, Dict, List, Sequence, Optional, TYPE_CHECKING, overload, Literal, TypedDict
 
 from datetime import datetime
-from typing_extensions import Literal, TypedDict
-
 
 UnifiedSeriesColumnsLiterals = Literal["Dates", "Series"]
 
@@ -16,7 +14,7 @@ __pdoc__ = {
 }
 
 if TYPE_CHECKING:  # pragma: no cover
-    from pandas import DataFrame  # type: ignore
+    from pandas import DataFrame
     from .metadata import Metadata
 
 

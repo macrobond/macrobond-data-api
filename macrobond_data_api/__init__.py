@@ -7,6 +7,7 @@ Exposes a common API in Python for the Macrobond Web and Client Data APIs
 """
 
 from ._generated import (
+    delete_serie,
     entity_search,
     entity_search_multi_filter,
     get_all_vintage_series,
@@ -26,9 +27,11 @@ from ._generated import (
     metadata_get_attribute_information,
     metadata_get_value_information,
     metadata_list_values,
+    upload_series,
 )
 
 __all__ = [
+    "delete_serie",
     "entity_search",
     "entity_search_multi_filter",
     "get_all_vintage_series",
@@ -48,4 +51,5 @@ __all__ = [
     "metadata_get_attribute_information",
     "metadata_get_value_information",
     "metadata_list_values",
+    "upload_series",
 ]

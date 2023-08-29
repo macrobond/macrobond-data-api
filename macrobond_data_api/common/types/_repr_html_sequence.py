@@ -34,8 +34,8 @@ class _ReprHtmlSequence(Sequence[_TypeVar], Generic[_TypeVar]):
 
     def _ipython_display_(self) -> None:
         # pylint: disable=import-outside-toplevel
-        from IPython.display import display  # type: ignore
-        import pandas  # type: ignore
+        from IPython.display import display
+        import pandas
 
         # pylint: enable=import-outside-toplevel
 

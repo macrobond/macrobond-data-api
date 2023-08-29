@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING, Optional, Tuple
 
 from macrobond_data_api.common import Api
 
@@ -32,6 +32,8 @@ from ._com_api_series import (
     get_unified_series,
 )
 
+from ._com_api_in_house_series import delete_serie, upload_series
+
 if TYPE_CHECKING:  # pragma: no cover
     from macrobond_data_api.com.com_types import Connection
 
@@ -44,10 +46,12 @@ __pdoc__ = {
 
 class ComApi(Api):
     _connection: Optional["Connection"]
+    _old_metadata_handling: bool
 
-    def __init__(self, connection: "Connection") -> None:
+    def __init__(self, connection: "Connection", com_version: Tuple[int, int, int]) -> None:
         super().__init__()
         self._connection = connection
+        self._old_metadata_handling = com_version != (0, 0, 0) and com_version <= (1, 27, 7)
         self._metadata_type_directory = _MetadataTypeDirectory(connection)
 
     @property
@@ -89,3 +93,8 @@ class ComApi(Api):
     get_entities = get_entities
     get_many_series = get_many_series
     get_unified_series = get_unified_series
+
+    # In-house series
+
+    upload_series = upload_series
+    delete_serie = delete_serie

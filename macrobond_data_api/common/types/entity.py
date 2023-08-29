@@ -1,12 +1,11 @@
 from dataclasses import dataclass
 from datetime import datetime
-from typing import Any, Dict, List, Optional, TYPE_CHECKING
-from typing_extensions import Literal
+from typing import Any, Dict, List, Optional, TYPE_CHECKING, Literal
 
 from macrobond_data_api.common.enums import StatusCode
 
 if TYPE_CHECKING:  # pragma: no cover
-    from pandas import Series  # type: ignore
+    from pandas import Series
     from .metadata import Metadata
 
 

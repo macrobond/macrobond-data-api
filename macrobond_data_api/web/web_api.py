@@ -28,6 +28,8 @@ from ._web_api_series import (
     get_unified_series,
 )
 
+from ._web_api_in_house_series import delete_serie, upload_series
+
 from ._web_api_search import entity_search_multi_filter
 from .session import Session
 
@@ -84,3 +86,8 @@ class WebApi(Api):
     get_entities = get_entities
     get_many_series = get_many_series
     get_unified_series = get_unified_series
+
+    # In-house series
+
+    upload_series = upload_series
+    delete_serie = delete_serie
