@@ -1,9 +1,11 @@
 # pylint: disable = invalid-name , missing-module-docstring
 # mypy: disable_error_code = empty-body
 
-from typing import List, Optional
+from typing import List, Optional, Literal
 
 from enum import IntEnum
+
+RestrictionLiteral = Literal["url", "email", "date", "positive", "json"]
 
 
 class MetadataValueType(IntEnum):
@@ -85,7 +87,7 @@ class MetadataInformation:
         """
 
     @property
-    def Restriction(self) -> str:
+    def Restriction(self) -> Optional[RestrictionLiteral]:
         "Potential restriction of the data type. Can be 'date', 'json' or 'positive'."
 
     def GetValuePresentationText(self, value: object) -> str:

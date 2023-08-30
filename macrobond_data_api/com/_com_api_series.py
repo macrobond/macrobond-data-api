@@ -17,7 +17,6 @@ from macrobond_data_api.common.types import (
 )
 from macrobond_data_api.common.types._repr_html_sequence import _ReprHtmlSequence
 
-from ._fill_metadata import _fill_metadata_from_entity
 from ._error_message_to_status_code import _error_message_to_status_code
 
 if TYPE_CHECKING:  # pragma: no cover
@@ -35,7 +34,7 @@ def _datetime_to_datetime(dates: Sequence[datetime]) -> List[datetime]:
 def _create_entity(com_entity: "ComEntity", name: str, api: "ComApi") -> Entity:
     if com_entity.IsError:
         return Entity(name, com_entity.ErrorMessage, _error_message_to_status_code(com_entity), None)
-    return Entity(name, None, StatusCode.OK, _fill_metadata_from_entity(com_entity, api))
+    return Entity(name, None, StatusCode.OK, api._fill_metadata_from_entity(com_entity))
 
 
 def _create_series(com_series: "ComSeries", name: str, api: "ComApi") -> Series:
@@ -45,7 +44,7 @@ def _create_series(com_series: "ComSeries", name: str, api: "ComApi") -> Series:
         name,
         None,
         StatusCode.OK,
-        _fill_metadata_from_entity(com_series, api),
+        api._fill_metadata_from_entity(com_series),
         None,
         [None if isnan(x) else x for x in com_series.Values],
         _datetime_to_datetime(com_series.DatesAtStartOfPeriod),
@@ -164,7 +163,7 @@ def get_unified_series(
         return UnifiedSeries(
             name,
             "",
-            _fill_metadata_from_entity(com_one_series, self),
+            self._fill_metadata_from_entity(com_one_series),
             [None if isnan(x) else x for x in com_one_series.Values],
         )
 

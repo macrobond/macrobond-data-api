@@ -2,7 +2,6 @@ from datetime import datetime
 from typing import List, TYPE_CHECKING
 
 from macrobond_data_api.common.types import SearchResult
-from ._fill_metadata import _fill_metadata_from_entity
 from ._fix_datetime import _fix_datetime
 
 
@@ -53,4 +52,4 @@ def entity_search_multi_filter(
         querys.append(query)
 
     result = self.database.Search(querys)
-    return SearchResult([_fill_metadata_from_entity(x, self) for x in result.Entities], result.IsTruncated)
+    return SearchResult([self._fill_metadata_from_entity(x) for x in result.Entities], result.IsTruncated)
