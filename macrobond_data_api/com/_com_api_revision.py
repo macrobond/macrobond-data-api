@@ -18,7 +18,6 @@ from macrobond_data_api.common.enums import StatusCode
 
 from macrobond_data_api.common.types._repr_html_sequence import _ReprHtmlSequence
 
-from ._fill_metadata import _fill_metadata_from_entity, _fill_values_metadata_from_series
 from ._error_message_to_status_code import _error_message_to_status_code
 from ._fix_datetime import _fix_datetime, _fix_optional_datetime
 
@@ -154,7 +153,7 @@ def get_vintage_series(
 
         if include_times_of_change:
             if series_with_revisions.HasRevisions:
-                values_metadata = _fill_values_metadata_from_series(series, self, True)
+                values_metadata = self._fill_values_metadata_from_series(series, True)
             else:
                 values_metadata = [{}] * len(values)
         else:
@@ -164,7 +163,7 @@ def get_vintage_series(
             series_name,
             "",
             StatusCode.OK,
-            _fill_metadata_from_entity(series, self),
+            self._fill_metadata_from_entity(series),
             values_metadata,
             values,
             _datetime_to_datetime_timezone(dates),
@@ -222,7 +221,7 @@ def get_nth_release(
 
         if include_times_of_change:
             if series_with_revisions.HasRevisions:
-                values_metadata = _fill_values_metadata_from_series(series, self)
+                values_metadata = self._fill_values_metadata_from_series(series)
             else:
                 values_metadata = [{}] * len(values)
         else:
@@ -232,7 +231,7 @@ def get_nth_release(
             series_name,
             None,
             StatusCode.OK,
-            _fill_metadata_from_entity(series, self),
+            self._fill_metadata_from_entity(series),
             values_metadata,
             values,
             dates,
@@ -259,7 +258,7 @@ def get_all_vintage_series(self: "ComApi", series_name: str) -> GetAllVintageSer
             name,
             None,
             StatusCode.OK,
-            _fill_metadata_from_entity(com_series, self),
+            self._fill_metadata_from_entity(com_series),
             None,
             values,
             _datetime_to_datetime_timezone(dates),
@@ -285,7 +284,7 @@ def get_all_vintage_series(self: "ComApi", series_name: str) -> GetAllVintageSer
                     series_name,
                     None,
                     StatusCode.OK,
-                    _fill_metadata_from_entity(series, self),
+                    self._fill_metadata_from_entity(series),
                     None,
                     values,
                     dates,
@@ -388,7 +387,7 @@ def get_many_series_with_revisions(
             raise Exception(series_with_revisions.ErrorMessage)
 
         head = series_with_revisions.Head
-        metadata = _fill_metadata_from_entity(head, self)
+        metadata = self._fill_metadata_from_entity(head)
         last_modified_time = metadata["LastModifiedTimeStamp"]
 
         if (
