@@ -158,7 +158,7 @@ class _ResultList:
 
 
 def _speed_test() -> None:
-    resultets = []
+    results = []
     size_kB = 10 * 1024
 
     for _ in range(0, 10):
@@ -168,20 +168,20 @@ def _speed_test() -> None:
             end_time = perf_counter()
             total_time = timedelta(seconds=end_time - start_time)
 
-            resultets.append(size_kB / total_time.total_seconds())
+            results.append(size_kB / total_time.total_seconds())
 
-    print(f"Speed {_format_speed_kB_sec(_average(resultets))}\n")
+    print(f"Speed {_format_speed_kB_sec(_average(results))}\n")
 
 
 def _integrity_test(sizes_kB: Sequence[int], times: int, indicator: bool) -> None:
-    resultet_lists: List[_ResultList] = [_ResultList(x) for x in sizes_kB]
+    result_lists: List[_ResultList] = [_ResultList(x) for x in sizes_kB]
 
-    print(f"Testing sizes [{', '.join([x.name for x in resultet_lists])}]\n")
+    print(f"Testing sizes [{', '.join([x.name for x in result_lists])}]\n")
 
-    for resultet_list in resultet_lists:
-        resultet_list.run_integrity_tests(indicator, times)
+    for result_list in result_lists:
+        result_list.run_integrity_tests(indicator, times)
 
-    all_resultes: List[_Result] = sum([x.reslults for x in resultet_lists], [])
+    all_resultes: List[_Result] = sum([x.reslults for x in result_lists], [])
 
     print()
 
@@ -201,13 +201,13 @@ def _integrity_test(sizes_kB: Sequence[int], times: int, indicator: bool) -> Non
 
     print("")
 
-    for resultet_list in resultet_lists:
-        resultet_list.display_results()
+    for result_list in result_lists:
+        result_list.display_results()
 
 
-# Run speed and integrity test.
-# The integrity test verifies that data is transferred correctly.
 def transfer_performance_test(sizes_kB: Optional[Sequence[int]] = None, times: int = 4, indicator: bool = True) -> None:
+    # Run speed and integrity test.
+    # The integrity test verifies that data is transferred correctly.
     print("- transfer performance test beginning -\n")
 
     print("- Running speed test -")
