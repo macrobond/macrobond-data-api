@@ -29,7 +29,7 @@ def _get_url(size_kB: int) -> str:
     return f"https://api.macrobondfinancial.com/utilities/teststream?length={size_kB}"
 
 
-class _Resultet:
+class _Result:
     _test_body = bytearray(("0123456789" * 101) + "012345", "us-ascii")
 
     def __init__(
@@ -55,7 +55,7 @@ class _Resultet:
             self.kBs = 0
 
     @staticmethod
-    def run_integrity_test(size_kB: int, i: int) -> "_Resultet":
+    def run_integrity_test(size_kB: int, i: int) -> "_Result":
         try:
             start_time = perf_counter()
             response = requests.get(_get_url(size_kB), timeout=60 * 2)
@@ -65,7 +65,7 @@ class _Resultet:
             total_time = timedelta(seconds=end_time - start_time)
 
             if size_kB != content_length_kb:
-                return _Resultet(
+                return _Result(
                     size_kB,
                     Exception(
                         f"Content length does not match, expected {size_kB} but got {content_length_kb}. n = {i}"
@@ -73,13 +73,13 @@ class _Resultet:
                 )
 
             try:
-                _Resultet._test_data(size_kB, response.content)
+                _Result._test_data(size_kB, response.content)
             except ValueError as ex:
-                return _Resultet(size_kB, ex)
+                return _Result(size_kB, ex)
 
-            return _Resultet(size_kB, None, content_length_kb, response.elapsed, total_time, response.status_code)
+            return _Result(size_kB, None, content_length_kb, response.elapsed, total_time, response.status_code)
         except requests.exceptions.RequestException as ex:
-            return _Resultet(size_kB, ex)
+            return _Result(size_kB, ex)
 
     @staticmethod
     def _test_data(size_kB: int, content: bytes) -> None:
@@ -98,11 +98,11 @@ class _Resultet:
             if len(segment) != 1023:
                 raise ValueError("Wrong segment length")
 
-            if segment[7:] != _Resultet._test_body:
+            if segment[7:] != _Result._test_body:
                 raise ValueError("Wrong body length")
 
 
-class _ResultetList:
+class _ResultList:
     def __init__(self, size_kB: int):
         self.size_kB = size_kB
         if size_kB < 1:
@@ -111,12 +111,12 @@ class _ResultetList:
             self.name = f"{size_kB:.0f} kB"
         else:
             self.name = f"{size_kB / 1024:.0f} MB"
-        self.reslults: List[_Resultet] = []
+        self.reslults: List[_Result] = []
 
     def run_integrity_tests(self, indicator: bool, times: int) -> None:
         print(f"Testing {self.name} ", end="", flush=True)
         for i in range(0, times):
-            result = _Resultet.run_integrity_test(self.size_kB, i)
+            result = _Result.run_integrity_test(self.size_kB, i)
             if result.error is not None:
                 ...
                 # print(f" Error: {str(result.error)} ", end="", flush=True)
@@ -126,7 +126,7 @@ class _ResultetList:
             self.reslults.append(result)
         print(" done")
 
-    def display_resultets(self) -> None:
+    def display_results(self) -> None:
         resultes = [x for x in self.reslults if x.error is None]
 
         if len(resultes) == 0:
@@ -174,14 +174,14 @@ def _speed_test() -> None:
 
 
 def _integrity_test(sizes_kB: Sequence[int], times: int, indicator: bool) -> None:
-    resultet_lists: List[_ResultetList] = [_ResultetList(x) for x in sizes_kB]
+    resultet_lists: List[_ResultList] = [_ResultList(x) for x in sizes_kB]
 
     print(f"Testing sizes [{', '.join([x.name for x in resultet_lists])}]\n")
 
     for resultet_list in resultet_lists:
         resultet_list.run_integrity_tests(indicator, times)
 
-    all_resultes: List[_Resultet] = sum([x.reslults for x in resultet_lists], [])
+    all_resultes: List[_Result] = sum([x.reslults for x in resultet_lists], [])
 
     print()
 
@@ -202,9 +202,10 @@ def _integrity_test(sizes_kB: Sequence[int], times: int, indicator: bool) -> Non
     print("")
 
     for resultet_list in resultet_lists:
-        resultet_list.display_resultets()
+        resultet_list.display_results()
 
-
+# Run speed and integrity test.
+# The integrity test verifies that data is transferred correctly.
 def transfer_performance_test(sizes_kB: Optional[Sequence[int]] = None, times: int = 4, indicator: bool = True) -> None:
     print("- transfer performance test beginning -\n")
 
