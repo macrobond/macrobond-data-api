@@ -204,6 +204,7 @@ def _integrity_test(sizes_kB: Sequence[int], times: int, indicator: bool) -> Non
     for resultet_list in resultet_lists:
         resultet_list.display_results()
 
+
 # Run speed and integrity test.
 # The integrity test verifies that data is transferred correctly.
 def transfer_performance_test(sizes_kB: Optional[Sequence[int]] = None, times: int = 4, indicator: bool = True) -> None:
