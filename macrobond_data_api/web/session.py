@@ -54,6 +54,16 @@ def _raise_on_error(response: "Response", non_error_status: Sequence[int] = None
     raise HttpException(response)
 
 
+class _ResponseAsFileObject:
+    def __init__(self, response: "Response", chunk_size: int = 65536) -> None:
+        self.data = response.iter_content(chunk_size=chunk_size)
+
+    def read(self, n: int) -> bytes:
+        if n == 0:
+            return b""
+        return next(self.data, b"")
+
+
 class Session:
     @property
     def metadata(self) -> MetadataMethods:

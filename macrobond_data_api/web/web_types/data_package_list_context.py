@@ -1,15 +1,12 @@
-from abc import ABC, abstractmethod
 from datetime import datetime
-from typing import TYPE_CHECKING, Any, Optional, Tuple, cast, Iterable, Iterator
+from typing import TYPE_CHECKING, Any, Optional, Tuple, Iterable, Iterator
 
 import ijson
 
 from macrobond_data_api.common.types._parse_iso8601 import _parse_iso8601
 
 from ..web_types.data_package_list_state import DataPackageListState
-from ..web_types.data_package_body import DataPackageBody
-from ..session import _raise_on_error
-from .._responseAsFileObject import _ResponseAsFileObject
+from ..session import _raise_on_error, _ResponseAsFileObject
 
 if TYPE_CHECKING:  # pragma: no cover
     from ..web_api import WebApi
@@ -18,100 +15,22 @@ if TYPE_CHECKING:  # pragma: no cover
 # work in progress
 
 
-class DataPackageListContext(ABC):
-    @abstractmethod
-    def __enter__(self) -> "DataPackageListIterable":
-        ...
-
-    @abstractmethod
-    def __exit__(self, exception_type: Any, exception_value: Any, traceback: Any) -> None:
-        ...
+__pdoc__ = {
+    "DataPackageListContext.__init__": False,
+    "DataPackageListContextManager.__init__": False,
+}
 
 
-class DataPackageListIterable(ABC, Iterable[Tuple[str, datetime]]):
-    @property
-    @abstractmethod
-    def body(self) -> DataPackageBody:
-        """_"""
+class _DataPackageListContextIterator(Iterator[Tuple[str, datetime]], Iterable[Tuple[str, datetime]]):
+    _is_uesd = False
 
+    def __init__(self, ijson_parse: Any) -> None:
+        self._ijson_parse = ijson_parse
 
-class _DataPackageListContext(DataPackageListContext, DataPackageListIterable, Iterator[Tuple[str, datetime]]):
-    response_: Optional["Response"]
-    _ijson_parse: Any
-    _body: Optional[DataPackageBody]
-
-    @property
-    def body(self) -> DataPackageBody:
-        return cast(DataPackageBody, self._body)
-
-    def __init__(self, if_modified_since: Optional[datetime], webApi: "WebApi") -> None:
-        self._if_modified_since = if_modified_since
-        self._webApi: Optional["WebApi"] = webApi
-        self._iterator_started = False
-
-    def __enter__(self) -> "_DataPackageListContext":
-        params = {}
-        if self._if_modified_since:
-            params["ifModifiedSince"] = self._if_modified_since.isoformat()
-
-        if self._webApi is None:
-            raise Exception("obj is closed")
-
-        try:
-            self.response_ = self._webApi._session.get("v1/series/getdatapackagelist", params=params, stream=True)
-            self._webApi = None
-
-            _raise_on_error(self.response_)
-            self._ijson_parse = ijson.parse(_ResponseAsFileObject(self.response_))
-            self._set_body()
-
-            return self
-
-        except Exception as e:
-            self.__exit__(None, None, None)
-            raise e
-
-    def __exit__(self, exception_type: Any, exception_value: Any, traceback: Any) -> None:
-        self._webApi = None
-        if self.response_:
-            self.response_.close()
-            self.response_ = None
-
-    def _set_body(self) -> None:
-        time_stamp_for_if_modified_since: Optional[datetime] = None
-        download_full_list_on_or_after: Optional[datetime] = None
-        state: Optional[DataPackageListState] = None
-        for prefix, event, value in self._ijson_parse:
-            if prefix == "timeStampForIfModifiedSince":
-                if event != "string":
-                    raise Exception("bad format: timeStampForIfModifiedSince is not a string")
-                time_stamp_for_if_modified_since = _parse_iso8601(value)
-            elif prefix == "downloadFullListOnOrAfter":
-                if event != "string":
-                    raise Exception("bad format: downloadFullListOnOrAfter is not a string")
-                download_full_list_on_or_after = _parse_iso8601(value)
-            elif prefix == "state":
-                if event != "number":
-                    raise Exception("bad format: state is not a number")
-                state = DataPackageListState(value)
-            elif event == "start_array":
-                if prefix != "entities":
-                    raise Exception("bad format: event start_array do not have a prefix of entities")
-                break
-
-        if state is None:
-            raise Exception("bad format: state was not found")
-        if time_stamp_for_if_modified_since is None:
-            raise Exception("bad format: timeStampForIfModifiedSince was not found")
-        if not self._if_modified_since and download_full_list_on_or_after is None:
-            raise Exception("bad format: downloadFullListOnOrAfter was not found")
-
-        self._body = DataPackageBody(time_stamp_for_if_modified_since, download_full_list_on_or_after, state)
-
-    def __iter__(self) -> "_DataPackageListContext":
-        if self._iterator_started:
-            raise Exception("iterator has already started")
-        self._iterator_started = True
+    def __iter__(self) -> Iterator[Tuple[str, datetime]]:
+        if self._is_uesd:
+            raise Exception("iterator is already used")
+        self._is_uesd = True
         return self
 
     def __next__(self) -> Tuple[str, datetime]:
@@ -138,3 +57,125 @@ class _DataPackageListContext(DataPackageListContext, DataPackageListIterable, I
                 if event != "string":
                     raise Exception("bad format: entities.item.modified is not a string")
                 modified = _parse_iso8601(value)
+
+
+class DataPackageListContext:
+    @property
+    def time_stamp_for_if_modified_since(self) -> datetime:
+        """
+        A timestamp to pass as the ifModifiedSince parameter
+        in the next request to get incremental updates.
+        """
+        return self._time_stamp_for_if_modified_since
+
+    @property
+    def download_full_list_on_or_after(self) -> Optional[datetime]:
+        """
+        Recommended earliest next time to request a full list
+        by omitting timeStampForIfModifiedSince.
+        """
+        return self._download_full_list_on_or_after
+
+    @property
+    def state(self) -> DataPackageListState:
+        """
+        The state of this list.
+        """
+        return self._state
+
+    @property
+    def items(self) -> Iterable[Tuple[str, datetime]]:
+        """An iterable contining tuples with the name and Timestamp when this entity was last modified"""
+        return self._items
+
+    def __init__(
+        self,
+        time_stamp_for_if_modified_since: datetime,
+        download_full_list_on_or_after: Optional[datetime],
+        state: DataPackageListState,
+        items: _DataPackageListContextIterator,
+    ) -> None:
+        self._time_stamp_for_if_modified_since = time_stamp_for_if_modified_since
+        self._download_full_list_on_or_after = download_full_list_on_or_after
+        self._state = state
+        self._items = items
+
+
+def _pars_body(
+    ijson_parse: Any,
+) -> Tuple[Optional[datetime], Optional[datetime], Optional[DataPackageListState]]:
+    time_stamp_for_if_modified_since: Optional[datetime] = None
+    download_full_list_on_or_after: Optional[datetime] = None
+    state: Optional[DataPackageListState] = None
+    for prefix, event, value in ijson_parse:
+        if prefix == "timeStampForIfModifiedSince":
+            if event != "string":
+                raise Exception("bad format: timeStampForIfModifiedSince is not a string")
+            time_stamp_for_if_modified_since = _parse_iso8601(value)
+        elif prefix == "downloadFullListOnOrAfter":
+            if event != "string":
+                raise Exception("bad format: downloadFullListOnOrAfter is not a string")
+            download_full_list_on_or_after = _parse_iso8601(value)
+        elif prefix == "state":
+            if event != "number":
+                raise Exception("bad format: state is not a number")
+            state = DataPackageListState(value)
+        elif event == "start_array":
+            if prefix != "entities":
+                raise Exception("bad format: event start_array do not have a prefix of entities")
+            break
+    return time_stamp_for_if_modified_since, download_full_list_on_or_after, state
+
+
+class DataPackageListContextManager:
+    _response: Optional["Response"]
+
+    def __init__(self, if_modified_since: Optional[datetime], webApi: "WebApi") -> None:
+        self._if_modified_since = if_modified_since
+        self._webApi: Optional["WebApi"] = webApi
+        self._iterator_started = False
+
+    def __enter__(self) -> DataPackageListContext:
+        params = {}
+        if self._if_modified_since:
+            params["ifModifiedSince"] = self._if_modified_since.isoformat()
+
+        if self._webApi is None:
+            raise Exception("obj is closed")
+
+        try:
+            self._response = self._webApi._session.get("v1/series/getdatapackagelist", params=params, stream=True)
+            self._webApi = None
+
+            _raise_on_error(self._response)
+            ijson_parse = ijson.parse(_ResponseAsFileObject(self._response))
+
+            (
+                time_stamp_for_if_modified_since,
+                download_full_list_on_or_after,
+                state,
+            ) = _pars_body(ijson_parse)
+
+            if state is None:
+                raise Exception("bad format: state was not found")
+            if time_stamp_for_if_modified_since is None:
+                raise Exception("bad format: timeStampForIfModifiedSince was not found")
+            if not self._if_modified_since and download_full_list_on_or_after is None:
+                raise Exception("bad format: downloadFullListOnOrAfter was not found")
+
+            return DataPackageListContext(
+                time_stamp_for_if_modified_since,
+                download_full_list_on_or_after,
+                state,
+                _DataPackageListContextIterator(ijson_parse),
+            )
+
+        except Exception as e:
+            self.__exit__(None, None, None)
+            raise e
+
+    def __exit__(self, exception_type: Any, exception_value: Any, traceback: Any) -> None:
+        self._webApi = None
+        if self._response:
+            self._response.close()
+            self._response = None

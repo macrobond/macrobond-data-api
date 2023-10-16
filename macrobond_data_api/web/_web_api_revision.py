@@ -20,9 +20,7 @@ from macrobond_data_api.common.types._parse_iso8601 import _parse_iso8601
 from macrobond_data_api.common.types._repr_html_sequence import _ReprHtmlSequence
 from ._split_in_to_chunks import split_in_to_chunks
 
-from .session import ProblemDetailsException, Session, _raise_on_error
-
-from ._responseAsFileObject import _ResponseAsFileObject
+from .session import ProblemDetailsException, Session, _raise_on_error, _ResponseAsFileObject
 
 if TYPE_CHECKING:  # pragma: no cover
     from .web_api import WebApi
