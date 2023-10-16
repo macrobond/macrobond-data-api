@@ -5,6 +5,7 @@ import ijson
 
 from macrobond_data_api.common.types import SearchResultLong
 from macrobond_data_api.common.types._parse_iso8601 import _parse_iso8601
+from .web_types.data_package_list_context import DataPackageListContext, _DataPackageListContext
 
 from .web_types.data_package_list_state import DataPackageListState
 from .web_types.data_pacakge_list_item import DataPackageListItem
@@ -13,6 +14,8 @@ from .web_types.data_package_body import DataPackageBody
 
 from .session import _raise_on_error
 from .subscription_list import SubscriptionList
+
+from ._responseAsFileObject import _ResponseAsFileObject
 
 if TYPE_CHECKING:  # pragma: no cover
     from macrobond_data_api.common.types import SearchFilter
@@ -161,7 +164,7 @@ def get_data_package_list_iterative(
 
     with self._session.get("v1/series/getdatapackagelist", params=params, stream=True) as response:
         _raise_on_error(response)
-        ijson_parse = ijson.parse(response.raw)
+        ijson_parse = ijson.parse(_ResponseAsFileObject(response))
 
         (
             time_stamp_for_if_modified_since,
@@ -184,6 +187,10 @@ def get_data_package_list_iterative(
             return None
 
         return body
+
+
+def _get_data_package_list_iterative_2(self: "WebApi", if_modified_since: datetime = None) -> DataPackageListContext:
+    return _DataPackageListContext(if_modified_since, self)
 
 
 # Search

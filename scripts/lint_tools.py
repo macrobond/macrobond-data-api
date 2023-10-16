@@ -9,7 +9,7 @@ from pdoc3 import Pdoc3
 class Mypy(WorkItem):
     # TODO: @mb-jp use --strict for mypy
     async def run(self) -> None:
-        await self.python_run("mypy", ". --show-error-codes --exclude .env --python-version 3.8")
+        await self.python_run("mypy", ". --show-error-codes --exclude .env --exclude test.py --python-version 3.8")
 
 
 class Pylint(WorkItem):
@@ -19,7 +19,7 @@ class Pylint(WorkItem):
 
 class PyCodeStyle(WorkItem):
     async def run(self) -> None:
-        await self.python_run("pycodestyle", "--count . --exclude=.env")
+        await self.python_run("pycodestyle", "--count . --exclude=.env,test.py")
 
 
 class Black(WorkItem):

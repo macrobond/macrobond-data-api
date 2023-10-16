@@ -22,6 +22,7 @@ from ._split_in_to_chunks import split_in_to_chunks
 
 from .session import ProblemDetailsException, Session, _raise_on_error
 
+from ._responseAsFileObject import _ResponseAsFileObject
 
 if TYPE_CHECKING:  # pragma: no cover
     from .web_api import WebApi
@@ -276,7 +277,7 @@ def get_many_series_with_revisions(
             _create_web_revision_h_request(requests_chunkd), stream=True
         ) as response:
             _raise_on_error(response)
-            ijson_items = ijson.items(response.raw, "item")
+            ijson_items = ijson.items(_ResponseAsFileObject(response), "item")
             item: "SeriesWithVintagesResponse"
             for item in ijson_items:
                 error_code = item.get("errorCode")
