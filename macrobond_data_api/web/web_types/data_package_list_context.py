@@ -5,15 +5,11 @@ import ijson
 
 from macrobond_data_api.common.types._parse_iso8601 import _parse_iso8601
 
-from ..web_types.data_package_list_state import DataPackageListState
-from ..session import _raise_on_error, _ResponseAsFileObject
+from .data_package_list_state import DataPackageListState
 
 if TYPE_CHECKING:  # pragma: no cover
     from ..web_api import WebApi
     from requests import Response
-
-# work in progress
-
 
 __pdoc__ = {
     "DataPackageListContext.__init__": False,
@@ -144,11 +140,11 @@ class DataPackageListContextManager:
             raise Exception("obj is closed")
 
         try:
-            self._response = self._webApi._session.get("v1/series/getdatapackagelist", params=params, stream=True)
+            session = self._webApi._session
             self._webApi = None
+            self._response = session.get_or_raise("v1/series/getdatapackagelist", params=params, stream=True)
 
-            _raise_on_error(self._response)
-            ijson_parse = ijson.parse(_ResponseAsFileObject(self._response))
+            ijson_parse = ijson.parse(session.response_to_file_object(self._response))
 
             (
                 time_stamp_for_if_modified_since,

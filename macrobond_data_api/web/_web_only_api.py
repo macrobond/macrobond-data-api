@@ -5,14 +5,13 @@ import ijson
 
 from macrobond_data_api.common.types import SearchResultLong
 from macrobond_data_api.common.types._parse_iso8601 import _parse_iso8601
-from .web_types.data_package_list_context import DataPackageListContextManager
 
+from .web_types.data_package_list_context import DataPackageListContextManager
 from .web_types.data_package_list_state import DataPackageListState
 from .web_types.data_pacakge_list_item import DataPackageListItem
 from .web_types.data_package_list import DataPackageList
 from .web_types.data_package_body import DataPackageBody
 
-from .session import _raise_on_error, _ResponseAsFileObject
 from .subscription_list import SubscriptionList
 
 if TYPE_CHECKING:  # pragma: no cover
@@ -160,9 +159,8 @@ def get_data_package_list_iterative(
     if if_modified_since:
         params["ifModifiedSince"] = if_modified_since.isoformat()
 
-    with self._session.get("v1/series/getdatapackagelist", params=params, stream=True) as response:
-        _raise_on_error(response)
-        ijson_parse = ijson.parse(_ResponseAsFileObject(response))
+    with self._session.get_or_raise("v1/series/getdatapackagelist", params=params, stream=True) as response:
+        ijson_parse = ijson.parse(self.session.response_to_file_object(response))
 
         (
             time_stamp_for_if_modified_since,
@@ -187,10 +185,28 @@ def get_data_package_list_iterative(
         return body
 
 
-# i need a good name !
+# TODO i need a good name !
 def _get_data_package_list_iterative_2(
     self: "WebApi", if_modified_since: datetime = None
 ) -> DataPackageListContextManager:
+    # pylint: disable=line-too-long
+    """
+    Process the data package list in batche.
+    This is more efficient since the complete list does not have to be in memory.
+
+    Typically you want to pass the date of time_stamp_for_if_modified_since from response of the previous call
+    to get incremental updates.
+
+    Parameters
+    ----------
+    if_modified_since : datetime
+        The timestamp of the property time_stamp_for_if_modified_since from the response of the previous call.
+        If not specified, all items will be returned.
+    Returns
+    -------
+    `macrobond_data_api.web.web_types.data_package_list_context.DataPackageListContextManager`
+    """
+    # pylint: enable=line-too-long
     return DataPackageListContextManager(if_modified_since, self)
 
 

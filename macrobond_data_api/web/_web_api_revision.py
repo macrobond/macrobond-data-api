@@ -20,7 +20,7 @@ from macrobond_data_api.common.types._parse_iso8601 import _parse_iso8601
 from macrobond_data_api.common.types._repr_html_sequence import _ReprHtmlSequence
 from ._split_in_to_chunks import split_in_to_chunks
 
-from .session import ProblemDetailsException, Session, _raise_on_error, _ResponseAsFileObject
+from .session import ProblemDetailsException, Session
 
 if TYPE_CHECKING:  # pragma: no cover
     from .web_api import WebApi
@@ -274,8 +274,8 @@ def get_many_series_with_revisions(
         with self.session.series.post_fetch_all_vintage_series(
             _create_web_revision_h_request(requests_chunkd), stream=True
         ) as response:
-            _raise_on_error(response)
-            ijson_items = ijson.items(_ResponseAsFileObject(response), "item")
+            self.session.raise_on_error(response)
+            ijson_items = ijson.items(self.session.response_to_file_object(response), "item")
             item: "SeriesWithVintagesResponse"
             for item in ijson_items:
                 error_code = item.get("errorCode")
