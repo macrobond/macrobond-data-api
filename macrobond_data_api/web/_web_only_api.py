@@ -129,6 +129,7 @@ def get_data_package_list_iterative(
 ) -> Optional[DataPackageBody]:
     # pylint: disable=line-too-long
     """
+    .. Important:: This method is deprecated. Use `macrobond_data_api.web.web_api.WebApi.get_data_package_list_chunked` instead.
     Process the data package list in batches.
     This is more efficient since the complete list does not have to be in memory.
 
@@ -155,7 +156,7 @@ def get_data_package_list_iterative(
     """
     # pylint: enable=line-too-long
     warnings.warn(
-        "get_data_package_list_iterative is deprecated, Use get_data_package_list_chunked insted.",
+        "get_data_package_list_iterative is deprecated. Use get_data_package_list_chunked instead.",
         DeprecationWarning,
         2,
     )
