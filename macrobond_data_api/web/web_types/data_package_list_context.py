@@ -106,7 +106,7 @@ class DataPackageListContext:
         self._items = items
 
 
-def _pars_body(
+def _parse_body(
     ijson_parse: Any,
 ) -> Tuple[Optional[datetime], Optional[datetime], Optional[DataPackageListState]]:
     time_stamp_for_if_modified_since: Optional[datetime] = None
@@ -127,7 +127,7 @@ def _pars_body(
             state = DataPackageListState(value)
         elif event == "start_array":
             if prefix != "entities":
-                raise Exception("bad format: event start_array do not have a prefix of entities")
+                raise Exception("bad format: event start_array does not have a prefix of 'entities'")
             break
     return time_stamp_for_if_modified_since, download_full_list_on_or_after, state
 
@@ -160,7 +160,7 @@ class DataPackageListContextManager:
                 time_stamp_for_if_modified_since,
                 download_full_list_on_or_after,
                 state,
-            ) = _pars_body(ijson_parse)
+            ) = _parse_body(ijson_parse)
 
             if state is None:
                 raise Exception("bad format: state was not found")

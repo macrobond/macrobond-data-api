@@ -197,7 +197,7 @@ def get_data_package_list_chunked(
 ) -> DataPackageListContextManager:
     # pylint: disable=line-too-long
     """
-    Process the data package list in chunkes.
+    Process the data package list in chunks.
     This is more efficient since the complete list does not have to be in memory.
 
     Typically you want to pass the date of time_stamp_for_if_modified_since from response of the previous call
