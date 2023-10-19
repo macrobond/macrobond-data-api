@@ -1,5 +1,6 @@
 from datetime import datetime
 from typing import TYPE_CHECKING, Any, List, Optional, Callable, Tuple
+import warnings
 
 import ijson
 
@@ -153,6 +154,12 @@ def get_data_package_list_iterative(
     `macrobond_data_api.web.web_types.data_package_body.DataPackageBody`
     """
     # pylint: enable=line-too-long
+    warnings.warn(
+        "get_data_package_list_iterative is deprecated, Use get_data_package_list_chunked insted.",
+        DeprecationWarning,
+        2,
+    )
+
     params = {}
     body: Optional[DataPackageBody] = None
 
@@ -185,13 +192,12 @@ def get_data_package_list_iterative(
         return body
 
 
-# TODO i need a good name !
-def _get_data_package_list_iterative_2(
-    self: "WebApi", if_modified_since: datetime = None
+def get_data_package_list_chunked(
+    self: "WebApi", if_modified_since: datetime = None, chunk_size: int = 200
 ) -> DataPackageListContextManager:
     # pylint: disable=line-too-long
     """
-    Process the data package list in batche.
+    Process the data package list in chunkes.
     This is more efficient since the complete list does not have to be in memory.
 
     Typically you want to pass the date of time_stamp_for_if_modified_since from response of the previous call
@@ -202,12 +208,15 @@ def _get_data_package_list_iterative_2(
     if_modified_since : datetime
         The timestamp of the property time_stamp_for_if_modified_since from the response of the previous call.
         If not specified, all items will be returned.
+
+    chunk_size : int
+        The maximum number of items to include in each List in DataPackageListContext.items
     Returns
     -------
     `macrobond_data_api.web.web_types.data_package_list_context.DataPackageListContextManager`
     """
     # pylint: enable=line-too-long
-    return DataPackageListContextManager(if_modified_since, self)
+    return DataPackageListContextManager(if_modified_since, chunk_size, self)
 
 
 # Search

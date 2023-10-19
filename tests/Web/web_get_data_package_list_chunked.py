@@ -23,12 +23,8 @@ class TestAuth2Session:
         return response
 
 
-@pytest.mark.parametrize(
-    "state",
-    [DataPackageListState.FULL_LISTING, DataPackageListState.INCOMPLETE, DataPackageListState.UP_TO_DATE],
-)
-def test(state: DataPackageListState) -> None:
-    json = json_dumps(
+def get_json(state: DataPackageListState) -> str:
+    return json_dumps(
         {
             "downloadFullListOnOrAfter": "2000-02-01T04:05:06",
             "timeStampForIfModifiedSince": "2000-02-02T04:05:06",
@@ -40,18 +36,49 @@ def test(state: DataPackageListState) -> None:
         }
     )
 
+
+@pytest.mark.parametrize(
+    "state",
+    [DataPackageListState.FULL_LISTING, DataPackageListState.INCOMPLETE, DataPackageListState.UP_TO_DATE],
+)
+def test_1(state: DataPackageListState) -> None:
     hitponts = 1
+    json = get_json(state)
 
     api = WebApi(Session("", "", test_auth2_session=TestAuth2Session(bytes(json, "utf-8"))))
 
-    with api._get_data_package_list_iterative_2() as context:
+    with api.get_data_package_list_chunked() as context:
         assert context.download_full_list_on_or_after == datetime(2000, 2, 1, 4, 5, 6)
         assert context.time_stamp_for_if_modified_since == datetime(2000, 2, 2, 4, 5, 6)
         assert context.state == state
 
         assert list(context.items) == [
-            ("sek", datetime(2000, 2, 3, 4, 5, 6)),
-            ("dkk", datetime(2000, 2, 4, 4, 5, 6)),
+            [("sek", datetime(2000, 2, 3, 4, 5, 6)), ("dkk", datetime(2000, 2, 4, 4, 5, 6))],
+        ]
+
+        hitponts -= 1
+
+    assert hitponts == 0
+
+
+@pytest.mark.parametrize(
+    "state",
+    [DataPackageListState.FULL_LISTING, DataPackageListState.INCOMPLETE, DataPackageListState.UP_TO_DATE],
+)
+def test_2(state: DataPackageListState) -> None:
+    hitponts = 1
+    json = get_json(state)
+
+    api = WebApi(Session("", "", test_auth2_session=TestAuth2Session(bytes(json, "utf-8"))))
+
+    with api.get_data_package_list_chunked(chunk_size=1) as context:
+        assert context.download_full_list_on_or_after == datetime(2000, 2, 1, 4, 5, 6)
+        assert context.time_stamp_for_if_modified_since == datetime(2000, 2, 2, 4, 5, 6)
+        assert context.state == state
+
+        assert list(context.items) == [
+            [("sek", datetime(2000, 2, 3, 4, 5, 6))],
+            [("dkk", datetime(2000, 2, 4, 4, 5, 6))],
         ]
 
         hitponts -= 1

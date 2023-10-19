@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import TYPE_CHECKING, Any, Optional, Tuple, Iterable, Iterator
+from typing import TYPE_CHECKING, Any, Optional, Tuple, Iterable, Iterator, List
 
 import ijson
 
@@ -17,22 +17,26 @@ __pdoc__ = {
 }
 
 
-class _DataPackageListContextIterator(Iterator[Tuple[str, datetime]], Iterable[Tuple[str, datetime]]):
+class _DataPackageListContextIterator(Iterator[List[Tuple[str, datetime]]], Iterable[List[Tuple[str, datetime]]]):
     _is_uesd = False
+    _reached_the_end_of_array = False
 
-    def __init__(self, ijson_parse: Any) -> None:
+    def __init__(self, ijson_parse: Any, chunk_size: int) -> None:
         self._ijson_parse = ijson_parse
+        self.chunk_size = chunk_size
 
-    def __iter__(self) -> Iterator[Tuple[str, datetime]]:
+    def __iter__(self) -> Iterator[List[Tuple[str, datetime]]]:
         if self._is_uesd:
             raise Exception("iterator is already used")
         self._is_uesd = True
         return self
 
-    def __next__(self) -> Tuple[str, datetime]:
+    def __next__(self) -> List[Tuple[str, datetime]]:
+        if self._reached_the_end_of_array:
+            raise StopIteration()
         name = ""
         modified: Optional[datetime] = None
-
+        items: List[Tuple[str, datetime]] = []
         while True:
             prefix, event, value = next(self._ijson_parse)
             if event == "end_map":
@@ -40,12 +44,17 @@ class _DataPackageListContextIterator(Iterator[Tuple[str, datetime]], Iterable[T
                     raise Exception("bad format: name was not found")
                 if modified is None:
                     raise Exception("bad format: modified was not found")
-                return (name, modified)
-
-            if event == "end_array":
+                items.append((name, modified))
+                name = ""
+                modified = None
+                if len(items) == self.chunk_size:
+                    return items
+            elif event == "end_array":
+                self._reached_the_end_of_array = True
+                if len(items) != 0:
+                    return items
                 raise StopIteration()
-
-            if prefix == "entities.item.name":
+            elif prefix == "entities.item.name":
                 if event != "string":
                     raise Exception("bad format: entities.item.name is not a string")
                 name = value
@@ -80,8 +89,8 @@ class DataPackageListContext:
         return self._state
 
     @property
-    def items(self) -> Iterable[Tuple[str, datetime]]:
-        """An iterable contining tuples with the name and Timestamp when this entity was last modified"""
+    def items(self) -> Iterable[List[Tuple[str, datetime]]]:
+        """An iterable contining Lists of tuples with the name and Timestamp when this entity was last modified"""
         return self._items
 
     def __init__(
@@ -126,8 +135,9 @@ def _pars_body(
 class DataPackageListContextManager:
     _response: Optional["Response"]
 
-    def __init__(self, if_modified_since: Optional[datetime], webApi: "WebApi") -> None:
+    def __init__(self, if_modified_since: Optional[datetime], chunk_size: int, webApi: "WebApi") -> None:
         self._if_modified_since = if_modified_since
+        self.chunk_size = chunk_size
         self._webApi: Optional["WebApi"] = webApi
         self._iterator_started = False
 
@@ -163,7 +173,7 @@ class DataPackageListContextManager:
                 time_stamp_for_if_modified_since,
                 download_full_list_on_or_after,
                 state,
-                _DataPackageListContextIterator(ijson_parse),
+                _DataPackageListContextIterator(ijson_parse, self.chunk_size),
             )
 
         except Exception as e:
