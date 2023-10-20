@@ -322,3 +322,347 @@ def test_listing_and_listing_incomplete() -> None:
         ).start()
 
     assert hit == 12
+
+
+# test_abort_full_listing
+
+
+def test_abort_full_listing_1() -> None:
+    hit = 0
+
+    def hit_test(*now: int) -> int:
+        nonlocal hit
+        hit += 1
+        assert hit in now
+        return hit
+
+    class _TestDataPackageListPoller(TestDataPackageListPoller):
+        __test__ = False
+
+        def _test_access(self) -> None:
+            hit_test(1)
+
+        def on_full_listing_start(self, subscription: "DataPackageBody") -> None:
+            hit_test(2)
+            self.abort()
+
+        def on_full_listing_stop(self, is_aborted: bool, exception: Optional[Exception]) -> None:
+            hit_test(3)
+            assert is_aborted is True
+            assert exception
+
+    json = get_json(DataPackageListState.FULL_LISTING)
+
+    api = WebApi(Session("", "", test_auth2_session=TestAuth2Session([bytes(json, "utf-8")])))
+
+    _TestDataPackageListPoller(api, chunk_size=1).start()
+
+    assert hit == 3
+
+
+def test_abort_full_listing_2() -> None:
+    hit = 0
+
+    def hit_test(*now: int) -> int:
+        nonlocal hit
+        hit += 1
+        assert hit in now
+        return hit
+
+    class _TestDataPackageListPoller(TestDataPackageListPoller):
+        __test__ = False
+
+        def _test_access(self) -> None:
+            hit_test(1)
+
+        def on_full_listing_start(self, subscription: "DataPackageBody") -> None:
+            hit_test(2)
+
+        def on_full_listing_items(self, subscription: DataPackageBody, items: List[DataPackageListItem]) -> None:
+            if hit_test(3, 4) == 4:
+                self.abort()
+
+        def on_full_listing_stop(self, is_aborted: bool, exception: Optional[Exception]) -> None:
+            hit_test(5)
+            assert is_aborted is True
+            assert exception
+
+    json = get_json(DataPackageListState.FULL_LISTING)
+
+    api = WebApi(Session("", "", test_auth2_session=TestAuth2Session([bytes(json, "utf-8")])))
+
+    _TestDataPackageListPoller(api, chunk_size=1).start()
+
+    assert hit == 5
+
+
+def test_abort_full_listing_3() -> None:
+    hit = 0
+
+    def hit_test(*now: int) -> int:
+        nonlocal hit
+        hit += 1
+        assert hit in now
+        return hit
+
+    class _TestDataPackageListPoller(TestDataPackageListPoller):
+        __test__ = False
+
+        def _test_access(self) -> None:
+            hit_test(1)
+
+        def on_full_listing_start(self, subscription: "DataPackageBody") -> None:
+            hit_test(2)
+
+        def on_full_listing_items(self, subscription: DataPackageBody, items: List[DataPackageListItem]) -> None:
+            hit_test(3)
+
+        def on_full_listing_stop(self, is_aborted: bool, exception: Optional[Exception]) -> None:
+            hit_test(4)
+            assert is_aborted is False
+            assert exception is None
+            self.abort()
+
+    json = get_json(DataPackageListState.FULL_LISTING)
+
+    api = WebApi(Session("", "", test_auth2_session=TestAuth2Session([bytes(json, "utf-8")])))
+
+    _TestDataPackageListPoller(api).start()
+
+    assert hit == 4
+
+
+# test_abort_listing
+
+
+def test_abort_listing_1() -> None:
+    hit = 0
+
+    def hit_test(*now: int) -> int:
+        nonlocal hit
+        hit += 1
+        assert hit in now
+        return hit
+
+    class _TestDataPackageListPoller(TestDataPackageListPoller):
+        __test__ = False
+
+        def _test_access(self) -> None:
+            hit_test(1)
+
+        def now(self) -> datetime:
+            hit_test(2)
+            return datetime(2000, 1, 1, tzinfo=timezone.utc)
+
+        def on_incremental_start(self, subscription: "DataPackageBody") -> None:
+            hit_test(3)
+            self.abort()
+
+        def on_incremental_stop(self, is_aborted: bool, exception: Optional[Exception]) -> None:
+            hit_test(4)
+            assert is_aborted is True
+            assert exception is not None
+
+    json = get_json(DataPackageListState.UP_TO_DATE)
+
+    api = WebApi(Session("", "", test_auth2_session=TestAuth2Session([bytes(json, "utf-8")])))
+
+    _TestDataPackageListPoller(
+        api,
+        download_full_list_on_or_after=datetime(3000, 1, 1, tzinfo=timezone.utc),
+        time_stamp_for_if_modified_since=datetime(1000, 1, 1, tzinfo=timezone.utc),
+    ).start()
+
+    assert hit == 4
+
+
+def test_abort_listing_2() -> None:
+    hit = 0
+
+    def hit_test(*now: int) -> int:
+        nonlocal hit
+        hit += 1
+        assert hit in now
+        return hit
+
+    class _TestDataPackageListPoller(TestDataPackageListPoller):
+        __test__ = False
+
+        def _test_access(self) -> None:
+            hit_test(1)
+
+        def now(self) -> datetime:
+            hit_test(2)
+            return datetime(2000, 1, 1, tzinfo=timezone.utc)
+
+        def on_incremental_start(self, subscription: "DataPackageBody") -> None:
+            hit_test(3)
+
+        def on_incremental_items(self, subscription: DataPackageBody, items: List[DataPackageListItem]) -> None:
+            if hit_test(4):
+                self.abort()
+
+        def on_incremental_stop(self, is_aborted: bool, exception: Optional[Exception]) -> None:
+            hit_test(5)
+            assert is_aborted is True
+            assert exception is not None
+
+    json = get_json(DataPackageListState.UP_TO_DATE)
+
+    api = WebApi(Session("", "", test_auth2_session=TestAuth2Session([bytes(json, "utf-8")])))
+
+    _TestDataPackageListPoller(
+        api,
+        download_full_list_on_or_after=datetime(3000, 1, 1, tzinfo=timezone.utc),
+        time_stamp_for_if_modified_since=datetime(1000, 1, 1, tzinfo=timezone.utc),
+        chunk_size=1,
+    ).start()
+
+    assert hit == 5
+
+
+def test_abort_listing_3() -> None:
+    hit = 0
+
+    def hit_test(*now: int) -> int:
+        nonlocal hit
+        hit += 1
+        assert hit in now
+        return hit
+
+    class _TestDataPackageListPoller(TestDataPackageListPoller):
+        __test__ = False
+
+        def _test_access(self) -> None:
+            hit_test(1)
+
+        def now(self) -> datetime:
+            hit_test(2)
+            return datetime(2000, 1, 1, tzinfo=timezone.utc)
+
+        def on_incremental_start(self, subscription: "DataPackageBody") -> None:
+            hit_test(3)
+
+        def on_incremental_items(self, subscription: DataPackageBody, items: List[DataPackageListItem]) -> None:
+            hit_test(4)
+
+        def on_incremental_stop(self, is_aborted: bool, exception: Optional[Exception]) -> None:
+            hit_test(5)
+            assert is_aborted is False
+            assert exception is None
+            self.abort()
+
+    json = get_json(DataPackageListState.UP_TO_DATE)
+
+    api = WebApi(Session("", "", test_auth2_session=TestAuth2Session([bytes(json, "utf-8")])))
+
+    _TestDataPackageListPoller(
+        api,
+        download_full_list_on_or_after=datetime(3000, 1, 1, tzinfo=timezone.utc),
+        time_stamp_for_if_modified_since=datetime(1000, 1, 1, tzinfo=timezone.utc),
+    ).start()
+
+    assert hit == 5
+
+
+# test_abort_listing_and_listing_incomplete
+
+
+def test_abort_listing_and_listing_incomplete_1() -> None:
+    hit = 0
+
+    def hit_test(*now: int) -> int:
+        nonlocal hit
+        hit += 1
+        assert hit in now
+        return hit
+
+    class _TestDataPackageListPoller(TestDataPackageListPoller):
+        __test__ = False
+
+        def _test_access(self) -> None:
+            hit_test(1)
+
+        def sleep(self, secs: float) -> None:
+            hit_test(5)
+
+        def now(self) -> datetime:
+            hit_test(2)
+            return datetime(2000, 1, 1, tzinfo=timezone.utc)
+
+        def on_incremental_start(self, subscription: "DataPackageBody") -> None:
+            hit_test(3)
+
+        def on_incremental_items(self, subscription: "DataPackageBody", items: List["DataPackageListItem"]) -> None:
+            if hit_test(4, 6) == 6:
+                self.abort()
+
+        def on_incremental_stop(self, is_aborted: bool, exception: Optional[Exception]) -> None:
+            hit_test(7)
+            assert is_aborted is True
+            assert exception is not None
+
+    content = [
+        bytes(get_json(DataPackageListState.INCOMPLETE), "utf-8"),
+        bytes(get_json(DataPackageListState.UP_TO_DATE), "utf-8"),
+    ]
+
+    api = WebApi(Session("", "", test_auth2_session=TestAuth2Session(content)))
+
+    _TestDataPackageListPoller(
+        api,
+        download_full_list_on_or_after=datetime(3000, 1, 1, tzinfo=timezone.utc),
+        time_stamp_for_if_modified_since=datetime(1000, 1, 1, tzinfo=timezone.utc),
+    ).start()
+
+    assert hit == 7
+
+
+def test_abort_listing_and_listing_incomplete_2() -> None:
+    hit = 0
+
+    def hit_test(*now: int) -> int:
+        nonlocal hit
+        hit += 1
+        assert hit in now
+        return hit
+
+    class _TestDataPackageListPoller(TestDataPackageListPoller):
+        __test__ = False
+
+        def _test_access(self) -> None:
+            hit_test(1)
+
+        def sleep(self, secs: float) -> None:
+            hit_test(5)
+
+        def now(self) -> datetime:
+            hit_test(2)
+            return datetime(2000, 1, 1, tzinfo=timezone.utc)
+
+        def on_incremental_start(self, subscription: "DataPackageBody") -> None:
+            hit_test(3)
+
+        def on_incremental_items(self, subscription: "DataPackageBody", items: List["DataPackageListItem"]) -> None:
+            hit_test(4, 6)
+
+        def on_incremental_stop(self, is_aborted: bool, exception: Optional[Exception]) -> None:
+            hit_test(7)
+            assert is_aborted is False
+            assert exception is None
+            self.abort()
+
+    content = [
+        bytes(get_json(DataPackageListState.INCOMPLETE), "utf-8"),
+        bytes(get_json(DataPackageListState.UP_TO_DATE), "utf-8"),
+    ]
+
+    api = WebApi(Session("", "", test_auth2_session=TestAuth2Session(content)))
+
+    _TestDataPackageListPoller(
+        api,
+        download_full_list_on_or_after=datetime(3000, 1, 1, tzinfo=timezone.utc),
+        time_stamp_for_if_modified_since=datetime(1000, 1, 1, tzinfo=timezone.utc),
+    ).start()
+
+    assert hit == 7

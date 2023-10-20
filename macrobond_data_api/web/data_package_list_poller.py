@@ -2,13 +2,13 @@ from abc import ABC, abstractmethod
 from datetime import datetime, timezone
 
 import time
-from typing import List, Optional, cast, TYPE_CHECKING
+from typing import List, Optional, cast
 
 from .web_api import WebApi
 from .web_types.data_package_list_state import DataPackageListState
 
-if TYPE_CHECKING:  # pragma: no cover
-    from .web_types import DataPackageBody, DataPackageListItem
+from .web_types.data_pacakge_list_item import DataPackageListItem
+from .web_types.data_package_body import DataPackageBody
 
 
 class _AbortException(Exception):
@@ -30,6 +30,8 @@ class DataPackageListPoller(ABC):
         The saved value of `download_full_list_on_or_after` from the previous run. `None` on first run.
     time_stamp_for_if_modified_since: datetime
         The saved value of `time_stamp_for_if_modified_since` from the previous run. `None`on first run.
+    chunk_size : int
+        The maximum number of items to include in each on_*_items()
     """
 
     def __init__(
@@ -103,28 +105,30 @@ class DataPackageListPoller(ABC):
         if response.status_code == 403:
             raise Exception("Needs access - The account is not set up to use DataPackageList")
 
-    def _run_full_listing(self, max_attempts: int = 3) -> Optional["DataPackageBody"]:
+    def _run_full_listing(self, max_attempts: int = 3) -> Optional[DataPackageBody]:
         is_stated = False
-
-        def _body_callback(body: "DataPackageBody") -> None:
-            nonlocal is_stated
-            is_stated = True
-            self.on_full_listing_start(body)
 
         try:
             for attempt in range(1, max_attempts):
                 try:
-                    sub = self._api.get_data_package_list_iterative(
-                        _body_callback,
-                        self.on_full_listing_items,
-                        None,
-                        self._chunk_size,
-                    )
-                    if not sub:
+                    body: DataPackageBody
+                    with self._api.get_data_package_list_chunked(None, self._chunk_size) as context:
+                        is_stated = True
+                        body = DataPackageBody(
+                            context.time_stamp_for_if_modified_since,
+                            context.download_full_list_on_or_after,
+                            context.state,
+                        )
+                        self.on_full_listing_start(body)
+                        for items in context.items:
+                            self.on_full_listing_items(body, [DataPackageListItem(x[0], x[1]) for x in items])
+
+                    if not body:
                         raise ValueError("subscription is None")
 
+                    is_stated = False
                     self.on_full_listing_stop(False, None)
-                    return sub
+                    return body
                 except Exception as ex:  # pylint: disable=broad-except
                     if self._abort:
                         raise _AbortException() from ex
@@ -139,23 +143,23 @@ class DataPackageListPoller(ABC):
                 self.on_full_listing_stop(False, ex)
         return None
 
-    def _run_listing(self, if_modified_since: datetime, max_attempts: int = 3) -> Optional["DataPackageBody"]:
+    def _run_listing(self, if_modified_since: datetime, max_attempts: int = 3) -> Optional[DataPackageBody]:
         is_stated = False
 
-        def _body_callback(body: "DataPackageBody") -> None:
-            nonlocal is_stated
-            is_stated = True
-            self.on_incremental_start(body)
-
         try:
+            body: DataPackageBody
             for attempt in range(1, max_attempts):
                 try:
-                    sub = self._api.get_data_package_list_iterative(
-                        _body_callback,
-                        self.on_incremental_items,
-                        if_modified_since,
-                        self._chunk_size,
-                    )
+                    with self._api.get_data_package_list_chunked(if_modified_since, self._chunk_size) as context:
+                        is_stated = True
+                        body = DataPackageBody(
+                            context.time_stamp_for_if_modified_since,
+                            context.download_full_list_on_or_after,
+                            context.state,
+                        )
+                        self.on_incremental_start(body)
+                        for items in context.items:
+                            self.on_incremental_items(body, [DataPackageListItem(x[0], x[1]) for x in items])
                     break
                 except Exception as ex:  # pylint: disable=broad-except
                     if self._abort:
@@ -164,16 +168,17 @@ class DataPackageListPoller(ABC):
                         raise
                     self._sleep(self.on_error_delay)
 
-            if not sub:
+            if not body:
                 raise ValueError("subscription is None")
 
-            if sub.state == DataPackageListState.UP_TO_DATE:
+            if body.state == DataPackageListState.UP_TO_DATE:
+                is_stated = False
                 self.on_incremental_stop(False, None)
-                return sub
+                return body
 
             self._sleep(self.incomplete_delay)
 
-            return self._run_listing_incomplete(sub.time_stamp_for_if_modified_since, is_stated, max_attempts)
+            return self._run_listing_incomplete(body.time_stamp_for_if_modified_since, is_stated, max_attempts)
         except _AbortException as ex:
             if is_stated:
                 self.on_incremental_stop(True, cast(Exception, ex.__cause__))
@@ -182,30 +187,36 @@ class DataPackageListPoller(ABC):
                 self.on_incremental_stop(False, ex)
         return None
 
-    def _run_listing_incomplete(
+    def _run_listing_incomplete(  # pylint: disable=too-many-branches
         self, if_modified_since: datetime, is_stated: bool, max_attempts: int = 3
-    ) -> Optional["DataPackageBody"]:
+    ) -> Optional[DataPackageBody]:
         try:
             while True:
                 for attempt in range(1, max_attempts):
                     try:
-                        sub = self._api.get_data_package_list_iterative(
-                            lambda _: None,
-                            self.on_incremental_items,
-                            if_modified_since,
-                            self._chunk_size,
-                        )
+                        body: DataPackageBody
+                        with self._api.get_data_package_list_chunked(if_modified_since, self._chunk_size) as context:
+                            body = DataPackageBody(
+                                context.time_stamp_for_if_modified_since,
+                                context.download_full_list_on_or_after,
+                                context.state,
+                            )
+                            for items in context.items:
+                                self.on_incremental_items(body, [DataPackageListItem(x[0], x[1]) for x in items])
 
-                        if not sub:
+                        if not body:
                             raise ValueError("subscription is None")
 
-                        if sub.state == DataPackageListState.UP_TO_DATE:
-                            self.on_incremental_stop(False, None)
-                            return sub
+                        if body.state == DataPackageListState.UP_TO_DATE:
+                            try:
+                                self.on_incremental_stop(False, None)
+                            except _AbortException:
+                                ...
+                            return body
 
                         self._sleep(self.incomplete_delay)
 
-                        if_modified_since = sub.time_stamp_for_if_modified_since
+                        if_modified_since = body.time_stamp_for_if_modified_since
                     except Exception as ex2:  # pylint: disable=broad-except
                         if self._abort:
                             raise _AbortException() from ex2
@@ -223,11 +234,11 @@ class DataPackageListPoller(ABC):
     # full_listing
 
     @abstractmethod
-    def on_full_listing_start(self, subscription: "DataPackageBody") -> None:
+    def on_full_listing_start(self, subscription: DataPackageBody) -> None:
         """This override is called when a full listing starts."""
 
     @abstractmethod
-    def on_full_listing_items(self, subscription: "DataPackageBody", items: List["DataPackageListItem"]) -> None:
+    def on_full_listing_items(self, subscription: DataPackageBody, items: List[DataPackageListItem]) -> None:
         """This override is called repeatedly with one or more items until all items are listed."""
 
     @abstractmethod
@@ -245,11 +256,11 @@ class DataPackageListPoller(ABC):
     # listing
 
     @abstractmethod
-    def on_incremental_start(self, subscription: "DataPackageBody") -> None:
+    def on_incremental_start(self, subscription: DataPackageBody) -> None:
         """This override is called when an incremental listing starts."""
 
     @abstractmethod
-    def on_incremental_items(self, subscription: "DataPackageBody", items: List["DataPackageListItem"]) -> None:
+    def on_incremental_items(self, subscription: DataPackageBody, items: List[DataPackageListItem]) -> None:
         """This override is called repeatedly with one or more items until all updated items are listed."""
 
     @abstractmethod
@@ -265,5 +276,8 @@ class DataPackageListPoller(ABC):
         """
 
     def abort(self) -> None:
-        """Call this method to stop processing."""
+        """
+        Call this method to stop processing.
+        """
         self._abort = True
+        raise _AbortException()
