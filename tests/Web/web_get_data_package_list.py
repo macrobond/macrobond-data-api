@@ -12,6 +12,8 @@ from macrobond_data_api.web.web_types import DataPackageListItem, DataPackageLis
 
 
 class TestAuth2Session:
+    __test__ = False
+
     def __init__(self, content: bytes):
         self.content = content
 

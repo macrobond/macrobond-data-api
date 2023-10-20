@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 from datetime import datetime, timezone
 
 import time
-from typing import List, Optional, cast, TYPE_CHECKING, Callable
+from typing import List, Optional, cast, TYPE_CHECKING
 
 from .web_api import WebApi
 from .web_types.data_package_list_state import DataPackageListState
@@ -37,19 +37,23 @@ class DataPackageListPoller(ABC):
         api: WebApi,
         download_full_list_on_or_after: Optional[datetime] = None,
         time_stamp_for_if_modified_since: Optional[datetime] = None,
-        _sleep: Callable[[int], None] = time.sleep,
+        chunk_size: int = 200,
     ) -> None:
+        self._api = api
+        self._download_full_list_on_or_after = download_full_list_on_or_after
+        self._time_stamp_for_if_modified_since = time_stamp_for_if_modified_since
+        self._chunk_size = chunk_size
+
         self.up_to_date_delay = 15 * 60
         """ The time to wait, in seconds, between polls. """
         self.incomplete_delay = 15
         """ The time to wait, in seconds, between continuing partial updates. """
         self.on_error_delay = 30
         """ The time to wait, in seconds, before retrying after an error. """
-        self._api = api
-        self._sleep = _sleep
+
+        self._sleep = time.sleep
+        self._now = lambda: datetime.now(timezone.utc)
         self._abort = False
-        self._download_full_list_on_or_after = download_full_list_on_or_after
-        self._time_stamp_for_if_modified_since = time_stamp_for_if_modified_since
 
     @property
     def api(self) -> WebApi:
@@ -77,8 +81,7 @@ class DataPackageListPoller(ABC):
         self._abort = False
         while not self._abort:
             if not self._time_stamp_for_if_modified_since or (
-                self._download_full_list_on_or_after
-                and datetime.now(timezone.utc) > self._download_full_list_on_or_after
+                self._download_full_list_on_or_after and self._now() > self._download_full_list_on_or_after
             ):
                 sub = self._run_full_listing()
                 if sub:
@@ -95,7 +98,7 @@ class DataPackageListPoller(ABC):
             self._sleep(self.up_to_date_delay)
 
     def _test_access(self) -> None:
-        params = {"ifModifiedSince": datetime(3000, 1, 1, tzinfo=timezone.utc)}
+        params = {"ifModifiedSince": datetime(3000, 1, 1, tzinfo=timezone.utc).isoformat()}
         response = self._api.session.get("v1/series/getdatapackagelist", params=params)
         if response.status_code == 403:
             raise Exception("Needs access - The account is not set up to use DataPackageList")
@@ -104,7 +107,8 @@ class DataPackageListPoller(ABC):
         is_stated = False
 
         def _body_callback(body: "DataPackageBody") -> None:
-            is_stated = True  # pylint: disable=unused-variable
+            nonlocal is_stated
+            is_stated = True
             self.on_full_listing_start(body)
 
         try:
@@ -114,6 +118,7 @@ class DataPackageListPoller(ABC):
                         _body_callback,
                         self.on_full_listing_items,
                         None,
+                        self._chunk_size,
                     )
                     if not sub:
                         raise ValueError("subscription is None")
@@ -124,7 +129,7 @@ class DataPackageListPoller(ABC):
                     if self._abort:
                         raise _AbortException() from ex
                     if attempt > max_attempts:
-                        raise ex
+                        raise
                     self._sleep(self.on_error_delay)
         except _AbortException as ex:
             if is_stated:
@@ -138,7 +143,8 @@ class DataPackageListPoller(ABC):
         is_stated = False
 
         def _body_callback(body: "DataPackageBody") -> None:
-            is_stated = True  # pylint: disable=unused-variable
+            nonlocal is_stated
+            is_stated = True
             self.on_incremental_start(body)
 
         try:
@@ -148,6 +154,7 @@ class DataPackageListPoller(ABC):
                         _body_callback,
                         self.on_incremental_items,
                         if_modified_since,
+                        self._chunk_size,
                     )
                     break
                 except Exception as ex:  # pylint: disable=broad-except
@@ -186,6 +193,7 @@ class DataPackageListPoller(ABC):
                             lambda _: None,
                             self.on_incremental_items,
                             if_modified_since,
+                            self._chunk_size,
                         )
 
                         if not sub:

@@ -2,6 +2,7 @@ from datetime import datetime
 from io import BytesIO
 from json import dumps as json_dumps
 from typing import Any, List
+import warnings
 
 import pytest
 
@@ -13,6 +14,8 @@ from macrobond_data_api.web.web_types import DataPackageBody, DataPackageListIte
 
 
 class TestAuth2Session:
+    __test__ = False
+
     def __init__(self, content: bytes):
         self.content = content
 
@@ -62,6 +65,8 @@ def test(state: DataPackageListState) -> None:
 
     api = WebApi(Session("", "", test_auth2_session=TestAuth2Session(bytes(json, "utf-8"))))
 
-    api.get_data_package_list_iterative(body_callback, items_callback)
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore", DeprecationWarning)
+        api.get_data_package_list_iterative(body_callback, items_callback)
 
     assert hitponts == 0
