@@ -20,11 +20,11 @@ class _ReprHtmlSequence(Sequence[_TypeVar], Generic[_TypeVar]):
 
     @overload
     def __getitem__(self, i: int) -> _TypeVar:
-        ...
+        pass
 
     @overload
     def __getitem__(self, s: slice) -> Sequence[_TypeVar]:
-        ...
+        pass
 
     def __getitem__(self, key):  # type: ignore
         return _ReprHtmlSequence(self.items[key]) if isinstance(key, slice) else self.items[key]

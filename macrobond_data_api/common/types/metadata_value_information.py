@@ -111,11 +111,11 @@ class MetadataValueInformation(Sequence[MetadataValueInformationItem]):
 
     @overload
     def __getitem__(self, i: int) -> MetadataValueInformationItem:
-        ...
+        pass
 
     @overload
     def __getitem__(self, s: slice) -> List[MetadataValueInformationItem]:
-        ...
+        pass
 
     def __getitem__(self, key):  # type: ignore
         return self.entities[key]

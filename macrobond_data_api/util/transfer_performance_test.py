@@ -118,7 +118,7 @@ class _ResultList:
         for i in range(0, times):
             result = _Result.run_integrity_test(self.size_kB, i)
             if result.error is not None:
-                ...
+                pass
                 # print(f" Error: {str(result.error)} ", end="", flush=True)
             elif indicator:
                 print(".", end="", flush=True)

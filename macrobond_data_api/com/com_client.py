@@ -25,7 +25,7 @@ try:
     # winreg is not available on linux so mypy will fail on build server as it is runiong on linux
     from winreg import OpenKey, QueryValueEx, HKEY_CLASSES_ROOT, HKEY_CURRENT_USER  # type: ignore
 except ImportError:
-    ...
+    pass
 
 
 def _test_regedit_assembly() -> Optional[str]:

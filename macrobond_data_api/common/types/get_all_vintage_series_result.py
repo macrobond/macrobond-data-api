@@ -64,11 +64,11 @@ class GetAllVintageSeriesResult(Sequence[VintageSeries]):
 
     @overload
     def __getitem__(self, i: int) -> VintageSeries:
-        ...
+        pass
 
     @overload
     def __getitem__(self, s: slice) -> Sequence[VintageSeries]:
-        ...
+        pass
 
     def __getitem__(self, key):  # type: ignore
         return self.series[key]

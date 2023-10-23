@@ -2,17 +2,14 @@ from abc import ABC, abstractmethod
 from datetime import datetime, timezone
 
 import time
-from typing import List, Optional, cast
+from typing import List, Optional
+import warnings
 
 from .web_api import WebApi
 from .web_types.data_package_list_state import DataPackageListState
 
 from .web_types.data_pacakge_list_item import DataPackageListItem
 from .web_types.data_package_body import DataPackageBody
-
-
-class _AbortException(Exception):
-    ...
 
 
 class DataPackageListPoller(ABC):
@@ -91,6 +88,11 @@ class DataPackageListPoller(ABC):
                     self._time_stamp_for_if_modified_since = sub.time_stamp_for_if_modified_since
             else:
                 sub = self._run_listing(self._time_stamp_for_if_modified_since)
+
+                if sub and sub.state != DataPackageListState.UP_TO_DATE:
+                    self._sleep(self.incomplete_delay)
+                    sub = self._run_listing_incomplete(sub.time_stamp_for_if_modified_since)
+
                 if sub:
                     self._time_stamp_for_if_modified_since = sub.time_stamp_for_if_modified_since
 
@@ -106,130 +108,124 @@ class DataPackageListPoller(ABC):
             raise Exception("Needs access - The account is not set up to use DataPackageList")
 
     def _run_full_listing(self, max_attempts: int = 3) -> Optional[DataPackageBody]:
-        is_stated = False
+        is_running = False
+        attempt = 0
+        while True:
+            attempt += 1
+            try:
+                with self._api.get_data_package_list_chunked(None, self._chunk_size) as context:
+                    body = DataPackageBody(
+                        context.time_stamp_for_if_modified_since,
+                        context.download_full_list_on_or_after,
+                        context.state,
+                    )
+                    is_running = True
+                    self.on_full_listing_start(body)
 
-        try:
-            for attempt in range(1, max_attempts):
-                try:
-                    body: DataPackageBody
-                    with self._api.get_data_package_list_chunked(None, self._chunk_size) as context:
-                        is_stated = True
-                        body = DataPackageBody(
-                            context.time_stamp_for_if_modified_since,
-                            context.download_full_list_on_or_after,
-                            context.state,
-                        )
-                        self.on_full_listing_start(body)
-                        for items in context.items:
-                            self.on_full_listing_items(body, [DataPackageListItem(x[0], x[1]) for x in items])
-
-                    if not body:
-                        raise ValueError("subscription is None")
-
-                    is_stated = False
-                    self.on_full_listing_stop(False, None)
-                    return body
-                except Exception as ex:  # pylint: disable=broad-except
                     if self._abort:
-                        raise _AbortException() from ex
-                    if attempt > max_attempts:
-                        raise
-                    self._sleep(self.on_error_delay)
-        except _AbortException as ex:
-            if is_stated:
-                self.on_full_listing_stop(True, cast(Exception, ex.__cause__))
+                        self._run_on_full_listing_stop(True, None)
+                        return None
+
+                    for items in context.items:
+                        self.on_full_listing_items(body, [DataPackageListItem(x[0], x[1]) for x in items])
+                        if self._abort:
+                            self._run_on_full_listing_stop(True, None)
+                            return None
+
+                    self._run_on_full_listing_stop(False, None)
+
+                    return body
+            except Exception as ex:  # pylint: disable=broad-except
+                if is_running:
+                    self._run_on_full_listing_stop(False, ex)
+                    return None
+                if attempt > max_attempts:
+                    raise
+                self._sleep(self.on_error_delay)
+
+    def _run_on_full_listing_stop(self, is_aborted: bool, exception: Optional[Exception]) -> None:
+        try:
+            self.on_full_listing_stop(is_aborted, exception)
         except Exception as ex:  # pylint: disable=broad-except
-            if is_stated:
-                self.on_full_listing_stop(False, ex)
-        return None
+            warnings.warn("Unhandled exception in on_full_listing_stop, " + str(ex))
+            self._sleep(self.on_error_delay)
 
     def _run_listing(self, if_modified_since: datetime, max_attempts: int = 3) -> Optional[DataPackageBody]:
         is_stated = False
+        attempt = 0
+        while True:
+            attempt += 1
+            try:
+                with self._api.get_data_package_list_chunked(if_modified_since, self._chunk_size) as context:
+                    body = DataPackageBody(
+                        context.time_stamp_for_if_modified_since,
+                        context.download_full_list_on_or_after,
+                        context.state,
+                    )
+                    is_stated = True
+                    self.on_incremental_start(body)
 
-        try:
-            body: DataPackageBody
-            for attempt in range(1, max_attempts):
-                try:
-                    with self._api.get_data_package_list_chunked(if_modified_since, self._chunk_size) as context:
-                        is_stated = True
-                        body = DataPackageBody(
-                            context.time_stamp_for_if_modified_since,
-                            context.download_full_list_on_or_after,
-                            context.state,
-                        )
-                        self.on_incremental_start(body)
-                        for items in context.items:
-                            self.on_incremental_items(body, [DataPackageListItem(x[0], x[1]) for x in items])
-                    break
-                except Exception as ex:  # pylint: disable=broad-except
                     if self._abort:
-                        raise _AbortException() from ex
-                    if attempt > max_attempts:
-                        raise
-                    self._sleep(self.on_error_delay)
+                        self._run_on_incremental_stop(True, None)
+                        return None
 
-            if not body:
-                raise ValueError("subscription is None")
-
-            if body.state == DataPackageListState.UP_TO_DATE:
-                is_stated = False
-                self.on_incremental_stop(False, None)
-                return body
-
-            self._sleep(self.incomplete_delay)
-
-            return self._run_listing_incomplete(body.time_stamp_for_if_modified_since, is_stated, max_attempts)
-        except _AbortException as ex:
-            if is_stated:
-                self.on_incremental_stop(True, cast(Exception, ex.__cause__))
-        except Exception as ex:  # pylint: disable=broad-except
-            if is_stated:
-                self.on_incremental_stop(False, ex)
-        return None
-
-    def _run_listing_incomplete(  # pylint: disable=too-many-branches
-        self, if_modified_since: datetime, is_stated: bool, max_attempts: int = 3
-    ) -> Optional[DataPackageBody]:
-        try:
-            while True:
-                for attempt in range(1, max_attempts):
-                    try:
-                        body: DataPackageBody
-                        with self._api.get_data_package_list_chunked(if_modified_since, self._chunk_size) as context:
-                            body = DataPackageBody(
-                                context.time_stamp_for_if_modified_since,
-                                context.download_full_list_on_or_after,
-                                context.state,
-                            )
-                            for items in context.items:
-                                self.on_incremental_items(body, [DataPackageListItem(x[0], x[1]) for x in items])
-
-                        if not body:
-                            raise ValueError("subscription is None")
-
-                        if body.state == DataPackageListState.UP_TO_DATE:
-                            try:
-                                self.on_incremental_stop(False, None)
-                            except _AbortException:
-                                ...
-                            return body
-
-                        self._sleep(self.incomplete_delay)
-
-                        if_modified_since = body.time_stamp_for_if_modified_since
-                    except Exception as ex2:  # pylint: disable=broad-except
+                    for items in context.items:
+                        self.on_incremental_items(body, [DataPackageListItem(x[0], x[1]) for x in items])
                         if self._abort:
-                            raise _AbortException() from ex2
-                        if attempt > max_attempts:
-                            raise
-                        self._sleep(self.on_error_delay)
-        except _AbortException as ex:
-            if is_stated:
-                self.on_incremental_stop(True, cast(Exception, ex.__cause__))
+                            self._run_on_incremental_stop(True, None)
+                            return None
+
+                if body.state == DataPackageListState.UP_TO_DATE:
+                    self._run_on_incremental_stop(False, None)
+                return body
+            except Exception as ex:  # pylint: disable=broad-except
+                if is_stated:
+                    self._run_on_incremental_stop(False, ex)
+                    return None
+                if attempt > max_attempts:
+                    raise
+                self._sleep(self.on_error_delay)
+
+    def _run_listing_incomplete(self, if_modified_since: datetime, max_attempts: int = 3) -> Optional[DataPackageBody]:
+        is_stated = False
+        attempt = 0
+        while True:
+            attempt += 1
+            try:
+                with self._api.get_data_package_list_chunked(if_modified_since, self._chunk_size) as context:
+                    body = DataPackageBody(
+                        context.time_stamp_for_if_modified_since,
+                        context.download_full_list_on_or_after,
+                        context.state,
+                    )
+                    is_stated = True
+                    for items in context.items:
+                        self.on_incremental_items(body, [DataPackageListItem(x[0], x[1]) for x in items])
+                        if self._abort:
+                            self._run_on_incremental_stop(True, None)
+                            return None
+
+                if body.state == DataPackageListState.UP_TO_DATE:
+                    self._run_on_incremental_stop(False, None)
+                    return body
+
+                self._sleep(self.incomplete_delay)
+
+                if_modified_since = body.time_stamp_for_if_modified_since
+            except Exception as ex:  # pylint: disable=broad-except
+                if is_stated:
+                    self._run_on_incremental_stop(False, ex)
+                    return None
+                if attempt > max_attempts:
+                    raise
+                self._sleep(self.on_error_delay)
+
+    def _run_on_incremental_stop(self, is_aborted: bool, exception: Optional[Exception]) -> None:
+        try:
+            self.on_incremental_stop(is_aborted, exception)
         except Exception as ex:  # pylint: disable=broad-except
-            if is_stated:
-                self.on_incremental_stop(False, ex)
-        return None
+            warnings.warn("Unhandled exception in on_incremental_stop, " + str(ex))
+            self._sleep(self.on_error_delay)
 
     # full_listing
 
@@ -280,4 +276,3 @@ class DataPackageListPoller(ABC):
         Call this method to stop processing.
         """
         self._abort = True
-        raise _AbortException()

@@ -86,12 +86,12 @@ class StartOrEndPoint:
         mm: int = None,  # pylint: disable = invalid-name
         dd: int = None,  # pylint: disable = invalid-name
     ) -> "StartOrEndPoint":
-        ...
+        pass
 
     @overload
     @staticmethod
     def point_in_time(yyyy_or_datetime: datetime) -> "StartOrEndPoint":
-        ...
+        pass
 
     @staticmethod
     def point_in_time(

@@ -92,7 +92,7 @@ def _get_data_package_list_iterative_pars_items(
     return True
 
 
-def get_data_package_list(self: "WebApi", if_modified_since: datetime = None) -> DataPackageList:
+def get_data_package_list(self: "WebApi", if_modified_since: Optional[datetime] = None) -> DataPackageList:
     # pylint: disable=line-too-long
     """
     Get the items in the data package.
@@ -124,7 +124,7 @@ def get_data_package_list_iterative(
     self: "WebApi",
     body_callback: Callable[[DataPackageBody], Optional[bool]],
     items_callback: Callable[[DataPackageBody, List[DataPackageListItem]], Optional[bool]],
-    if_modified_since: datetime = None,
+    if_modified_since: Optional[datetime] = None,
     buffer_size: int = 200,
 ) -> Optional[DataPackageBody]:
     # pylint: disable=line-too-long
@@ -194,7 +194,7 @@ def get_data_package_list_iterative(
 
 
 def get_data_package_list_chunked(
-    self: "WebApi", if_modified_since: datetime = None, chunk_size: int = 200
+    self: "WebApi", if_modified_since: Optional[datetime] = None, chunk_size: int = 200
 ) -> DataPackageListContextManager:
     # pylint: disable=line-too-long
     """
