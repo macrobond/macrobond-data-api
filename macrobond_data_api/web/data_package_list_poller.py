@@ -3,13 +3,16 @@ from datetime import datetime, timezone
 
 import time
 from typing import List, Optional
-import warnings
 
 from .web_api import WebApi
 from .web_types.data_package_list_state import DataPackageListState
 
 from .web_types.data_pacakge_list_item import DataPackageListItem
 from .web_types.data_package_body import DataPackageBody
+
+
+class RrytryException(Exception):
+    ...
 
 
 class DataPackageListPoller(ABC):
@@ -49,6 +52,7 @@ class DataPackageListPoller(ABC):
         """ The time to wait, in seconds, between continuing partial updates. """
         self.on_error_delay = 30
         """ The time to wait, in seconds, before retrying after an error. """
+        self.on_retry_delay = 30
 
         self._sleep = time.sleep
         self._now = lambda: datetime.now(timezone.utc)
@@ -108,10 +112,9 @@ class DataPackageListPoller(ABC):
             raise Exception("Needs access - The account is not set up to use DataPackageList")
 
     def _run_full_listing(self, max_attempts: int = 3) -> Optional[DataPackageBody]:
-        is_running = False
-        attempt = 0
+        is_stated = False
+        attempt = 1
         while True:
-            attempt += 1
             try:
                 with self._api.get_data_package_list_chunked(None, self._chunk_size) as context:
                     body = DataPackageBody(
@@ -119,42 +122,34 @@ class DataPackageListPoller(ABC):
                         context.download_full_list_on_or_after,
                         context.state,
                     )
-                    is_running = True
-                    self.on_full_listing_start(body)
+                    is_stated = True
+                    self.on_full_listing_begin(body)
 
                     if self._abort:
-                        self._run_on_full_listing_stop(True, None)
+                        self.on_full_listing_end(True, None)
                         return None
 
                     for items in context.items:
-                        self.on_full_listing_items(body, [DataPackageListItem(x[0], x[1]) for x in items])
+                        self.on_full_listing_batch(body, [DataPackageListItem(x[0], x[1]) for x in items])
                         if self._abort:
-                            self._run_on_full_listing_stop(True, None)
+                            self.on_full_listing_end(True, None)
                             return None
 
-                    self._run_on_full_listing_stop(False, None)
+                    self.on_full_listing_end(False, None)
 
                     return body
             except Exception as ex:  # pylint: disable=broad-except
-                if is_running:
-                    self._run_on_full_listing_stop(False, ex)
-                    return None
-                if attempt > max_attempts:
+                if is_stated:
                     raise
-                self._sleep(self.on_error_delay)
-
-    def _run_on_full_listing_stop(self, is_aborted: bool, exception: Optional[Exception]) -> None:
-        try:
-            self.on_full_listing_stop(is_aborted, exception)
-        except Exception as ex:  # pylint: disable=broad-except
-            warnings.warn("Unhandled exception in on_full_listing_stop, " + str(ex))
-            self._sleep(self.on_error_delay)
+                if attempt > max_attempts:
+                    raise RrytryException("Rrytry Exception") from ex
+                self._sleep(self.on_retry_delay * attempt)
+                attempt += 1
 
     def _run_listing(self, if_modified_since: datetime, max_attempts: int = 3) -> Optional[DataPackageBody]:
         is_stated = False
-        attempt = 0
+        attempt = 1
         while True:
-            attempt += 1
             try:
                 with self._api.get_data_package_list_chunked(if_modified_since, self._chunk_size) as context:
                     body = DataPackageBody(
@@ -163,34 +158,33 @@ class DataPackageListPoller(ABC):
                         context.state,
                     )
                     is_stated = True
-                    self.on_incremental_start(body)
+                    self.on_incremental_begin(body)
 
                     if self._abort:
-                        self._run_on_incremental_stop(True, None)
+                        self.on_incremental_end(True, None)
                         return None
 
                     for items in context.items:
-                        self.on_incremental_items(body, [DataPackageListItem(x[0], x[1]) for x in items])
+                        self.on_incremental_batch(body, [DataPackageListItem(x[0], x[1]) for x in items])
                         if self._abort:
-                            self._run_on_incremental_stop(True, None)
+                            self.on_incremental_end(True, None)
                             return None
 
                 if body.state == DataPackageListState.UP_TO_DATE:
-                    self._run_on_incremental_stop(False, None)
+                    self.on_incremental_end(False, None)
                 return body
             except Exception as ex:  # pylint: disable=broad-except
                 if is_stated:
-                    self._run_on_incremental_stop(False, ex)
-                    return None
-                if attempt > max_attempts:
                     raise
-                self._sleep(self.on_error_delay)
+                if attempt > max_attempts:
+                    raise RrytryException("Rrytry Exception") from ex
+                self._sleep(self.on_retry_delay * attempt)
+                attempt += 1
 
     def _run_listing_incomplete(self, if_modified_since: datetime, max_attempts: int = 3) -> Optional[DataPackageBody]:
         is_stated = False
-        attempt = 0
+        attempt = 1
         while True:
-            attempt += 1
             try:
                 with self._api.get_data_package_list_chunked(if_modified_since, self._chunk_size) as context:
                     body = DataPackageBody(
@@ -200,13 +194,13 @@ class DataPackageListPoller(ABC):
                     )
                     is_stated = True
                     for items in context.items:
-                        self.on_incremental_items(body, [DataPackageListItem(x[0], x[1]) for x in items])
+                        self.on_incremental_batch(body, [DataPackageListItem(x[0], x[1]) for x in items])
                         if self._abort:
-                            self._run_on_incremental_stop(True, None)
+                            self.on_incremental_end(True, None)
                             return None
 
                 if body.state == DataPackageListState.UP_TO_DATE:
-                    self._run_on_incremental_stop(False, None)
+                    self.on_incremental_end(False, None)
                     return body
 
                 self._sleep(self.incomplete_delay)
@@ -214,31 +208,28 @@ class DataPackageListPoller(ABC):
                 if_modified_since = body.time_stamp_for_if_modified_since
             except Exception as ex:  # pylint: disable=broad-except
                 if is_stated:
-                    self._run_on_incremental_stop(False, ex)
-                    return None
-                if attempt > max_attempts:
                     raise
-                self._sleep(self.on_error_delay)
-
-    def _run_on_incremental_stop(self, is_aborted: bool, exception: Optional[Exception]) -> None:
-        try:
-            self.on_incremental_stop(is_aborted, exception)
-        except Exception as ex:  # pylint: disable=broad-except
-            warnings.warn("Unhandled exception in on_incremental_stop, " + str(ex))
-            self._sleep(self.on_error_delay)
+                if attempt > max_attempts:
+                    try:
+                        raise RrytryException("Rrytry Exception") from ex
+                    except Exception as retry_ex:  # pylint: disable=broad-except
+                        self.on_incremental_end(False, retry_ex)
+                    return None
+                self._sleep(self.on_retry_delay * attempt)
+                attempt += 1
 
     # full_listing
 
     @abstractmethod
-    def on_full_listing_start(self, subscription: DataPackageBody) -> None:
+    def on_full_listing_begin(self, subscription: DataPackageBody) -> None:
         """This override is called when a full listing starts."""
 
     @abstractmethod
-    def on_full_listing_items(self, subscription: DataPackageBody, items: List[DataPackageListItem]) -> None:
+    def on_full_listing_batch(self, subscription: DataPackageBody, items: List[DataPackageListItem]) -> None:
         """This override is called repeatedly with one or more items until all items are listed."""
 
     @abstractmethod
-    def on_full_listing_stop(self, is_aborted: bool, exception: Optional[Exception]) -> None:
+    def on_full_listing_end(self, is_aborted: bool, exception: Optional[Exception]) -> None:
         """
         This override is called when the full listing is stopped.
         Parameters
@@ -252,15 +243,15 @@ class DataPackageListPoller(ABC):
     # listing
 
     @abstractmethod
-    def on_incremental_start(self, subscription: DataPackageBody) -> None:
+    def on_incremental_begin(self, subscription: DataPackageBody) -> None:
         """This override is called when an incremental listing starts."""
 
     @abstractmethod
-    def on_incremental_items(self, subscription: DataPackageBody, items: List[DataPackageListItem]) -> None:
+    def on_incremental_batch(self, subscription: DataPackageBody, items: List[DataPackageListItem]) -> None:
         """This override is called repeatedly with one or more items until all updated items are listed."""
 
     @abstractmethod
-    def on_incremental_stop(self, is_aborted: bool, exception: Optional[Exception]) -> None:
+    def on_incremental_end(self, is_aborted: bool, exception: Optional[Exception]) -> None:
         """
         This override is called when the incremental listing is stopped.
         Parameters

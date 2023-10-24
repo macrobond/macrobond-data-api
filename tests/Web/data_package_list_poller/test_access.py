@@ -44,22 +44,22 @@ class TestDataPackageListPoller(DataPackageListPoller):
     def now(self) -> datetime:
         raise Exception("should not be called")
 
-    def on_full_listing_start(self, subscription: "DataPackageBody") -> None:
+    def on_full_listing_begin(self, subscription: "DataPackageBody") -> None:
         raise Exception("should not be called")
 
-    def on_full_listing_items(self, subscription: "DataPackageBody", items: List["DataPackageListItem"]) -> None:
+    def on_full_listing_batch(self, subscription: "DataPackageBody", items: List["DataPackageListItem"]) -> None:
         raise Exception("should not be called")
 
-    def on_full_listing_stop(self, is_aborted: bool, exception: Optional[Exception]) -> None:
+    def on_full_listing_end(self, is_aborted: bool, exception: Optional[Exception]) -> None:
         raise Exception("should not be called")
 
-    def on_incremental_start(self, subscription: "DataPackageBody") -> None:
+    def on_incremental_begin(self, subscription: "DataPackageBody") -> None:
         raise Exception("should not be called")
 
-    def on_incremental_items(self, subscription: "DataPackageBody", items: List["DataPackageListItem"]) -> None:
+    def on_incremental_batch(self, subscription: "DataPackageBody", items: List["DataPackageListItem"]) -> None:
         raise Exception("should not be called")
 
-    def on_incremental_stop(self, is_aborted: bool, exception: Optional[Exception]) -> None:
+    def on_incremental_end(self, is_aborted: bool, exception: Optional[Exception]) -> None:
         raise Exception("should not be called")
 
 

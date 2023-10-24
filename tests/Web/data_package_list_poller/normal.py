@@ -76,22 +76,22 @@ class TestDataPackageListPoller(DataPackageListPoller):
     def now(self) -> datetime:
         raise Exception("should not be called")
 
-    def on_full_listing_start(self, subscription: "DataPackageBody") -> None:
+    def on_full_listing_begin(self, subscription: "DataPackageBody") -> None:
         raise Exception("should not be called")
 
-    def on_full_listing_items(self, subscription: "DataPackageBody", items: List["DataPackageListItem"]) -> None:
+    def on_full_listing_batch(self, subscription: "DataPackageBody", items: List["DataPackageListItem"]) -> None:
         raise Exception("should not be called")
 
-    def on_full_listing_stop(self, is_aborted: bool, exception: Optional[Exception]) -> None:
+    def on_full_listing_end(self, is_aborted: bool, exception: Optional[Exception]) -> None:
         raise Exception("should not be called")
 
-    def on_incremental_start(self, subscription: "DataPackageBody") -> None:
+    def on_incremental_begin(self, subscription: "DataPackageBody") -> None:
         raise Exception("should not be called")
 
-    def on_incremental_items(self, subscription: "DataPackageBody", items: List["DataPackageListItem"]) -> None:
+    def on_incremental_batch(self, subscription: "DataPackageBody", items: List["DataPackageListItem"]) -> None:
         raise Exception("should not be called")
 
-    def on_incremental_stop(self, is_aborted: bool, exception: Optional[Exception]) -> None:
+    def on_incremental_end(self, is_aborted: bool, exception: Optional[Exception]) -> None:
         raise Exception("should not be called")
 
 
@@ -116,13 +116,13 @@ def test_full_listing() -> None:
             assert secs == self.up_to_date_delay
             raise Exception("End of test")
 
-        def on_full_listing_start(self, subscription: "DataPackageBody") -> None:
+        def on_full_listing_begin(self, subscription: "DataPackageBody") -> None:
             hit_test(2)
             assert subscription.time_stamp_for_if_modified_since == datetime(2000, 2, 2, 4, 5, 6)
             assert subscription.download_full_list_on_or_after == datetime(2000, 2, 1, 4, 5, 6)
             assert subscription.state == DataPackageListState.FULL_LISTING
 
-        def on_full_listing_items(self, subscription: "DataPackageBody", items: List["DataPackageListItem"]) -> None:
+        def on_full_listing_batch(self, subscription: "DataPackageBody", items: List["DataPackageListItem"]) -> None:
             nonlocal hit
             hit += 1
             assert subscription.time_stamp_for_if_modified_since == datetime(2000, 2, 2, 4, 5, 6)
@@ -135,7 +135,7 @@ def test_full_listing() -> None:
             if hit == 5:
                 assert items == [DataPackageListItem("usgdp", datetime(2000, 2, 5, 4, 5, 6))]
 
-        def on_full_listing_stop(self, is_aborted: bool, exception: Optional[Exception]) -> None:
+        def on_full_listing_end(self, is_aborted: bool, exception: Optional[Exception]) -> None:
             hit_test(6)
             assert is_aborted is False
             assert exception is None
@@ -173,13 +173,13 @@ def test_listing() -> None:
             hit_test(2)
             return datetime(2000, 1, 1, tzinfo=timezone.utc)
 
-        def on_incremental_start(self, subscription: "DataPackageBody") -> None:
+        def on_incremental_begin(self, subscription: "DataPackageBody") -> None:
             hit_test(3)
             assert subscription.time_stamp_for_if_modified_since == datetime(2000, 2, 2, 4, 5, 6)
             assert subscription.download_full_list_on_or_after == datetime(2000, 2, 1, 4, 5, 6)
             assert subscription.state == DataPackageListState.UP_TO_DATE
 
-        def on_incremental_items(self, subscription: "DataPackageBody", items: List["DataPackageListItem"]) -> None:
+        def on_incremental_batch(self, subscription: "DataPackageBody", items: List["DataPackageListItem"]) -> None:
             nonlocal hit
             hit += 1
             assert subscription.time_stamp_for_if_modified_since == datetime(2000, 2, 2, 4, 5, 6)
@@ -194,7 +194,7 @@ def test_listing() -> None:
             else:
                 raise Exception("should not be here")
 
-        def on_incremental_stop(self, is_aborted: bool, exception: Optional[Exception]) -> None:
+        def on_incremental_end(self, is_aborted: bool, exception: Optional[Exception]) -> None:
             hit_test(7)
             assert is_aborted is False
             assert exception is None
@@ -240,13 +240,13 @@ def test_listing_and_listing_incomplete() -> None:
             hit_test(2)
             return datetime(2000, 1, 1, tzinfo=timezone.utc)
 
-        def on_incremental_start(self, subscription: "DataPackageBody") -> None:
+        def on_incremental_begin(self, subscription: "DataPackageBody") -> None:
             assert subscription.time_stamp_for_if_modified_since == datetime(2000, 2, 2, 4, 5, 6)
             assert subscription.download_full_list_on_or_after == datetime(2000, 2, 1, 4, 5, 6)
             if hit_test(3) == 3:
                 assert subscription.state == DataPackageListState.INCOMPLETE
 
-        def on_incremental_items(self, subscription: "DataPackageBody", items: List["DataPackageListItem"]) -> None:
+        def on_incremental_batch(self, subscription: "DataPackageBody", items: List["DataPackageListItem"]) -> None:
             nonlocal hit
             hit += 1
             assert subscription.time_stamp_for_if_modified_since == datetime(2000, 2, 2, 4, 5, 6)
@@ -272,7 +272,7 @@ def test_listing_and_listing_incomplete() -> None:
             else:
                 raise Exception("should not be here")
 
-        def on_incremental_stop(self, is_aborted: bool, exception: Optional[Exception]) -> None:
+        def on_incremental_end(self, is_aborted: bool, exception: Optional[Exception]) -> None:
             hit_test(11)
             assert is_aborted is False
             assert exception is None

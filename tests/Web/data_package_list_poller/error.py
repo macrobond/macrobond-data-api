@@ -2,7 +2,7 @@ from datetime import datetime, timezone
 from io import BytesIO
 from json import dumps as json_dumps
 from typing import Any, Dict, List, Optional
-import warnings
+import pytest
 
 from requests import Response
 
@@ -75,22 +75,22 @@ class TestDataPackageListPoller(DataPackageListPoller):
     def now(self) -> datetime:
         raise Exception("should not be called")
 
-    def on_full_listing_start(self, subscription: "DataPackageBody") -> None:
+    def on_full_listing_begin(self, subscription: "DataPackageBody") -> None:
         raise Exception("should not be called")
 
-    def on_full_listing_items(self, subscription: "DataPackageBody", items: List["DataPackageListItem"]) -> None:
+    def on_full_listing_batch(self, subscription: "DataPackageBody", items: List["DataPackageListItem"]) -> None:
         raise Exception("should not be called")
 
-    def on_full_listing_stop(self, is_aborted: bool, exception: Optional[Exception]) -> None:
+    def on_full_listing_end(self, is_aborted: bool, exception: Optional[Exception]) -> None:
         raise Exception("should not be called")
 
-    def on_incremental_start(self, subscription: "DataPackageBody") -> None:
+    def on_incremental_begin(self, subscription: "DataPackageBody") -> None:
         raise Exception("should not be called")
 
-    def on_incremental_items(self, subscription: "DataPackageBody", items: List["DataPackageListItem"]) -> None:
+    def on_incremental_batch(self, subscription: "DataPackageBody", items: List["DataPackageListItem"]) -> None:
         raise Exception("should not be called")
 
-    def on_incremental_stop(self, is_aborted: bool, exception: Optional[Exception]) -> None:
+    def on_incremental_end(self, is_aborted: bool, exception: Optional[Exception]) -> None:
         raise Exception("should not be called")
 
 
@@ -109,21 +109,16 @@ def test_full_listing_1() -> None:
         def _test_access(self) -> None:
             hit_test(1)
 
-        def on_full_listing_start(self, subscription: "DataPackageBody") -> None:
+        def on_full_listing_begin(self, subscription: "DataPackageBody") -> None:
             hit_test(2)
             raise Exception("Test exception")
 
-        def on_full_listing_stop(self, is_aborted: bool, exception: Optional[Exception]) -> None:
-            hit_test(3)
-            assert is_aborted is False
-            assert exception is not None
-            self.abort()
-
     api = get_api(get_json_response(DataPackageListState.FULL_LISTING))
 
-    _TestDataPackageListPoller(api).start()
+    with pytest.raises(Exception, match="Test exception"):
+        _TestDataPackageListPoller(api).start()
 
-    assert hit == 3
+    assert hit == 2
 
 
 def test_full_listing_2() -> None:
@@ -141,24 +136,19 @@ def test_full_listing_2() -> None:
         def _test_access(self) -> None:
             hit_test(1)
 
-        def on_full_listing_start(self, subscription: "DataPackageBody") -> None:
+        def on_full_listing_begin(self, subscription: "DataPackageBody") -> None:
             hit_test(2)
 
-        def on_full_listing_items(self, subscription: DataPackageBody, items: List[DataPackageListItem]) -> None:
+        def on_full_listing_batch(self, subscription: DataPackageBody, items: List[DataPackageListItem]) -> None:
             hit_test(3)
             raise Exception("Test exception")
 
-        def on_full_listing_stop(self, is_aborted: bool, exception: Optional[Exception]) -> None:
-            hit_test(4)
-            assert is_aborted is False
-            assert exception is not None
-            self.abort()
-
     api = get_api(get_json_response(DataPackageListState.FULL_LISTING))
 
-    _TestDataPackageListPoller(api).start()
+    with pytest.raises(Exception, match="Test exception"):
+        _TestDataPackageListPoller(api).start()
 
-    assert hit == 4
+    assert hit == 3
 
 
 def test_full_listing_3() -> None:
@@ -176,27 +166,22 @@ def test_full_listing_3() -> None:
         def _test_access(self) -> None:
             hit_test(1)
 
-        def on_full_listing_start(self, subscription: "DataPackageBody") -> None:
+        def on_full_listing_begin(self, subscription: "DataPackageBody") -> None:
             hit_test(2)
 
-        def on_full_listing_items(self, subscription: DataPackageBody, items: List[DataPackageListItem]) -> None:
+        def on_full_listing_batch(self, subscription: DataPackageBody, items: List[DataPackageListItem]) -> None:
             hit_test(3)
 
-        def on_full_listing_stop(self, is_aborted: bool, exception: Optional[Exception]) -> None:
+        def on_full_listing_end(self, is_aborted: bool, exception: Optional[Exception]) -> None:
             hit_test(4)
-            self.abort()
             raise Exception("Test exception")
-
-        def sleep(self, secs: float) -> None:
-            hit_test(5)
-            assert secs == self.on_error_delay
 
     api = get_api(get_json_response(DataPackageListState.FULL_LISTING))
 
-    with warnings.catch_warnings(record=True):
+    with pytest.raises(Exception, match="Test exception"):
         _TestDataPackageListPoller(api).start()
 
-    assert hit == 5
+    assert hit == 4
 
 
 # test_abort_listing
@@ -221,23 +206,20 @@ def test_listing_1() -> None:
             hit_test(2)
             return datetime(2000, 1, 1, tzinfo=timezone.utc)
 
-        def on_incremental_start(self, subscription: "DataPackageBody") -> None:
+        def on_incremental_begin(self, subscription: "DataPackageBody") -> None:
             hit_test(3)
             raise Exception("Test exception")
 
-        def on_incremental_stop(self, is_aborted: bool, exception: Optional[Exception]) -> None:
-            hit_test(4)
-            self.abort()
-
     api = get_api(get_json_response(DataPackageListState.UP_TO_DATE))
 
-    _TestDataPackageListPoller(
-        api,
-        download_full_list_on_or_after=datetime(3000, 1, 1, tzinfo=timezone.utc),
-        time_stamp_for_if_modified_since=datetime(1000, 1, 1, tzinfo=timezone.utc),
-    ).start()
+    with pytest.raises(Exception, match="Test exception"):
+        _TestDataPackageListPoller(
+            api,
+            download_full_list_on_or_after=datetime(3000, 1, 1, tzinfo=timezone.utc),
+            time_stamp_for_if_modified_since=datetime(1000, 1, 1, tzinfo=timezone.utc),
+        ).start()
 
-    assert hit == 4
+    assert hit == 3
 
 
 def test_listing_2() -> None:
@@ -259,28 +241,23 @@ def test_listing_2() -> None:
             hit_test(2)
             return datetime(2000, 1, 1, tzinfo=timezone.utc)
 
-        def on_incremental_start(self, subscription: "DataPackageBody") -> None:
+        def on_incremental_begin(self, subscription: "DataPackageBody") -> None:
             hit_test(3)
 
-        def on_incremental_items(self, subscription: DataPackageBody, items: List[DataPackageListItem]) -> None:
+        def on_incremental_batch(self, subscription: DataPackageBody, items: List[DataPackageListItem]) -> None:
             hit_test(4)
             raise Exception("Test exception")
 
-        def on_incremental_stop(self, is_aborted: bool, exception: Optional[Exception]) -> None:
-            hit_test(5)
-            assert is_aborted is False
-            assert exception is not None
-            self.abort()
-
     api = get_api(get_json_response(DataPackageListState.UP_TO_DATE))
 
-    _TestDataPackageListPoller(
-        api,
-        download_full_list_on_or_after=datetime(3000, 1, 1, tzinfo=timezone.utc),
-        time_stamp_for_if_modified_since=datetime(1000, 1, 1, tzinfo=timezone.utc),
-    ).start()
+    with pytest.raises(Exception, match="Test exception"):
+        _TestDataPackageListPoller(
+            api,
+            download_full_list_on_or_after=datetime(3000, 1, 1, tzinfo=timezone.utc),
+            time_stamp_for_if_modified_since=datetime(1000, 1, 1, tzinfo=timezone.utc),
+        ).start()
 
-    assert hit == 5
+    assert hit == 4
 
 
 def test_listing_3() -> None:
@@ -302,31 +279,26 @@ def test_listing_3() -> None:
             hit_test(2)
             return datetime(2000, 1, 1, tzinfo=timezone.utc)
 
-        def on_incremental_start(self, subscription: "DataPackageBody") -> None:
+        def on_incremental_begin(self, subscription: "DataPackageBody") -> None:
             hit_test(3)
 
-        def on_incremental_items(self, subscription: DataPackageBody, items: List[DataPackageListItem]) -> None:
+        def on_incremental_batch(self, subscription: DataPackageBody, items: List[DataPackageListItem]) -> None:
             hit_test(4)
 
-        def on_incremental_stop(self, is_aborted: bool, exception: Optional[Exception]) -> None:
+        def on_incremental_end(self, is_aborted: bool, exception: Optional[Exception]) -> None:
             hit_test(5)
-            self.abort()
             raise Exception("Test exception")
-
-        def sleep(self, secs: float) -> None:
-            hit_test(6)
-            assert secs == self.on_error_delay
 
     api = get_api(get_json_response(DataPackageListState.UP_TO_DATE))
 
-    with warnings.catch_warnings(record=True):
+    with pytest.raises(Exception, match="Test exception"):
         _TestDataPackageListPoller(
             api,
             download_full_list_on_or_after=datetime(3000, 1, 1, tzinfo=timezone.utc),
             time_stamp_for_if_modified_since=datetime(1000, 1, 1, tzinfo=timezone.utc),
         ).start()
 
-    assert hit == 6
+    assert hit == 5
 
 
 # test_abort_listing_and_listing_incomplete
@@ -354,30 +326,25 @@ def test_listing_and_listing_incomplete_1() -> None:
             hit_test(2)
             return datetime(2000, 1, 1, tzinfo=timezone.utc)
 
-        def on_incremental_start(self, subscription: "DataPackageBody") -> None:
+        def on_incremental_begin(self, subscription: "DataPackageBody") -> None:
             hit_test(3)
 
-        def on_incremental_items(self, subscription: "DataPackageBody", items: List["DataPackageListItem"]) -> None:
+        def on_incremental_batch(self, subscription: "DataPackageBody", items: List["DataPackageListItem"]) -> None:
             if hit_test(4, 6) == 6:
                 raise Exception("Test exception")
-
-        def on_incremental_stop(self, is_aborted: bool, exception: Optional[Exception]) -> None:
-            hit_test(7)
-            assert is_aborted is False
-            assert exception is not None
-            self.abort()
 
     api = get_api(
         get_json_response(DataPackageListState.INCOMPLETE), get_json_response(DataPackageListState.UP_TO_DATE)
     )
 
-    _TestDataPackageListPoller(
-        api,
-        download_full_list_on_or_after=datetime(3000, 1, 1, tzinfo=timezone.utc),
-        time_stamp_for_if_modified_since=datetime(1000, 1, 1, tzinfo=timezone.utc),
-    ).start()
+    with pytest.raises(Exception, match="Test exception"):
+        _TestDataPackageListPoller(
+            api,
+            download_full_list_on_or_after=datetime(3000, 1, 1, tzinfo=timezone.utc),
+            time_stamp_for_if_modified_since=datetime(1000, 1, 1, tzinfo=timezone.utc),
+        ).start()
 
-    assert hit == 7
+    assert hit == 6
 
 
 def test_listing_and_listing_incomplete_2() -> None:
@@ -396,35 +363,31 @@ def test_listing_and_listing_incomplete_2() -> None:
             hit_test(1)
 
         def sleep(self, secs: float) -> None:
-            if hit_test(5, 8) == 8:
-                assert secs == self.on_error_delay
+            hit_test(5)
 
         def now(self) -> datetime:
             hit_test(2)
             return datetime(2000, 1, 1, tzinfo=timezone.utc)
 
-        def on_incremental_start(self, subscription: "DataPackageBody") -> None:
+        def on_incremental_begin(self, subscription: "DataPackageBody") -> None:
             hit_test(3)
 
-        def on_incremental_items(self, subscription: "DataPackageBody", items: List["DataPackageListItem"]) -> None:
+        def on_incremental_batch(self, subscription: "DataPackageBody", items: List["DataPackageListItem"]) -> None:
             hit_test(4, 6)
 
-        def on_incremental_stop(self, is_aborted: bool, exception: Optional[Exception]) -> None:
+        def on_incremental_end(self, is_aborted: bool, exception: Optional[Exception]) -> None:
             hit_test(7)
-            assert is_aborted is False
-            assert exception is None
-            self.abort()
             raise Exception("Test exception")
 
     api = get_api(
         get_json_response(DataPackageListState.INCOMPLETE), get_json_response(DataPackageListState.UP_TO_DATE)
     )
 
-    with warnings.catch_warnings(record=True):
+    with pytest.raises(Exception, match="Test exception"):
         _TestDataPackageListPoller(
             api,
             download_full_list_on_or_after=datetime(3000, 1, 1, tzinfo=timezone.utc),
             time_stamp_for_if_modified_since=datetime(1000, 1, 1, tzinfo=timezone.utc),
         ).start()
 
-    assert hit == 8
+    assert hit == 7
