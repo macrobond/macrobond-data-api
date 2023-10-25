@@ -7,7 +7,7 @@ import pytest
 from requests import Response
 
 from macrobond_data_api.web import WebApi
-from macrobond_data_api.web.data_package_list_poller import DataPackageListPoller, RrytryException
+from macrobond_data_api.web.data_package_list_poller import DataPackageListPoller, RetryException
 from macrobond_data_api.web.session import Session
 from macrobond_data_api.web.web_types import DataPackageBody, DataPackageListItem, DataPackageListState
 
@@ -162,7 +162,7 @@ def test_full_listing_error() -> None:
         http_500_response(),
         http_500_response(),
     )
-    with pytest.raises(RrytryException, match="Rrytry Exception"):
+    with pytest.raises(RetryException, match="Retry Exception"):
         _TestDataPackageListPoller(api, chunk_size=200).start()
 
     assert hit == 4
@@ -243,7 +243,7 @@ def test_listing_error() -> None:
         http_500_response(),
     )
 
-    with pytest.raises(RrytryException, match="Rrytry Exception"):
+    with pytest.raises(RetryException, match="Retry Exception"):
         _TestDataPackageListPoller(
             api,
             download_full_list_on_or_after=datetime(3000, 1, 1, tzinfo=timezone.utc),

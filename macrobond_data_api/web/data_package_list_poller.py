@@ -11,7 +11,7 @@ from .web_types.data_pacakge_list_item import DataPackageListItem
 from .web_types.data_package_body import DataPackageBody
 
 
-class RrytryException(Exception):
+class RetryException(Exception):
     ...
 
 
@@ -19,19 +19,19 @@ class DataPackageListPoller(ABC):
     """
     This is work in progress and might change soon.
     Run a loop polling for changed series in the data package list.
-    Derive from this class and override `on_full_listing_start`, `on_full_listing_items`, `on_full_listing_stop`,
-    `on_incremental_start`, `on_incremental_items` and `on_incremental_stop`.
+    Derive from this class and override `on_full_listing_begin`, `on_full_listing_batch`, `on_full_listing_end`,
+    `on_incremental_begin`, `on_incremental_batch` and `on_incremental_end`.
 
     Parameters
     ----------
     api : WebApi
         The API instance to use.
-    download_full_list_on_or_after : datetime
+    download_full_list_on_or_after : datetime, optional
         The saved value of `download_full_list_on_or_after` from the previous run. `None` on first run.
-    time_stamp_for_if_modified_since: datetime
+    time_stamp_for_if_modified_since: datetime, optional
         The saved value of `time_stamp_for_if_modified_since` from the previous run. `None`on first run.
-    chunk_size : int
-        The maximum number of items to include in each on_*_items()
+    chunk_size : int, optional
+        The maximum number of items to include in each on_*_batch()
     """
 
     def __init__(
@@ -73,7 +73,7 @@ class DataPackageListPoller(ABC):
     @property
     def time_stamp_for_if_modified_since(self) -> Optional[datetime]:
         """
-        This value is used internall to keep track of the the time of the last detected modification.
+        This value is used internally to keep track of the the time of the last detected modification.
         Save this value after processing and pass in constructor for the next run.
         """
         return self._time_stamp_for_if_modified_since
@@ -142,7 +142,7 @@ class DataPackageListPoller(ABC):
                 if is_stated:
                     raise
                 if attempt > max_attempts:
-                    raise RrytryException("Rrytry Exception") from ex
+                    raise RetryException("Retry Exception") from ex
                 self._sleep(self.on_retry_delay * attempt)
                 attempt += 1
 
@@ -177,7 +177,7 @@ class DataPackageListPoller(ABC):
                 if is_stated:
                     raise
                 if attempt > max_attempts:
-                    raise RrytryException("Rrytry Exception") from ex
+                    raise RetryException("Retry Exception") from ex
                 self._sleep(self.on_retry_delay * attempt)
                 attempt += 1
 
@@ -211,7 +211,7 @@ class DataPackageListPoller(ABC):
                     raise
                 if attempt > max_attempts:
                     try:
-                        raise RrytryException("Rrytry Exception") from ex
+                        raise RetryException("Retry Exception") from ex
                     except Exception as retry_ex:  # pylint: disable=broad-except
                         self.on_incremental_end(False, retry_ex)
                     return None

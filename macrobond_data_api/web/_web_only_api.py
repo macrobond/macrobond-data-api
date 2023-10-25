@@ -144,11 +144,11 @@ def get_data_package_list_iterative(
     items_callback : Callable[[macrobond_data_api.web.web_types.data_package_body.DataPackageBody, List[macrobond_data_api.web.web_types.data_pacakge_list_item.DataPackageListItem]], Optional[bool]]
         The callback for each batch of items. Return True to continue processing.
 
-    if_modified_since : datetime
+    if_modified_since : datetime, optional
         The timestamp of the property time_stamp_for_if_modified_since from the response of the previous call.
         If not specified, all items will be returned.
 
-    buffer_size : int
+    buffer_size : int, optional
         The maximum number of items to include in each callback
     Returns
     -------
@@ -199,18 +199,19 @@ def get_data_package_list_chunked(
     # pylint: disable=line-too-long
     """
     Process the data package list in chunks.
-    This is more efficient since the complete list does not have to be in memory.
+    This is more efficient since the complete list does not have to be in memory and it can be processed while
+    downloading.
 
     Typically you want to pass the date of time_stamp_for_if_modified_since from response of the previous call
     to get incremental updates.
 
     Parameters
     ----------
-    if_modified_since : datetime
+    if_modified_since : datetime, optional
         The timestamp of the property time_stamp_for_if_modified_since from the response of the previous call.
         If not specified, all items will be returned.
 
-    chunk_size : int
+    chunk_size : int, optional
         The maximum number of items to include in each List in DataPackageListContext.items
     Returns
     -------
@@ -226,6 +227,7 @@ def get_data_package_list_chunked(
 def entity_search_multi_filter_long(
     self: "WebApi", *filters: "SearchFilter", include_discontinued: bool = False
 ) -> SearchResultLong:
+    # pylint: disable=line-too-long
     """
     Search for time series and other entitites.
     This call can return more results than `macrobond_data_api.common.api.Api.entity_search_multi_filter`,
@@ -238,12 +240,12 @@ def entity_search_multi_filter_long(
     ----------
     *filters : `macrobond_data_api.common.types.search_filter.SearchFilter`
         One or more search filters.
-    include_discontinued : bool
+    include_discontinued : bool, optional
         Set this value to True in order to include discontinued entities in the search.
 
     Returns
     -------
-    `macrobond_data_api.common.types.search_result_long.SearchResultLong`
+     A `macrobond_data_api.common.types.search_result_long.SearchResultLong` object containing the names of the entities that match the search filters.
     """
 
     def convert_filter_to_web_filter(_filter: "SearchFilter") -> "WebSearchFilter":
