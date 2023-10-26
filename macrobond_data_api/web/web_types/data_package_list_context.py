@@ -133,13 +133,12 @@ def _parse_body(
 
 
 class DataPackageListContextManager:
-    _response: Optional["Response"]
-
     def __init__(self, if_modified_since: Optional[datetime], chunk_size: int, webApi: "WebApi") -> None:
         self._if_modified_since = if_modified_since
         self.chunk_size = chunk_size
         self._webApi: Optional["WebApi"] = webApi
         self._iterator_started = False
+        self._response: Optional["Response"] = None
 
     def __enter__(self) -> DataPackageListContext:
         params = {}

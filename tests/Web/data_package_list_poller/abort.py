@@ -6,7 +6,7 @@ from typing import Any, Dict, List, Optional
 from requests import Response
 
 from macrobond_data_api.web import WebApi
-from macrobond_data_api.web.data_package_list_poller import DataPackageListPoller
+from macrobond_data_api.web.data_package_list_poller import DataPackageListPoller, ExceptionSource
 from macrobond_data_api.web.session import Session
 from macrobond_data_api.web.web_types import DataPackageBody, DataPackageListItem, DataPackageListState
 
@@ -80,7 +80,7 @@ class TestDataPackageListPoller(DataPackageListPoller):
     def on_full_listing_batch(self, subscription: "DataPackageBody", items: List["DataPackageListItem"]) -> None:
         raise Exception("should not be called")
 
-    def on_full_listing_end(self, is_aborted: bool, exception: Optional[Exception]) -> None:
+    def on_full_listing_end(self, is_aborted: bool) -> None:
         raise Exception("should not be called")
 
     def on_incremental_begin(self, subscription: "DataPackageBody") -> None:
@@ -89,7 +89,10 @@ class TestDataPackageListPoller(DataPackageListPoller):
     def on_incremental_batch(self, subscription: "DataPackageBody", items: List["DataPackageListItem"]) -> None:
         raise Exception("should not be called")
 
-    def on_incremental_end(self, is_aborted: bool, exception: Optional[Exception]) -> None:
+    def on_incremental_end(self, is_aborted: bool) -> None:
+        raise Exception("should not be called")
+
+    def on_exception(self, source: ExceptionSource, exception: Exception) -> None:
         raise Exception("should not be called")
 
 
@@ -112,10 +115,9 @@ def test_abort_full_listing_1() -> None:
             hit_test(2)
             self.abort()
 
-        def on_full_listing_end(self, is_aborted: bool, exception: Optional[Exception]) -> None:
+        def on_full_listing_end(self, is_aborted: bool) -> None:
             hit_test(3)
             assert is_aborted is True
-            assert exception is None
 
     api = get_api(get_json_response(DataPackageListState.FULL_LISTING))
 
@@ -146,10 +148,9 @@ def test_abort_full_listing_2() -> None:
             if hit_test(3, 4) == 4:
                 self.abort()
 
-        def on_full_listing_end(self, is_aborted: bool, exception: Optional[Exception]) -> None:
+        def on_full_listing_end(self, is_aborted: bool) -> None:
             hit_test(5)
             assert is_aborted is True
-            assert exception is None
 
     api = get_api(get_json_response(DataPackageListState.FULL_LISTING))
 
@@ -179,10 +180,9 @@ def test_abort_full_listing_3() -> None:
         def on_full_listing_batch(self, subscription: DataPackageBody, items: List[DataPackageListItem]) -> None:
             hit_test(3)
 
-        def on_full_listing_end(self, is_aborted: bool, exception: Optional[Exception]) -> None:
+        def on_full_listing_end(self, is_aborted: bool) -> None:
             hit_test(4)
             assert is_aborted is False
-            assert exception is None
             self.abort()
 
     api = get_api(get_json_response(DataPackageListState.FULL_LISTING))
@@ -218,10 +218,9 @@ def test_abort_listing_1() -> None:
             hit_test(3)
             self.abort()
 
-        def on_incremental_end(self, is_aborted: bool, exception: Optional[Exception]) -> None:
+        def on_incremental_end(self, is_aborted: bool) -> None:
             hit_test(4)
             assert is_aborted is True
-            assert exception is None
 
     api = get_api(get_json_response(DataPackageListState.UP_TO_DATE))
 
@@ -260,10 +259,9 @@ def test_abort_listing_2() -> None:
             if hit_test(4):
                 self.abort()
 
-        def on_incremental_end(self, is_aborted: bool, exception: Optional[Exception]) -> None:
+        def on_incremental_end(self, is_aborted: bool) -> None:
             hit_test(5)
             assert is_aborted is True
-            assert exception is None
 
     api = get_api(get_json_response(DataPackageListState.UP_TO_DATE))
 
@@ -302,10 +300,9 @@ def test_abort_listing_3() -> None:
         def on_incremental_batch(self, subscription: DataPackageBody, items: List[DataPackageListItem]) -> None:
             hit_test(4)
 
-        def on_incremental_end(self, is_aborted: bool, exception: Optional[Exception]) -> None:
+        def on_incremental_end(self, is_aborted: bool) -> None:
             hit_test(5)
             assert is_aborted is False
-            assert exception is None
             self.abort()
 
     api = get_api(get_json_response(DataPackageListState.UP_TO_DATE))
@@ -351,10 +348,9 @@ def test_abort_listing_and_listing_incomplete_1() -> None:
             if hit_test(4, 6) == 6:
                 self.abort()
 
-        def on_incremental_end(self, is_aborted: bool, exception: Optional[Exception]) -> None:
+        def on_incremental_end(self, is_aborted: bool) -> None:
             hit_test(7)
             assert is_aborted is True
-            assert exception is None
 
     api = get_api(
         get_json_response(DataPackageListState.INCOMPLETE), get_json_response(DataPackageListState.UP_TO_DATE)
@@ -397,10 +393,9 @@ def test_abort_listing_and_listing_incomplete_2() -> None:
         def on_incremental_batch(self, subscription: "DataPackageBody", items: List["DataPackageListItem"]) -> None:
             hit_test(4, 6)
 
-        def on_incremental_end(self, is_aborted: bool, exception: Optional[Exception]) -> None:
+        def on_incremental_end(self, is_aborted: bool) -> None:
             hit_test(7)
             assert is_aborted is False
-            assert exception is None
             self.abort()
 
     api = get_api(

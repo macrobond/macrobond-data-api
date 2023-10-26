@@ -8,7 +8,7 @@ import pytest
 from requests import Response
 
 from macrobond_data_api.web import WebApi
-from macrobond_data_api.web.data_package_list_poller import DataPackageListPoller
+from macrobond_data_api.web.data_package_list_poller import DataPackageListPoller, ExceptionSource
 from macrobond_data_api.web.session import Session
 from macrobond_data_api.web.web_types import DataPackageBody, DataPackageListItem, DataPackageListState
 
@@ -82,7 +82,7 @@ class TestDataPackageListPoller(DataPackageListPoller):
     def on_full_listing_batch(self, subscription: "DataPackageBody", items: List["DataPackageListItem"]) -> None:
         raise Exception("should not be called")
 
-    def on_full_listing_end(self, is_aborted: bool, exception: Optional[Exception]) -> None:
+    def on_full_listing_end(self, is_aborted: bool) -> None:
         raise Exception("should not be called")
 
     def on_incremental_begin(self, subscription: "DataPackageBody") -> None:
@@ -91,7 +91,10 @@ class TestDataPackageListPoller(DataPackageListPoller):
     def on_incremental_batch(self, subscription: "DataPackageBody", items: List["DataPackageListItem"]) -> None:
         raise Exception("should not be called")
 
-    def on_incremental_end(self, is_aborted: bool, exception: Optional[Exception]) -> None:
+    def on_incremental_end(self, is_aborted: bool) -> None:
+        raise Exception("should not be called")
+
+    def on_exception(self, source: ExceptionSource, exception: Exception) -> None:
         raise Exception("should not be called")
 
 
@@ -135,10 +138,9 @@ def test_full_listing() -> None:
             if hit == 5:
                 assert items == [DataPackageListItem("usgdp", datetime(2000, 2, 5, 4, 5, 6))]
 
-        def on_full_listing_end(self, is_aborted: bool, exception: Optional[Exception]) -> None:
+        def on_full_listing_end(self, is_aborted: bool) -> None:
             hit_test(6)
             assert is_aborted is False
-            assert exception is None
 
     api = get_api(get_json_response(DataPackageListState.FULL_LISTING))
 
@@ -194,10 +196,9 @@ def test_listing() -> None:
             else:
                 raise Exception("should not be here")
 
-        def on_incremental_end(self, is_aborted: bool, exception: Optional[Exception]) -> None:
+        def on_incremental_end(self, is_aborted: bool) -> None:
             hit_test(7)
             assert is_aborted is False
-            assert exception is None
 
     api = get_api(get_json_response(DataPackageListState.UP_TO_DATE))
 
@@ -213,7 +214,7 @@ def test_listing() -> None:
 
 
 # _run_listing and _run_listing_incomplete
-def test_listing_and_listing_incomplete() -> None:
+def test_listing_and_listing_incomplete_1() -> None:
     hit = 0
 
     def hit_test(*now: int) -> int:
@@ -272,10 +273,9 @@ def test_listing_and_listing_incomplete() -> None:
             else:
                 raise Exception("should not be here")
 
-        def on_incremental_end(self, is_aborted: bool, exception: Optional[Exception]) -> None:
+        def on_incremental_end(self, is_aborted: bool) -> None:
             hit_test(11)
             assert is_aborted is False
-            assert exception is None
 
     api = get_api(
         get_json_response(DataPackageListState.INCOMPLETE), get_json_response(DataPackageListState.UP_TO_DATE)
@@ -290,3 +290,74 @@ def test_listing_and_listing_incomplete() -> None:
         ).start()
 
     assert hit == 12
+
+
+def test_listing_and_listing_incomplete_2() -> None:
+    hit = 0
+
+    def hit_test(*now: int) -> int:
+        nonlocal hit
+        hit += 1
+        assert hit in now
+        return hit
+
+    class _TestDataPackageListPoller(TestDataPackageListPoller):
+        __test__ = False
+
+        def _test_access(self) -> None:
+            hit_test(1)
+
+        def sleep(self, secs: float) -> None:
+            hit = hit_test(5, 7, 10)
+            if hit in (5, 7):
+                assert secs == self.incomplete_delay
+            elif hit == 10:
+                assert secs == self.up_to_date_delay
+                raise Exception("End of test")
+
+        def now(self) -> datetime:
+            hit_test(2)
+            return datetime(2000, 1, 1, tzinfo=timezone.utc)
+
+        def on_incremental_begin(self, subscription: "DataPackageBody") -> None:
+            assert subscription.time_stamp_for_if_modified_since == datetime(2000, 2, 2, 4, 5, 6)
+            assert subscription.download_full_list_on_or_after == datetime(2000, 2, 1, 4, 5, 6)
+            if hit_test(3) == 3:
+                assert subscription.state == DataPackageListState.INCOMPLETE
+
+        def on_incremental_batch(self, subscription: "DataPackageBody", items: List["DataPackageListItem"]) -> None:
+            hit = hit_test(4, 6, 8)
+            assert subscription.time_stamp_for_if_modified_since == datetime(2000, 2, 2, 4, 5, 6)
+            assert subscription.download_full_list_on_or_after == datetime(2000, 2, 1, 4, 5, 6)
+
+            assert items == [
+                DataPackageListItem("sek", datetime(2000, 2, 3, 4, 5, 6)),
+                DataPackageListItem("dkk", datetime(2000, 2, 4, 4, 5, 6)),
+                DataPackageListItem("usgdp", datetime(2000, 2, 5, 4, 5, 6)),
+            ]
+
+            if hit in (4, 6):
+                assert subscription.state == DataPackageListState.INCOMPLETE
+            elif hit == 8:
+                assert subscription.state == DataPackageListState.UP_TO_DATE
+            else:
+                raise Exception("should not be here")
+
+        def on_incremental_end(self, is_aborted: bool) -> None:
+            hit_test(9)
+            assert is_aborted is False
+
+    api = get_api(
+        get_json_response(DataPackageListState.INCOMPLETE),
+        get_json_response(DataPackageListState.INCOMPLETE),
+        get_json_response(DataPackageListState.UP_TO_DATE),
+    )
+
+    with pytest.raises(Exception, match="End of test"):
+        _TestDataPackageListPoller(
+            api,
+            download_full_list_on_or_after=datetime(3000, 1, 1, tzinfo=timezone.utc),
+            time_stamp_for_if_modified_since=datetime(1000, 1, 1, tzinfo=timezone.utc),
+        ).start()
+
+    assert hit == 10

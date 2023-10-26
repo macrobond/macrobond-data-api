@@ -6,7 +6,7 @@ import pytest
 from requests import Response
 
 from macrobond_data_api.web import WebApi
-from macrobond_data_api.web.data_package_list_poller import DataPackageListPoller
+from macrobond_data_api.web.data_package_list_poller import DataPackageListPoller, ExceptionSource
 from macrobond_data_api.web.session import Session
 from macrobond_data_api.web.web_types import DataPackageBody, DataPackageListItem
 
@@ -50,7 +50,7 @@ class TestDataPackageListPoller(DataPackageListPoller):
     def on_full_listing_batch(self, subscription: "DataPackageBody", items: List["DataPackageListItem"]) -> None:
         raise Exception("should not be called")
 
-    def on_full_listing_end(self, is_aborted: bool, exception: Optional[Exception]) -> None:
+    def on_full_listing_end(self, is_aborted: bool) -> None:
         raise Exception("should not be called")
 
     def on_incremental_begin(self, subscription: "DataPackageBody") -> None:
@@ -59,7 +59,10 @@ class TestDataPackageListPoller(DataPackageListPoller):
     def on_incremental_batch(self, subscription: "DataPackageBody", items: List["DataPackageListItem"]) -> None:
         raise Exception("should not be called")
 
-    def on_incremental_end(self, is_aborted: bool, exception: Optional[Exception]) -> None:
+    def on_incremental_end(self, is_aborted: bool) -> None:
+        raise Exception("should not be called")
+
+    def on_exception(self, source: ExceptionSource, exception: Exception) -> None:
         raise Exception("should not be called")
 
 
