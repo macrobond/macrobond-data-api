@@ -17,7 +17,7 @@ __pdoc__ = {
 
 class Client(ABC, Generic[TypeVarApi]):
     def __init__(self) -> None:
-        ...  # pragma: no cover
+        pass  # pragma: no cover
 
     def __enter__(self) -> TypeVarApi:
         return self.open()  # pragma: no cover
@@ -28,7 +28,7 @@ class Client(ABC, Generic[TypeVarApi]):
     @property
     @abstractmethod
     def is_open(self) -> bool:
-        ...
+        ...  # pragma: no cover
 
     @abstractmethod
     def open(self) -> TypeVarApi:
