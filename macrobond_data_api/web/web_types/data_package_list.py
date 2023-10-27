@@ -30,11 +30,11 @@ class DataPackageList(Sequence[DataPackageListItem], DataPackageBody):
 
     @overload
     def __getitem__(self, i: int) -> DataPackageListItem:
-        ...
+        pass
 
     @overload
     def __getitem__(self, s: slice) -> List[DataPackageListItem]:
-        ...
+        pass
 
     def __getitem__(self, key):  # type: ignore
         return self.items[key]

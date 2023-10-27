@@ -12,7 +12,7 @@ if TYPE_CHECKING:  # pragma: no cover
 
 
 class _AbortException(Exception):
-    ...
+    pass
 
 
 class DataPackageListPoller(ABC):

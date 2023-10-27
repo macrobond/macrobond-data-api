@@ -146,11 +146,11 @@ class UnifiedSeriesList(Sequence[UnifiedSeries]):
 
     @overload
     def __getitem__(self, i: int) -> UnifiedSeries:
-        ...
+        pass
 
     @overload
     def __getitem__(self, s: slice) -> List[UnifiedSeries]:
-        ...
+        pass
 
     def __getitem__(self, key):  # type: ignore
         return self.series[key]

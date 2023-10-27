@@ -35,23 +35,14 @@ __pdoc__ = {
 }
 
 
-def _raise_on_error(response: "Response", non_error_status: Sequence[int] = None) -> "Response":
-    if non_error_status is None:
-        non_error_status = [200]
+class _ResponseAsFileObject:
+    def __init__(self, response: "Response", chunk_size: int = 65536) -> None:
+        self.data = response.iter_content(chunk_size=chunk_size)
 
-    if response.status_code in non_error_status:
-        return response
-
-    content_type = response.headers.get("Content-Type")
-
-    if content_type in ["application/json; charset=utf-8", "application/json"]:
-        raise ProblemDetailsException.create_from_response(response)
-
-    macrobond_status = response.headers.get("X-Macrobond-Status")
-    if macrobond_status:
-        raise ProblemDetailsException(response, detail=macrobond_status)
-
-    raise HttpException(response)
+    def read(self, n: int) -> bytes:
+        if n == 0:
+            return b""
+        return next(self.data, b"")
 
 
 class Session:
@@ -171,7 +162,7 @@ class Session:
         non_error_status: Sequence[int] = None,
         stream: bool = False,
     ) -> "Response":
-        return _raise_on_error(self.get(url, params, stream=stream), non_error_status)
+        return self.raise_on_error(self.get(url, params, stream=stream), non_error_status)
 
     def post(self, url: str, params: dict = None, json: object = None, stream: bool = False) -> "Response":
         return self._request("POST", url, params, json, stream)
@@ -184,7 +175,7 @@ class Session:
         non_error_status: Sequence[int] = None,
         stream: bool = False,
     ) -> "Response":
-        return _raise_on_error(self.post(url, params, json, stream=stream), non_error_status)
+        return self.raise_on_error(self.post(url, params, json, stream=stream), non_error_status)
 
     def delete(self, url: str, params: dict = None, stream: bool = False) -> "Response":
         return self._request("DELETE", url, params, None, stream)
@@ -196,7 +187,28 @@ class Session:
         non_error_status: Sequence[int] = None,
         stream: bool = False,
     ) -> "Response":
-        return _raise_on_error(self.delete(url, params, stream=stream), non_error_status)
+        return self.raise_on_error(self.delete(url, params, stream=stream), non_error_status)
+
+    def raise_on_error(self, response: "Response", non_error_status: Sequence[int] = None) -> "Response":
+        if non_error_status is None:
+            non_error_status = [200]
+
+        if response.status_code in non_error_status:
+            return response
+
+        content_type = response.headers.get("Content-Type")
+
+        if content_type in ["application/json; charset=utf-8", "application/json"]:
+            raise ProblemDetailsException.create_from_response(response)
+
+        macrobond_status = response.headers.get("X-Macrobond-Status")
+        if macrobond_status:
+            raise ProblemDetailsException(response, detail=macrobond_status)
+
+        raise HttpException(response)
+
+    def _response_to_file_object(self, response: "Response") -> _ResponseAsFileObject:
+        return _ResponseAsFileObject(response)
 
     def _request(self, method: str, url: str, params: Optional[dict], json: object, stream: bool) -> "Response":
         if not self._is_open:
@@ -213,7 +225,7 @@ class Session:
                 headers={"Accept": "application/json"},
             )
 
-        return self.__if_status_code_401_fetch_token_and_retry(http)
+        return self._if_status_code_401_fetch_token_and_retry(http)
 
     def discovery(self, url: str) -> str:
         if not self._is_open:
@@ -239,7 +251,7 @@ class Session:
 
         return token_endpoint
 
-    def __if_status_code_401_fetch_token_and_retry(self, http: Callable[[], "Response"]) -> "Response":
+    def _if_status_code_401_fetch_token_and_retry(self, http: Callable[[], "Response"]) -> "Response":
         try:
             response = http()
         except InvalidTokenError:

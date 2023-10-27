@@ -51,11 +51,11 @@ class SearchResult(Sequence["Metadata"]):
 
     @overload
     def __getitem__(self, i: int) -> "Metadata":
-        ...
+        pass
 
     @overload
     def __getitem__(self, s: slice) -> Sequence["Metadata"]:
-        ...
+        pass
 
     def __getitem__(self, key):  # type: ignore
         return self.entities[key]

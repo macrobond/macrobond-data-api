@@ -6,12 +6,12 @@ import ijson
 from macrobond_data_api.common.types import SearchResultLong
 from macrobond_data_api.common.types._parse_iso8601 import _parse_iso8601
 
+from .web_types.data_package_list_context import DataPackageListContextManager
 from .web_types.data_package_list_state import DataPackageListState
 from .web_types.data_pacakge_list_item import DataPackageListItem
 from .web_types.data_package_list import DataPackageList
 from .web_types.data_package_body import DataPackageBody
 
-from .session import _raise_on_error
 from .subscription_list import SubscriptionList
 
 if TYPE_CHECKING:  # pragma: no cover
@@ -91,7 +91,7 @@ def _get_data_package_list_iterative_pars_items(
     return True
 
 
-def get_data_package_list(self: "WebApi", if_modified_since: datetime = None) -> DataPackageList:
+def get_data_package_list(self: "WebApi", if_modified_since: Optional[datetime] = None) -> DataPackageList:
     # pylint: disable=line-too-long
     """
     Get the items in the data package.
@@ -123,11 +123,12 @@ def get_data_package_list_iterative(
     self: "WebApi",
     body_callback: Callable[[DataPackageBody], Optional[bool]],
     items_callback: Callable[[DataPackageBody, List[DataPackageListItem]], Optional[bool]],
-    if_modified_since: datetime = None,
+    if_modified_since: Optional[datetime] = None,
     buffer_size: int = 200,
 ) -> Optional[DataPackageBody]:
     # pylint: disable=line-too-long
     """
+    .. Important:: This method is deprecated. Use `macrobond_data_api.web.web_api.WebApi.get_data_package_list_chunked` instead.
     Process the data package list in batches.
     This is more efficient since the complete list does not have to be in memory.
 
@@ -142,11 +143,11 @@ def get_data_package_list_iterative(
     items_callback : Callable[[macrobond_data_api.web.web_types.data_package_body.DataPackageBody, List[macrobond_data_api.web.web_types.data_pacakge_list_item.DataPackageListItem]], Optional[bool]]
         The callback for each batch of items. Return True to continue processing.
 
-    if_modified_since : datetime
+    if_modified_since : datetime, optional
         The timestamp of the property time_stamp_for_if_modified_since from the response of the previous call.
         If not specified, all items will be returned.
 
-    buffer_size : int
+    buffer_size : int, optional
         The maximum number of items to include in each callback
     Returns
     -------
@@ -159,9 +160,8 @@ def get_data_package_list_iterative(
     if if_modified_since:
         params["ifModifiedSince"] = if_modified_since.isoformat()
 
-    with self._session.get("v1/series/getdatapackagelist", params=params, stream=True) as response:
-        _raise_on_error(response)
-        ijson_parse = ijson.parse(response.raw)
+    with self._session.get_or_raise("v1/series/getdatapackagelist", params=params, stream=True) as response:
+        ijson_parse = ijson.parse(self.session._response_to_file_object(response))
 
         (
             time_stamp_for_if_modified_since,
@@ -186,12 +186,41 @@ def get_data_package_list_iterative(
         return body
 
 
+def get_data_package_list_chunked(
+    self: "WebApi", if_modified_since: Optional[datetime] = None, chunk_size: int = 200
+) -> DataPackageListContextManager:
+    # pylint: disable=line-too-long
+    """
+    Process the data package list in chunks.
+    This is more efficient since the complete list does not have to be in memory and it can be processed while
+    downloading.
+
+    Typically you want to pass the date of time_stamp_for_if_modified_since from response of the previous call
+    to get incremental updates.
+
+    Parameters
+    ----------
+    if_modified_since : datetime, optional
+        The timestamp of the property time_stamp_for_if_modified_since from the response of the previous call.
+        If not specified, all items will be returned.
+
+    chunk_size : int, optional
+        The maximum number of items to include in each List in DataPackageListContext.items
+    Returns
+    -------
+    `macrobond_data_api.web.web_types.data_package_list_context.DataPackageListContextManager`
+    """
+    # pylint: enable=line-too-long
+    return DataPackageListContextManager(if_modified_since, chunk_size, self)
+
+
 # Search
 
 
 def entity_search_multi_filter_long(
     self: "WebApi", *filters: "SearchFilter", include_discontinued: bool = False
 ) -> SearchResultLong:
+    # pylint: disable=line-too-long
     """
     Search for time series and other entitites.
     This call can return more results than `macrobond_data_api.common.api.Api.entity_search_multi_filter`,
@@ -204,12 +233,12 @@ def entity_search_multi_filter_long(
     ----------
     *filters : `macrobond_data_api.common.types.search_filter.SearchFilter`
         One or more search filters.
-    include_discontinued : bool
+    include_discontinued : bool, optional
         Set this value to True in order to include discontinued entities in the search.
 
     Returns
     -------
-    `macrobond_data_api.common.types.search_result_long.SearchResultLong`
+     A `macrobond_data_api.common.types.search_result_long.SearchResultLong` object containing the names of the entities that match the search filters.
     """
 
     def convert_filter_to_web_filter(_filter: "SearchFilter") -> "WebSearchFilter":

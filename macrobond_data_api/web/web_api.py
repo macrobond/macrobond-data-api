@@ -4,6 +4,7 @@ from ._web_only_api import (
     entity_search_multi_filter_long,
     get_data_package_list,
     get_data_package_list_iterative,
+    get_data_package_list_chunked,
     subscription_list,
 )
 from ._web_api_metadata import metadata_list_values, metadata_get_attribute_information, metadata_get_value_information
@@ -71,6 +72,7 @@ class WebApi(Api):
 
     get_data_package_list = get_data_package_list
     get_data_package_list_iterative = get_data_package_list_iterative
+    get_data_package_list_chunked = get_data_package_list_chunked
     entity_search_multi_filter_long = entity_search_multi_filter_long
     subscription_list = subscription_list
 
