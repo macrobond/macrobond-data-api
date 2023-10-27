@@ -4,7 +4,7 @@ from datetime import datetime, timezone
 try:
     from pywintypes import TimeType
 except ImportError as ex_:
-    ...
+    pass
 
 if TYPE_CHECKING:  # pragma: no cover
     from .com_types.connection import Connection

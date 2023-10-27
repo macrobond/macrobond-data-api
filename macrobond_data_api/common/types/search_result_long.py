@@ -48,11 +48,11 @@ class SearchResultLong(Sequence[str]):
 
     @overload
     def __getitem__(self, i: int) -> str:
-        ...
+        pass
 
     @overload
     def __getitem__(self, s: slice) -> List[str]:
-        ...
+        pass
 
     def __getitem__(self, key):  # type: ignore
         return self.entities[key]
