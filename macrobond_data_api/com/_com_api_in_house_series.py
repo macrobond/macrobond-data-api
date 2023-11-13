@@ -47,7 +47,7 @@ def upload_series(
         for key, value in metadata.items():
             com_metadata.AddValue(key, value)
 
-    values = [float(x) if x else None for x in values]
+    values = [float(x) if x is not None else x for x in values]
 
     if forecast_flags:
         if not isinstance(forecast_flags, list):

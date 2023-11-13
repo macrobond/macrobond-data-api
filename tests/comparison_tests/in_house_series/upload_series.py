@@ -21,15 +21,15 @@ def _try_delete_series(api: Api, *names: str) -> None:
 
 @pytest.mark.usefixtures("lock_test")
 def test_1(web: WebApi, com: ComApi, test_metadata: Any) -> None:
-    web_name = "ih:mb:priv:test_name_py_web"
-    com_name = "ih:mb:priv:test_name_py_com"
+    web_name = "ih:mb:priv:test_name_py_web_1"
+    com_name = "ih:mb:priv:test_name_py_com_1"
 
     _try_delete_series(web, web_name, com_name)
 
     def upload_and_get_series(api: Api, name: str) -> Series:
         api.upload_series(
             name,
-            "test_description",
+            "test_description_test_1",
             "us",
             "test_category",
             SeriesFrequency.DAILY,
@@ -59,15 +59,15 @@ def test_1(web: WebApi, com: ComApi, test_metadata: Any) -> None:
 
 @pytest.mark.usefixtures("lock_test")
 def test_2(web: WebApi, com: ComApi, test_metadata: Any) -> None:
-    web_name = "ih:mb:priv:test_name_py_web"
-    com_name = "ih:mb:priv:test_name_py_com"
+    web_name = "ih:mb:priv:test_name_py_web_2"
+    com_name = "ih:mb:priv:test_name_py_com_2"
 
     _try_delete_series(web, web_name, com_name)
 
     def upload_and_get_series(api: Api, name: str) -> Series:
         api.upload_series(
             name,
-            "test_description",
+            "test_description_test_2",
             "us",
             "test_category",
             SeriesFrequency.DAILY,
@@ -75,6 +75,85 @@ def test_2(web: WebApi, com: ComApi, test_metadata: Any) -> None:
             datetime(2020, 1, 1, tzinfo=timezone.utc),
             # metadata={"RevisionHistorySourceCutOffDate": datetime(2021, 1, 1, tzinfo=timezone.utc)},
             forecast_flags=[True, False, True],
+        )
+
+        return api.get_one_series(name)
+
+    try:
+        com_series = upload_and_get_series(com, com_name)
+        web_series = upload_and_get_series(web, web_name)
+
+        test_metadata(web_series, com_series, ignore_keys=["LastModifiedTimeStamp", "PrimName"])
+
+        web_series.name = "test"
+        com_series.name = "test"
+
+        assert web_series == com_series
+
+    finally:
+        try:
+            web.delete_serie(web_name)
+        finally:
+            com.delete_serie(com_name)
+
+
+@pytest.mark.usefixtures("lock_test")
+def test_3(web: WebApi, com: ComApi, test_metadata: Any) -> None:
+    web_name = "ih:mb:priv:test_name_py_web_3"
+    com_name = "ih:mb:priv:test_name_py_com_3"
+
+    _try_delete_series(web, web_name, com_name)
+
+    def upload_and_get_series(api: Api, name: str) -> Series:
+        api.upload_series(
+            name,
+            "test_description_test_3",
+            "us",
+            "test_category",
+            SeriesFrequency.DAILY,
+            [0],
+            datetime(2020, 1, 1, tzinfo=timezone.utc),
+            # metadata={"RevisionHistorySourceCutOffDate": datetime(2021, 1, 1, tzinfo=timezone.utc)},
+            forecast_flags=[True],
+        )
+
+        return api.get_one_series(name)
+
+    try:
+        com_series = upload_and_get_series(com, com_name)
+        web_series = upload_and_get_series(web, web_name)
+
+        test_metadata(web_series, com_series, ignore_keys=["LastModifiedTimeStamp", "PrimName"])
+
+        web_series.name = "test"
+        com_series.name = "test"
+
+        assert web_series == com_series
+
+    finally:
+        try:
+            web.delete_serie(web_name)
+        finally:
+            com.delete_serie(com_name)
+
+
+@pytest.mark.usefixtures("lock_test")
+def test_4(web: WebApi, com: ComApi, test_metadata: Any) -> None:
+    web_name = "ih:mb:priv:test_name_py_web_4"
+    com_name = "ih:mb:priv:test_name_py_com_4"
+
+    _try_delete_series(web, web_name, com_name)
+
+    def upload_and_get_series(api: Api, name: str) -> Series:
+        api.upload_series(
+            name,
+            "test_description_test_4",
+            "us",
+            "test_category",
+            SeriesFrequency.DAILY,
+            [-1, -2, -3, 0],
+            datetime(2020, 1, 1, tzinfo=timezone.utc),
+            # metadata={"RevisionHistorySourceCutOffDate": datetime(2021, 1, 1, tzinfo=timezone.utc)},
         )
 
         return api.get_one_series(name)
