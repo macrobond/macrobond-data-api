@@ -52,7 +52,7 @@ def _create_series(response: "SeriesResponse", name: str, session: Session) -> S
 
     dates = [_parse_iso8601(x) for x in cast(List[str], response["dates"])]
 
-    values = [float(x) if x else None for x in cast(List[Optional[float]], response["values"])]
+    values = [float(x) if x is not None else x for x in cast(List[Optional[float]], response["values"])]
 
     metadata = session._create_metadata(response["metadata"])
 
@@ -165,7 +165,7 @@ def get_unified_series(
         if error_text:
             series.append(UnifiedSeries(name, error_text, {}, []))
         else:
-            values = [float(x) if x else None for x in cast(List[Optional[float]], one_series["values"])]
+            values = [float(x) if x is not None else x for x in cast(List[Optional[float]], one_series["values"])]
 
             metadata = self.session._create_metadata(one_series["metadata"])
 

@@ -38,10 +38,6 @@ def _optional_str_to_datetime(datetime_str: Optional[str]) -> Optional[datetime]
     return _parse_iso8601(datetime_str) if datetime_str else None
 
 
-def int_to_float_or_none(int_: Optional[int]) -> Optional[float]:
-    return float(int_) if int_ else None
-
-
 def get_revision_info(self: "WebApi", *series_names: str, raise_error: Optional[bool] = None) -> Sequence[RevisionInfo]:
     def to_obj(name: str, serie: "SeriesWithRevisionsInfoResponse") -> RevisionInfo:
         error_text = serie.get("errorText")
@@ -102,7 +98,7 @@ def get_vintage_series(
 
         metadata = self.session._create_metadata(response["metadata"])
 
-        values = [float(x) if x else None for x in cast(List[Optional[int]], response["values"])]
+        values = [float(x) if x is not None else x for x in cast(List[Optional[int]], response["values"])]
         dates = [_parse_iso8601(x) for x in cast(List[str], response["dates"])]
 
         if include_times_of_change:
@@ -162,7 +158,7 @@ def get_nth_release(
             return Series(name, error_text, StatusCode(cast(int, response["errorCode"])), None, None, None, None)
 
         dates = [_parse_iso8601(x) for x in cast(List[str], response["dates"])]
-        values = [float(x) if x else None for x in cast(List[Optional[int]], response["values"])]
+        values = [float(x) if x is not None else x for x in cast(List[Optional[int]], response["values"])]
         metadata = session._create_metadata(response["metadata"])
         if include_times_of_change:
             timesOfChange = response.get("timesOfChange")
@@ -201,7 +197,7 @@ def get_all_vintage_series(self: "WebApi", series_name: str) -> GetAllVintageSer
             )
 
         metadata = self.session._create_metadata(response["metadata"])
-        values = [float(x) if x else None for x in cast(List[Optional[int]], response["values"])]
+        values = [float(x) if x is not None else x for x in cast(List[Optional[int]], response["values"])]
         dates = [_parse_iso8601(x) for x in cast(List[str], response["dates"])]
 
         vintage_time_stamp = (
@@ -232,7 +228,7 @@ def get_observation_history(self: "WebApi", series_name: str, *times: datetime) 
         [
             SeriesObservationHistory(
                 _parse_iso8601(x["observationDate"]),
-                [float(y) if y else None for y in x["values"]],
+                [float(y) if y is not None else y for y in x["values"]],
                 [_optional_str_to_datetime(y) for y in x["timeStamps"]],
             )
             for x in response
@@ -246,7 +242,7 @@ def _create_vintage_values(vintage_values: "VintageValuesResponse") -> VintageVa
 
     dates = [datetime(int(x[0:4]), int(x[5:7]), int(x[8:10])) for x in vintage_values["dates"]]
 
-    values = [float(x) if x else None for x in vintage_values["values"]]
+    values = [float(x) if x is not None else x for x in vintage_values["values"]]
 
     return VintageValues(vintage_time_stamp, dates, values)
 

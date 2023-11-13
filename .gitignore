@@ -18,3 +18,4 @@ tests/py_test.lock
 
 !/setup.py
 /*.py
+/*.ipynb
