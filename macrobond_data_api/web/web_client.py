@@ -39,7 +39,7 @@ def _get_credentials_from_keyring(  # pylint: disable=too-many-branches
 
         json_obj = json.loads(credentials.password)
 
-        if not isinstance(dict, json_obj):
+        if not isinstance(json_obj, dict):
             raise KeyringException(f"Bad format, password is not a json objekt in keyring {keyring_name}")
 
         if "username" not in json_obj:
