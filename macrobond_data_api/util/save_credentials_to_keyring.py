@@ -62,18 +62,18 @@ def _test_keyring_backend() -> bool:
     return True
 
 
-def save_credential_to_keyring(warn_before_removing: bool = True, ask_for_service_name: bool = False) -> bool:
+def save_credentials_to_keyring(warn_before_removing: bool = True, ask_for_service_name: bool = False) -> bool:
     # fmt: off
     # pylint: disable=line-too-long
     """
-    Create or update a key in the system's keyring interactively via terminal.
+    Create or update the credentials for the API in the system's keyring interactively via the  terminal.
 
     By defult the method will ask interactively for:
-    * username, username is the user's Macrobond Web Api username.
-    * password, password is the user's Macrobond Web Api password.
+    * username, is the user's Macrobond Web Api username.
+    * password, is the user's Macrobond Web Api password.
 
     If ask_for_service_name is `True`, then it will also ask for a service name.
-    a service name becomes the name of the key in the user's keyring.
+    The service name becomes the name of the key in the user's keyring.
 
     Parameters
     ----------
@@ -92,9 +92,9 @@ def save_credential_to_keyring(warn_before_removing: bool = True, ask_for_servic
     -------
 
     .. note::
-    It's easy to run this method via the terminal.
+    It is easy to run this method via the terminal.
     ```console  
-    python -c "from macrobond_data_api.util import *; save_credential_to_keyring()"
+    python -c "from macrobond_data_api.util import *; save_credentials_to_keyring()"
     ```
 
     .. caution::
@@ -166,4 +166,4 @@ def save_credential_to_keyring(warn_before_removing: bool = True, ask_for_servic
 
 
 if __name__ == "__main__":
-    save_credential_to_keyring()
+    save_credentials_to_keyring()

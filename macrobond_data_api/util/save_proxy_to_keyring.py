@@ -7,7 +7,7 @@ from requests import get
 
 from macrobond_data_api.web.web_client import PROXY_USERNAME, DEFAULT_PROXY_SERVICE_NAME
 
-from .save_credential_to_keyring import _remove_duplicates, _test_keyring_backend
+from .save_credentials_to_keyring import _remove_duplicates, _test_keyring_backend
 from .transfer_performance_test import _get_url
 
 
@@ -15,7 +15,7 @@ def save_proxy_to_keyring(warn_before_removing: bool = True, test_proxy: bool = 
     # fmt: off
     # pylint: disable=line-too-long
     """
-    Create or update a proxy in the system's keyring interactively via terminal.
+    Create or update a proxy in the system's keyring interactively via the terminal.
 
     Parameters
     ----------
@@ -40,7 +40,8 @@ def save_proxy_to_keyring(warn_before_removing: bool = True, test_proxy: bool = 
     ```
 
     .. caution::
-    This method can remove proxy in your keyring, but it will ask first by default about warn_before_removing is `True`.
+    This method can remove proxy setting in your keyring, but it will ask first unless
+    warn_before_removing is set to `False`.
 
     """
     # pylint: enable=line-too-long
