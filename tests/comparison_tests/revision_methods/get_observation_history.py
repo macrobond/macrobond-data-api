@@ -6,7 +6,7 @@ from pandas.testing import assert_frame_equal, assert_series_equal
 from macrobond_data_api.web import WebApi
 from macrobond_data_api.com import ComApi
 
-test_data = ["ustrad4488", "usgdp", "uscpi"]
+test_data = ["ustrad4488", "usgdp", "uscpi", "uslama1060"]
 
 
 def strip_time(d: Optional[datetime]) -> Optional[datetime]:
