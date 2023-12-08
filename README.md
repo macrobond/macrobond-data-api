@@ -90,7 +90,17 @@ python -m pip install macrobond-data-api
 
 Macrobond Data API for Python officially supports Python 3.6+.
 
-## Using of system keyring
+## Using of system keyring for http proxy
+
+If your using a http proxy is recommended to use the system keyring.
+When using WebClient it is recommended to use the system keyring.
+This can be done easily by running the include script using this command:
+
+```console
+python -c "from macrobond_data_api.util import *; save_proxy_to_keyring()"
+```
+
+## Using of system keyring for credentials
 
 When using WebClient it is recommended to use the system keyring.
 This can be done easily by running the include script using this command:

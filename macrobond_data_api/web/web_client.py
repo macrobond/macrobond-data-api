@@ -1,6 +1,8 @@
 from typing import Optional, List, Tuple
 import json
 import sys
+import keyring
+
 from macrobond_data_api.common import Client
 
 from .session import Session as _Session, API_URL_DEFAULT, AUTHORIZATION_URL_DEFAULT
@@ -10,11 +12,8 @@ from .web_api import WebApi
 DEFAULT_SERVICE_NAME = AUTHORIZATION_URL_DEFAULT
 DARWIN_USERNAME = "Macrobond"
 
-_keyring_import_error: Optional[ImportError] = None
-try:
-    import keyring as _keyring
-except ImportError as ex:
-    _keyring_import_error = ex
+DEFAULT_PROXY_SERVICE_NAME = "MacrobondApiHttpProxy"
+PROXY_USERNAME = "MacrobondApiHttpProxy"
 
 
 class KeyringException(Exception):
@@ -27,13 +26,10 @@ def _get_credentials_from_keyring(  # pylint: disable=too-many-branches
     if username == "":
         raise ValueError('username is set to ""')
 
-    if _keyring_import_error:
-        raise _keyring_import_error
-
-    keyring_name = _keyring.get_keyring().name
+    keyring_name = keyring.get_keyring().name
 
     if sys.platform.startswith("darwin"):
-        credentials = _keyring.get_credential(service_name, DARWIN_USERNAME)
+        credentials = keyring.get_credential(service_name, DARWIN_USERNAME)
         if not credentials:
             raise KeyringException(f"Can not find the key in keyring {keyring_name}")
 
@@ -53,10 +49,10 @@ def _get_credentials_from_keyring(  # pylint: disable=too-many-branches
 
         password = json_obj["password"]
     else:
-        credentials = _keyring.get_credential(service_name, None)
+        credentials = keyring.get_credential(service_name, None)
 
         if credentials is None:
-            raise KeyringException(f"Can not find the key in keyring {_keyring.get_keyring()}")
+            raise KeyringException(f"Can not find the key in keyring {keyring.get_keyring()}")
 
         if username is None:
             username = credentials.username
@@ -80,6 +76,17 @@ def _has_credentials_in_keyring(service_name: Optional[str] = None) -> bool:
         return True
     except KeyringException:
         return False
+
+
+def _try_get_proxy_from_keyring() -> Optional[str]:
+    credentials = keyring.get_credential(DEFAULT_PROXY_SERVICE_NAME, PROXY_USERNAME)
+    if not credentials or credentials.password == "":
+        return None
+    return credentials.password
+
+
+def _has_proxy_in_keyring() -> bool:
+    return _try_get_proxy_from_keyring() is not None
 
 
 class WebClient(Client["WebApi"]):
@@ -154,6 +161,9 @@ class WebClient(Client["WebApi"]):
 
         if scopes is None:
             scopes = []
+
+        if proxy is None:
+            proxy = _try_get_proxy_from_keyring()
 
         self.has_closed = False
         self.__api: Optional["WebApi"] = None
