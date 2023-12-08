@@ -21,10 +21,10 @@ def save_proxy_to_keyring(warn_before_removing: bool = True, test_proxy: bool = 
     ----------
     warn_before_removing: bool
         Optional bool whether the method should ask before removing keys, default to `True`.
-    
+
     test_proxy: bool
         Optional bool whether the method should test proxy before saving, default to `True`.
-    
+
     Returns
     -------
     `bool`
@@ -74,8 +74,8 @@ def save_proxy_to_keyring(warn_before_removing: bool = True, test_proxy: bool = 
         print("Removing proxy in keyring")
         if keyring.get_credential(service_name, username) is None:
             print("Proxy not found in keyring")
-            return True
-        keyring.delete_password(service_name, username)
+        else:
+            keyring.delete_password(service_name, username)
         return True
 
     if test_proxy:
