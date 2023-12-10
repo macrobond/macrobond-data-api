@@ -26,12 +26,14 @@ class _MetadataType:
 
 
 def _convert_datetime_as_astimezone_utc(dt: datetime) -> datetime:
-    year = dt.year
-    if year > 1970:
-        return datetime(year, dt.month, dt.day, dt.hour, dt.minute, dt.second, dt.microsecond).astimezone(timezone.utc)
+    if dt.year > 1970:
+        return datetime(dt.year, dt.month, dt.day, dt.hour, dt.minute, dt.second, dt.microsecond).astimezone(
+            timezone.utc
+        )
+    delta = time.altzone if time.daylight != 0 else time.timezone
     return datetime(
-        year, dt.month, dt.day, dt.hour, dt.minute, dt.second, dt.microsecond, tzinfo=timezone.utc
-    ) + timedelta(seconds=time.timezone)
+        dt.year, dt.month, dt.day, dt.hour, dt.minute, dt.second, dt.microsecond, tzinfo=timezone.utc
+    ) + timedelta(seconds=delta)
 
 
 class _MetadataTypeDirectory:
