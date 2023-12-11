@@ -32,7 +32,7 @@ def _get_api() -> "Api":
                 raise
         hints.append(
             "Did not find any Key in the keyring, so we can not use the WebClient.\n"
-            + 'If you want to use the WebClient, try runing the "save_credential_to_keyring()" learn more: '
+            + 'If you want to use the WebClient, try runing the "save_credentials_to_keyring()" learn more: '
             + "https://github.com/macrobond/macrobond-data-api#using-of-system-keyring\n"
             + "or create an instance of the WebClient by passing the credentials as parameters."
         )

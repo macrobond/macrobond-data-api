@@ -147,7 +147,7 @@
     <div style="margin-bottom: 3rem;">
       <h2>Installing macrobond-data-api and Supported Versions</h2>
       <p>
-        Supported versions of Python are currently 3.7 - 3.11.
+        Supported versions of Python are currently 3.8+.
       </p>
       <p>
         The package is available at <a href="https://pypi.org/project/macrobond-data-api/">PiPy</a> and can be installed using this command:
@@ -156,12 +156,24 @@
     </div>
 
     <div style="margin-bottom: 3rem;">
-      <h2>Using of system keyring</h2>
+      <h2>Using of system keyring for http proxy</h2>
       <p>
-        When using WebClient it is recommended to use the system keyring.
+        For users operating behind an HTTP proxy, it is advisable to utilize the system keyring to store proxy settings and credentials.
+        This can be conveniently accomplished by executing the included script with the following command:
+      </p>
+      <pre style="display: inline;padding: 0;"><code2>python -c "from macrobond_data_api.util import *; save_proxy_to_keyring()"</code2></pre>
+    </div>
+
+    <div style="margin-bottom: 3rem;">
+      <h2>Using of system keyring for credentials</h2>
+      <p style="font-weight: bold;">
+        Note: If u are using a proxy see "Using of system keyring for http proxy" first.
+      </p>
+      <p>
+        When using WebClient it is recommended to use the system keyring to store the API credentials.
         This can be done easily by running the include script using this command:
       </p>
-      <pre style="display: inline;padding: 0;"><code2>python -c "from macrobond_data_api.util import *; save_credential_to_keyring()"</code2></pre>
+      <pre style="display: inline;padding: 0;"><code2>python -c "from macrobond_data_api.util import *; save_credentials_to_keyring()"</code2></pre>
     </div>
 
     <div style="margin-bottom: 3rem;">

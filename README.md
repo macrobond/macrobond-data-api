@@ -88,15 +88,28 @@ Macrobond Data API for Python is available on [PyPI](https://pypi.org/project/ma
 python -m pip install macrobond-data-api
 ```
 
-Macrobond Data API for Python officially supports Python 3.6+.
+Macrobond Data API for Python officially supports Python 3.8+.
 
-## Using of system keyring
+## Using of system keyring for http proxy
 
-When using WebClient it is recommended to use the system keyring.
+For users operating behind an HTTP proxy, it is advisable to utilize the system keyring to store proxy settings and
+credentials.
+This can be conveniently accomplished by executing the included script with the following command:
+
+```console
+python -c "from macrobond_data_api.util import *; save_proxy_to_keyring()"
+```
+
+## Using of system keyring for credentials
+
+> [!NOTE] 
+> If u are using a proxy see "Using of system keyring for http proxy" first.
+
+When using WebClient it is recommended to use the system keyring to store the API credentials.
 This can be done easily by running the include script using this command:
 
 ```console
-python -c "from macrobond_data_api.util import *; save_credential_to_keyring()"
+python -c "from macrobond_data_api.util import *; save_credentials_to_keyring()"
 ```
 
 ### Supported keyrings
