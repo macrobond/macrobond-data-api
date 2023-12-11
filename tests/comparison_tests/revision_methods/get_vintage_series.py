@@ -5,7 +5,7 @@ from pandas.testing import assert_series_equal, assert_frame_equal
 from macrobond_data_api.web import WebApi
 from macrobond_data_api.com import ComApi
 
-test_data = ["ustrad4488", "usgdp", "uscpi"]
+test_data = ["ustrad4488", "usgdp", "uscpi", "uslama1060"]
 
 
 @pytest.mark.parametrize("name", test_data)

@@ -1,5 +1,6 @@
+import time
 from typing import TYPE_CHECKING, Any, Dict, Optional
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 
 try:
     from pywintypes import TimeType
@@ -22,6 +23,17 @@ class _MetadataType:
         super().__init__()
         self.can_have_multiple_values = info.CanHaveMultipleValues
         self.restriction = info.Restriction
+
+
+def _convert_datetime_as_astimezone_utc(dt: datetime) -> datetime:
+    if dt.year > 1970:
+        return datetime(dt.year, dt.month, dt.day, dt.hour, dt.minute, dt.second, dt.microsecond).astimezone(
+            timezone.utc
+        )
+    delta = time.altzone if time.daylight != 0 else time.timezone
+    return datetime(
+        dt.year, dt.month, dt.day, dt.hour, dt.minute, dt.second, dt.microsecond, tzinfo=timezone.utc
+    ) + timedelta(seconds=delta)
 
 
 class _MetadataTypeDirectory:
@@ -67,10 +79,7 @@ class _MetadataTypeDirectory:
 
         # fall back if no type_info
         if isinstance(obj[0], TimeType):
-            obj = [
-                datetime(x.year, x.month, x.day, x.hour, x.minute, x.second, x.microsecond).astimezone(timezone.utc)
-                for x in obj
-            ]
+            obj = [_convert_datetime_as_astimezone_utc(x) for x in obj]
             return obj[0] if len(obj) == 1 else obj
         return obj[0] if len(obj) == 1 else list(obj)
 
@@ -81,10 +90,7 @@ class _MetadataTypeDirectory:
                 dt = obj[0]
                 return datetime(dt.year, dt.month, dt.day, dt.hour, dt.minute, dt.second, dt.microsecond)
             if name in ("LastModifiedTimeStamp"):
-                dt = obj[0]
-                return datetime(dt.year, dt.month, dt.day, dt.hour, dt.minute, dt.second, dt.microsecond).astimezone(
-                    timezone.utc
-                )
+                return _convert_datetime_as_astimezone_utc(obj[0])
             obj = [
                 datetime(x.year, x.month, x.day, x.hour, x.minute, x.second, x.microsecond, timezone.utc) for x in obj
             ]
@@ -104,14 +110,8 @@ class _MetadataTypeDirectory:
                     return [datetime(x.year, x.month, x.day) for x in obj]
                 return datetime(obj[0].year, obj[0].month, obj[0].day)
             if type_info.can_have_multiple_values:
-                return [
-                    datetime(x.year, x.month, x.day, x.hour, x.minute, x.second, x.microsecond).astimezone(timezone.utc)
-                    for x in obj
-                ]
-            dt = obj[0]
-            return datetime(dt.year, dt.month, dt.day, dt.hour, dt.minute, dt.second, dt.microsecond).astimezone(
-                timezone.utc
-            )
+                return [_convert_datetime_as_astimezone_utc(x) for x in obj]
+            return _convert_datetime_as_astimezone_utc(obj[0])
         if type_info.can_have_multiple_values:
             return list(obj)
         return obj[0]
