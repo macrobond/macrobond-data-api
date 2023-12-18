@@ -152,7 +152,6 @@ class ComClient(Client["ComApi"]):
         """
         self.has_closed = True
         if self.__api:
-            self.__api._metadata_type_directory.close()
             self.__api.connection.Close()
             self.__api._connection = None
             self.__api = None

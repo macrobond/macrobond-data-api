@@ -1,6 +1,7 @@
 # pylint: disable=invalid-name, missing-module-docstring
 # mypy: disable_error_code = empty-body
 
+from datetime import datetime
 from typing import Tuple
 
 from .database import Database
@@ -24,4 +25,14 @@ class Connection:
         """
         Free all resources used by the Macrobond API. Opening and closing sessions can be slow,
         so it is usually not a good idea to open and close them for each request
+        """
+
+    def LocalTimeToUtc(self, localTime: datetime) -> datetime:
+        """
+        Convert local time to UTC.
+        """
+
+    def UtcToLocalTime(self, utcTime: datetime) -> datetime:
+        """
+        Convert UTC to local time.
         """

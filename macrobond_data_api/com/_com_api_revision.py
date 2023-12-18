@@ -75,7 +75,12 @@ def get_revision_info(self: "ComApi", *series_names: str, raise_error: bool = No
         if serie.IsError:
             return RevisionInfo(name, serie.ErrorMessage, False, False, None, None, [])
 
-        vintage_time_stamps = _datetime_to_datetime_utc(serie.GetVintageDates())
+        if self._new_convert_local_time_to_utc:
+            vintage_time_stamps = [
+                self._metadata_type_directory._convert_local_time_to_utc(x) for x in serie.GetVintageDates()
+            ]
+        else:
+            vintage_time_stamps = _datetime_to_datetime_utc(serie.GetVintageDates())
 
         time_stamp_of_first_revision = vintage_time_stamps[0] if serie.HasRevisions else None
         time_stamp_of_last_revision = vintage_time_stamps[-1] if serie.HasRevisions else None
@@ -113,6 +118,8 @@ def get_vintage_series(
     include_times_of_change: bool = False,
     raise_error: bool = None,
 ) -> Sequence[VintageSeries]:
+    if self._new_convert_local_time_to_utc:
+        time = self.connection.UtcToLocalTime(time)
     time = _fix_datetime(time)
 
     def to_obj(series_name: str) -> VintageSeries:
@@ -420,7 +427,14 @@ def get_many_series_with_revisions(
         ):
             can_do_incremental_response = False
 
-        vintage_dates = series_with_revisions.GetVintageDates()
+        if self._new_convert_local_time_to_utc:
+            vintage_dates = [
+                self._metadata_type_directory._convert_local_time_to_utc(x)
+                for x in series_with_revisions.GetVintageDates()
+            ]
+        else:
+            vintage_dates = series_with_revisions.GetVintageDates()
+
         complete_history = series_with_revisions.GetCompleteHistory()
 
         if can_do_incremental_response:

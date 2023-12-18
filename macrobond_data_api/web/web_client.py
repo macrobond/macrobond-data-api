@@ -20,9 +20,7 @@ class KeyringException(Exception):
     pass
 
 
-def _get_credentials_from_keyring(  # pylint: disable=too-many-branches
-    service_name: str, username: Optional[str]
-) -> Tuple[str, str]:
+def _get_credentials_from_keyring(service_name: str, username: Optional[str]) -> Tuple[str, str]:
     if username == "":
         raise ValueError('username is set to ""')
 
