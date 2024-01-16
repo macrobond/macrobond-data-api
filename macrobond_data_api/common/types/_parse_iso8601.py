@@ -55,7 +55,7 @@ def _parse_timezone(s: str) -> timezone:
     return timezone(timedelta(hours=hour, minutes=minute) * direction)
 
 
-def _parse_time(s: str, tz: Optional[timezone]) -> time:  # pylint: disable=too-many-branches
+def _parse_time(s: str, tz: Optional[timezone]) -> time:
     if len(s) < 2 or not s[:2].isascii() or not s[:2].isdigit():
         raise FormatException("Hour is missing or malformatted")
     hour = int(s[:2])

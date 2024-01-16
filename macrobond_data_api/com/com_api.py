@@ -50,13 +50,23 @@ __pdoc__ = {
 
 class ComApi(Api):
     _connection: Optional["Connection"]
-    _old_metadata_handling: bool
+
+    _new_metadata_handling: bool
+    """com version > 1.27.7"""
+
+    _new_convert_local_time_to_utc: bool
+    """com version >= 1.28.0"""
 
     def __init__(self, connection: "Connection", com_version: Tuple[int, int, int]) -> None:
         super().__init__()
         self._connection = connection
-        self._old_metadata_handling = com_version != (0, 0, 0) and com_version <= (1, 27, 7)
-        self._metadata_type_directory = _MetadataTypeDirectory(connection, self._old_metadata_handling)
+
+        self._new_metadata_handling = com_version == (0, 0, 0) or com_version > (1, 27, 7)
+        self._new_convert_local_time_to_utc = com_version == (0, 0, 0) or com_version >= (1, 28, 0)
+
+        self._metadata_type_directory = _MetadataTypeDirectory(
+            connection, self._new_metadata_handling, self._new_convert_local_time_to_utc
+        )
 
     @property
     def connection(self) -> "Connection":

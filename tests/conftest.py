@@ -16,6 +16,11 @@ from macrobond_data_api.web.web_client import API_URL_DEFAULT, AUTHORIZATION_URL
 from macrobond_data_api.com import ComClient, ComApi
 
 
+def pytest_sessionstart(session):
+    timezone = datetime.now().astimezone().strftime("%Z %z")
+    print("Running in timezone:", timezone)
+
+
 @fixture(autouse=True, scope="session")
 def _conf_pandas() -> None:
     pandas.set_option("display.max_rows", 500)

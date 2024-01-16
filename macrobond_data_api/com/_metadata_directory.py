@@ -25,29 +25,22 @@ class _MetadataType:
         self.restriction = info.Restriction
 
 
-def _convert_datetime_as_astimezone_utc(dt: datetime) -> datetime:
-    if dt.year > 1970:
-        return datetime(dt.year, dt.month, dt.day, dt.hour, dt.minute, dt.second, dt.microsecond).astimezone(
-            timezone.utc
-        )
-    delta = time.altzone if time.daylight != 0 else time.timezone
-    return datetime(
-        dt.year, dt.month, dt.day, dt.hour, dt.minute, dt.second, dt.microsecond, tzinfo=timezone.utc
-    ) + timedelta(seconds=delta)
-
-
 class _MetadataTypeDirectory:
-    __slots__ = ("connection", "old_metadata_handling")
+    __slots__ = ("connection", "new_metadata_handling", "new_convert_local_time_to_utc")
 
-    connection: Optional["Connection"]
-    old_metadata_handling: bool
+    connection: "Connection"
+    new_metadata_handling: bool
+    new_convert_local_time_to_utc: bool
 
     _type_db: Dict[str, Optional[_MetadataType]] = {}
 
-    def __init__(self, connection: Optional["Connection"], old_metadata_handling: bool) -> None:
+    def __init__(
+        self, connection: "Connection", new_metadata_handling: bool, new_convert_local_time_to_utc: bool
+    ) -> None:
         super().__init__()
         self.connection = connection
-        self.old_metadata_handling = old_metadata_handling
+        self.new_metadata_handling = new_metadata_handling
+        self.new_convert_local_time_to_utc = new_convert_local_time_to_utc
 
     def fill_metadata_from_metadata(
         self, com_metadata: "ComMetadata", add_empty_revision_time_stamp: bool = False
@@ -57,6 +50,21 @@ class _MetadataTypeDirectory:
         if add_empty_revision_time_stamp and "RevisionTimeStamp" not in metadata:
             metadata["RevisionTimeStamp"] = None
         return metadata
+
+    def _convert_local_time_to_utc(self, dt: datetime) -> datetime:
+        if self.new_convert_local_time_to_utc:
+            dt = self.connection.LocalTimeToUtc(dt)
+            return datetime(
+                dt.year, dt.month, dt.day, dt.hour, dt.minute, dt.second, dt.microsecond, tzinfo=timezone.utc
+            )
+        if dt.year > 1970:
+            return datetime(dt.year, dt.month, dt.day, dt.hour, dt.minute, dt.second, dt.microsecond).astimezone(
+                timezone.utc
+            )
+        delta = time.altzone if time.daylight != 0 else time.timezone
+        return datetime(
+            dt.year, dt.month, dt.day, dt.hour, dt.minute, dt.second, dt.microsecond, tzinfo=timezone.utc
+        ) + timedelta(seconds=delta)
 
     def _convert(self, name: str, obj: Any) -> Any:
         type_info = _MetadataTypeDirectory._type_db.get(name)
@@ -71,7 +79,7 @@ class _MetadataTypeDirectory:
                 else:
                     raise ex
 
-        if self.old_metadata_handling:
+        if self.new_metadata_handling is False:
             return self._old_metadata_handling(name, obj, type_info)
 
         if type_info:
@@ -79,7 +87,7 @@ class _MetadataTypeDirectory:
 
         # fall back if no type_info
         if isinstance(obj[0], TimeType):
-            obj = [_convert_datetime_as_astimezone_utc(x) for x in obj]
+            obj = [self._convert_local_time_to_utc(x) for x in obj]
             return obj[0] if len(obj) == 1 else obj
         return obj[0] if len(obj) == 1 else list(obj)
 
@@ -90,7 +98,7 @@ class _MetadataTypeDirectory:
                 dt = obj[0]
                 return datetime(dt.year, dt.month, dt.day, dt.hour, dt.minute, dt.second, dt.microsecond)
             if name in ("LastModifiedTimeStamp"):
-                return _convert_datetime_as_astimezone_utc(obj[0])
+                return self._convert_local_time_to_utc(obj[0])
             obj = [
                 datetime(x.year, x.month, x.day, x.hour, x.minute, x.second, x.microsecond, timezone.utc) for x in obj
             ]
@@ -110,11 +118,8 @@ class _MetadataTypeDirectory:
                     return [datetime(x.year, x.month, x.day) for x in obj]
                 return datetime(obj[0].year, obj[0].month, obj[0].day)
             if type_info.can_have_multiple_values:
-                return [_convert_datetime_as_astimezone_utc(x) for x in obj]
-            return _convert_datetime_as_astimezone_utc(obj[0])
+                return [self._convert_local_time_to_utc(x) for x in obj]
+            return self._convert_local_time_to_utc(obj[0])
         if type_info.can_have_multiple_values:
             return list(obj)
         return obj[0]
-
-    def close(self) -> None:
-        self.connection = None
