@@ -131,11 +131,9 @@ class UnifiedSeriesList(Sequence[UnifiedSeries]):
             {
                 **{"date": self.dates},
                 **{
-                    "Error: " + kv.error_message
-                    if kv.is_error
-                    else kv.name: [None] * len(self.dates)  # type: ignore
-                    if kv.is_error
-                    else kv.values
+                    "Error: " + kv.error_message if kv.is_error else kv.name: (
+                        [None] * len(self.dates) if kv.is_error else kv.values  # type: ignore
+                    )
                     for kv in self
                 },
             }

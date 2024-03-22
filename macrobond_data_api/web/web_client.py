@@ -1,19 +1,14 @@
-from typing import Optional, List, Tuple
+from typing import Optional, List, Tuple, Type
 import json
 import sys
 import keyring
 
 from macrobond_data_api.common import Client
 
-from .session import Session as _Session, API_URL_DEFAULT, AUTHORIZATION_URL_DEFAULT
+from .session import Session as _Session
 from .scope import Scope
 from .web_api import WebApi
-
-DEFAULT_SERVICE_NAME = AUTHORIZATION_URL_DEFAULT
-DARWIN_USERNAME = "Macrobond"
-
-DEFAULT_PROXY_SERVICE_NAME = "MacrobondApiHttpProxy"
-PROXY_USERNAME = "MacrobondApiHttpProxy"
+from .configuration import Configuration
 
 
 class KeyringException(Exception):
@@ -27,7 +22,7 @@ def _get_credentials_from_keyring(service_name: str, username: Optional[str]) ->
     keyring_name = keyring.get_keyring().name
 
     if sys.platform.startswith("darwin"):
-        credentials = keyring.get_credential(service_name, DARWIN_USERNAME)
+        credentials = keyring.get_credential(service_name, Configuration._darwin_username)
         if not credentials:
             raise KeyringException(f"Can not find the key in keyring {keyring_name}")
 
@@ -66,9 +61,10 @@ def _get_credentials_from_keyring(service_name: str, username: Optional[str]) ->
     return username, password
 
 
+# Not in use in this file
 def _has_credentials_in_keyring(service_name: Optional[str] = None) -> bool:
     if not service_name:
-        service_name = DEFAULT_SERVICE_NAME
+        service_name = Configuration._default_service_name
     try:
         _get_credentials_from_keyring(service_name, None)
         return True
@@ -77,14 +73,13 @@ def _has_credentials_in_keyring(service_name: Optional[str] = None) -> bool:
 
 
 def _try_get_proxy_from_keyring() -> Optional[str]:
-    credentials = keyring.get_credential(DEFAULT_PROXY_SERVICE_NAME, PROXY_USERNAME)
+    if isinstance(keyring.get_keyring(), keyring.backends.fail.Keyring):
+        return None
+
+    credentials = keyring.get_credential(Configuration._proxy_service_name, Configuration._proxy_username)
     if not credentials or credentials.password == "":
         return None
     return credentials.password
-
-
-def _has_proxy_in_keyring() -> bool:
-    return _try_get_proxy_from_keyring() is not None
 
 
 class WebClient(Client["WebApi"]):
@@ -119,6 +114,10 @@ class WebClient(Client["WebApi"]):
         For a HTTP Proxy use `http://10.10.1.10:1080` or `http://user:pass@10.10.1.10:1080`
         For a Socks5 Proxy use `socks5://user:pass@host:port`
 
+    token_endpoint : str, optional
+        The URL of the token_endpoint.
+        If not specified, the token_endpoint will not discovered from the authorization_url.
+
     Returns
     -------
     WebClient
@@ -137,17 +136,23 @@ class WebClient(Client["WebApi"]):
     ```
     """
 
+    configuration: Type[Configuration] = Configuration
+
     def __init__(
         self,
         username: str = None,
         password: str = None,
         scopes: List[Scope] = None,
-        api_url: str = API_URL_DEFAULT,
-        authorization_url: str = AUTHORIZATION_URL_DEFAULT,
-        service_name: str = DEFAULT_SERVICE_NAME,
+        api_url: str = None,
+        authorization_url: str = None,
+        service_name: str = None,
         proxy: str = None,
+        token_endpoint: str = None,
     ) -> None:
         super().__init__()
+
+        if service_name is None:
+            service_name = Configuration._default_service_name
 
         if password is None:
             credentials = _get_credentials_from_keyring(service_name, username)
@@ -166,7 +171,13 @@ class WebClient(Client["WebApi"]):
         self.has_closed = False
         self.__api: Optional["WebApi"] = None
         self.__session = _Session(
-            username, password, *scopes, api_url=api_url, authorization_url=authorization_url, proxy=proxy
+            username,
+            password,
+            *scopes,
+            api_url=api_url,
+            authorization_url=authorization_url,
+            proxy=proxy,
+            token_endpoint=token_endpoint,
         )
 
     @property

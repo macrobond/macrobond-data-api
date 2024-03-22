@@ -28,12 +28,15 @@ class SubscriptionList:
     ```
     """
 
-    def __init__(self, session: Session, last_modified: datetime, poll_interval: timedelta = timedelta(seconds=15)):
+    def __init__(self, session: Session, last_modified: datetime, poll_interval: timedelta = None):
         self._session = session
         self.last_modified = last_modified - timedelta(seconds=5)
         """
         Stores the date for when the subscription list was last modified.
         """
+
+        if poll_interval is None:
+            poll_interval = timedelta(seconds=15)
 
         self.poll_interval = poll_interval
         """

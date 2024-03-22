@@ -5,7 +5,7 @@ import keyring
 
 from requests import get
 
-from macrobond_data_api.web.web_client import PROXY_USERNAME, DEFAULT_PROXY_SERVICE_NAME
+from macrobond_data_api.web.configuration import Configuration
 
 from .save_credentials_to_keyring import _remove_duplicates, _test_keyring_backend
 from .transfer_performance_test import _get_url
@@ -47,8 +47,8 @@ def save_proxy_to_keyring(warn_before_removing: bool = True, test_proxy: bool = 
     # pylint: enable=line-too-long
     # fmt: on
 
-    service_name = DEFAULT_PROXY_SERVICE_NAME
-    username = PROXY_USERNAME
+    service_name = Configuration._proxy_service_name
+    username = Configuration._proxy_username
 
     if not _test_keyring_backend():
         return False
