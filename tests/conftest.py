@@ -42,8 +42,8 @@ def _web_client_fixture() -> Generator[WebClient, None, None]:
         with open(conf_path, "r", encoding="utf-8") as f:
             conf: dict = {}
             exec(f.read(), conf)  # pylint: disable=exec-used
-            api_url = conf.get("api_url", Session._default_api_url)
-            authorization_url = conf.get("authorization_url", Session._default_authorization_url)
+            api_url = conf.get("api_url", Session.configuration._default_api_url)
+            authorization_url = conf.get("authorization_url", Session.configuration._default_authorization_url)
             yield WebClient(api_url=api_url, authorization_url=authorization_url)
             return
 
