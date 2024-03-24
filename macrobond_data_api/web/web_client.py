@@ -114,10 +114,6 @@ class WebClient(Client["WebApi"]):
         For a HTTP Proxy use `http://10.10.1.10:1080` or `http://user:pass@10.10.1.10:1080`
         For a Socks5 Proxy use `socks5://user:pass@host:port`
 
-    token_endpoint : str, optional
-        The URL of the token_endpoint.
-        If not specified, the token_endpoint will not discovered from the authorization_url.
-
     Returns
     -------
     WebClient
@@ -147,7 +143,6 @@ class WebClient(Client["WebApi"]):
         authorization_url: str = None,
         service_name: str = None,
         proxy: str = None,
-        token_endpoint: str = None,
     ) -> None:
         super().__init__()
 
@@ -177,7 +172,6 @@ class WebClient(Client["WebApi"]):
             api_url=api_url,
             authorization_url=authorization_url,
             proxy=proxy,
-            token_endpoint=token_endpoint,
         )
 
     @property

@@ -1,4 +1,4 @@
-from typing import Optional, Type
+from typing import Type
 
 
 __pdoc__ = {
@@ -20,7 +20,6 @@ class Configuration:
     # Session
     _default_api_url = "https://api.macrobondfinancial.com/"
     _default_authorization_url = "https://apiauth.macrobondfinancial.com/mbauth/"
-    _default_token_endpoint: Optional[str] = None
 
     @classmethod
     def set_default_api_url(cls, val: str) -> Type["Configuration"]:
@@ -36,14 +35,6 @@ class Configuration:
         .. Warning:: This is only recommended for advanced users.
         """
         cls._default_authorization_url = val
-        return cls
-
-    @classmethod
-    def set_default_token_endpoint(cls, val: Optional[str]) -> Type["Configuration"]:
-        """_summary_
-        .. Warning:: This is only recommended for advanced users.
-        """
-        cls._default_token_endpoint = val
         return cls
 
     @classmethod

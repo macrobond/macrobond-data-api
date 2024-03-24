@@ -97,7 +97,6 @@ class Session:
         authorization_url: str = None,
         proxy: str = None,
         test_auth2_session: Any = None,
-        token_endpoint: str = None,
     ) -> None:
         if api_url is None:
             api_url = Configuration._default_api_url
@@ -111,18 +110,13 @@ class Session:
                 raise _socks_import_error
             self.__proxies = {"https": proxy, "http": proxy}
 
-        if token_endpoint is None:
-            token_endpoint = Configuration._default_token_endpoint
-        self.__token_endpoint = token_endpoint
+        self.__token_endpoint: Optional[str] = None
 
         if not self._is_https_url(authorization_url):
             raise ValueError("authorization_url is not https")
 
         if not self._is_https_url(api_url):
             raise ValueError("api_url is not https")
-
-        if token_endpoint is not None and not self._is_https_url(token_endpoint):
-            raise ValueError("token_endpoint is not https")
 
         if not authorization_url.endswith("/"):
             authorization_url = authorization_url + "/"
