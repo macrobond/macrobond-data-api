@@ -64,8 +64,7 @@ class WorkItem:
         await self.run()
         print(self.name + " " + self.symbole, end=" | ", flush=True)
 
-    async def run(self) -> None:
-        ...
+    async def run(self) -> None: ...
 
     def print(self, object_: object) -> None:
         if self.in_sequence:

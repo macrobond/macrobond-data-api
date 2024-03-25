@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 from typing import TYPE_CHECKING, Any, List, Optional, Callable, Tuple
 
 import ijson
@@ -263,11 +263,11 @@ def entity_search_multi_filter_long(
     return SearchResultLong([x["Name"] for x in response["results"]], response.get("isTruncated") is True)
 
 
-def subscription_list(self: "WebApi", last_modified: datetime) -> SubscriptionList:
+def subscription_list(self: "WebApi", last_modified: datetime, poll_interval: timedelta = None) -> SubscriptionList:
     """
     Retrieves the subscription list with the specified date since last update.
     """
     if not self._session._is_open:
         raise ValueError("WebApi is not open")
 
-    return SubscriptionList(self._session, last_modified)
+    return SubscriptionList(self._session, last_modified, poll_interval)

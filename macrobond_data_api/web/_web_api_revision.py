@@ -253,9 +253,9 @@ def _create_web_revision_h_request(requests: Sequence[RevisionHistoryRequest]) -
             "name": x.name,
             "ifModifiedSince": x.if_modified_since.isoformat() if x.if_modified_since else None,
             "lastRevision": x.last_revision.isoformat().replace("+00:00", "Z") if x.last_revision else None,
-            "lastRevisionAdjustment": x.last_revision_adjustment.isoformat().replace("+00:00", "Z")
-            if x.last_revision_adjustment
-            else None,
+            "lastRevisionAdjustment": (
+                x.last_revision_adjustment.isoformat().replace("+00:00", "Z") if x.last_revision_adjustment else None
+            ),
         }
         for x in requests
     ]

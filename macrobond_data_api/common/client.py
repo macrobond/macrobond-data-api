@@ -27,16 +27,13 @@ class Client(ABC, Generic[TypeVarApi]):
 
     @property
     @abstractmethod
-    def is_open(self) -> bool:
-        ...  # pragma: no cover
+    def is_open(self) -> bool: ...  # pragma: no cover
 
     @abstractmethod
-    def open(self) -> TypeVarApi:
-        ...  # pragma: no cover
+    def open(self) -> TypeVarApi: ...  # pragma: no cover
 
     @abstractmethod
-    def close(self) -> None:
-        ...  # pragma: no cover
+    def close(self) -> None: ...  # pragma: no cover
 
     def __repr__(self) -> str:
         return f"{self.__class__.__name__} is_open: {self.is_open}"

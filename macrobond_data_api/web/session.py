@@ -1,4 +1,4 @@
-from typing import Callable, Dict, Optional, Any, TYPE_CHECKING, Sequence, cast
+from typing import Callable, Dict, Optional, Any, TYPE_CHECKING, Sequence, Type, cast
 
 from authlib.integrations.requests_client import OAuth2Session
 from authlib.integrations.base_client.errors import InvalidTokenError
@@ -17,15 +17,13 @@ from .web_types import (
 from .scope import Scope
 from ._metadata_directory import _MetadataTypeDirectory
 from ._metadata import _Metadata
+from .configuration import Configuration
 
 _socks_import_error: Optional[ImportError] = None
 try:
     import socks as _
 except ImportError as ex:
     _socks_import_error = ex
-
-API_URL_DEFAULT = "https://api.macrobondfinancial.com/"
-AUTHORIZATION_URL_DEFAULT = "https://apiauth.macrobondfinancial.com/mbauth/"
 
 if TYPE_CHECKING:  # pragma: no cover
     from requests import Response
@@ -46,6 +44,9 @@ class _ResponseAsFileObject:
 
 
 class Session:
+
+    configuration: Type[Configuration] = Configuration
+
     @property
     def metadata(self) -> MetadataMethods:
         """Metadata operations"""
@@ -92,11 +93,17 @@ class Session:
         username: str,
         password: str,
         *scopes: Scope,
-        api_url: str = API_URL_DEFAULT,
-        authorization_url: str = API_URL_DEFAULT,
+        api_url: str = None,
+        authorization_url: str = None,
         proxy: str = None,
-        test_auth2_session: Any = None
+        test_auth2_session: Any = None,
     ) -> None:
+        if api_url is None:
+            api_url = Configuration._default_api_url
+
+        if authorization_url is None:
+            authorization_url = Configuration._default_authorization_url
+
         self.__proxies: Optional[Dict[str, str]] = None
         if proxy:
             if proxy.lower().startswith("socks5://") and _socks_import_error:
@@ -150,6 +157,7 @@ class Session:
 
         if self.token_endpoint is None:
             self.__token_endpoint = self.discovery(self.authorization_url)
+
         self.auth2_session.fetch_token(self.token_endpoint, proxies=self.__proxies)
 
     def get(self, url: str, params: dict = None, stream: bool = False) -> "Response":

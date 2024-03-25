@@ -7,7 +7,8 @@ from getpass import getpass
 import keyring
 from keyring.backends.fail import Keyring as fail_keyring_backend
 from keyring.backends.null import Keyring as null_keyring_backend
-from macrobond_data_api.web.web_client import DEFAULT_SERVICE_NAME, DARWIN_USERNAME, WebClient
+from macrobond_data_api.web.configuration import Configuration
+from macrobond_data_api.web.web_client import WebClient
 
 
 def _inquiry(question: str, default: str = "yes") -> bool:
@@ -122,16 +123,16 @@ def save_credentials_to_keyring(warn_before_removing: bool = True, ask_for_servi
     service_name = (
         input(
             "Please enter the service name or just pressure 'enter' to use the default one ("
-            + DEFAULT_SERVICE_NAME
+            + Configuration._default_service_name
             + "): "
         )
         if ask_for_service_name
         else ""
     )
     if service_name == "":
-        service_name = DEFAULT_SERVICE_NAME
+        service_name = Configuration._default_service_name
 
-    if not _remove_duplicates(service_name, DARWIN_USERNAME if is_darwin else "", warn_before_removing):
+    if not _remove_duplicates(service_name, Configuration._darwin_username if is_darwin else "", warn_before_removing):
         return False
 
     username = input("Please enter Macrobond Web Api username: ")
@@ -147,7 +148,9 @@ def save_credentials_to_keyring(warn_before_removing: bool = True, ask_for_servi
         return False
 
     if is_darwin:
-        keyring.set_password(service_name, DARWIN_USERNAME, json.dumps({"username": username, "password": password}))
+        keyring.set_password(
+            service_name, Configuration._darwin_username, json.dumps({"username": username, "password": password})
+        )
     else:
         keyring.set_password(service_name, username, password)
 
