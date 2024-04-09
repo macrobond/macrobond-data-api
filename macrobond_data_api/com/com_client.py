@@ -23,7 +23,7 @@ if sys.platform == "win32":
     except ImportError as ex:
         _pywintypes_import_error = ex
 
-    import winreg
+    import winreg  # pylint: disable = E0401
 else:
     _client: Any = None
     com_error: Any = None

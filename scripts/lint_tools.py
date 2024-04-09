@@ -10,7 +10,12 @@ class Mypy(WorkItem):
     # TODO: @mb-jp use --strict for mypy
     async def run(self) -> None:
         await self.python_run(
-            "mypy", ". --show-error-codes --exclude .env --exclude test.py --exclude build --python-version 3.8"
+            "mypy",
+            ". --show-error-codes --exclude .env --exclude test.py --exclude build --python-version 3.8 --platform win32",
+        )
+        await self.python_run(
+            "mypy",
+            ". --show-error-codes --exclude .env --exclude test.py --exclude build --python-version 3.8 --platform linux",
         )
 
 

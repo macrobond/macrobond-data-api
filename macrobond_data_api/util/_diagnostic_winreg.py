@@ -4,7 +4,7 @@ from dataclasses import dataclass
 from typing import List, Any, Optional, Literal
 
 if sys.platform == "win32":
-    import winreg
+    import winreg  # pylint: disable=E0401
 else:
     winreg: Any = None
 
@@ -114,7 +114,7 @@ class _KeyData:
                     n, v, t = winreg.EnumValue(hkey, i)
                     ret.append(_KeyData(key_type_name, sub_key, n, t, v))
                     i += 1
-            except WindowsError:  # type: ignore
+            except OSError:
                 pass
 
             i = 0
