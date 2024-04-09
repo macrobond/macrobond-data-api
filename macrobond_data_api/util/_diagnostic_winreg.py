@@ -1,19 +1,16 @@
 import os
+import sys
 from dataclasses import dataclass
 from typing import List, Any, Optional, Literal
 
-winreg_import_error: Optional[ImportError] = None
-try:
-    # winreg is not available on linux so mypy will fail on build server as it is runiong on linux
-    import winreg  # type: ignore
-except ImportError as _e:
-    winreg_import_error = _e
+if sys.platform == "win32":
+    import winreg
+else:
+    winreg: Any = None
 
 
 # Not in use in this file
 def _test_regedit_assembly() -> None:
-    if winreg_import_error is not None:
-        raise winreg_import_error
     sub_key = "CLSID\\{F22A9A5C-E6F2-4FA8-8D1B-E928AB5DDF9B}\\InprocServer32"
     try:
         with winreg.OpenKey(winreg.HKEY_CLASSES_ROOT, sub_key, 0, winreg.KEY_READ) as regkey:
@@ -31,8 +28,6 @@ def _test_regedit_assembly() -> None:
 
 # Not in use in this file
 def _test_regedit_username() -> None:
-    if winreg_import_error is not None:
-        raise winreg_import_error
     sub_key = "Software\\Macrobond Financial\\Communication\\Connector"
     try:
         with winreg.OpenKey(winreg.HKEY_CURRENT_USER, sub_key) as regkey:
@@ -80,10 +75,6 @@ class _KeyData:
 
     @staticmethod
     def get_key_type_name(key_type: int) -> str:
-
-        if winreg_import_error is not None:
-            raise winreg_import_error
-
         if key_type == winreg.HKEY_CLASSES_ROOT:
             return "HKEY_CLASSES_ROOT"
         if key_type == winreg.HKEY_CURRENT_USER:
@@ -109,8 +100,6 @@ class _KeyData:
     def list_kyes(
         cls, key_type: int, sub_key: str, ret: List["_KeyData"] = None, key_type_name: str = None
     ) -> List["_KeyData"]:
-        if winreg_import_error is not None:
-            raise winreg_import_error
         if ret is None:
             ret = []
         if key_type_name is None:
@@ -125,7 +114,7 @@ class _KeyData:
                     n, v, t = winreg.EnumValue(hkey, i)
                     ret.append(_KeyData(key_type_name, sub_key, n, t, v))
                     i += 1
-            except WindowsError:
+            except WindowsError:  # type: ignore
                 pass
 
             i = 0
@@ -199,9 +188,6 @@ class _TestWinregContext:
         self.verify_kyes(winreg.HKEY_CURRENT_USER, sub_key, expected_list)
 
     def verify_kyes(self, key_type: int, sub_key: str, expected_list: List["_KeyData"]) -> None:
-        if winreg_import_error is not None:
-            raise winreg_import_error
-
         print("\n-- Verifying --", _KeyData.get_key_type_name(key_type) + "\\" + sub_key, "--")
 
         actual_list = _KeyData.list_kyes(key_type, sub_key)
@@ -224,17 +210,6 @@ class _TestWinregContext:
 
 
 def _test_winreg() -> None:
-
-    # keys under test:
-    # Computer\HKEY_CLASSES_ROOT\macrobond
-    # Computer\HKEY_CLASSES_ROOT\Macrobond.Connection
-    # Computer\HKEY_CLASSES_ROOT\WOW6432Node\CLSID\{F22A9A5C-E6F2-4FA8-8D1B-E928AB5DDF9B}
-    # Computer\HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Macrobond.Connection
-    # Computer\HKEY_LOCAL_MACHINE\SOFTWARE\Classes\CLSID\{F22A9A5C-E6F2-4FA8-8D1B-E928AB5DDF9B}
-    # Computer\HKEY_LOCAL_MACHINE\SOFTWARE\Classes\WOW6432Node\CLSID\{F22A9A5C-E6F2-4FA8-8D1B-E928AB5DDF9B}
-    # Computer\HKEY_LOCAL_MACHINE\SOFTWARE\WOW6432Node\Classes\CLSID\{F22A9A5C-E6F2-4FA8-8D1B-E928AB5DDF9B}
-    # Computer\HKEY_CURRENT_USER\Software\Macrobond Financial
-    # Computer\HKEY_CURRENT_USER\Software\Macrobond Financial\Communication
 
     context = _TestWinregContext()
 
