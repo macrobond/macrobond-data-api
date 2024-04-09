@@ -1,6 +1,6 @@
 import sys
 
-from typing import TYPE_CHECKING, List, Optional, Tuple, cast
+from typing import TYPE_CHECKING, List, Optional, Tuple, cast, Any
 
 from macrobond_data_api.common import Client
 
@@ -10,29 +10,31 @@ if TYPE_CHECKING:  # pragma: no cover
     from .com_types import Connection
 
 _win32com_import_error: Optional[ImportError] = None
-try:
-    from win32com import client as _client
-except ImportError as ex:
-    _win32com_import_error = ex
-
 _pywintypes_import_error: Optional[ImportError] = None
-try:
-    from pywintypes import com_error
-except ImportError as ex:
-    _pywintypes_import_error = ex
 
-try:
-    # winreg is not available on linux so mypy will fail on build server as it is runiong on linux
-    from winreg import OpenKey, QueryValueEx, HKEY_CLASSES_ROOT, HKEY_CURRENT_USER  # type: ignore
-except ImportError:
-    pass
+if sys.platform == "win32":
+    try:
+        from win32com import client as _client
+    except ImportError as ex:
+        _win32com_import_error = ex
+
+    try:
+        from pywintypes import com_error
+    except ImportError as ex:
+        _pywintypes_import_error = ex
+
+    import winreg  # pylint: disable = E0401
+else:
+    _client: Any = None
+    com_error: Any = None
+    winreg: Any = None
 
 
 def _test_regedit_assembly() -> Optional[str]:
     sub_key = "CLSID\\{F22A9A5C-E6F2-4FA8-8D1B-E928AB5DDF9B}\\InprocServer32"
     try:
-        with OpenKey(HKEY_CLASSES_ROOT, sub_key) as regkey:
-            QueryValueEx(regkey, "Assembly")
+        with winreg.OpenKey(winreg.HKEY_CLASSES_ROOT, sub_key) as regkey:
+            winreg.QueryValueEx(regkey, "Assembly")
     except OSError:
         return (
             "The Macrobond application is probably not installed.\n"
@@ -46,8 +48,8 @@ def _test_regedit_assembly() -> Optional[str]:
 def _test_regedit_username() -> Optional[str]:
     sub_key = "Software\\Macrobond Financial\\Communication\\Connector"
     try:
-        with OpenKey(HKEY_CURRENT_USER, sub_key) as regkey:
-            QueryValueEx(regkey, "UserName")
+        with winreg.OpenKey(winreg.HKEY_CURRENT_USER, sub_key) as regkey:
+            winreg.QueryValueEx(regkey, "UserName")
     except OSError:
         return (
             "The Macrobond application does not seem to be logged in. Please start the application and verify that "

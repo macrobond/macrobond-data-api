@@ -8,6 +8,8 @@ from datetime import timedelta
 
 import requests
 
+from macrobond_data_api.util._common import SaveOutputToFile
+
 
 def _format_speed_kB_sec(kB: float) -> str:
     return _format_kB(kB) + "/s"
@@ -206,17 +208,36 @@ def _integrity_test(sizes_kB: Sequence[int], times: int, indicator: bool) -> Non
 
 
 def transfer_performance_test(sizes_kB: Optional[Sequence[int]] = None, times: int = 4, indicator: bool = True) -> None:
-    # Run speed and integrity test.
-    # The integrity test verifies that data is transferred correctly.
-    print("- transfer performance test beginning -\n")
+    # fmt: off
+    # pylint: disable=line-too-long
+    """
+    Testing connection the Macrobond Web Api.
 
-    print("- Running speed test -")
-    _speed_test()
+    Parameters
+    ----------
+    sizes_kB : Sequence[int], Optional
+        Optional bool whether the method should ask before removing keys, default to `[10, 100, 1024, 10240]`.
 
-    print("- Running integrity test -")
-    _integrity_test(sizes_kB if sizes_kB else [10, 100, 1024, 10 * 1024], times, indicator)
+    times : int, Optional
+        Optional bool whether the method should ask for a service name to use, default to `4`.
 
-    print("- transfer performance test end -")
+    indicator: bool, Optional
+        Optional default to `True`.
+    """
+    # pylint: enable=line-too-long
+    # fmt: on
+    with SaveOutputToFile("transfer_performance_test"):
+        # Run speed and integrity test.
+        # The integrity test verifies that data is transferred correctly.
+        print("- transfer performance test beginning -\n")
+
+        print("- Running speed test -")
+        _speed_test()
+
+        print("- Running integrity test -")
+        _integrity_test(sizes_kB if sizes_kB else [10, 100, 1024, 10 * 1024], times, indicator)
+
+        print("- transfer performance test end -")
 
 
 if __name__ == "__main__":

@@ -1,69 +1,85 @@
+#!/usr/bin/env python3
+from dataclasses import dataclass
 import importlib.metadata
 import os
 import platform
+import sys
+from typing import Optional, List
 
-try:
-    # winreg is not available on linux so mypy will fail on build server as it is runiong on linux
-    from winreg import OpenKey, QueryValueEx, HKEY_CLASSES_ROOT, HKEY_CURRENT_USER  # type: ignore
-except ImportError:
-    pass
+from macrobond_data_api.util._diagnostic_winreg import _test_regedit_assembly, _test_regedit_username, _test_winreg
+from macrobond_data_api.util._common import SaveOutputToFile
 
 
-def _test_regedit_assembly() -> None:
-    sub_key = "CLSID\\{F22A9A5C-E6F2-4FA8-8D1B-E928AB5DDF9B}\\InprocServer32"
+@dataclass
+class _PackagesInfo:
+    exception: Optional[Exception]
+    requirement: str
+    name: str
+    verison: str
+
+
+# This code is a sin against all people on earth, cooder jesus forgive me.
+def _list_packages() -> None:
     try:
-        with OpenKey(HKEY_CLASSES_ROOT, sub_key) as regkey:
-            QueryValueEx(regkey, "Assembly")
-        print("HKEY_CLASSES_ROOT", sub_key, "is ok")
-    except OSError as e:
-        print(
-            "The Macrobond application is probably not installed.\n"
-            + '(Could not find the registry key "HKEY_CLASSES_ROOT\\'
-            + sub_key
-            + '\\Assembly")\n',
-            e,
-        )
-
-
-def _test_regedit_username() -> None:
-    sub_key = "Software\\Macrobond Financial\\Communication\\Connector"
-    try:
-        with OpenKey(HKEY_CURRENT_USER, sub_key) as regkey:
-            QueryValueEx(regkey, "UserName")
-        print("HKEY_CURRENT_USER", sub_key, "is ok")
-    except OSError as e:
-        print(
-            "The Macrobond application does not seem to be logged in. Please start the application and verify that "
-            + "it works properly.\n"
-            + '(Could not find the registry key "HKEY_CURRENT_USER\\'
-            + sub_key
-            + '\\UserName")\n',
-            e,
-        )
-
-
-def print_system_information() -> None:
-
-    print("-- system_information --")
-
-    print("Platform information:", platform.platform())
-    print("Python compiler:", platform.python_compiler())
-    print("Python implementation:", platform.python_implementation())
-    print("Python version:", platform.python_version())
-    print("Python architecture:", platform.architecture())
-
-    try:
+        packages_list: List[_PackagesInfo] = []
         requirements = importlib.metadata.requires("macrobond-data-api")
         if requirements is None:
             raise Exception("No requirements found for macrobond-data-api")
+
+        new_model = any(x for x in requirements if x.startswith("keyring "))
+
         for r in requirements:
             try:
-                print(r, "installed", importlib.metadata.version(r.split(" ")[0]))
+                if new_model:
+                    n = r.split(" ")[0]
+                else:
+                    n = r.split("==")[0]
+                    if len(n) > len(r.split(">=")[0]):
+                        n = r.split(">=")[0]
+
+                    if len(n) > len(r.split(";")[0]):
+                        n = r.split(";")[0]
+
+                if n.endswith("]"):
+                    continue
+
+                packages_list.append(_PackagesInfo(None, r, n, importlib.metadata.version(n)))
             except Exception as e:  # pylint: disable=broad-exception-caught
-                print("can't get versions", e)
+                packages_list.append(_PackagesInfo(e, r, "", ""))
+
+        pad = max(len(f"{p.name} == {p.verison}") for p in packages_list)
+
+        for p in packages_list:
+            if p.exception is None:
+                print("installed:", f"{p.name} == {p.verison}".ljust(pad), "requirement:", p.requirement)
+
+        for p in packages_list:
+            if p.exception is not None:
+                print(f"Can't get {p.requirement} version", p.exception)
+
     except Exception as e:  # pylint: disable=broad-exception-caught
         print("can't get macrobond-data-api depdensys versions", e)
 
+
+def _print_system_information() -> None:
+
+    print("\n-- System information --\n")
+
+    print("platform.platform():", platform.platform())
+    print("sys.platform:", sys.platform)
+    print("sys.executable:", sys.executable)
+    print("platform.python_compiler():", platform.python_compiler())
+    print("platform.python_implementation():", platform.python_implementation())
+    print("platform.python_version():", platform.python_version())
+    print("platform.architecture():", platform.architecture())
+
+    print("\n-- Python packages info --\n")
+    try:
+        _list_packages()
+    except Exception as e:  # pylint: disable=broad-exception-caught
+        print("can't get macrobond-data-api depdensys versions", e)
+
+    print("\n-- macrobond-data-api version --\n")
     try:
         import macrobond_data_api.__version__ as apiInfo  # pylint: disable=import-outside-toplevel
 
@@ -71,6 +87,7 @@ def print_system_information() -> None:
     except Exception as e:  # pylint: disable=broad-exception-caught
         print("can't get macrobond-data-api version", e)
 
+    print("\n-- keyring info --\n")
     try:
         import keyring  # pylint: disable=import-outside-toplevel
 
@@ -79,11 +96,18 @@ def print_system_information() -> None:
         print("can't get keyring.get_keyring().name", e)
 
     if os.name == "nt":
-        print("-- running on windows --")
+
+        print("\n-- Windows tests --")
+
+        print("\n-- Test regedit assembly --\n")
 
         _test_regedit_assembly()
 
+        print("\n-- Test regedit username --\n")
+
         _test_regedit_username()
+
+        print("\n-- Test ComClient.connection.Version --\n")
 
         try:
             from macrobond_data_api.com import ComClient  # pylint: disable=import-outside-toplevel
@@ -92,6 +116,22 @@ def print_system_information() -> None:
                 print("Com version:", api.connection.Version)
         except Exception as e:  # pylint: disable=broad-exception-caught
             print("can't get Com version", e)
+
+        print("\n-- Test regedit --\n")
+
+        _test_winreg()
+
+
+def print_system_information() -> None:
+    # fmt: off
+    # pylint: disable=line-too-long
+    """
+    Tests and prints system info, for troubleshooting.
+    """
+    # pylint: enable=line-too-long
+    # fmt: on
+    with SaveOutputToFile("system_information"):
+        _print_system_information()
 
 
 if __name__ == "__main__":

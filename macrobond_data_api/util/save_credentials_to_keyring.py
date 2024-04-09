@@ -10,24 +10,7 @@ from keyring.backends.null import Keyring as null_keyring_backend
 from macrobond_data_api.web.configuration import Configuration
 from macrobond_data_api.web.web_client import WebClient
 
-
-def _inquiry(question: str, default: str = "yes") -> bool:
-    valid = {"yes": True, "y": True, "no": False, "n": False}
-    if default is None:
-        prompt = " [y/n] "
-    elif default == "yes":
-        prompt = " [Y/n] "
-    elif default == "no":
-        prompt = " [y/N] "
-
-    while True:
-        sys.stdout.write(question + prompt)
-        choice = input().lower()
-        if default is not None and choice == "":
-            return valid[default]
-        if choice in valid:
-            return valid[choice]
-        sys.stdout.write("Please respond with 'yes' or 'no' (or 'y' or 'n').\n")
+from macrobond_data_api.util._common import _inquiry
 
 
 def _remove_duplicates(service_name: str, username: str, warn_before_removing: bool) -> bool:

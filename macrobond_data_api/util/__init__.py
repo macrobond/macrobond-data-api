@@ -7,3 +7,5 @@ from .save_credentials_to_keyring import save_credentials_to_keyring
 from .transfer_performance_test import transfer_performance_test
 
 from .save_proxy_to_keyring import save_proxy_to_keyring
+
+from .diagnostic import print_system_information
