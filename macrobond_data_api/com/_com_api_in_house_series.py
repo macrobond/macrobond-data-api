@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import TYPE_CHECKING, Optional, Sequence, Union, Any
+from typing import TYPE_CHECKING, Dict, Optional, Sequence, Union, Any
 
 from macrobond_data_api.common.enums import SeriesWeekdays, SeriesFrequency
 
@@ -7,7 +7,7 @@ if TYPE_CHECKING:  # pragma: no cover
     from .com_api import ComApi
 
 
-def _set_metadata(metadata: dict, name: str, val: Any) -> None:
+def _set_metadata(metadata: Dict[str, Any], name: str, val: Any) -> None:
     if name in metadata and metadata[name] != val:
         raise ValueError(f"{name} in metadata does not match {name}")
 
@@ -22,7 +22,7 @@ def upload_series(
     values: Sequence[Optional[float]],
     start_date_or_dates: Union[datetime, Sequence[datetime]],
     dayMask: SeriesWeekdays = SeriesWeekdays.MONDAY_TO_FRIDAY,
-    metadata: Optional[dict] = None,
+    metadata: Optional[Dict[str, Any]] = None,
     forecast_flags: Optional[Sequence[bool]] = None,
 ) -> None:
     if isinstance(start_date_or_dates, datetime):

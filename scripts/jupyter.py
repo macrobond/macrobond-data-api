@@ -17,11 +17,11 @@ def scrub_directory(directory_path: str) -> Generator[str, None, None]:
         if cells is None:
             continue
         for cell in cells:
-            execution_count: Optional[List[dict]] = cell.get("execution_count")
+            execution_count: Optional[List[Dict[str, Any]]] = cell.get("execution_count")
             if execution_count and execution_count != 0:
                 cell["execution_count"] = 0
                 hade_output = True
-            outputs: Optional[List[dict]] = cell.get("outputs")
+            outputs: Optional[List[Dict[str, Any]]] = cell.get("outputs")
             if not outputs or len(outputs) == 0:
                 continue
             hade_output = True
@@ -42,11 +42,11 @@ def verify_directory(directory_path: str) -> Generator[Tuple[str, str], None, No
         if cells is None:
             continue
         for cell in cells:
-            execution_count: Optional[List[dict]] = cell.get("execution_count")
+            execution_count: Optional[List[Dict[str, Any]]] = cell.get("execution_count")
             if execution_count and execution_count != 0:
                 yield (str(path)[len(directory_path) :], "execution_count")
                 continue
-            outputs: Optional[List[dict]] = cell.get("outputs")
+            outputs: Optional[List[Dict[str, Any]]] = cell.get("outputs")
             if not outputs or len(outputs) == 0:
                 continue
             yield (str(path)[len(directory_path) :], json.dumps(outputs, indent=2))

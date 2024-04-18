@@ -3,19 +3,19 @@ import os
 import pathlib
 import subprocess
 import sys
-from typing import Dict, List, Optional, TypedDict
+from typing import Any, Dict, List, Optional, TypedDict
 
 import pytest
 
 
 class IpynbCustom(TypedDict, total=False):
-    metadata: Optional[dict]
+    metadata: Optional[Dict[str, Any]]
 
 
 class IpynbOutputs(TypedDict, total=False):
     data: Dict[str, List[str]]
     execution_count: int
-    metadata: Optional[dict]
+    metadata: Optional[Dict[str, Any]]
     output_type: str
 
 
@@ -23,12 +23,12 @@ class IpynbCell(TypedDict, total=False):
     cell_type: str
     outputs: Optional[IpynbOutputs]
     execution_count: Optional[int]
-    metadata: Optional[dict]
+    metadata: Optional[Dict[str, Any]]
 
 
 class IpynbDoc(TypedDict, total=False):
     cells: List[IpynbCell]
-    custom: Optional[dict]
+    custom: Optional[Dict[str, Any]]
 
 
 def _test_jupyter_notebook(file_path: str) -> None:

@@ -4,7 +4,7 @@ import sys
 import ast
 import inspect
 
-from typing import List, Union, Type, Callable, Optional
+from typing import Any, List, Union, Callable, Optional
 
 from context import WorkItem
 
@@ -34,7 +34,7 @@ class FunctionInfo:
 
 
 class Analyzer(ast.NodeVisitor):
-    def __init__(self, type_: Type) -> None:
+    def __init__(self, type_: Any) -> None:
         source_path = inspect.getfile(type_)
 
         self.includs: List[Union[ast.Import, ast.ImportFrom]] = []
@@ -142,7 +142,7 @@ class CodeGenerator:
             write(f"import {module}\n")
 
         def from_(node: ast.ImportFrom) -> None:
-            module = node.module  # type: ignore
+            module = node.module
             if not module:
                 raise ValueError("module is None")
 

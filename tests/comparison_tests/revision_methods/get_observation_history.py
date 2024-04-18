@@ -23,7 +23,7 @@ def test_1(name: str, web: WebApi, com: ComApi) -> None:
 
     assert web_r.values == com_r.values
 
-    web_r.time_stamps = [strip_time(x) for x in web_r.time_stamps]  # type: ignore
+    web_r.time_stamps = [strip_time(x) for x in web_r.time_stamps]
     assert web_r.time_stamps == com_r.time_stamps
 
     assert web_r.observation_date == com_r.observation_date

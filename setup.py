@@ -1,5 +1,6 @@
 import os
 import subprocess
+from typing import Any, Dict
 import setuptools
 
 version_info_path = os.path.join("macrobond_data_api", "__version__.py")
@@ -23,7 +24,7 @@ try:
 except subprocess.CalledProcessError:
     if os.path.exists(version_info_path):
         with open(version_info_path, "r", encoding="utf-8") as f:
-            about: dict = {}
+            about: Dict[str, Any] = {}
             exec(f.read(), about)  # pylint: disable=exec-used
             version = about["__version__"]
             print("version is from " + version_info_path)

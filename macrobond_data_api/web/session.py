@@ -160,38 +160,38 @@ class Session:
 
         self.auth2_session.fetch_token(self.token_endpoint, proxies=self.__proxies)
 
-    def get(self, url: str, params: dict = None, stream: bool = False) -> "Response":
+    def get(self, url: str, params: Dict[str, Any] = None, stream: bool = False) -> "Response":
         return self._request("GET", url, params, None, stream)
 
     def get_or_raise(
         self,
         url: str,
-        params: dict = None,
+        params: Dict[str, Any] = None,
         non_error_status: Sequence[int] = None,
         stream: bool = False,
     ) -> "Response":
         return self.raise_on_error(self.get(url, params, stream=stream), non_error_status)
 
-    def post(self, url: str, params: dict = None, json: object = None, stream: bool = False) -> "Response":
+    def post(self, url: str, params: Dict[str, Any] = None, json: object = None, stream: bool = False) -> "Response":
         return self._request("POST", url, params, json, stream)
 
     def post_or_raise(
         self,
         url: str,
-        params: dict = None,
+        params: Dict[str, Any] = None,
         json: object = None,
         non_error_status: Sequence[int] = None,
         stream: bool = False,
     ) -> "Response":
         return self.raise_on_error(self.post(url, params, json, stream=stream), non_error_status)
 
-    def delete(self, url: str, params: dict = None, stream: bool = False) -> "Response":
+    def delete(self, url: str, params: Dict[str, Any] = None, stream: bool = False) -> "Response":
         return self._request("DELETE", url, params, None, stream)
 
     def delete_or_raise(
         self,
         url: str,
-        params: dict = None,
+        params: Dict[str, Any] = None,
         non_error_status: Sequence[int] = None,
         stream: bool = False,
     ) -> "Response":
@@ -218,7 +218,9 @@ class Session:
     def _response_to_file_object(self, response: "Response") -> _ResponseAsFileObject:
         return _ResponseAsFileObject(response)
 
-    def _request(self, method: str, url: str, params: Optional[dict], json: object, stream: bool) -> "Response":
+    def _request(
+        self, method: str, url: str, params: Optional[Dict[str, Any]], json: object, stream: bool
+    ) -> "Response":
         if not self._is_open:
             raise ValueError("Session is not open")
 
@@ -246,7 +248,7 @@ class Session:
             raise Exception("discovery Exception, status code is not 200")
 
         try:
-            json: Optional[dict] = response.json()
+            json: Optional[Dict[str, Any]] = response.json()
         except BaseException as base_exception:
             raise Exception("discovery Exception, not valid json.") from base_exception
 
