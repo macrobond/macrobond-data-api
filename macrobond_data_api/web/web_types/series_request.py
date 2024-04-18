@@ -1,4 +1,4 @@
-from typing import Optional, TypedDict, List
+from typing import Optional, TypedDict, List, Dict, Any
 
 
 class SeriesRequest(TypedDict, total=False):
@@ -16,7 +16,7 @@ class SeriesRequest(TypedDict, total=False):
     forecastFlags: Optional[List[bool]]
     """An optional array of forecast flags. When included, it must be the same length as the list of Values."""
 
-    metadata: Optional[dict]
+    metadata: Optional[Dict[str, Any]]
     """The metadata."""
 
     metadataBaseSeries: Optional[str]

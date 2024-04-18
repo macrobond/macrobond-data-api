@@ -64,7 +64,7 @@ def _remove_padding(
 
     padding_back = len(series_values) - padding_back
 
-    values = [None if isnan(x) else x for x in series_values[padding_front:padding_back]]  # type: ignore
+    values = [None if isnan(x) else x for x in series_values[padding_front:padding_back]]
     dates = series.DatesAtStartOfPeriod[padding_front:padding_back]
 
     return (values, dates)
@@ -223,7 +223,7 @@ def get_nth_release(
                 series_name, series.ErrorMessage, _error_message_to_status_code(series), None, None, None, None
             )
 
-        values = [None if isnan(x) else x for x in series.Values]  # type: ignore
+        values = [None if isnan(x) else x for x in series.Values]
         dates = _datetime_to_datetime_timezone(series.DatesAtStartOfPeriod)
 
         if include_times_of_change:
@@ -283,7 +283,7 @@ def get_all_vintage_series(self: "ComApi", series_name: str) -> GetAllVintageSer
 
     if not series_with_revisions.HasRevisions:
         series = complete_history[0]
-        values = [None if isnan(x) else x for x in series.Values]  # type: ignore
+        values = [None if isnan(x) else x for x in series.Values]
         dates = _datetime_to_datetime_timezone(series.DatesAtStartOfPeriod)
         return GetAllVintageSeriesResult(
             [

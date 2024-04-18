@@ -108,7 +108,7 @@ class WorkItem:
                 self.hade_error = True
 
 
-async def _run_all(in_sequence: bool, work_items: Sequence) -> Any:
+async def _run_all(in_sequence: bool, work_items: Sequence[WorkItem]) -> Any:
     if in_sequence:
         for work_item in work_items:
             print("Start " + work_item.name)
@@ -128,11 +128,12 @@ def run(*work: Callable[[bool, str], WorkItem], in_sequence: bool = True) -> NoR
     if in_sequence:
         asyncio.run(_run_all(in_sequence, work_items))
     else:
-        if os.name != "nt":
+        if sys.platform == "win32":
+            loop = asyncio.ProactorEventLoop()
+            asyncio.set_event_loop(loop)
+            loop.run_until_complete(_run_all(in_sequence, work_items))
+        else:
             raise ValueError("in_sequence == False is only supported on window.")
-        loop = asyncio.ProactorEventLoop()  # type: ignore
-        asyncio.set_event_loop(loop)  # type: ignore
-        loop.run_until_complete(_run_all(in_sequence, work_items))  # type: ignore
 
     if not in_sequence:
         for work_item in work_items:

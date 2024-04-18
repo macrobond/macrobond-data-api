@@ -3,7 +3,7 @@ The class `macrobond_data_api.common.api.Api` defines the core methods to intera
 Macrobond database.
 """
 
-from typing import Generator, Sequence, Union, Tuple, Dict, Optional
+from typing import Any, Generator, Sequence, Union, Tuple, Dict, Optional
 from abc import ABC, abstractmethod
 
 from datetime import datetime
@@ -647,7 +647,7 @@ class Api(ABC):
         values: Sequence[Optional[float]],
         start_date_or_dates: Union[datetime, Sequence[datetime]],
         dayMask: SeriesWeekdays = SeriesWeekdays.MONDAY_TO_FRIDAY,
-        metadata: Optional[dict] = None,
+        metadata: Optional[Dict[str, Any]] = None,
         forecast_flags: Optional[Sequence[bool]] = None,
     ) -> None:
         # fmt: off

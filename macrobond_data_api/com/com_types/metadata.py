@@ -1,7 +1,7 @@
 # pylint: disable = invalid-name , missing-module-docstring
 # mypy: disable_error_code = empty-body
 
-from typing import Optional, Union, Tuple, Any
+from typing import Optional, Tuple, Any
 
 
 class Metadata:
@@ -14,7 +14,7 @@ class Metadata:
     def GetFirstValue(self, name: str) -> Optional[object]:
         """Get the first metadata value with the specified name."""
 
-    def GetValues(self, name: str) -> Union[Tuple[Any], Tuple]:
+    def GetValues(self, name: str) -> Tuple[Any, ...]:
         """Get a list of metadata values with the specified name."""
 
     def ListNames(self) -> Tuple[Tuple[str, str]]:
