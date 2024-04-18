@@ -95,6 +95,15 @@ def _print_system_information() -> None:
     except Exception as e:  # pylint: disable=broad-exception-caught
         print("can't get keyring.get_keyring().name", e)
 
+    print("\n-- Anaconda info --\n")
+
+    print("conda info --verbose")
+    print(os.popen("conda info").read())
+
+    # --all is deprecated and will be removed in 24.9. Use --verbose instead.
+    print("conda info --all")
+    print(os.popen("conda info --all").read())
+
     if os.name == "nt":
 
         print("\n-- Windows tests --")
