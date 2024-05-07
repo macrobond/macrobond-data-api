@@ -13,7 +13,7 @@ class SubscriptionList:
 
     This class shouldn't be instantiated directly, but instead should be retrieved from a web client through `subscription_list`
 
-    Examples
+    Examples - for a program that polls for updates continuously
     --------
     ```python
     from datetime import datetime, timezone
@@ -27,7 +27,7 @@ class SubscriptionList:
                 print(f'Series "{key}", last updated "{date}"')
     ```
 
-    Examples
+    Examples - for a program that retrieves all updates and then exits
     --------
     ```python
     from datetime import datetime, timezone
