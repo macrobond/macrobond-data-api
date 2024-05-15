@@ -141,7 +141,7 @@ class SubscriptionList:
     def poll(self) -> Dict[str, datetime]:
         """
         Polls for any changes on the series in the subscription list.
-        If there are no updates, the method will return an empty list after the poll intervall time. This gives an
+        If there are no updates, the method will return an empty dict after the poll intervall time. This gives an
         opportinity to abort the polling loop.
 
         Returns
