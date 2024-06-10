@@ -141,13 +141,13 @@ class SubscriptionList:
     def poll(self) -> Dict[str, datetime]:
         """
         Polls for any changes on the series in the subscription list.
-        If there are no updates, the method will return an empty dict after the poll intervall time. This gives an
+        If there are no updates, the method will return an empty dict after the poll interval time. This gives an
         opportinity to abort the polling loop.
 
         Returns
         -------
         Dict[str, datetime]]
-            A dictionary of primary keys that has been updated, and the corresponding last update date.
+            A dictionary of names of series that have been updated, and the corresponding last update date.
         """
         if not self._session._is_open:
             raise ValueError("WebApi is not open")
@@ -169,12 +169,12 @@ class SubscriptionList:
 
     def poll_until_no_more_changes(self) -> Iterator[Dict[str, datetime]]:
         """
-        Polls for any changes on the series in the subscription list until thers no more changes.
+        Polls for any changes on the series in the subscription list until there are no more changes.
 
         Returns
         -------
         Iterator[Dict[str, datetime]]]
-            A Iterator of dictionarys of primary keys that has been updated, and the corresponding last update date.
+            An Iterator of dictionaries with names of series that have been updated, and the corresponding last update date.
         """
         while True:
             changes = self.poll()
