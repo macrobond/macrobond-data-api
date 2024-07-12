@@ -104,7 +104,11 @@ def get_revision_info(self: "ComApi", *series_names: str, raise_error: bool = No
 
 
 def get_one_vintage_series(
-    self: "ComApi", time: datetime, series_name: str, include_times_of_change: bool = False, raise_error: bool = None
+    self: "ComApi", 
+    time: datetime, 
+    series_name: str, 
+    include_times_of_change: bool = False, 
+    raise_error: bool = None
 ) -> VintageSeries:
     return self.get_vintage_series(
         time, [series_name], include_times_of_change=include_times_of_change, raise_error=raise_error
