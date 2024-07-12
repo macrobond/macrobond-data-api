@@ -29,16 +29,15 @@ def upload_series(
     if isinstance(start_date_or_dates, datetime):
         if start_date_or_dates.tzinfo is None:
             raise ValueError("start_date_or_dates must have a timezone")
-        
         start_date_or_dates = _fix_datetime(start_date_or_dates)
-        
+
     else:
         if not isinstance(start_date_or_dates, list):
             start_date_or_dates = list(start_date_or_dates)
 
         if any(x.tzinfo is None for x in start_date_or_dates):
             raise ValueError("start_date_or_dates must have a timezone")
-        
+
         start_date_or_dates = [_fix_datetime(date) for date in start_date_or_dates]
 
     com_metadata = self.database.CreateEmptyMetadata()
