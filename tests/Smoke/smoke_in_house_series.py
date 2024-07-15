@@ -4,6 +4,7 @@ from datetime import datetime, timezone
 import pytest
 from macrobond_data_api.common import Api
 from macrobond_data_api.common.enums import SeriesFrequency
+import pandas as pd
 
 
 def _try_delete_series(api: Api, *names: str) -> None:
@@ -32,3 +33,42 @@ def test_upload_series(api: Api) -> None:
         )
     finally:
         api.delete_serie(name)
+
+
+@pytest.mark.usefixtures("lock_test")
+@pytest.mark.usefixtures("assert_no_warnings")
+@pytest.mark.parametrize("api", ["web", "com"], indirect=True)
+def test_datetime_converter_upload_series_multi_values(api: Api) -> None:
+    values = [10, 20, 30]
+    dates = [
+        datetime(2023, 1, 1, tzinfo=timezone.utc),
+        datetime(2023, 1, 2, tzinfo=timezone.utc),
+        datetime(2023, 1, 3, tzinfo=timezone.utc),
+    ]
+
+    # Create a DataFrame
+    df = pd.DataFrame({"Date": dates, "Value": values})
+    api.upload_series(
+        name="ih:mb:priv:dataframe",
+        description="uploading from dataframe",
+        region="world",
+        category="category",
+        frequency=SeriesFrequency.DAILY,
+        values=df["Value"],
+        start_date_or_dates=df["Date"],
+    )
+
+
+@pytest.mark.usefixtures("lock_test")
+@pytest.mark.usefixtures("assert_no_warnings")
+@pytest.mark.parametrize("api", ["web", "com"], indirect=True)
+def test_datetime_converter_upload_series_single_value(api: Api) -> None:
+    api.upload_series(
+        name="ih:mb:priv:dataframe",
+        description="uploading from dataframe",
+        region="world",
+        category="category",
+        frequency=SeriesFrequency.DAILY,
+        values=[10],
+        start_date_or_dates=pd.Timestamp(datetime(2023, 1, 1, tzinfo=timezone.utc)),
+    )
