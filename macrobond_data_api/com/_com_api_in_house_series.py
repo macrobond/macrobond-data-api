@@ -1,6 +1,7 @@
 from datetime import datetime
 from typing import TYPE_CHECKING, Dict, Optional, Sequence, Union, Any
 
+from macrobond_data_api.com._fix_datetime import _fix_datetime
 from macrobond_data_api.common.enums import SeriesWeekdays, SeriesFrequency
 
 if TYPE_CHECKING:  # pragma: no cover
@@ -28,12 +29,16 @@ def upload_series(
     if isinstance(start_date_or_dates, datetime):
         if start_date_or_dates.tzinfo is None:
             raise ValueError("start_date_or_dates must have a timezone")
+        start_date_or_dates = _fix_datetime(start_date_or_dates)
+
     else:
         if not isinstance(start_date_or_dates, list):
             start_date_or_dates = list(start_date_or_dates)
 
         if any(x.tzinfo is None for x in start_date_or_dates):
             raise ValueError("start_date_or_dates must have a timezone")
+
+        start_date_or_dates = [_fix_datetime(date) for date in start_date_or_dates]
 
     com_metadata = self.database.CreateEmptyMetadata()
     if metadata is not None:
