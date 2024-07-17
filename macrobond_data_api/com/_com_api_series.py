@@ -79,9 +79,7 @@ def get_entities(self: "ComApi", entity_names: Sequence[str], raise_error: bool 
 
 
 def get_many_series(
-    self: "ComApi", 
-    series: Sequence[Union[str, Tuple[str, Optional[datetime]]]], 
-    include_not_modified: bool = False
+    self: "ComApi", series: Sequence[Union[str, Tuple[str, Optional[datetime]]]], include_not_modified: bool = False
 ) -> Generator[Series, None, None]:
     if len(series) == 0:
         yield from ()
@@ -97,20 +95,20 @@ def get_many_series(
         if serie.is_error:
             yield serie
             continue
-        
+
         if series_info[1]:
             series_info_date_time = series_info[1]
             last_modified_time = serie.metadata["LastModifiedTimeStamp"]
-            
+
             if isinstance(series_info_date_time, datetime):
                 series_info_date_time = _fix_datetime(series_info_date_time)
-            
+
             if isinstance(last_modified_time, datetime):
                 last_modified_time = _fix_datetime(last_modified_time)
-            
+
             if last_modified_time <= series_info_date_time:
                 if include_not_modified:
-                    yield Series(series_info_date_time, "Not modified", StatusCode.NOT_MODIFIED, None, None, None, None)
+                    yield Series(series_info[0], "Not modified", StatusCode.NOT_MODIFIED, None, None, None, None)
                 continue
 
         yield serie
