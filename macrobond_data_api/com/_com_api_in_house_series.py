@@ -50,6 +50,8 @@ def upload_series(
         _set_metadata(metadata, "DayMask", dayMask)
 
         for key, value in metadata.items():
+            if isinstance(value, datetime):
+                value = _fix_datetime(value)
             com_metadata.AddValue(key, value)
 
     values = [float(x) if x is not None else x for x in values]

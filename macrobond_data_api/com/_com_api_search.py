@@ -24,6 +24,8 @@ def entity_search_multi_filter(
         query = self.database.CreateSearchQuery()
 
         for entity_type in _filter.entity_types:
+            if isinstance(entity_type, datetime):
+                entity_type = _fix_datetime(entity_type)
             query.SetEntityTypeFilter(entity_type)
 
         if _filter.text:
@@ -42,9 +44,13 @@ def entity_search_multi_filter(
             query.AddAttributeValueFilter(key, _filter.must_not_have_values[key], False)
 
         for attribute in _filter.must_have_attributes:
+            if isinstance(attribute, datetime):
+                attribute = _fix_datetime(attribute)
             query.AddAttributeFilter(attribute)
 
         for attribute in _filter.must_not_have_attributes:
+            if isinstance(attribute, datetime):
+                attribute = _fix_datetime(attribute)
             query.AddAttributeFilter(attribute, False)
 
         query.IncludeDiscontinued = include_discontinued
