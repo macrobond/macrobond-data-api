@@ -1,5 +1,5 @@
 from datetime import datetime
-from collections.abc import Sequence
+from collections.abc import Sequence as SequenceABC
 from typing import TYPE_CHECKING, Dict, Optional, Sequence, Union, Any
 
 from macrobond_data_api.com._fix_datetime import _fix_datetime
@@ -54,7 +54,7 @@ def upload_series(
             if isinstance(value, datetime):
                 value = _fix_datetime(value)
             elif (
-                isinstance(value, Sequence)
+                isinstance(value, SequenceABC)
                 and not isinstance(value, str)
                 and all(isinstance(item, datetime) for item in value)
             ):
