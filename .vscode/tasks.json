@@ -5,14 +5,7 @@
     "problemMatcher": [],
     "tasks": [
         {
-            "label": "Set up dev environment",
-            "args": [
-                "scripts/set_up_dev_environment.py"
-            ],
-            "detail": "Install all dependencies"
-        },
-        {
-            "label": "Create venv",
+            "label": "Create environment",
             "command": "py",
             "args": [
                 "-${input:py_version}",
@@ -20,17 +13,24 @@
                 "venv",
                 ".env"
             ],
-            "detail": "Create a new python virtual environment"
+            "detail": "Creates a new python virtual environment.",
         },
         {
-            "label": "Pytest",
+            "label": "Install dependencies in development environment",
+            "args": [
+                "scripts/set_up_dev_environment.py"
+            ],
+            "detail": "Installs all dependencies in development environment."
+        },
+        {
+            "label": "Run all tests",
             "args": [
                 "scripts/pytest_.py"
             ],
-            "detail": "Run all tests correctly"
+            "detail": "Runs all tests using Pytest."
         },
         {
-            "label": "Black",
+            "label": "Format code",
             "args": [
                 "scripts/lint_tools.py",
                 "--format-code"
@@ -38,10 +38,10 @@
             "presentation": {
                 "clear": true
             },
-            "detail": "Format code"
+            "detail": "Formats code using the Black formatter."
         },
         {
-            "label": "Lint",
+            "label": "Run lint tools",
             "args": [
                 "scripts/lint_tools.py",
                 "--${input:lint_tool}"
@@ -49,10 +49,10 @@
             "presentation": {
                 "clear": true
             },
-            "detail": "Run lint tools, black_check mypy pylint pycodestyle pdoc3"
+            "detail": "Runs the one or more of the following lint tools: Black_check, Mypy, Pylint, Pycodestyle and Pdoc3."
         },
         {
-            "label": "Pdoc3",
+            "label": "Generate documentation",
             "args": [
                 "scripts/pdoc3.py",
                 "--${input:pdoc3_server}"
@@ -60,25 +60,25 @@
             "presentation": {
                 "clear": true
             },
-            "detail": "generate documentation"
+            "detail": "Generates documentation using Pdoc3."
         },
         {
-            "label": "py coverage",
+            "label": "Generate code coverage",
             "args": [
                 "scripts/coverage.py",
                 "--${input:coverage_tool}"
             ],
-            "detail": "Generate code coverage"
+            "detail": "Generates code coverage using \"py coverage\"."
         },
         {
-            "label": "Build",
+            "label": "Lint, generate documentation and build package",
             "args": [
                 "scripts/build.py"
             ],
-            "detail": "lint and generate documentation then builds the the package"
+            "detail": "Lints and generates documentation then builds the the package."
         },
         {
-            "label": "Save credential to keyring",
+            "label": "Save credentials to keyring.",
             "args": [
                 "macrobond_data_api/util/save_credentials_to_keyring.py"
             ],
@@ -89,15 +89,15 @@
                 "scripts/code_generation.py",
                 "--generate"
             ],
-            "detail": "Generate code for the duplicated code in web and com"
+            "detail": "Generates code for the duplicated parts in web and COM."
         },
         {
-            "label": "jupyter",
+            "label": "Verify or scrub Jupyter Notebooks",
             "args": [
                 "scripts/jupyter.py",
                 "--${input:jupyter}"
             ],
-            "detail": "Verify or scrub jupyter files"
+            "detail": "Verifys or scrubs Jupyter files."
         }
     ],
     "inputs": [
