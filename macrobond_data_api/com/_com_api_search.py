@@ -39,7 +39,7 @@ def entity_search_multi_filter(
             val = _filter.must_not_have_values[key]
             if isinstance(val, datetime):
                 val = _fix_datetime(val)
-            query.AddAttributeValueFilter(key, _filter.must_not_have_values[key], False)
+            query.AddAttributeValueFilter(key, val, False)
 
         for attribute in _filter.must_have_attributes:
             query.AddAttributeFilter(attribute)
