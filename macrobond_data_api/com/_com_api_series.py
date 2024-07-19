@@ -4,6 +4,7 @@ from typing import Generator, List, Optional, Tuple, Union, TYPE_CHECKING, Seque
 from datetime import datetime
 
 
+from macrobond_data_api.com._fix_datetime import _fix_datetime
 from macrobond_data_api.common.enums import SeriesWeekdays, SeriesFrequency, CalendarMergeMode, StatusCode
 
 from macrobond_data_api.common.types import (
@@ -90,16 +91,24 @@ def get_many_series(
     if len(names) != len(series_as_tuple):
         raise ValueError("duplicate of series")
 
-    for serie, serie_info in zip(self.get_series([x[0] for x in series_as_tuple], raise_error=False), series_as_tuple):
+    for serie, series_info in zip(self.get_series([x[0] for x in series_as_tuple], raise_error=False), series_as_tuple):
         if serie.is_error:
             yield serie
             continue
 
-        if serie_info[1]:
+        if series_info[1]:
+            series_info_date_time = series_info[1]
             last_modified_time = serie.metadata["LastModifiedTimeStamp"]
-            if last_modified_time <= serie_info[1]:
+
+            if isinstance(series_info_date_time, datetime):
+                series_info_date_time = _fix_datetime(series_info_date_time)
+
+            if isinstance(last_modified_time, datetime):
+                last_modified_time = _fix_datetime(last_modified_time)
+
+            if last_modified_time <= series_info_date_time:
                 if include_not_modified:
-                    yield Series(serie_info[0], "Not modified", StatusCode.NOT_MODIFIED, None, None, None, None)
+                    yield Series(series_info[0], "Not modified", StatusCode.NOT_MODIFIED, None, None, None, None)
                 continue
 
         yield serie
@@ -125,7 +134,7 @@ def get_unified_series(
         series_expression = request.AddSeries(entry.name)
 
         if entry.vintage:
-            series_expression.Vintage = entry.vintage
+            series_expression.Vintage = _fix_datetime(entry.vintage)
 
         series_expression.MissingValueMethod = entry.missing_value_method
 

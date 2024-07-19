@@ -1,4 +1,5 @@
 from datetime import datetime
+from collections.abc import Sequence as SequenceABC
 from typing import TYPE_CHECKING, Dict, Optional, Sequence, Union, Any
 
 from macrobond_data_api.com._fix_datetime import _fix_datetime
@@ -50,6 +51,15 @@ def upload_series(
         _set_metadata(metadata, "DayMask", dayMask)
 
         for key, value in metadata.items():
+            if isinstance(value, datetime):
+                value = _fix_datetime(value)
+            elif (
+                isinstance(value, SequenceABC)
+                and not isinstance(value, str)
+                and all(isinstance(item, datetime) for item in value)
+            ):
+                value = [_fix_datetime(item) for item in value]
+
             com_metadata.AddValue(key, value)
 
     values = [float(x) if x is not None else x for x in values]
