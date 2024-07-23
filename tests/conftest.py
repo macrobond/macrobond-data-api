@@ -2,7 +2,7 @@
 
 from datetime import datetime, timezone
 import os
-from typing import Any, Sequence, Union, Generator
+from typing import Any, Sequence, Union, Generator, Dict
 import collections.abc
 import warnings
 
@@ -19,6 +19,19 @@ from macrobond_data_api.com import ComClient, ComApi
 
 def pytest_sessionstart(session: PytestSession) -> None:
     print("Running in timezone:", datetime.now().astimezone().strftime("%Z %z"))
+
+
+class _ConfTest:
+
+    def __init__(self, conf_path: str) -> None:
+        conf: Dict[str, Any] = {}
+        with open(conf_path, "r", encoding="utf-8") as f:
+            exec(f.read(), conf)  # pylint: disable=exec-used
+
+        self.api_url = conf.get("api_url", Session.configuration._default_api_url)
+        self.authorization_url = conf.get("authorization_url", Session.configuration._default_authorization_url)
+        self.username = conf.get("username", None)
+        self.password = conf.get("password", None)
 
 
 @fixture(autouse=True, scope="session")
@@ -39,15 +52,16 @@ def _web_client_fixture() -> Generator[WebClient, None, None]:
 
         Session._is_https_url = test_is_https_url  # type: ignore
 
-        with open(conf_path, "r", encoding="utf-8") as f:
-            conf: dict = {}
-            exec(f.read(), conf)  # pylint: disable=exec-used
-            api_url = conf.get("api_url", Session.configuration._default_api_url)
-            authorization_url = conf.get("authorization_url", Session.configuration._default_authorization_url)
-            yield WebClient(api_url=api_url, authorization_url=authorization_url)
-            return
+        conf = _ConfTest(conf_path)
 
-    yield WebClient()
+        yield WebClient(
+            api_url=conf.api_url,
+            authorization_url=conf.authorization_url,
+            username=conf.username,
+            password=conf.password,
+        )
+    else:
+        yield WebClient()
 
 
 @fixture(scope="session", name="web")
