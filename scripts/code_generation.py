@@ -171,11 +171,7 @@ class ApiCodeGenerator(CodeGenerator):
         self.includs += [x for x in map(self.filter_includs, analyzer.includs) if x]
         self.functions = analyzer.functions
 
-        get_api_inport = ast.ImportFrom()
-        get_api_inport.module = "._get_api"
-        alias = ast.alias()
-        alias.name = "_get_api"
-        get_api_inport.names = [alias]
+        get_api_inport = ast.ImportFrom("._get_api", [ast.alias("_get_api")], 0)
         self.includs.append(get_api_inport)
 
     def filter_includs(self, node: Union[ast.Import, ast.ImportFrom]) -> Optional[Union[ast.Import, ast.ImportFrom]]:
