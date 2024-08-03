@@ -256,7 +256,7 @@ def get_all_vintage_series(self: "ComApi", series_name: str) -> GetAllVintageSer
     def to_obj(com_series: "ComSeries", name: str) -> VintageSeries:
         if com_series.IsError:
             return VintageSeries(
-                name, com_series.ErrorMessage, _error_message_to_status_code(series), None, None, None, None, None
+                name, com_series.ErrorMessage, _error_message_to_status_code(com_series), None, None, None, None, None
             )
 
         values, dates = _remove_padding(com_series)

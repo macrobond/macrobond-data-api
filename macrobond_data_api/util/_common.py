@@ -2,7 +2,7 @@ import io
 import os
 import sys
 import pathlib
-from typing import Any, Optional, cast
+from typing import Any, Literal, Optional, cast
 
 
 class SaveOutputToFile:
@@ -38,14 +38,18 @@ class SaveOutputToFile:
             print("Output saved to file:", self.path)
 
 
-def _inquiry(question: str, default: str = "yes") -> bool:
+_INQUIRY_DEFAULT = Literal["yes", "no", None]
+
+
+def _inquiry(question: str, default: _INQUIRY_DEFAULT = "yes") -> bool:
     valid = {"yes": True, "y": True, "no": False, "n": False}
-    if default is None:
-        prompt = " [y/n] "
-    elif default == "yes":
+    if default == "yes":
         prompt = " [Y/n] "
     elif default == "no":
         prompt = " [y/N] "
+    else:
+        default = None
+        prompt = " [y/n] "
 
     while True:
         sys.stdout.write(question + prompt)
