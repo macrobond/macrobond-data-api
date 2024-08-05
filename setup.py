@@ -88,7 +88,7 @@ setuptools.setup(
         "dev": [
             "mypy==1.11.1",
             "pylint==3.2.6",
-            "pycodestyle==2.12.0",
+            "pycodestyle==2.12.1",
             "pdoc3==0.10.0",
             "build>=1.1.1",
             "pytest==7.4.3",
