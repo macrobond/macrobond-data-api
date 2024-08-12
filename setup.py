@@ -95,7 +95,7 @@ setuptools.setup(
             "pytest-xdist==3.6.1",
             "coverage>=7.3.2",
             "black[jupyter]==24.8.0",
-            "requests[socks]>=2.31.0",
+            "requests[socks]>=2.32.3",
             "nbconvert==7.16.4",
             "ipython>=7.34.0",
             "types-pywin32==306.0.0.20240806",
@@ -103,7 +103,7 @@ setuptools.setup(
             "types-setuptools==71.1.0.20240806",
             "filelock==3.15.4",
         ],
-        "socks": ["requests[socks]>=2.31.0"],
+        "socks": ["requests[socks]>=2.32.3"],
     },
     project_urls={
         "Documentation": "https://macrobond.github.io/macrobond-data-api",
