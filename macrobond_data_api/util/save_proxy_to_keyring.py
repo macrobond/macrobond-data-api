@@ -95,7 +95,7 @@ def save_proxy_to_keyring(warn_before_removing: bool = True, test_proxy: bool = 
 
     keyring.set_password(service_name, username, proxy)
 
-    print(f'Successfully saved to the keyring with the service name: "{ service_name }" in {keyring_name}')
+    print(f'Successfully saved to the keyring with the service name: "{service_name}" in {keyring_name}')
 
     return True
 
