@@ -10,6 +10,8 @@ on:
 
 permissions:
   contents: read
+  # IMPORTANT: this permission is mandatory for trusted publishing
+  id-token: write
 
 # Allow one concurrent deployment
 concurrency:
