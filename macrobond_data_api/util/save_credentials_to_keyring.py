@@ -146,7 +146,7 @@ def save_credentials_to_keyring(warn_before_removing: bool = True, ask_for_servi
         print("Error: failed testing keyring")
         return False
 
-    print(f'Successfully saved to the keyring with the service name: "{ service_name }" in {keyring_name}')
+    print(f'Successfully saved to the keyring with the service name: "{service_name}" in {keyring_name}')
 
     return True
 
