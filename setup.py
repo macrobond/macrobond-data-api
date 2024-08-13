@@ -79,7 +79,7 @@ setuptools.setup(
     install_requires=[
         "keyring>=24.3.0",
         "Authlib>=1.2.0",
-        "requests>=2.31.0",
+        "requests>=2.32.3",
         "ijson>=3.2.3",
         "pywin32>=306; os_name=='nt'",
     ],
