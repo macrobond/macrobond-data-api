@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from itertools import chain
 
 from typing import TYPE_CHECKING, Any, Dict, Sequence, overload, List
 
@@ -36,9 +37,12 @@ class GetAllVintageSeriesResult(Sequence[VintageSeries]):
         """
         import pandas  # pylint: disable=import-outside-toplevel
 
+        dates = list(set(chain.from_iterable((x.dates for x in self.series))))
+        dates.sort()
+
         df = pandas.DataFrame(
             {
-                **{"date": self.series[len(self.series) - 1].dates},
+                **{"date": dates},
             }
         )
 
