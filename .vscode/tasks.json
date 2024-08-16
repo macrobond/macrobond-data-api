@@ -122,6 +122,7 @@
                 "pylint",
                 "py_code_style",
                 "pdoc3",
+                "setup",
                 "jupyter-verify"
             ],
             "description": "Which tool ?",
