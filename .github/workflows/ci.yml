@@ -50,6 +50,10 @@ jobs:
       if: always()
       run: python scripts/lint_tools.py --py_code_style
 
+    - name: Test setup
+      if: always()
+      run: python scripts/test_setup.py
+
     - name: Pdoc3
       if: always()
       run: python scripts/lint_tools.py --pdoc3

@@ -2,6 +2,7 @@ import sys
 from context import run, WorkItem
 from code_generation import Verify
 from jupyter import JupyterVerify
+from test_setup import TestSetup
 
 from pdoc3 import Pdoc3
 
@@ -43,7 +44,7 @@ def main() -> None:
     command = sys.argv[1] if len(sys.argv) <= 2 else None
 
     if command == "--all":
-        run(Verify, BlackCheck, Mypy, Pylint, PyCodeStyle, Pdoc3, JupyterVerify, in_sequence=False)
+        run(Verify, BlackCheck, Mypy, Pylint, PyCodeStyle, Pdoc3, TestSetup, JupyterVerify, in_sequence=False)
 
     if command == "--verify":
         run(Verify)
@@ -62,6 +63,9 @@ def main() -> None:
 
     if command == "--pdoc3":
         run(Pdoc3)
+
+    if command == "--setup":
+        run(TestSetup)
 
     if command == "--jupyter-verify":
         run(JupyterVerify)

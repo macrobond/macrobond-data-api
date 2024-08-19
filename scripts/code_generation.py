@@ -3,6 +3,7 @@ import io
 import sys
 import ast
 import inspect
+import difflib
 
 from typing import Any, List, Union, Callable, Optional
 
@@ -201,8 +202,12 @@ def _write_to_file(path: str, code: str) -> None:
 
 def _verify_file(path: str, code: str) -> int:
     with open(path, "r", encoding="UTF8") as file:
-        if file.read() != code:
-            print("Failed verification " + path)
+        file_content = file.read()
+        if file_content != code:
+            delta = difflib.unified_diff(file_content.split("\n"), code.split("\n"))
+            print("Failed verification " + path, "\n-- diff ---:")
+            sys.stdout.writelines(delta)
+            print("\n--- end diff ---")
             return 1
     return 0
 
