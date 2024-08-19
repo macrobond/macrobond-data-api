@@ -52,7 +52,7 @@ jobs:
 
     - name: Test setup
       if: always()
-      run: python scripts/test_setup.py.py
+      run: python scripts/test_setup.py
 
     - name: Pdoc3
       if: always()
