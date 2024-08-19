@@ -437,6 +437,26 @@ def get_unified_series(
     -------
     `macrobond_data_api.common.types.unified_series.UnifiedSeries`
     The result is in the same order as in the request.
+
+    Examples
+    -------
+    ```python
+    from datetime import datetime, timezone
+    from macrobond_data_api.com import ComClient
+    from macrobond_data_api.common.types import SeriesEntry
+
+    with ComClient() as api:  # or WebClient
+
+        print(api.get_unified_series("usgdp", "gbgdp").to_pd_data_frame())
+
+        vintage = datetime(2012, 11, 1, tzinfo=timezone.utc)
+        print(
+            api.get_unified_series(
+                SeriesEntry("usgdp", vintage=vintage),
+                SeriesEntry("gbgdp", vintage=vintage),
+            ).to_pd_data_frame()
+        )
+    ```
     """
     return _get_api().get_unified_series(
         *series_entries,
