@@ -86,7 +86,7 @@ setuptools.setup(
     extras_require={
         "extra": ["matplotlib", "statsmodels", "scikit-learn", "pandas"],
         "dev": [
-            "mypy==1.11.1",
+            "mypy==1.11.2",
             "pylint==3.2.6",
             "pycodestyle==2.12.1",
             "pdoc3==0.10.0",
