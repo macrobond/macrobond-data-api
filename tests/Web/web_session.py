@@ -99,7 +99,7 @@ class TestWebSession:
             ]
         )
 
-        mock.fetch_token.assert_called_with("", proxies=None)
+        mock.fetch_token.assert_called_with("", proxies=None, grant_type="client_credentials")
 
     def test_discovery_error_status_code(self) -> None:
         mock = Mock()
