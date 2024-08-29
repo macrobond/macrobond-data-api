@@ -1,7 +1,7 @@
 from typing import Callable, Dict, Optional, Any, TYPE_CHECKING, Sequence, Type, cast
 
 from authlib.integrations.requests_client import OAuth2Session
-from authlib.integrations.base_client.errors import InvalidTokenError
+from authlib.integrations.base_client.errors import InvalidTokenError, MissingTokenError
 from macrobond_data_api.common.types import Metadata
 
 from .web_types import (
@@ -158,7 +158,7 @@ class Session:
         if self.token_endpoint is None:
             self.__token_endpoint = self.discovery(self.authorization_url)
 
-        self.auth2_session.fetch_token(self.token_endpoint, proxies=self.__proxies)
+        self.auth2_session.fetch_token(self.token_endpoint, proxies=self.__proxies, grant_type="client_credentials")
 
     def get(self, url: str, params: Dict[str, Any] = None, stream: bool = False) -> "Response":
         return self._request("GET", url, params, None, stream)
@@ -264,6 +264,9 @@ class Session:
     def _if_status_code_401_fetch_token_and_retry(self, http: Callable[[], "Response"]) -> "Response":
         try:
             response = http()
+        except MissingTokenError:
+            self.fetch_token()
+            return http()
         except InvalidTokenError:
             self.fetch_token()
             return http()
@@ -274,3 +277,15 @@ class Session:
 
     def _create_metadata(self, data: Optional[Dict[str, Any]]) -> Metadata:
         return cast(Metadata, _Metadata(data, self._metadata_type_directory)) if data else {}
+
+    def debug(self) -> None:
+        # pylint: disable=W0613
+        def print_response(response: Any, *args: Any, **kwargs: Any) -> None:
+            print(response.request.url)
+            print(response.status_code)
+            print(response.json())
+
+        # pylint: enable=W0613
+
+        if len(self.auth2_session.hooks["response"]) == 0:
+            self.auth2_session.hooks["response"].append(print_response)

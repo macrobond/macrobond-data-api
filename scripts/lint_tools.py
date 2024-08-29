@@ -1,3 +1,4 @@
+import asyncio
 import sys
 from context import run, WorkItem
 from code_generation import Verify
@@ -10,13 +11,11 @@ from pdoc3 import Pdoc3
 class Mypy(WorkItem):
     # TODO: @mb-jp use --strict for mypy
     async def run(self) -> None:
-        await self.python_run(
-            "mypy",
-            ". --show-error-codes --exclude .env --exclude test.py --exclude build --python-version 3.8 --platform win32",
-        )
-        await self.python_run(
-            "mypy",
-            ". --show-error-codes --exclude .env --exclude test.py --exclude build --python-version 3.8 --platform linux",
+        exclude = "--exclude .env --exclude test.py --exclude build --exclude .git"
+        args = f". --show-error-codes {exclude} --python-version 3.8"
+        await asyncio.gather(
+            self.python_run("mypy", args + " --platform win32"),
+            self.python_run("mypy", args + " --platform linux"),
         )
 
 
@@ -27,17 +26,17 @@ class Pylint(WorkItem):
 
 class PyCodeStyle(WorkItem):
     async def run(self) -> None:
-        await self.python_run("pycodestyle", "--count . --exclude=.env,test.py")
+        await self.python_run("pycodestyle", "--count . --exclude=.env,test.py,.git")
 
 
 class Black(WorkItem):
     async def run(self) -> None:
-        await self.python_run("black", "--extend-exclude .env .")
+        await self.python_run("black", "--extend-exclude .env,.git .")
 
 
 class BlackCheck(WorkItem):
     async def run(self) -> None:
-        await self.python_run("black", "--extend-exclude .env --check --diff .")
+        await self.python_run("black", "--extend-exclude .env,.git --check --diff .")
 
 
 def main() -> None:
