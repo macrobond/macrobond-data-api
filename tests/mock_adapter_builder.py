@@ -34,8 +34,8 @@ class MockAdapterBuilder:
     def build(self) -> Tuple[MockAdapter, WebApi, Session, _AuthClient]:
         session = Session("", "", api_url=api_url, authorization_url=authorization_url)
 
-        self._mockAdapter = mockAdapter = MockAdapter(self.responses, self.urls)
-        session.requests_session.mount("https://", mockAdapter)
+        self._mockAdapter = mock_adapter = MockAdapter(self.responses, self.urls)
+        session.requests_session.mount("https://", mock_adapter)
         auth_client = session._auth_client
         auth_client.leeway = self.leeway
 
@@ -52,9 +52,7 @@ class MockAdapterBuilder:
         else:
             auth_client.is_expired_get_time = lambda: 0
 
-        webApi = WebApi(session)
-
-        return mockAdapter, webApi, session, auth_client
+        return mock_adapter, WebApi(session), session, auth_client
 
     def set_no_assert(self) -> "MockAdapterBuilder":
         self.no_assert = True

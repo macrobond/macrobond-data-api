@@ -20,12 +20,6 @@ from ._metadata import _Metadata
 from .configuration import Configuration
 
 
-_socks_import_error: Optional[ImportError] = None
-try:
-    import socks as _
-except ImportError as ex:
-    _socks_import_error = ex
-
 if TYPE_CHECKING:  # pragma: no cover
     from requests import Response
 
@@ -115,8 +109,6 @@ class Session:
 
         self.requests_session = RequestsSession()
         if proxy:
-            if proxy.lower().startswith("socks5://") and _socks_import_error:
-                raise _socks_import_error
             self.requests_session.proxies = {"https": proxy, "http": proxy}
 
         self._auth_client = _AuthClient(username, password, scopes, authorization_url, self)

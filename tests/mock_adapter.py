@@ -29,7 +29,7 @@ class MockAdapter(BaseAdapter):
     ) -> Response:
 
         if self.index >= len(self.urls_expected):
-            raise ValueError("To many requests url:", request.url)
+            raise ValueError("Too many requests urls:", request.url)
 
         assert self.urls_expected[self.index] == request.url, (
             "\n" + "\n".join(self.urls_expected) + f"\n index: {str(self.index)}"

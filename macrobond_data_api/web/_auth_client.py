@@ -1,21 +1,12 @@
 import time
 from typing import Any, Dict, Sequence, Optional, TYPE_CHECKING
 
-from .auth_error import AuthFetchTokenError, AuthDiscoveryError, AuthInvalidCredentialsError
+from .auth_exceptions import AuthFetchTokenException, AuthDiscoveryException, AuthInvalidCredentialsException
 
 if TYPE_CHECKING:  # pragma: no cover
     from .scope import Scope
     from .session import Session
     from requests.models import PreparedRequest
-
-
-class _RequestsAuth:
-    def __init__(self) -> None:
-        self.access_token = ""
-
-    def __call__(self, r: "PreparedRequest") -> "PreparedRequest":
-        r.headers["Authorization"] = "Bearer " + self.access_token
-        return r
 
 
 class _AuthClient:
@@ -29,7 +20,8 @@ class _AuthClient:
         self.authorization_url = authorization_url
         self.token_endpoint: Optional[str] = None
         self.session = session
-        self.requests_auth = _RequestsAuth()
+        self.requests_auth = self._requests_auth
+        self.access_token = ""
         self.token_response: Optional[Dict[str, Any]] = None
         self.leeway = 60
         self.expires_at: Optional[int] = None
@@ -60,56 +52,56 @@ class _AuthClient:
         )
 
         if response.status_code not in [200, 400]:
-            raise AuthFetchTokenError("status code is not 200 or 400")
+            raise AuthFetchTokenException("status code is not 200 or 400")
 
         try:
             json = self.token_response = response.json()
-        except BaseException as base_exception:
-            raise AuthFetchTokenError("not valid json") from base_exception
+        except Exception as ex:
+            raise AuthFetchTokenException("not valid json") from ex
 
         if not isinstance(json, dict):
-            raise AuthFetchTokenError("no root obj in json")
+            raise AuthFetchTokenException("no root obj in json")
 
         if response.status_code == 400:
             error = json.get("error")
             if error == "invalid_client":
-                raise AuthInvalidCredentialsError("invalid client credentials")
+                raise AuthInvalidCredentialsException("invalid client credentials")
             if isinstance(error, str):
-                raise AuthFetchTokenError("error: " + error)
-            raise AuthFetchTokenError("no error in response")
+                raise AuthFetchTokenException("error: " + error)
+            raise AuthFetchTokenException("no error in response")
 
         if json.get("token_type") and json["token_type"] != "Bearer":
-            raise AuthFetchTokenError("token_type is not Bearer")
+            raise AuthFetchTokenException("token_type is not Bearer")
 
         if json.get("expires_at"):
             self.expires_at = int(json["expires_at"])
         elif json.get("expires_in"):
             self.expires_at = int(self.fetch_token_get_time()) + int(json["expires_in"])
         else:
-            raise AuthFetchTokenError("no expires_at or expires_in")
+            raise AuthFetchTokenException("no expires_at or expires_in")
 
         if not json.get("access_token"):
-            raise AuthFetchTokenError("No access_token")
+            raise AuthFetchTokenException("No access_token")
 
-        self.requests_auth.access_token = json["access_token"]
+        self.access_token = json["access_token"]
 
     def _discovery(self, url: str) -> str:
 
         response = self.session.requests_session.get(url + ".well-known/openid-configuration")
         if response.status_code != 200:
-            raise AuthDiscoveryError("status code is not 200")
+            raise AuthDiscoveryException("status code is not 200")
 
         try:
             json: Optional[Dict[str, Any]] = response.json()
-        except BaseException as base_exception:
-            raise AuthDiscoveryError("not valid json.") from base_exception
+        except Exception as ex:
+            raise AuthDiscoveryException("not valid json.") from ex
 
         if not isinstance(json, dict):
-            raise AuthDiscoveryError("no root obj in json.")
+            raise AuthDiscoveryException("no root obj in json.")
 
         token_endpoint: Optional[str] = json.get("token_endpoint")
         if token_endpoint is None:
-            raise AuthDiscoveryError("token_endpoint in root obj.")
+            raise AuthDiscoveryException("token_endpoint in root obj.")
 
         return token_endpoint
 
@@ -118,3 +110,7 @@ class _AuthClient:
             return True
         expiration_threshold = self.expires_at - self.leeway
         return expiration_threshold < self.is_expired_get_time()
+
+    def _requests_auth(self, r: "PreparedRequest") -> "PreparedRequest":
+        r.headers["Authorization"] = "Bearer " + self.access_token
+        return r
