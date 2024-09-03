@@ -54,6 +54,10 @@ jobs:
       if: always()
       run: python scripts/test_setup.py
 
+    - name: Test pytest no_account
+      if: always()
+      run: python -m pytest -m no_account
+
     - name: Pdoc3
       if: always()
       run: python scripts/lint_tools.py --pdoc3

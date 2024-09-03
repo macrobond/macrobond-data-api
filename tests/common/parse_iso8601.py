@@ -6,6 +6,7 @@ from macrobond_data_api.common.types.format_exception import FormatException
 from macrobond_data_api.common.types._parse_iso8601 import _parse_iso8601
 
 
+@pytest.mark.no_account
 def test_parse_iso8601() -> None:
     assert _parse_iso8601("2000") == datetime(2000, 1, 1)
     assert _parse_iso8601("200002") == datetime(2000, 2, 1)

@@ -12,8 +12,21 @@ async def _coverage(work_item: WorkItem, run_comand: str, dir_name: str) -> None
         "report -m",
         "erase",
     )
-    file_url = os.path.join(os.getcwd(), "htmlcov", dir_name, "index.html").replace("\\", "/")
-    work_item.print("file:///" + file_url)
+
+    def file_url(url: str) -> str:
+        return "file:///" + url.replace("\\", "/")
+
+    def file_url_to_htmlcov(dir_name: str) -> str:
+        return file_url(os.path.join(os.getcwd(), "htmlcov", dir_name, "index.html"))
+
+    with open(os.path.join(os.getcwd(), "htmlcov", "index.html"), "w", encoding="utf8") as f:
+        f.write(
+            f'<a href="{file_url_to_htmlcov("com")}">com</a></br>'
+            + f'<a href="{file_url_to_htmlcov("web")}">web</a>'
+            + f'</br> <a href="{file_url_to_htmlcov("htmlcov")}">htmlcov</a></br>'
+        )
+
+    work_item.print(file_url(os.path.join(os.getcwd(), "htmlcov", "index.html")))
 
 
 class Coverage(WorkItem):

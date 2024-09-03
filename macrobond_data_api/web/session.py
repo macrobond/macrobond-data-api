@@ -1,8 +1,8 @@
-from typing import Callable, Dict, Optional, Any, TYPE_CHECKING, Sequence, Type, cast
+from typing import Dict, Optional, Any, TYPE_CHECKING, Sequence, Type, cast
 
-from authlib.integrations.requests_client import OAuth2Session
-from authlib.integrations.base_client.errors import InvalidTokenError, MissingTokenError
+from requests.sessions import Session as RequestsSession
 from macrobond_data_api.common.types import Metadata
+from macrobond_data_api.web._auth_client import _AuthClient
 
 from .web_types import (
     MetadataMethods,
@@ -18,6 +18,7 @@ from .scope import Scope
 from ._metadata_directory import _MetadataTypeDirectory
 from ._metadata import _Metadata
 from .configuration import Configuration
+
 
 _socks_import_error: Optional[ImportError] = None
 try:
@@ -78,15 +79,11 @@ class Session:
 
     @property
     def authorization_url(self) -> str:
-        return self.__authorization_url
+        return self._auth_client.authorization_url
 
     @property
     def token_endpoint(self) -> Optional[str]:
-        return self.__token_endpoint
-
-    @property
-    def auth2_session(self) -> OAuth2Session:
-        return self.__auth2_session
+        return self._auth_client.token_endpoint
 
     def __init__(
         self,
@@ -96,21 +93,12 @@ class Session:
         api_url: str = None,
         authorization_url: str = None,
         proxy: str = None,
-        test_auth2_session: Any = None,
     ) -> None:
         if api_url is None:
             api_url = Configuration._default_api_url
 
         if authorization_url is None:
             authorization_url = Configuration._default_authorization_url
-
-        self.__proxies: Optional[Dict[str, str]] = None
-        if proxy:
-            if proxy.lower().startswith("socks5://") and _socks_import_error:
-                raise _socks_import_error
-            self.__proxies = {"https": proxy, "http": proxy}
-
-        self.__token_endpoint: Optional[str] = None
 
         if not self._is_https_url(authorization_url):
             raise ValueError("authorization_url is not https")
@@ -120,16 +108,18 @@ class Session:
 
         if not authorization_url.endswith("/"):
             authorization_url = authorization_url + "/"
-        self.__authorization_url = authorization_url
 
         if not api_url.endswith("/"):
             api_url = api_url + "/"
         self.__api_url = api_url
 
-        if test_auth2_session is None:
-            self.__auth2_session = OAuth2Session(username, password, scope=[x.value for x in scopes])
-        else:
-            self.__auth2_session = test_auth2_session
+        self.requests_session = RequestsSession()
+        if proxy:
+            if proxy.lower().startswith("socks5://") and _socks_import_error:
+                raise _socks_import_error
+            self.requests_session.proxies = {"https": proxy, "http": proxy}
+
+        self._auth_client = _AuthClient(username, password, scopes, authorization_url, self)
 
         self.__metadata = MetadataMethods(self)
         self.__search = SearchMethods(self)
@@ -147,18 +137,9 @@ class Session:
     def close(self) -> None:
         if not self._is_open:
             return
-        self.auth2_session.close()
+        self.requests_session.close()
         self._metadata_type_directory.close()
         self._is_open = False
-
-    def fetch_token(self) -> None:
-        if not self._is_open:
-            raise ValueError("Session is not open")
-
-        if self.token_endpoint is None:
-            self.__token_endpoint = self.discovery(self.authorization_url)
-
-        self.auth2_session.fetch_token(self.token_endpoint, proxies=self.__proxies, grant_type="client_credentials")
 
     def get(self, url: str, params: Dict[str, Any] = None, stream: bool = False) -> "Response":
         return self._request("GET", url, params, None, stream)
@@ -224,55 +205,29 @@ class Session:
         if not self._is_open:
             raise ValueError("Session is not open")
 
-        def http() -> "Response":
-            return self.auth2_session.request(
+        self._auth_client.fetch_token_if_necessary()
+
+        response = self.requests_session.request(
+            method,
+            self.api_url + url,
+            params=params,
+            json=json,
+            stream=stream,
+            headers={"Accept": "application/json"},
+            auth=self._auth_client.requests_auth,
+        )
+
+        if response.status_code == 401:
+            self._auth_client.fetch_token()
+            response = self.requests_session.request(
                 method,
                 self.api_url + url,
                 params=params,
                 json=json,
                 stream=stream,
-                proxies=self.__proxies,
                 headers={"Accept": "application/json"},
+                auth=self._auth_client.requests_auth,
             )
-
-        return self._if_status_code_401_fetch_token_and_retry(http)
-
-    def discovery(self, url: str) -> str:
-        if not self._is_open:
-            raise ValueError("Session is not open")
-
-        response = self.auth2_session.request(
-            "GET", url + ".well-known/openid-configuration", True, proxies=self.__proxies
-        )
-        if response.status_code != 200:
-            raise Exception("discovery Exception, status code is not 200")
-
-        try:
-            json: Optional[Dict[str, Any]] = response.json()
-        except BaseException as base_exception:
-            raise Exception("discovery Exception, not valid json.") from base_exception
-
-        if not isinstance(json, dict):
-            raise Exception("discovery Exception, no root obj in json.")
-
-        token_endpoint: Optional[str] = json.get("token_endpoint")
-        if token_endpoint is None:
-            raise Exception("discovery Exception, token_endpoint in root obj.")
-
-        return token_endpoint
-
-    def _if_status_code_401_fetch_token_and_retry(self, http: Callable[[], "Response"]) -> "Response":
-        try:
-            response = http()
-        except MissingTokenError:
-            self.fetch_token()
-            return http()
-        except InvalidTokenError:
-            self.fetch_token()
-            return http()
-        if response.status_code == 401:
-            self.fetch_token()
-            response = http()
         return response
 
     def _create_metadata(self, data: Optional[Dict[str, Any]]) -> Metadata:
@@ -287,5 +242,5 @@ class Session:
 
         # pylint: enable=W0613
 
-        if len(self.auth2_session.hooks["response"]) == 0:
-            self.auth2_session.hooks["response"].append(print_response)
+        if len(self.requests_session.hooks["response"]) == 0:
+            self.requests_session.hooks["response"].append(print_response)

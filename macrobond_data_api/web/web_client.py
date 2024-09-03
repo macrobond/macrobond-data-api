@@ -182,7 +182,7 @@ class WebClient(Client["WebApi"]):
         if self.has_closed:
             raise ValueError("WebClient can not be reopend")
         if self.__api is None:
-            self.__session.fetch_token()
+            self.__session._auth_client.fetch_token_if_necessary()
             self.__api = WebApi(self.__session)
         return self.__api
 

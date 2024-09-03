@@ -3,7 +3,7 @@ import sys
 from typing import TYPE_CHECKING, Optional, List
 
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from macrobond_data_api.common.api import Api
 
 __MACROBOND_DATA_API_CURRENT_API: Optional["Api"] = None

@@ -1,150 +1,33 @@
 # pylint: disable = unused-argument
 
 from datetime import datetime, timezone
-from unittest.mock import Mock
 import os
-from typing import Any, Sequence, Union, Generator, Dict, List, Tuple
+from typing import Any, Sequence, Union, Generator, Dict
 import collections.abc
 import warnings
-
-from json import dumps as json_dump
-
-from authlib.integrations.requests_client import OAuth2Session
 
 from filelock import FileLock
 
 from pytest import fixture, FixtureRequest, Session as PytestSession
 import pandas
 
-from requests import Response
-from requests.adapters import BaseAdapter
-from requests.models import Response as ResponseModel
-
 from macrobond_data_api.web.session import Session
 from macrobond_data_api.common import Api
 from macrobond_data_api.web import WebClient, WebApi
 from macrobond_data_api.com import ComClient, ComApi
 
+from .mock_adapter_builder import MockAdapterBuilder
+
+
+def pytest_configure(config):
+    config.addinivalue_line(
+        "markers",
+        "no_account: marks tests that can run without a user, and without internet connection",
+    )
+
 
 def pytest_sessionstart(session: PytestSession) -> None:
     print("Running in timezone:", datetime.now().astimezone().strftime("%Z %z"))
-
-
-class MockAdapterBuilder:
-
-    urls: List[str] = []
-    responses: List[Response] = []
-
-    # this are just test tokens !
-    test_token_1 = (
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoidGVzdDEifQ.fkwEean9sw5NhO2pRmRpQgEiTWYeQwgVNl5QxQLeYPo"
-    )
-    test_token_2 = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c"
-    test_token_3 = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoidGVzdDMiLCJleHAiOjE3MjQ4NDIxMjh9.e5qnFRDhBhpELGsjbFY7W85ESML4HVmiRf0un3XfIHo"
-
-    def build(self) -> Tuple["MockAdapter", WebApi]:
-        mockAdapter = MockAdapter(self.responses, self.urls)
-
-        auth_session = OAuth2Session("username", "password", scope=[])
-        auth_session.mount("https://", mockAdapter)
-
-        session = Session("", "", test_auth2_session=auth_session)
-
-        webApi = WebApi(session)
-
-        return mockAdapter, webApi
-
-    def add_response(self, url: str, status_code: int, json: Any = None) -> "MockAdapterBuilder":
-        response = ResponseModel()
-        response.status_code = status_code
-        response.history = []
-        if json:
-            response._content = json_dump(json).encode()
-
-        self.responses.append(response)
-        self.urls.append(url)
-
-        return self
-
-    def add_discovery(self) -> "MockAdapterBuilder":
-        return self.add_response(
-            "https://apiauth.macrobondfinancial.com/mbauth/.well-known/openid-configuration",
-            200,
-            {
-                "token_endpoint": "https://get_a_nice_token",
-            },
-        )
-
-    def add_series_response(self, name: str, url: str = None) -> "MockAdapterBuilder":
-        if url is None:
-            url = f"https://api.macrobondfinancial.com/v1/series/fetchseries?n={name}"
-        return self.add_response(
-            url,
-            200,
-            [
-                {
-                    "dates": ["2021-01-01", "2021-01-02"],
-                    "values": [1.0, 2.0],
-                    "metadata": {"PrimName": name},
-                }
-            ],
-        )
-
-    def add_token(self, access_token: str, expires_in: int = None) -> "MockAdapterBuilder":
-        if expires_in is None:
-            expires_in = 3600
-        return self.add_response(
-            "https://get_a_nice_token/",
-            200,
-            {
-                "access_token": access_token,
-                "expires_in": expires_in,
-                "token_type": "Bearer",
-                "scope": "mb.test",
-            },
-        )
-
-
-class MockAdapter(BaseAdapter):
-
-    def __init__(self, responses: List[Response], urls: List[str]) -> None:
-        self.mock = Mock()
-        self.mock.send.side_effect = responses
-        self.index = 0
-        self.urls = urls
-
-        assert len(responses) == len(urls)
-
-        super().__init__()
-
-    def send(
-        self,
-        request: Any,
-        stream: Any = False,
-        timeout: Any = None,
-        verify: Any = True,
-        cert: Any = None,
-        proxies: Any = None,
-    ) -> Response:
-
-        if self.index >= len(self.urls):
-            raise ValueError("To many requests url:", request.url)
-
-        assert self.urls[self.index] == request.url
-
-        self.index += 1
-
-        response = self.mock.send()
-        assert response is not None
-        return response
-
-    def close(self) -> None:
-        pass
-
-
-@fixture(scope="function", name="get_mock_adapter_builder")
-def _get_mock_adapter_builder() -> Generator[MockAdapterBuilder, None, None]:
-    yield MockAdapterBuilder()
 
 
 class _ConfTest:
@@ -158,6 +41,13 @@ class _ConfTest:
         self.authorization_url = conf.get("authorization_url", Session.configuration._default_authorization_url)
         self.username = conf.get("username", None)
         self.password = conf.get("password", None)
+
+
+@fixture(scope="function", name="mab")
+def _test_mab() -> Generator[MockAdapterBuilder, None, None]:
+    mab = MockAdapterBuilder()
+    yield mab
+    mab.assert_this()
 
 
 @fixture(autouse=True, scope="session")
@@ -319,9 +209,11 @@ def _test_metadata_implment(
                             continue
                     except TypeError:
                         ...
-                assert web_datetime == com_datetime, "key " + key
+                assert web_datetime == com_datetime, f"key {key} - web {str(web_datetime)} != com {str(com_datetime)}"
             else:
-                assert web_obj.metadata[key] == com_obj.metadata[key], "key " + key
+                assert (
+                    web_obj.metadata[key] == com_obj.metadata[key]
+                ), f"key {key} - web {str(web_obj.metadata[key])} != com {str(com_obj.metadata[key])}"
 
         web_obj.metadata = {}
         com_obj.metadata = {}
