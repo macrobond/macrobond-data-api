@@ -162,9 +162,6 @@ def _test_metadata_implment(
     can_be_empty: bool = False,
     ignore_keys: Sequence[object] = None,
 ) -> None:
-    if ignore_keys is None:
-        ignore_keys = []
-
     if not isinstance(web, collections.abc.Sequence):
         web = [web]
         assert not isinstance(com, collections.abc.Sequence)
@@ -190,26 +187,11 @@ def _test_metadata_implment(
             keys.remove("DisplayUnit")
 
         for key in keys:
-            if key in ignore_keys:
+            if ignore_keys and key in ignore_keys:
                 continue
 
             if isinstance(web_obj.metadata[key], datetime):
-                web_datetime = _remove_microsecond(web_obj.metadata[key])
-                if web_datetime.tzinfo:
-                    web_datetime = web_datetime.astimezone(timezone.utc)
-
-                com_datetime = _remove_microsecond(com_obj.metadata[key])
-                if com_datetime.tzinfo:
-                    com_datetime = com_datetime.astimezone(timezone.utc)
-
-                if web_datetime != com_datetime:
-                    try:
-                        diff = (web_datetime - com_datetime).total_seconds()
-                        if diff == 0:
-                            continue
-                    except TypeError:
-                        ...
-                assert web_datetime == com_datetime, f"key {key} - web {str(web_datetime)} != com {str(com_datetime)}"
+                _test_meta_datetime(web_obj, com_obj, key)
             else:
                 assert (
                     web_obj.metadata[key] == com_obj.metadata[key]
@@ -217,3 +199,22 @@ def _test_metadata_implment(
 
         web_obj.metadata = {}
         com_obj.metadata = {}
+
+
+def _test_meta_datetime(web_obj: Any, com_obj: Any, key: str) -> None:
+    web_datetime = _remove_microsecond(web_obj.metadata[key])
+    if web_datetime.tzinfo:
+        web_datetime = web_datetime.astimezone(timezone.utc)
+
+    com_datetime = _remove_microsecond(com_obj.metadata[key])
+    if com_datetime.tzinfo:
+        com_datetime = com_datetime.astimezone(timezone.utc)
+
+    if web_datetime != com_datetime:
+        try:
+            diff = (web_datetime - com_datetime).total_seconds()
+            if diff == 0:
+                return
+        except TypeError:
+            ...
+    assert web_datetime == com_datetime, f"key {key} - web {str(web_datetime)} != com {str(com_datetime)}"

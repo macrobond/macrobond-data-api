@@ -45,10 +45,10 @@ def test(state: DataPackageListState, mab: MAB) -> None:
         nonlocal hitponts
         hitponts -= 1
 
-    _, webApi, _, _ = mab.auth().get_data_package_list(raw).build()
+    _, web_api, _, _ = mab.auth().get_data_package_list(raw).build()
 
     with warnings.catch_warnings():
         warnings.simplefilter("ignore", DeprecationWarning)
-        webApi.get_data_package_list_iterative(body_callback, items_callback)
+        web_api.get_data_package_list_iterative(body_callback, items_callback)
 
     assert hitponts == 0

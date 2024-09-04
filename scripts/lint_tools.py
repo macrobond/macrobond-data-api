@@ -21,7 +21,7 @@ class Mypy(WorkItem):
 
 class Pylint(WorkItem):
     async def run(self) -> None:
-        await self.python_run("pylint", "macrobond_data_api -f colorized -r y")
+        await self.python_run("pylint", "macrobond_data_api tests -f colorized -r y")
 
 
 class PyCodeStyle(WorkItem):

@@ -28,9 +28,9 @@ def get_json(state: DataPackageListState) -> Dict[Any, Any]:
 def test_1(state: DataPackageListState, mab: MAB) -> None:
     hitponts = 1
 
-    _, webApi, _, _ = mab.auth().get_data_package_list(get_json(state)).build()
+    _, web_api, _, _ = mab.auth().get_data_package_list(get_json(state)).build()
 
-    with webApi.get_data_package_list_chunked() as context:
+    with web_api.get_data_package_list_chunked() as context:
         assert context.download_full_list_on_or_after == datetime(2000, 2, 1, 4, 5, 6)
         assert context.time_stamp_for_if_modified_since == datetime(2000, 2, 2, 4, 5, 6)
         assert context.state == state
@@ -52,9 +52,9 @@ def test_1(state: DataPackageListState, mab: MAB) -> None:
 def test_2(state: DataPackageListState, mab: MAB) -> None:
     hitponts = 1
 
-    _, webApi, _, _ = mab.auth().get_data_package_list(get_json(state)).build()
+    _, web_api, _, _ = mab.auth().get_data_package_list(get_json(state)).build()
 
-    with webApi.get_data_package_list_chunked(chunk_size=1) as context:
+    with web_api.get_data_package_list_chunked(chunk_size=1) as context:
         assert context.download_full_list_on_or_after == datetime(2000, 2, 1, 4, 5, 6)
         assert context.time_stamp_for_if_modified_since == datetime(2000, 2, 2, 4, 5, 6)
         assert context.state == state
