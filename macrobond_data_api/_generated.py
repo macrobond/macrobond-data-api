@@ -626,7 +626,7 @@ def upload_series(
         The values of the series.
     start_date_or_dates : `Union[datetime, Sequence[datetime]]`
         The start date of the series or dates of the series.
-    dayMask : `macrobond_data_api.common.enums.series_weekdays.SeriesWeekdays`
+    day_mask : `macrobond_data_api.common.enums.series_weekdays.SeriesWeekdays`
         The days of the week used for daily series. The default is Monday to Friday.
     metadata : `Optional[dict]`
         The metadata of the series.
