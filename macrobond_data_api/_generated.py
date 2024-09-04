@@ -603,7 +603,7 @@ def upload_series(
     frequency: SeriesFrequency,
     values: Sequence[Optional[float]],
     start_date_or_dates: Union[datetime, Sequence[datetime]],
-    dayMask: SeriesWeekdays = SeriesWeekdays.MONDAY_TO_FRIDAY,
+    day_mask: SeriesWeekdays = SeriesWeekdays.MONDAY_TO_FRIDAY,
     metadata: Optional[Dict[str, Any]] = None,
     forecast_flags: Optional[Sequence[bool]] = None,
 ) -> None:
@@ -638,5 +638,5 @@ def upload_series(
     `None`
     """
     return _get_api().upload_series(
-        name, description, region, category, frequency, values, start_date_or_dates, dayMask, metadata, forecast_flags
+        name, description, region, category, frequency, values, start_date_or_dates, day_mask, metadata, forecast_flags
     )

@@ -133,10 +133,10 @@ def _parse_body(
 
 
 class DataPackageListContextManager:
-    def __init__(self, if_modified_since: Optional[datetime], chunk_size: int, webApi: "WebApi") -> None:
+    def __init__(self, if_modified_since: Optional[datetime], chunk_size: int, web_api: "WebApi") -> None:
         self._if_modified_since = if_modified_since
         self.chunk_size = chunk_size
-        self._webApi: Optional["WebApi"] = webApi
+        self._web_api: Optional["WebApi"] = web_api
         self._iterator_started = False
         self._response: Optional["Response"] = None
 
@@ -145,12 +145,12 @@ class DataPackageListContextManager:
         if self._if_modified_since:
             params["ifModifiedSince"] = self._if_modified_since.isoformat()
 
-        if self._webApi is None:
+        if self._web_api is None:
             raise Exception("obj is closed")
 
         try:
-            session = self._webApi._session
-            self._webApi = None
+            session = self._web_api._session
+            self._web_api = None
             self._response = session.get_or_raise("v1/series/getdatapackagelist", params=params, stream=True)
 
             ijson_parse = ijson.parse(session._response_to_file_object(self._response))
@@ -180,7 +180,7 @@ class DataPackageListContextManager:
             raise e
 
     def __exit__(self, exception_type: Any, exception_value: Any, traceback: Any) -> None:
-        self._webApi = None
+        self._web_api = None
         if self._response:
             self._response.close()
             self._response = None

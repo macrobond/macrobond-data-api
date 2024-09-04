@@ -23,9 +23,9 @@ def test(state: DataPackageListState, mab: MAB) -> None:
         ],
     }
 
-    _, webApi, _, _ = mab.auth().get_data_package_list(raw).build()
+    _, web_api, _, _ = mab.auth().get_data_package_list(raw).build()
 
-    r = webApi.get_data_package_list()
+    r = web_api.get_data_package_list()
 
     assert r.download_full_list_on_or_after == datetime(2000, 2, 1, 4, 5, 6)
     assert r.time_stamp_for_if_modified_since == datetime(2000, 2, 2, 4, 5, 6)

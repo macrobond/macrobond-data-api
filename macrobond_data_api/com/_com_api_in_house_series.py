@@ -23,7 +23,7 @@ def upload_series(
     frequency: SeriesFrequency,
     values: Sequence[Optional[float]],
     start_date_or_dates: Union[datetime, Sequence[datetime]],
-    dayMask: SeriesWeekdays = SeriesWeekdays.MONDAY_TO_FRIDAY,
+    day_mask: SeriesWeekdays = SeriesWeekdays.MONDAY_TO_FRIDAY,
     metadata: Optional[Dict[str, Any]] = None,
     forecast_flags: Optional[Sequence[bool]] = None,
 ) -> None:
@@ -48,7 +48,7 @@ def upload_series(
         _set_metadata(metadata, "Region", region)
         _set_metadata(metadata, "IHCategory", category)
         _set_metadata(metadata, "Frequency", frequency.name)
-        _set_metadata(metadata, "DayMask", dayMask)
+        _set_metadata(metadata, "DayMask", day_mask)
 
         for key, value in metadata.items():
             if isinstance(value, datetime):
@@ -73,7 +73,7 @@ def upload_series(
             region,
             category,
             frequency,
-            dayMask,
+            day_mask,
             start_date_or_dates,
             values,
             forecast_flags,
@@ -86,7 +86,7 @@ def upload_series(
             region,
             category,
             frequency,
-            dayMask,
+            day_mask,
             start_date_or_dates,
             values,
             com_metadata,
