@@ -78,9 +78,8 @@ setuptools.setup(
     python_requires=">=3.8",
     install_requires=[
         "keyring>=24.3.0",
-        "Authlib>=1.2.0",
         "requests>=2.32.3",
-        "ijson>=3.2.3",
+        "ijson>=3.3.0",
         "pywin32>=306; os_name=='nt'",
     ],
     extras_require={
@@ -90,10 +89,10 @@ setuptools.setup(
             "pylint==3.2.7",
             "pycodestyle==2.12.1",
             "pdoc3==0.10.0",
-            "build>=1.1.1",
+            "build==1.2.1",
             "pytest==8.3.2",
             "pytest-xdist==3.6.1",
-            "coverage>=7.3.2",
+            "coverage==7.6.1",
             "black[jupyter]==24.8.0",
             "requests[socks]>=2.32.3",
             "nbconvert==7.16.4",

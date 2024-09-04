@@ -4,16 +4,16 @@ from macrobond_data_api.common import Api
 
 @pytest.mark.parametrize("api", ["web", "com"], indirect=True)
 def test_get_attribute_information(api: Api) -> None:
-    with pytest.raises(BaseException):
+    with pytest.raises(Exception):
         api.metadata_get_attribute_information("Description____")
 
 
 @pytest.mark.parametrize("api", ["web", "com"], indirect=True)
 def test_list_values(api: Api) -> None:
-    with pytest.raises(BaseException):
+    with pytest.raises(Exception):
         api.metadata_list_values("__RateType")
 
-    with pytest.raises(BaseException):
+    with pytest.raises(Exception):
         api.metadata_list_values("Description")
 
 
