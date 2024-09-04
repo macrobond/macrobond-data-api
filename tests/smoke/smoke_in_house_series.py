@@ -1,18 +1,18 @@
 from datetime import datetime, timezone
 
-
 import pytest
+import pandas as pd
+
 from macrobond_data_api.common import Api
 from macrobond_data_api.common.enums import SeriesFrequency
-import pandas as pd
 
 
 def _try_delete_series(api: Api, *names: str) -> None:
     for name in names:
         try:
             api.delete_serie(name)
-        except:  # noqa: E722
-            ...
+        except Exception:  # pylint: disable=broad-exception-caught
+            pass
 
 
 @pytest.mark.usefixtures("lock_test")

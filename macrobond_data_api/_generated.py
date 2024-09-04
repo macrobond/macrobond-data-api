@@ -603,7 +603,7 @@ def upload_series(
     frequency: SeriesFrequency,
     values: Sequence[Optional[float]],
     start_date_or_dates: Union[datetime, Sequence[datetime]],
-    dayMask: SeriesWeekdays = SeriesWeekdays.MONDAY_TO_FRIDAY,
+    day_mask: SeriesWeekdays = SeriesWeekdays.MONDAY_TO_FRIDAY,
     metadata: Optional[Dict[str, Any]] = None,
     forecast_flags: Optional[Sequence[bool]] = None,
 ) -> None:
@@ -626,7 +626,7 @@ def upload_series(
         The values of the series.
     start_date_or_dates : `Union[datetime, Sequence[datetime]]`
         The start date of the series or dates of the series.
-    dayMask : `macrobond_data_api.common.enums.series_weekdays.SeriesWeekdays`
+    day_mask : `macrobond_data_api.common.enums.series_weekdays.SeriesWeekdays`
         The days of the week used for daily series. The default is Monday to Friday.
     metadata : `Optional[dict]`
         The metadata of the series.
@@ -638,5 +638,5 @@ def upload_series(
     `None`
     """
     return _get_api().upload_series(
-        name, description, region, category, frequency, values, start_date_or_dates, dayMask, metadata, forecast_flags
+        name, description, region, category, frequency, values, start_date_or_dates, day_mask, metadata, forecast_flags
     )

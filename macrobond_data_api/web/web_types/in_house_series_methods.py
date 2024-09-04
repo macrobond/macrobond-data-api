@@ -34,7 +34,7 @@ class InHouseSeriesMethods:
         self.__session.delete_or_raise("v1/series/deleteseries", params={"n": entitie_name})
 
     # Post /v1/series/uploadseries
-    def upload_series(self, seriesRequest: "SeriesRequest") -> None:
+    def upload_series(self, series_request: "SeriesRequest") -> None:
         """
         Upload an in-house time series.
         In the metadata, PrimName, Frequency, IHCategory, Region and Description must be set.
@@ -52,7 +52,7 @@ class InHouseSeriesMethods:
 
             403 Forbidden. Not authorized.
         """
-        self.__session.post_or_raise("v1/series/uploadseries", json=seriesRequest)
+        self.__session.post_or_raise("v1/series/uploadseries", json=series_request)
 
     # Get /v1/seriestree/getseriesstoragelocations
     def get_series_storage_locations(self) -> List["SeriesStorageLocationResponse"]:

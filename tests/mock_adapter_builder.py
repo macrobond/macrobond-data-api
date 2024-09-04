@@ -13,41 +13,41 @@ from macrobond_data_api.web import WebApi
 
 from .mock_adapter import MockAdapter
 
-api_url = "https://api/"
-authorization_url = "https://auth/"
-discovery_url = "https://auth/.well-known/openid-configuration"
-token_endpoint = "https://auth/get_a_nice_token"
+API_URL = "https://api/"
+AUTHORIZATION_URL = "https://auth/"
+DISCOVERY_URL = "https://auth/.well-known/openid-configuration"
+TOKEN_ENDPOINT = "https://auth/get_a_nice_token"
 
 
 class MockAdapterBuilder:
 
     def __init__(self) -> None:
-        self.urls: List[str] = []
-        self.responses: List[Response] = []
+        self._urls: List[str] = []
+        self._responses: List[Response] = []
         self._access_token_index = 1
-        self.leeway = 0
-        self.fetch_token_get_time: Optional[List[int]] = None
-        self.is_expired_get_time: Optional[List[int]] = None
-        self._mockAdapter: Optional[MockAdapter] = None
-        self.no_assert = False
+        self._leeway = 0
+        self._fetch_token_get_time: Optional[List[int]] = None
+        self._is_expired_get_time: Optional[List[int]] = None
+        self._mock_adapter: Optional[MockAdapter] = None
+        self._no_assert = False
 
     def build(self) -> Tuple[MockAdapter, WebApi, Session, _AuthClient]:
-        session = Session("", "", api_url=api_url, authorization_url=authorization_url)
+        session = Session("", "", api_url=API_URL, authorization_url=AUTHORIZATION_URL)
 
-        self._mockAdapter = mock_adapter = MockAdapter(self.responses, self.urls)
+        self._mock_adapter = mock_adapter = MockAdapter(self._responses, self._urls)
         session.requests_session.mount("https://", mock_adapter)
         auth_client = session._auth_client
-        auth_client.leeway = self.leeway
+        auth_client.leeway = self._leeway
 
         mock = Mock()
-        if self.fetch_token_get_time:
-            mock.fetch_token_get_time.side_effect = self.fetch_token_get_time
+        if self._fetch_token_get_time:
+            mock.fetch_token_get_time.side_effect = self._fetch_token_get_time
             auth_client.fetch_token_get_time = mock.fetch_token_get_time
         else:
             auth_client.fetch_token_get_time = lambda: 0
 
-        if self.is_expired_get_time:
-            mock.is_expired_get_time.side_effect = self.is_expired_get_time
+        if self._is_expired_get_time:
+            mock.is_expired_get_time.side_effect = self._is_expired_get_time
             auth_client.is_expired_get_time = mock.is_expired_get_time
         else:
             auth_client.is_expired_get_time = lambda: 0
@@ -55,19 +55,19 @@ class MockAdapterBuilder:
         return mock_adapter, WebApi(session), session, auth_client
 
     def set_no_assert(self) -> "MockAdapterBuilder":
-        self.no_assert = True
+        self._no_assert = True
         return self
 
     def set_leeway(self, leeway: int) -> "MockAdapterBuilder":
-        self.leeway = leeway
+        self._leeway = leeway
         return self
 
     def set_fetch_token_get_time(self, fetch_token_get_time: List[int]) -> "MockAdapterBuilder":
-        self.fetch_token_get_time = fetch_token_get_time
+        self._fetch_token_get_time = fetch_token_get_time
         return self
 
     def set_is_expired_get_time(self, is_expired_get_time: List[int]) -> "MockAdapterBuilder":
-        self.is_expired_get_time = is_expired_get_time
+        self._is_expired_get_time = is_expired_get_time
         return self
 
     def response(
@@ -93,8 +93,8 @@ class MockAdapterBuilder:
             elif json is not None:
                 response._content = json_dump(json).encode()
 
-        self.responses.append(response)
-        self.urls.append(url)
+        self._responses.append(response)
+        self._urls.append(url)
 
         return self
 
@@ -123,10 +123,10 @@ class MockAdapterBuilder:
 
     def discovery(self) -> "MockAdapterBuilder":
         return self.response(
-            discovery_url,
+            DISCOVERY_URL,
             200,
             {
-                "token_endpoint": token_endpoint,
+                "token_endpoint": TOKEN_ENDPOINT,
             },
         )
 
@@ -138,7 +138,7 @@ class MockAdapterBuilder:
         self._access_token_index += 1
 
         return self.response(
-            token_endpoint,
+            TOKEN_ENDPOINT,
             200,
             {
                 "access_token": json_dump(
@@ -155,11 +155,11 @@ class MockAdapterBuilder:
         )
 
     def assert_this(self) -> None:
-        if self.no_assert:
+        if self._no_assert:
             return
 
-        assert self._mockAdapter
-        self._mockAdapter.assert_this()
+        assert self._mock_adapter
+        self._mock_adapter.assert_this()
 
 
 MAB = MockAdapterBuilder

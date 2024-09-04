@@ -102,10 +102,10 @@ def get_vintage_series(
         dates = [_parse_iso8601(x) for x in cast(List[str], response["dates"])]
 
         if include_times_of_change:
-            timesOfChange = response.get("timesOfChange")
-            if timesOfChange:
+            times_of_change = response.get("timesOfChange")
+            if times_of_change:
                 values_metadata = [
-                    {"RevisionTimeStamp": _optional_str_to_datetime(x)} for x in cast(List[str], timesOfChange)
+                    {"RevisionTimeStamp": _optional_str_to_datetime(x)} for x in cast(List[str], times_of_change)
                 ]
             else:
                 values_metadata = [{}] * len(values)
@@ -161,12 +161,12 @@ def get_nth_release(
         values = [float(x) if x is not None else x for x in cast(List[Optional[int]], response["values"])]
         metadata = session._create_metadata(response["metadata"])
         if include_times_of_change:
-            timesOfChange = response.get("timesOfChange")
-            if not timesOfChange or (len(values) != 0 and _optional_str_to_datetime(timesOfChange[0]) is None):
+            times_of_change = response.get("timesOfChange")
+            if not times_of_change or (len(values) != 0 and _optional_str_to_datetime(times_of_change[0]) is None):
                 values_metadata: Optional[ValuesMetadata] = [{}] * len(values)
             else:
                 values_metadata = [
-                    {"RevisionTimeStamp": _parse_iso8601(x)} if x else {} for x in cast(List[str], timesOfChange)
+                    {"RevisionTimeStamp": _parse_iso8601(x)} if x else {} for x in cast(List[str], times_of_change)
                 ]
         else:
             values_metadata = None

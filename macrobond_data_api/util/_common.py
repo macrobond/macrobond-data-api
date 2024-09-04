@@ -38,10 +38,10 @@ class SaveOutputToFile:
             print("Output saved to file:", self.path)
 
 
-_INQUIRY_DEFAULT = Literal["yes", "no", None]
+_InquiryDefault = Literal["yes", "no", None]
 
 
-def _inquiry(question: str, default: _INQUIRY_DEFAULT = "yes") -> bool:
+def _inquiry(question: str, default: _InquiryDefault = "yes") -> bool:
     valid = {"yes": True, "y": True, "no": False, "n": False}
     if default == "yes":
         prompt = " [Y/n] "

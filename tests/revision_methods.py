@@ -1,7 +1,8 @@
 from typing import Any, cast
 from datetime import datetime
 import pytest
-from pandas import Series as PdSeries, DataFrame
+
+from pandas import DataFrame  # , Series as PdSeries,
 from pandas.testing import assert_frame_equal
 from macrobond_data_api.common.types import GetEntitiesError
 from macrobond_data_api.common import Api

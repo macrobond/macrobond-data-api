@@ -9,7 +9,7 @@ disallow_any_generics = true
 warn_unused_ignores = true
 
 [[tool.mypy.overrides]]
-module = ["pandas.*", "ijson.*", "authlib.*", "socks.*"]
+module = ["pandas.*", "ijson.*"]
 ignore_missing_imports = true
 
 [tool.black]
