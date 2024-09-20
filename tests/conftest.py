@@ -9,6 +9,9 @@ import warnings
 from filelock import FileLock
 
 from pytest import fixture, FixtureRequest, Session as PytestSession
+
+from numpy.testing import assert_approx_equal
+
 import pandas
 
 from macrobond_data_api.web.session import Session
@@ -71,10 +74,10 @@ def _web_client_fixture() -> Generator[WebClient, None, None]:
         conf = _ConfTest(conf_path)
 
         yield WebClient(
-            api_url=conf.api_url,
-            authorization_url=conf.authorization_url,
-            username=conf.username,
-            password=conf.password,
+            api_url=conf.API_URL,
+            authorization_url=conf.AUTHORIZATION_URL,
+            username=conf.USERNAME,
+            password=conf.PASSWORD,
         )
     else:
         yield WebClient()
@@ -142,6 +145,11 @@ def _test_metadata() -> Any:
     return _test_metadata_implment
 
 
+@fixture(scope="session", name="test_values")
+def _test_values() -> Any:
+    return _test_values_implment
+
+
 def _remove_microsecond(datetime_: datetime) -> datetime:
     return datetime(
         datetime_.year,
@@ -153,6 +161,22 @@ def _remove_microsecond(datetime_: datetime) -> datetime:
         # web_vintage.metadata[key].microsecond,
         tzinfo=datetime_.tzinfo,
     )
+
+
+def _test_values_implment(
+    web_values: Sequence[Union[float, None]],
+    com_values: Sequence[Union[float, None]],
+) -> None:
+    assert isinstance(web_values, collections.abc.Sequence)
+    assert isinstance(com_values, collections.abc.Sequence)
+
+    assert len(web_values) == len(com_values)
+
+    for i, _ in enumerate(web_values):
+        if web_values[i] is None and com_values[i] is None:
+            continue
+        assert_approx_equal(web_values[i], com_values[i], significant=16)
+        web_values[i] = com_values[i]
 
 
 def _test_metadata_implment(

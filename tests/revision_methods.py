@@ -93,11 +93,15 @@ class TestCommon:
 
     # get_all_vintage_series
 
-    def test_get_all_vintage_series_1(self, web: WebApi, com: ComApi, test_metadata: Any) -> None:
+    def test_get_all_vintage_series_1(self, web: WebApi, com: ComApi, test_metadata: Any, test_values: Any) -> None:
         web_r = web.get_all_vintage_series("usgdp")
         com_r = com.get_all_vintage_series("usgdp")
 
         test_metadata(web_r, com_r)
+
+        for w_s, c_s in zip(web_r, com_r):
+            test_values(w_s.values, c_s.values)
+            w_s.values = c_s.values = []
 
         assert web_r == com_r
 
