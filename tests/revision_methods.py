@@ -101,7 +101,6 @@ class TestCommon:
 
         for w_s, c_s in zip(web_r, com_r):
             test_values(w_s.values, c_s.values)
-            w_s.values = c_s.values = []
 
         assert web_r == com_r
 

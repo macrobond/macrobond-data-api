@@ -40,10 +40,10 @@ class _ConfTest:
         with open(conf_path, "r", encoding="utf-8") as f:
             exec(f.read(), conf)  # pylint: disable=exec-used
 
-        self.api_url = conf.get("api_url", Session.configuration._default_api_url)
-        self.authorization_url = conf.get("authorization_url", Session.configuration._default_authorization_url)
-        self.username = conf.get("username", None)
-        self.password = conf.get("password", None)
+        self.api_url = conf.get("API_URL", Session.configuration._default_api_url)
+        self.authorization_url = conf.get("AUTHORIZATION_URL", Session.configuration._default_authorization_url)
+        self.username = conf.get("USERNAME", None)
+        self.password = conf.get("PASSWORD", None)
 
 
 @fixture(scope="function", name="mab")
@@ -74,10 +74,10 @@ def _web_client_fixture() -> Generator[WebClient, None, None]:
         conf = _ConfTest(conf_path)
 
         yield WebClient(
-            api_url=conf.API_URL,
-            authorization_url=conf.AUTHORIZATION_URL,
-            username=conf.USERNAME,
-            password=conf.PASSWORD,
+            api_url=conf.api_url,
+            authorization_url=conf.authorization_url,
+            username=conf.username,
+            password=conf.password,
         )
     else:
         yield WebClient()
