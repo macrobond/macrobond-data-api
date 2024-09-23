@@ -17,9 +17,12 @@ test_data = [
 
 
 @pytest.mark.parametrize("name", test_data)
-def test_1(name: str, web: WebApi, com: ComApi, test_metadata: Any) -> None:
+def test_1(name: str, web: WebApi, com: ComApi, test_metadata: Any, test_values: Any) -> None:
     web_r = web.get_all_vintage_series(name)
     com_r = com.get_all_vintage_series(name)
+
+    for w_s, c_s in zip(web_r, com_r):
+        test_values(w_s.values, c_s.values)
 
     assert_frame_equal(web_r.to_pd_data_frame(), com_r.to_pd_data_frame())
 

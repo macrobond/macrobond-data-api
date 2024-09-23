@@ -1,6 +1,6 @@
 # Coppy this file and name it _conftest.py, then uncomment the following lines for configuration.
 
-# api_url = ""
-# authorization_url = ""
-# username = ""
-# password = ""
+# API_URL = ""
+# AUTHORIZATION_URL = ""
+# USERNAME = ""
+# PASSWORD = ""

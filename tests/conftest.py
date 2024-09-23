@@ -9,6 +9,9 @@ import warnings
 from filelock import FileLock
 
 from pytest import fixture, FixtureRequest, Session as PytestSession
+
+from numpy.testing import assert_approx_equal
+
 import pandas
 
 from macrobond_data_api.web.session import Session
@@ -37,10 +40,10 @@ class _ConfTest:
         with open(conf_path, "r", encoding="utf-8") as f:
             exec(f.read(), conf)  # pylint: disable=exec-used
 
-        self.api_url = conf.get("api_url", Session.configuration._default_api_url)
-        self.authorization_url = conf.get("authorization_url", Session.configuration._default_authorization_url)
-        self.username = conf.get("username", None)
-        self.password = conf.get("password", None)
+        self.api_url = conf.get("API_URL", Session.configuration._default_api_url)
+        self.authorization_url = conf.get("AUTHORIZATION_URL", Session.configuration._default_authorization_url)
+        self.username = conf.get("USERNAME", None)
+        self.password = conf.get("PASSWORD", None)
 
 
 @fixture(scope="function", name="mab")
@@ -142,6 +145,11 @@ def _test_metadata() -> Any:
     return _test_metadata_implment
 
 
+@fixture(scope="session", name="test_values")
+def _test_values() -> Any:
+    return _test_values_implment
+
+
 def _remove_microsecond(datetime_: datetime) -> datetime:
     return datetime(
         datetime_.year,
@@ -153,6 +161,22 @@ def _remove_microsecond(datetime_: datetime) -> datetime:
         # web_vintage.metadata[key].microsecond,
         tzinfo=datetime_.tzinfo,
     )
+
+
+def _test_values_implment(
+    web_values: Sequence[Union[float, None]],
+    com_values: Sequence[Union[float, None]],
+) -> None:
+    assert isinstance(web_values, collections.abc.Sequence)
+    assert isinstance(com_values, collections.abc.Sequence)
+
+    assert len(web_values) == len(com_values)
+
+    for i, _ in enumerate(web_values):
+        if web_values[i] is None and com_values[i] is None:
+            continue
+        assert_approx_equal(web_values[i], com_values[i], significant=16)
+        web_values[i] = com_values[i]
 
 
 def _test_metadata_implment(

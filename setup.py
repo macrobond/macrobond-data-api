@@ -101,6 +101,7 @@ setuptools.setup(
             "types-requests==2.32.0.20240914",
             "types-setuptools==75.1.0.20240917",
             "filelock==3.16.1",
+            "numpy>=1.24.4",
         ],
         "socks": ["requests[socks]>=2.32.3"],
     },

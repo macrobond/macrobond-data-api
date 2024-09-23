@@ -23,7 +23,7 @@ def _test_data_2(com: ComApi) -> Any:
 
 
 @pytest.fixture(scope="module", name="test_revision_history_request")
-def _test_revision_history_request(web: WebApi, com: ComApi, test_metadata: Any) -> Any:
+def _test_revision_history_request(web: WebApi, com: ComApi, test_metadata: Any, test_values: Any) -> Any:
     def test(
         request: RevisionHistoryRequest,
         status_code: StatusCode,
@@ -39,6 +39,9 @@ def _test_revision_history_request(web: WebApi, com: ComApi, test_metadata: Any)
 
         for web_r, com_r in zip(web_list, com_list):
             test_metadata(web_r, com_r, can_be_none=True)
+
+            for w_v, c_v in zip(web_r.vintages, com_r.vintages):
+                test_values(w_v.values, c_v.values)
 
             assert com_r.status_code == web_r.status_code
             assert com_r.status_code == status_code
@@ -75,12 +78,15 @@ def _test_revision_history_request(web: WebApi, com: ComApi, test_metadata: Any)
         "last revision adjustment = datetime(9000, 1, 1)",
     ],
 )
-def test_out_liers(requests: List[RevisionHistoryRequest], web: WebApi, com: ComApi) -> None:
+def test_out_liers(requests: List[RevisionHistoryRequest], web: WebApi, com: ComApi, test_values: Any) -> None:
     for web_r, com_r in zip(
         list(web.get_many_series_with_revisions(requests)), list(com.get_many_series_with_revisions(requests))
     ):
         web_r.metadata = {}
         com_r.metadata = {}
+
+        for w_v, c_v in zip(web_r.vintages, com_r.vintages):
+            test_values(w_v.values, c_v.values)
 
         assert com_r.status_code == web_r.status_code
 
