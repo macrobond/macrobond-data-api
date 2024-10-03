@@ -376,7 +376,7 @@ class Api(ABC):
         requests: `Sequence[macrobond_data_api.common.types.revision_history_request.RevisionHistoryRequest]`
             A sequence of series requests.
         include_not_modified: `bool`
-            Set this value to True in order to include NotNodified series.
+            Set this value to True in order to include NotModified series.
 
         Returns
         -------
@@ -579,7 +579,7 @@ class Api(ABC):
         series: `Sequence[Union[str, Tuple[str, Optional[datetime]]]]`
             A sequence of series names or a sequence of name plus a timestamp for the last modification.
         include_not_modified: `bool`
-            Set this value to True in order to include NotNodified series.
+            Set this value to True in order to include NotModified series.
 
         Returns
         -------
