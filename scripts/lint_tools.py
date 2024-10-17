@@ -12,7 +12,7 @@ class Mypy(WorkItem):
     # TODO: @mb-jp use --strict for mypy
     async def run(self) -> None:
         exclude = "--exclude .env --exclude test.py --exclude build --exclude .git"
-        args = f". --show-error-codes {exclude} --python-version 3.8"
+        args = f". --show-error-codes {exclude} --python-version 3.9"
         await asyncio.gather(
             self.python_run("mypy", args + " --platform win32"),
             self.python_run("mypy", args + " --platform linux"),

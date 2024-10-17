@@ -73,9 +73,9 @@ setuptools.setup(
         "License :: OSI Approved :: MIT License",
         "Programming Language :: Python :: 3 :: Only",
         "Programming Language :: Python :: 3",
-        "Programming Language :: Python :: 3.8",
+        "Programming Language :: Python :: 3.9",
     ],
-    python_requires=">=3.8",
+    python_requires=">=3.9",
     install_requires=[
         "keyring>=24.3.0",
         "requests>=2.32.3",
