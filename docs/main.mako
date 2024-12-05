@@ -136,7 +136,7 @@
 
                   <div class="col-md-12">
                       <h2>Examples</h2>
-                      <p>You can find examples how to use the API <a href="https://github.com/macrobond/data-api-python/tree/main/examples">here</a>.</p>
+                      <p>You can find examples how to use the API <a href="https://github.com/macrobond/macrobond-api-examples">here</a>.</p>
                   </div>
       
                   <div class="col-md-12">
