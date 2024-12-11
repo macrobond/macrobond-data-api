@@ -1,4 +1,4 @@
-keyring==24.3.0
+keyring==25.5.0
 requests==2.32.3
 ijson==3.3.0
 pywin32==306
