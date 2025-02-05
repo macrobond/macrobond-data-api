@@ -16,11 +16,6 @@
     "python.testing.pytestArgs": ["-p", "no:faulthandler", "--durations=50", "-vv"],
     "python.testing.pytestEnabled": true,
     "python.testing.unittestEnabled": false,
-    "python.linting.enabled": true,
-    "python.linting.pylintEnabled": true,
-    "python.linting.mypyEnabled": true,
-    "python.linting.pycodestyleEnabled": true,
-    "python.formatting.provider": "black",
     "diffEditor.ignoreTrimWhitespace": false,
 
     "task.autoDetect": "off",

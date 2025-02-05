@@ -60,3 +60,9 @@ from .series_request import SeriesRequest
 from .in_house_series_methods import InHouseSeriesMethods
 
 from .data_package_list_context import DataPackageListContext, DataPackageListContextManager
+
+from .release_entity_response import ReleaseEntityResponse
+
+from .release_event_item import ReleaseEventItem
+
+from .release_methods import ReleaseMethods

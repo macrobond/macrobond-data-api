@@ -6,6 +6,7 @@ from ._web_only_api import (
     get_data_package_list_iterative,
     get_data_package_list_chunked,
     subscription_list,
+    upcoming_releases,
 )
 from ._web_api_metadata import metadata_list_values, metadata_get_attribute_information, metadata_get_value_information
 
@@ -32,6 +33,7 @@ from ._web_api_series import (
 from ._web_api_in_house_series import delete_serie, upload_series
 
 from ._web_api_search import entity_search_multi_filter
+
 from .session import Session
 
 
@@ -75,6 +77,7 @@ class WebApi(Api):
     get_data_package_list_chunked = get_data_package_list_chunked
     entity_search_multi_filter_long = entity_search_multi_filter_long
     subscription_list = subscription_list
+    upcoming_releases = upcoming_releases
 
     # Search
 
