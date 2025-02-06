@@ -13,3 +13,6 @@ class ReleaseEventItem(TypedDict):
     """The reference period of the expected update"""
 
     comment: Optional[str]
+
+    kind: int
+    """The kind of event this item represents"""

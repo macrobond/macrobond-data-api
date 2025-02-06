@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING, Any, List, Optional, Callable, Tuple, Sequence
 
 import ijson
 
-from macrobond_data_api.common.enums import StatusCode
+from macrobond_data_api.common.enums import StatusCode, ReleaseEventItemKind
 from macrobond_data_api.common.types import SearchResultLong, Release, ReleaseEvent, GetEntitiesError
 from macrobond_data_api.common.types._repr_html_sequence import _ReprHtmlSequence
 from macrobond_data_api.common.types._parse_iso8601 import _parse_iso8601
@@ -287,6 +287,7 @@ def _create_release_event(response: "ReleaseEventItem") -> ReleaseEvent:
         _parse_iso8601(response["sourceReleaseTime"]),
         _parse_iso8601(cast(str, response["referencePeriodDate"])) if "referencePeriodDate" in response else None,
         response["comment"] if "comment" in response else None,
+        ReleaseEventItemKind(response["kind"]),
     )
 
 
@@ -309,6 +310,26 @@ def upcoming_releases(
     end_time: Optional[datetime] = None,
     raise_error: Optional[bool] = None,
 ) -> Sequence[Release]:
+    # pylint: disable=line-too-long
+    """
+    List upcoming releases until provided cutoff time.
+
+    Parameters
+    ----------
+    releases_names : Sequence[str]
+        The names of the releases.
+    end_time : datetime
+        The cutoff time. If not specified, 1 year from now will be used.
+    raise_error : bool
+        If True, accessing the resulting series raises a GetEntitiesError.
+        If False you should inspect the is_error property of the result instead.
+        If None, it will use the global value `macrobond_data_api.common.api.Api.raise_error`
+
+    Returns
+    -------
+    `Sequence[macrobond_data_api.common.types.release.ReleaseEvent]`
+    """
+    # pylint: enable=line-too-long
     response = self.session.release.post_upcomingreleases(*releases_names, end_time=end_time)
     releases = [_create_release(x, y, self.session) for x, y in zip(response, releases_names)]
     if self.raise_error if raise_error is None else raise_error:

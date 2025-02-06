@@ -2,6 +2,7 @@ from datetime import datetime
 import pytest
 
 from macrobond_data_api.web import WebApi
+from macrobond_data_api.common.types import GetEntitiesError
 
 
 @pytest.mark.parametrize(
@@ -24,7 +25,7 @@ def test_upcomingreleases_1(name: str, web: WebApi) -> None:
 
 
 def test_upcomingreleases_2(web: WebApi) -> None:
-    actual = web.upcoming_releases(["rel_usbeana", "a bade name"])
+    actual = web.upcoming_releases(["rel_usbeana", "a bade name"], raise_error=False)
 
     assert len(actual) == 2
 
@@ -38,16 +39,17 @@ def test_upcomingreleases_2(web: WebApi) -> None:
     assert actual[0].primary_name == "rel_usbeana"
 
     assert actual[1].is_error
-    assert actual[1].error_message
+    assert actual[1].error_message == "Entity not found: Not found"
     assert actual[1].events is None
-    assert actual[1].metadata is None
+    assert len(actual[1].metadata) == 0
 
 
 # not working for now
-# def test_upcomingreleases_3(web: WebApi) -> None:
-#     with pytest.raises(Exception) as ex:
-#         web.upcoming_releases(["rel_usbeana", "a bade name"], raise_error=True)
-#
+def test_upcomingreleases_3(web: WebApi) -> None:
+    with pytest.raises(GetEntitiesError):
+        web.upcoming_releases(["rel_usbeana", "a bade name"], raise_error=True)
+    with pytest.raises(GetEntitiesError):
+        web.upcoming_releases(["rel_usbeana", "a bade name 2"])
 
 
 def test_upcomingreleases_4(web: WebApi) -> None:
