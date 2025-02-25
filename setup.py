@@ -88,7 +88,7 @@ setuptools.setup(
             "mypy==1.15.0",
             "pylint==3.3.4",
             "pycodestyle==2.12.1",
-            "pdoc3==0.10.0",
+            "pdoc3==0.11.5",
             "build==1.2.2.post1",
             "pytest==8.3.4",
             "pytest-xdist==3.6.1",
