@@ -12,3 +12,4 @@ from .series_partial_periods_method import SeriesPartialPeriodsMethod
 from .calendar_date_mode import CalendarDateMode
 from .metadata_attribute_type import MetadataAttributeType
 from .status_code import StatusCode
+from .release_event_item_kind import ReleaseEventItemKind
