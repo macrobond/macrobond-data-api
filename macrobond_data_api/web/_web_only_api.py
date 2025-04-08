@@ -1,9 +1,11 @@
 from datetime import datetime, timedelta
-from typing import TYPE_CHECKING, Any, List, Optional, Callable, Tuple
+from typing import TYPE_CHECKING, Any, List, Optional, Callable, Tuple, Sequence, cast
 
 import ijson
 
-from macrobond_data_api.common.types import SearchResultLong
+from macrobond_data_api.common.enums import StatusCode, ReleaseEventItemKind
+from macrobond_data_api.common.types import SearchResultLong, Release, ReleaseEvent, GetEntitiesError
+from macrobond_data_api.common.types._repr_html_sequence import _ReprHtmlSequence
 from macrobond_data_api.common.types._parse_iso8601 import _parse_iso8601
 
 from .web_types.data_package_list_context import DataPackageListContextManager
@@ -14,11 +16,14 @@ from .web_types.data_package_body import DataPackageBody
 
 from .subscription_list import SubscriptionList
 
+from .session import Session
+
 if TYPE_CHECKING:  # pragma: no cover
     from macrobond_data_api.common.types import SearchFilter
 
     from .web_api import WebApi
     from .web_types.search import SearchRequest, SearchFilter as WebSearchFilter
+    from .web_types import ReleaseEntityResponse, ReleaseEventItem
 
 
 __pdoc__ = {
@@ -271,3 +276,62 @@ def subscription_list(self: "WebApi", last_modified: datetime, poll_interval: ti
         raise ValueError("WebApi is not open")
 
     return SubscriptionList(self._session, last_modified, poll_interval)
+
+
+# Release
+
+
+def _create_release_event(response: "ReleaseEventItem") -> ReleaseEvent:
+    return ReleaseEvent(
+        _parse_iso8601(response["expectedReleaseTime"]),
+        _parse_iso8601(response["sourceReleaseTime"]),
+        _parse_iso8601(cast(str, response["referencePeriodDate"])) if "referencePeriodDate" in response else None,
+        response["comment"] if "comment" in response else None,
+        ReleaseEventItemKind(response["kind"]),
+    )
+
+
+def _create_release(response: "ReleaseEntityResponse", name: str, session: Session) -> Release:
+    error_text = response.get("errorText")
+
+    if error_text:
+        return Release(name, error_text, StatusCode(cast(int, response["errorCode"])), None, None)
+
+    metadata = session._create_metadata(response["metadata"])
+
+    release_events = [_create_release_event(x) for x in cast(List["ReleaseEventItem"], response["events"])]
+
+    return Release(name, "", StatusCode.OK, metadata, release_events)
+
+
+def upcoming_releases(
+    self: "WebApi",
+    releases_names: Sequence[str],
+    end_time: Optional[datetime] = None,
+    raise_error: Optional[bool] = None,
+) -> Sequence[Release]:
+    # pylint: disable=line-too-long
+    """
+    List upcoming releases until provided cutoff time.
+
+    Parameters
+    ----------
+    releases_names : Sequence[str]
+        The names of the releases.
+    end_time : datetime
+        The cutoff time. If not specified, 1 year from now will be used.
+    raise_error : bool
+        If True, accessing the resulting series raises a GetEntitiesError.
+        If False you should inspect the is_error property of the result instead.
+        If None, it will use the global value `macrobond_data_api.common.api.Api.raise_error`
+
+    Returns
+    -------
+    `Sequence[macrobond_data_api.common.types.release.ReleaseEvent]`
+    """
+    # pylint: enable=line-too-long
+    response = self.session.release.post_upcomingreleases(*releases_names, end_time=end_time)
+    releases = [_create_release(x, y, self.session) for x, y in zip(response, releases_names)]
+    if self.raise_error if raise_error is None else raise_error:
+        GetEntitiesError._raise_if([(x, y.error_message) for x, y in zip(releases_names, releases)])
+    return _ReprHtmlSequence(releases)

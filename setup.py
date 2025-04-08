@@ -110,4 +110,5 @@ setuptools.setup(
         "Source": "https://github.com/macrobond/macrobond-data-api",
         "Tracker": "https://github.com/macrobond/macrobond-data-api/issues",
     },
+    package_data={"macrobond_data_api": ["py.typed"]},
 )
