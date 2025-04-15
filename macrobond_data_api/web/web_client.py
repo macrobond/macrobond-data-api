@@ -75,11 +75,15 @@ def _has_credentials_in_keyring(service_name: Optional[str] = None) -> bool:
 def _try_get_proxy_from_keyring() -> Optional[str]:
     if isinstance(keyring.get_keyring(), keyring.backends.fail.Keyring):
         return None
-
-    credentials = keyring.get_credential(Configuration._proxy_service_name, Configuration._proxy_username)
-    if not credentials or credentials.password == "":
+    try:
+        credentials = keyring.get_credential(Configuration._proxy_service_name, Configuration._proxy_username)
+        if not credentials or credentials.password == "":
+            return None
+        return credentials.password
+    except keyring.errors.InitError as e:
+        print("Unable to open keyring for proxy setings.", file=sys.stderr)
+        print(e, file=sys.stderr)
         return None
-    return credentials.password
 
 
 class WebClient(Client["WebApi"]):
