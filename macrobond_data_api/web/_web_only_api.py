@@ -1,5 +1,6 @@
 from datetime import datetime, timedelta
 from typing import TYPE_CHECKING, Any, List, Optional, Callable, Tuple
+import warnings
 
 import ijson
 
@@ -154,6 +155,12 @@ def get_data_package_list_iterative(
     `macrobond_data_api.web.web_types.data_package_body.DataPackageBody`
     """
     # pylint: enable=line-too-long
+    warnings.warn(
+        "get_data_package_list_iterative is deprecated. Use get_data_package_list_chunked instead.",
+        DeprecationWarning,
+        2,
+    )
+
     params = {}
     body: Optional[DataPackageBody] = None
 
