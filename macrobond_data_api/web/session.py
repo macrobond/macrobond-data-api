@@ -12,6 +12,7 @@ from .web_types import (
     InHouseSeriesMethods,
     HttpException,
     ProblemDetailsException,
+    ReleaseMethods,
 )
 
 from .scope import Scope
@@ -68,6 +69,11 @@ class Session:
         return self.__in_house_series
 
     @property
+    def release(self) -> ReleaseMethods:
+        """Lists upcoming releases for given release name"""
+        return self.__release
+
+    @property
     def api_url(self) -> str:
         return self.__api_url
 
@@ -118,6 +124,7 @@ class Session:
         self.__series = SeriesMethods(self)
         self.__series_tree = SeriesTreeMethods(self)
         self.__in_house_series = InHouseSeriesMethods(self)
+        self.__release = ReleaseMethods(self)
 
         self._metadata_type_directory = _MetadataTypeDirectory(self)
 

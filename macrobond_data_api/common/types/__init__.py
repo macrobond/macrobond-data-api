@@ -12,6 +12,10 @@ from .series import Series, SeriesColumns
 
 from .entity import Entity, EntityColumns
 
+from .release import Release, ReleaseColumns
+
+from .release_event import ReleaseEvent
+
 from .unified_series import UnifiedSeries, UnifiedSeriesList, UnifiedSeriesDict, UnifiedSeriesColumns
 
 from .vintage_series import VintageSeries
