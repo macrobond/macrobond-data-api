@@ -77,7 +77,7 @@ setuptools.setup(
     ],
     python_requires=">=3.9",
     install_requires=[
-        "keyring>=24.3.0",
+        "keyring>=25.6.0",
         "requests>=2.32.3",
         "ijson>=3.3.0",
         "pywin32>=306; os_name=='nt'",
