@@ -80,7 +80,7 @@ setuptools.setup(
         "keyring>=24.3.0",
         "requests>=2.32.3",
         "ijson>=3.3.0",
-        "pywin32>=306; os_name=='nt'",
+        "pywin32>=310; os_name=='nt'",
     ],
     extras_require={
         "extra": ["matplotlib", "statsmodels", "scikit-learn", "pandas"],
