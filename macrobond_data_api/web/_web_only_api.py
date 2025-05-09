@@ -327,7 +327,7 @@ def upcoming_releases(
 
     Returns
     -------
-    `Sequence[macrobond_data_api.common.types.release.ReleaseEvent]`
+    `Sequence[macrobond_data_api.common.types.release.Release]`
     """
     # pylint: enable=line-too-long
     response = self.session.release.post_upcomingreleases(*releases_names, end_time=end_time)
