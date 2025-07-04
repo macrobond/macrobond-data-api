@@ -91,7 +91,7 @@ setuptools.setup(
             "pdoc3==0.11.6",
             "build==1.2.2.post1",
             "pytest==8.4.1",
-            "pytest-xdist==3.7.0",
+            "pytest-xdist==3.8.0",
             "coverage==7.9.2",
             "black[jupyter]==25.1.0",
             "requests[socks]>=2.32.3",
