@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, tzinfo
 from typing import TYPE_CHECKING, Optional, Sequence, Union, Any, List, Dict
 
 from macrobond_data_api.common.enums import SeriesWeekdays, SeriesFrequency
@@ -18,6 +18,12 @@ def _set_metadata(metadata: Dict[str, Any], name: str, val: Any) -> None:
             raise ValueError(f"{name} in metadata does not match {name}")
     else:
         metadata[name] = val
+
+
+def set_tzinfo_and_isoformat(date: datetime, local_time_zone: tzinfo) -> str:
+    if date.tzinfo is None:
+        date = date.replace(tzinfo=local_time_zone)
+    return date.isoformat()
 
 
 def upload_series(
@@ -58,9 +64,10 @@ def upload_series(
             raise ValueError("start_date_or_dates must have a timezone")
         _set_metadata(metadata, "StartDate", start_date_or_dates.isoformat())
     else:
-        if any(x.tzinfo is None for x in start_date_or_dates):
-            raise ValueError("start_date_or_dates must have a timezone")
-        dates = [x.isoformat() for x in start_date_or_dates]
+        local_time_zone = datetime.now().astimezone().tzinfo
+        if local_time_zone is None:
+            raise ValueError("cat not determine local timezone")
+        dates = [set_tzinfo_and_isoformat(x, local_time_zone) for x in start_date_or_dates]
 
     self.session.in_house_series.upload_series(
         {"forecastFlags": forecast_flags, "metadata": metadata, "values": values, "dates": dates}

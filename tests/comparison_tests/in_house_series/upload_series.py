@@ -1,5 +1,5 @@
-from typing import Any
-from datetime import datetime, timezone
+from typing import Any, Sequence
+from datetime import datetime, timezone, timedelta
 
 import pytest
 
@@ -174,3 +174,68 @@ def test_4(web: WebApi, com: ComApi, test_metadata: Any) -> None:
             web.delete_serie(web_name)
         finally:
             com.delete_serie(com_name)
+
+
+def _test_5_and_6_impl(api: Api, test_metadata: Any, test_id: str) -> None:
+
+    file_name_1 = "ih:mb:priv:test_name_py_" + test_id + "_1"
+    file_name_2 = "ih:mb:priv:test_name_py_" + test_id + "_2"
+
+    _try_delete_series(api, file_name_1, file_name_2)
+
+    def upload_and_get_series(name: str, dates: Sequence[datetime]) -> Series:
+
+        api.upload_series(
+            name,
+            "test_description_test_" + test_id,
+            "us",
+            "test_category",
+            SeriesFrequency.DAILY,
+            [
+                -1,
+                -2,
+            ],
+            dates,
+        )
+
+        return api.get_one_series(name)
+
+    local_time_zone = datetime.now().astimezone().tzinfo
+    if local_time_zone is None:
+        raise ValueError("cat not determine local timezone")
+
+    try:
+        series1 = upload_and_get_series(
+            file_name_1,
+            [
+                datetime(2020, 1, 1, tzinfo=local_time_zone),
+                datetime(2020, 1, 2),
+            ],
+        )
+        series2 = upload_and_get_series(
+            file_name_2,
+            [
+                datetime(2020, 1, 1, tzinfo=local_time_zone),
+                datetime(2020, 1, 2, tzinfo=local_time_zone),
+            ],
+        )
+
+        test_metadata(series1, series2, ignore_keys=["LastModifiedTimeStamp", "PrimName", "Name"])
+
+        series1.name = "test"
+        series2.name = "test"
+
+        assert series1.dates[0].year == 2019
+        assert series1 == series2
+    finally:
+        _try_delete_series(api, file_name_1, file_name_2)
+
+
+@pytest.mark.usefixtures("lock_test")
+def test_5(web: WebApi, test_metadata: Any) -> None:
+    _test_5_and_6_impl(web, test_metadata, "5")
+
+
+@pytest.mark.usefixtures("lock_test")
+def test_6(com: ComApi, test_metadata: Any) -> None:
+    _test_5_and_6_impl(com, test_metadata, "6")
