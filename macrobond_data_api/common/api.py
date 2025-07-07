@@ -682,11 +682,11 @@ class Api(ABC):
             The description of the series.
         region : str
             The region of the series.
-            
+
             Get valid values using this code for the region:
         ```python
         from macrobond_data_api import metadata_list_values
-        
+
         metadata_list_values("Region")
         ```
 
