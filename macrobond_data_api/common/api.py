@@ -682,6 +682,14 @@ class Api(ABC):
             The description of the series.
         region : str
             The region of the series.
+            
+            Get valid values using this code for the region:
+        ```python
+        from macrobond_data_api import metadata_list_values
+        
+        metadata_list_values("Region")
+        ```
+
         category : str
             The category of the series.
         frequency : `macrobond_data_api.common.enums.series_frequency.SeriesFrequency`
