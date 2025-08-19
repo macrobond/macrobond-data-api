@@ -73,7 +73,7 @@ class WorkItem:
             self.out += str(object_) + "\n"
 
     async def python_run(self, name: Optional[str], *args: str, ignore_exit_code: bool = False) -> None:
-        prefix = f'"{self.python_path }" '
+        prefix = f'"{self.python_path}" '
 
         for arg in args:
             command = f"-m {name} {arg}" if name else arg
