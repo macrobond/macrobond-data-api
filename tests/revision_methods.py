@@ -24,7 +24,10 @@ def test_get_vintage_series_error(api: Api) -> None:
 
 @pytest.mark.parametrize("api", ["web", "com"], indirect=True)
 def test_get_vintage_series_revision_time_stamp_is_none(api: Api) -> None:
-    data = api.get_vintage_series(datetime(1970, 4, 1), ["gbgdp"])
+    name = "ustrad4488"
+    first = api.get_revision_info(name)[0].vintage_time_stamps[0]
+    first = datetime(first.year, first.month, first.day)
+    data = api.get_vintage_series(first, [name])
     assert data[0].revision_time_stamp is None
 
 
