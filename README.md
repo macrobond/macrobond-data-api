@@ -1,7 +1,7 @@
 <!-- markdownlint-disable -->
 <div align="center">
     <a href="https://www.macrobond.com/">
-        <img loading="lazy" aria-roledescription="brand logo" alt="Macrobond logo" src="https://macrobond.github.io/macrobond-data-api/assets/Macrobond_logo_Color.svg" width="30%">
+        <img loading="lazy" aria-roledescription="brand logo" alt="Macrobond logo" src="https://macrobond.github.io/macrobond-data-api/assets/Macrobond_logo_Black.svg" width="30%">
     </a>
 </div>
 
