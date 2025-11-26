@@ -8,4 +8,5 @@ from .auth_exceptions import (
     AuthDiscoveryException,
     AuthFetchTokenException,
     AuthInvalidCredentialsException,
+    AuthTooManyRequestsException,
 )

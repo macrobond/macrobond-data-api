@@ -1,12 +1,17 @@
 import time
 from typing import Any, Dict, Sequence, Optional, TYPE_CHECKING
 
-from .auth_exceptions import AuthFetchTokenException, AuthDiscoveryException, AuthInvalidCredentialsException
+from .auth_exceptions import (
+    AuthFetchTokenException,
+    AuthDiscoveryException,
+    AuthInvalidCredentialsException,
+    AuthTooManyRequestsException,
+)
 
 if TYPE_CHECKING:  # pragma: no cover
     from .scope import Scope
     from .session import Session
-    from requests.models import PreparedRequest
+    from requests.models import PreparedRequest, Response
 
 
 class _AuthClient:
@@ -51,6 +56,8 @@ class _AuthClient:
             token_endpoint, data=payload, headers={"Content-Type": "application/x-www-form-urlencoded"}
         )
 
+        self._throw_if_too_many_requests(response)
+
         if response.status_code not in [200, 400]:
             raise AuthFetchTokenException("status code is not 200 or 400")
 
@@ -88,6 +95,9 @@ class _AuthClient:
     def _discovery(self, url: str) -> str:
 
         response = self.session.requests_session.get(url + ".well-known/openid-configuration")
+
+        self._throw_if_too_many_requests(response)
+
         if response.status_code != 200:
             raise AuthDiscoveryException("status code is not 200")
 
@@ -114,3 +124,24 @@ class _AuthClient:
     def _requests_auth(self, r: "PreparedRequest") -> "PreparedRequest":
         r.headers["Authorization"] = "Bearer " + self.access_token
         return r
+
+    def _throw_if_too_many_requests(self, response: "Response") -> None:
+        if response.status_code != 429:
+            return
+
+        retry_after = None
+        retry_after_header = response.headers.get("Retry-After")
+        if retry_after_header is not None:
+            try:
+                retry_after = int(retry_after_header)
+            except ValueError:
+                ...
+
+        raise AuthTooManyRequestsException(
+            "Too many requests. This is probably due to too frequent authentication requests.\n"
+            + "A common cause is that new WebClient objects are created instead of reusing a single instance.\n"
+            + "In addition to using a single instance of the WebClient, "
+            + "you might also want to implement a retry logic that waits as many seconds as indicated in "
+            + "the retry_after property before making another attempt.",
+            retry_after,
+        )
