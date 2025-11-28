@@ -129,7 +129,7 @@ class _AuthClient:
         if response.status_code != 429:
             return
 
-        retry_after = None
+        retry_after = 5
         retry_after_header = response.headers.get("Retry-After")
         if retry_after_header is not None:
             try:
