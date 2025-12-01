@@ -1,6 +1,14 @@
+from typing import cast
+
 import pytest
 
-from macrobond_data_api.web import AuthDiscoveryException, AuthFetchTokenException, AuthInvalidCredentialsException
+from macrobond_data_api.web._auth_client import _AuthClient
+from macrobond_data_api.web import (
+    AuthDiscoveryException,
+    AuthFetchTokenException,
+    AuthInvalidCredentialsException,
+    Scope,
+)
 from ..mock_adapter_builder import MAB, DISCOVERY_URL, TOKEN_ENDPOINT
 
 
@@ -46,7 +54,7 @@ class TestAuthClientFetchToken:
         ).build()
 
         auth_client._fetch_token(TOKEN_ENDPOINT)
-        assert auth_client.expires_at == 10
+        assert auth_client._cache._get().expires_at == 10
 
     def test_expires_in(self, mab: MAB) -> None:
         _, _, _, auth_client = (
@@ -56,7 +64,7 @@ class TestAuthClientFetchToken:
         )
 
         auth_client._fetch_token(TOKEN_ENDPOINT)
-        assert auth_client.expires_at == 20
+        assert auth_client._cache._get().expires_at == 20
 
     def test_error_status_code(self, mab: MAB) -> None:
         _, _, session, _ = (mab.discovery().response(TOKEN_ENDPOINT, 500)).build()
@@ -174,3 +182,45 @@ class TestAuthClient:
 
         assert auth_client.fetch_token_if_necessary() is False
         assert mock_adapter.index == 3
+
+
+@pytest.mark.no_account
+class TestAuthClientCache:
+
+    def test_1(self, mab: MAB) -> None:
+        _, _, _, auth_client1 = (mab.auth(10).auth(10).use_access_token_cache()).build()
+
+        auth_client_2 = _AuthClient(
+            auth_client1._username,
+            auth_client1._password,
+            cast(list[Scope], auth_client1.scope.split(" ")),
+            auth_client1.authorization_url,
+            auth_client1.session,
+            False,
+        )
+        auth_client_2._cache.remove_old_time = lambda: 5
+        auth_client_2.is_expired_get_time = lambda: 5
+        auth_client_2.leeway = 1
+
+        assert auth_client1.fetch_token_if_necessary() is True
+
+        assert auth_client_2.fetch_token_if_necessary() is True
+
+    def test_2(self, mab: MAB) -> None:
+        _, _, _, auth_client1 = (mab.auth(10).use_access_token_cache()).build()
+
+        auth_client_2 = _AuthClient(
+            auth_client1._username,
+            auth_client1._password,
+            cast(list[Scope], auth_client1.scope.split(" ")),
+            auth_client1.authorization_url,
+            auth_client1.session,
+            True,
+        )
+        auth_client_2._cache.remove_old_time = lambda: 5
+        auth_client_2.is_expired_get_time = lambda: 5
+        auth_client_2.leeway = 1
+
+        assert auth_client1.fetch_token_if_necessary() is True
+
+        assert auth_client_2.fetch_token_if_necessary() is False

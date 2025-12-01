@@ -93,6 +93,7 @@ class Session:
         api_url: str = None,
         authorization_url: str = None,
         proxy: str = None,
+        use_access_token_cache: bool = True,
     ) -> None:
         if api_url is None:
             api_url = Configuration._default_api_url
@@ -117,7 +118,7 @@ class Session:
         if proxy:
             self.requests_session.proxies = {"https": proxy, "http": proxy}
 
-        self._auth_client = _AuthClient(username, password, scopes, authorization_url, self)
+        self._auth_client = _AuthClient(username, password, scopes, authorization_url, self, use_access_token_cache)
 
         self.__metadata = MetadataMethods(self)
         self.__search = SearchMethods(self)
