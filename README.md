@@ -88,7 +88,7 @@ Macrobond Data API for Python is available on [PyPI](https://pypi.org/project/ma
 python -m pip install macrobond-data-api
 ```
 
-Macrobond Data API for Python officially supports Python 3.9+.
+Macrobond Data API for Python officially supports Python 3.10+.
 
 ## Using of system keyring for credentials
 
