@@ -106,7 +106,7 @@
             "type": "pickString",
             "options": [
                 "3",
-                "3.9"
+                "3.10"
             ],
             "description": "Which version of python ? 3 is recommended normal uses",
             "default": "3"
