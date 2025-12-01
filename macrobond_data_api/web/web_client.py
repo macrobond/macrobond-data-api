@@ -147,6 +147,7 @@ class WebClient(Client["WebApi"]):
         authorization_url: str = None,
         service_name: str = None,
         proxy: str = None,
+        use_access_token_cache: bool = True,
     ) -> None:
         super().__init__()
 
@@ -176,6 +177,7 @@ class WebClient(Client["WebApi"]):
             api_url=api_url,
             authorization_url=authorization_url,
             proxy=proxy,
+            use_access_token_cache=use_access_token_cache,
         )
 
     @property

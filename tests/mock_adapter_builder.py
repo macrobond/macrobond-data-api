@@ -9,6 +9,7 @@ from requests.models import Response as ResponseModel
 
 from macrobond_data_api.web.session import Session
 from macrobond_data_api.web._auth_client import _AuthClient
+from macrobond_data_api.web._access_token_cache import _AccessTokenCache
 from macrobond_data_api.web import WebApi
 
 from .mock_adapter import MockAdapter
@@ -28,11 +29,22 @@ class MockAdapterBuilder:
         self._leeway = 0
         self._fetch_token_get_time: Optional[List[int]] = None
         self._is_expired_get_time: Optional[List[int]] = None
+        self._remove_old_cache_items_time: Optional[List[int]] = None
         self._mock_adapter: Optional[MockAdapter] = None
         self._no_assert = False
+        self._use_access_token_cache = False
 
     def build(self) -> Tuple[MockAdapter, WebApi, Session, _AuthClient]:
-        session = Session("", "", api_url=API_URL, authorization_url=AUTHORIZATION_URL)
+
+        _AccessTokenCache._cache.clear()
+
+        session = Session(
+            "",
+            "",
+            api_url=API_URL,
+            authorization_url=AUTHORIZATION_URL,
+            use_access_token_cache=self._use_access_token_cache,
+        )
 
         self._mock_adapter = mock_adapter = MockAdapter(self._responses, self._urls)
         session.requests_session.mount("https://", mock_adapter)
@@ -53,6 +65,10 @@ class MockAdapterBuilder:
             auth_client.is_expired_get_time = lambda: 0
 
         return mock_adapter, WebApi(session), session, auth_client
+
+    def use_access_token_cache(self) -> "MockAdapterBuilder":
+        self._use_access_token_cache = True
+        return self
 
     def set_no_assert(self) -> "MockAdapterBuilder":
         self._no_assert = True

@@ -8,6 +8,8 @@ from .auth_exceptions import (
     AuthTooManyRequestsException,
 )
 
+from ._access_token_cache import _AccessTokenCache
+
 if TYPE_CHECKING:  # pragma: no cover
     from .scope import Scope
     from .session import Session
@@ -17,7 +19,13 @@ if TYPE_CHECKING:  # pragma: no cover
 class _AuthClient:
 
     def __init__(
-        self, username: str, password: str, scope: Sequence["Scope"], authorization_url: str, session: "Session"
+        self,
+        username: str,
+        password: str,
+        scope: Sequence["Scope"],
+        authorization_url: str,
+        session: "Session",
+        use_access_token_cache: bool,
     ) -> None:
         self._username = username
         self._password = password
@@ -26,12 +34,16 @@ class _AuthClient:
         self.token_endpoint: Optional[str] = None
         self.session = session
         self.requests_auth = self._requests_auth
-        self.access_token = ""
         self.token_response: Optional[Dict[str, Any]] = None
         self.leeway = 60
-        self.expires_at: Optional[int] = None
         self.fetch_token_get_time = time.time
         self.is_expired_get_time = time.time
+
+        if use_access_token_cache:
+            key_cache = self.scope + ":" + self.authorization_url + ":" + username + ":" + password
+            self._cache = _AccessTokenCache(key_cache)
+        else:
+            self._cache = _AccessTokenCache(None)
 
     def fetch_token_if_necessary(self) -> bool:
         if self._is_expired():
@@ -80,17 +92,20 @@ class _AuthClient:
         if json.get("token_type") and json["token_type"] != "Bearer":
             raise AuthFetchTokenException("token_type is not Bearer")
 
+        expires_at = 0
         if json.get("expires_at"):
-            self.expires_at = int(json["expires_at"])
+            expires_at = int(json["expires_at"])
         elif json.get("expires_in"):
-            self.expires_at = int(self.fetch_token_get_time()) + int(json["expires_in"])
+            expires_at = int(self.fetch_token_get_time()) + int(json["expires_in"])
         else:
             raise AuthFetchTokenException("no expires_at or expires_in")
 
         if not json.get("access_token"):
             raise AuthFetchTokenException("No access_token")
 
-        self.access_token = json["access_token"]
+        cache_item = self._cache._get()
+        cache_item.expires_at = expires_at
+        cache_item.access_token = json["access_token"]
 
     def _discovery(self, url: str) -> str:
 
@@ -116,13 +131,17 @@ class _AuthClient:
         return token_endpoint
 
     def _is_expired(self) -> bool:
-        if not self.expires_at:
+        cache_item = self._cache._get()
+
+        if not cache_item.expires_at:
             return True
-        expiration_threshold = self.expires_at - self.leeway
+        expiration_threshold = cache_item.expires_at - self.leeway
         return expiration_threshold < self.is_expired_get_time()
 
     def _requests_auth(self, r: "PreparedRequest") -> "PreparedRequest":
-        r.headers["Authorization"] = "Bearer " + self.access_token
+        cache_item = self._cache._get()
+        if cache_item.access_token:
+            r.headers["Authorization"] = "Bearer " + cache_item.access_token
         return r
 
     def _throw_if_too_many_requests(self, response: "Response") -> None:
