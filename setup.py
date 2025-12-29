@@ -90,7 +90,7 @@ setuptools.setup(
             "pycodestyle==2.14.0",
             "pdoc3==0.11.6",
             "build==1.3.0",
-            "pytest==9.0.1",
+            "pytest==9.0.2",
             "pytest-xdist==3.8.0",
             "coverage==7.13.1",
             "black[jupyter]==25.11.0",
