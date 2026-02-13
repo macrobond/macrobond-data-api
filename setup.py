@@ -100,7 +100,7 @@ setuptools.setup(
             "types-pywin32==311.0.0.20251008",
             "types-requests==2.32.4.20260107",
             "types-setuptools==82.0.0.20260210",
-            "filelock==3.20.2",
+            "filelock==3.21.2",
             "numpy>=1.24.4",
         ],
         "socks": ["requests[socks]>=2.32.5"],
