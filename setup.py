@@ -95,7 +95,7 @@ setuptools.setup(
             "coverage==7.13.4",
             "black[jupyter]==25.12.0",
             "requests[socks]>=2.32.5",
-            "nbconvert==7.16.6",
+            "nbconvert==7.17.0",
             "ipython>=7.34.0",
             "types-pywin32==311.0.0.20251008",
             "types-requests==2.32.4.20260107",
