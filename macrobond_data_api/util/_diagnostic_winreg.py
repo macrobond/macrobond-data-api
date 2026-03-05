@@ -6,7 +6,7 @@ from typing import List, Any, Optional, Literal
 if sys.platform == "win32":
     import winreg  # pylint: disable=E0401
 else:
-    winreg: Any = None
+    winreg: Any = None  # pylint: disable = C0103
 
 
 # Not in use in this file
