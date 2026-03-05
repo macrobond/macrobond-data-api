@@ -16,6 +16,7 @@ class Mypy(WorkItem):
         await asyncio.gather(
             self.python_run("mypy", args + " --platform win32"),
             self.python_run("mypy", args + " --platform linux"),
+            self.python_run("mypy", args + " --platform darwin"),
         )
 
 

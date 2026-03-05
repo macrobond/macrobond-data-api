@@ -25,9 +25,9 @@ if sys.platform == "win32":
 
     import winreg  # pylint: disable = E0401
 else:
-    _client: Any = None
-    com_error: Any = None
-    winreg: Any = None
+    _client: Any = None  # pylint: disable = C0103
+    com_error: Any = None  # pylint: disable = C0103
+    winreg: Any = None  # pylint: disable = C0103
 
 
 def _test_regedit_assembly() -> Optional[str]:
