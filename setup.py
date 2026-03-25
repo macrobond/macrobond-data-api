@@ -89,7 +89,7 @@ setuptools.setup(
             "pylint==4.0.5",
             "pycodestyle==2.14.0",
             "pdoc3==0.11.6",
-            "build==1.4.0",
+            "build==1.4.1",
             "pytest==9.0.2",
             "pytest-xdist==3.8.0",
             "coverage==7.13.5",
