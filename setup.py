@@ -98,7 +98,7 @@ setuptools.setup(
             "nbconvert==7.17.0",
             "ipython>=7.34.0",
             "types-pywin32==311.0.0.20251008",
-            "types-requests==2.32.4.20260107",
+            "types-requests==2.32.4.20260324",
             "types-setuptools==82.0.0.20260210",
             "filelock==3.25.1",
             "numpy>=1.24.4",
