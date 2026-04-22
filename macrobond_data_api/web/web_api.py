@@ -36,7 +36,6 @@ from ._web_api_search import entity_search_multi_filter
 
 from .session import Session
 
-
 __pdoc__ = {
     "WebApi.__init__": False,
 }

@@ -20,7 +20,6 @@ from ._metadata_directory import _MetadataTypeDirectory
 from ._metadata import _Metadata
 from .configuration import Configuration
 
-
 if TYPE_CHECKING:  # pragma: no cover
     from requests import Response
 

@@ -4,7 +4,6 @@ from typing import List, TYPE_CHECKING
 from macrobond_data_api.common.types import SearchResult
 from ._fix_datetime import _fix_datetime
 
-
 if TYPE_CHECKING:  # pragma: no cover
     from .com_api import ComApi
 

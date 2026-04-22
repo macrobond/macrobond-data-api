@@ -1,6 +1,5 @@
 from typing import Type
 
-
 __pdoc__ = {
     "Configuration.__init__": False,
 }
