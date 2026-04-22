@@ -1,5 +1,6 @@
 from abc import ABC, abstractmethod
 from datetime import datetime, timezone
+from itertools import count
 
 import time
 from typing import List, Optional, cast, TYPE_CHECKING, Callable
@@ -104,11 +105,12 @@ class DataPackageListPoller(ABC):
         is_stated = False
 
         def _body_callback(body: "DataPackageBody") -> None:
-            is_stated = True  # pylint: disable=unused-variable
+            nonlocal is_stated
+            is_stated = True
             self.on_full_listing_start(body)
 
         try:
-            for attempt in range(1, max_attempts):
+            for attempt in count(1, 1):
                 try:
                     sub = self._api.get_data_package_list_iterative(
                         _body_callback,
@@ -123,7 +125,7 @@ class DataPackageListPoller(ABC):
                 except Exception as ex:  # pylint: disable=broad-except
                     if self._abort:
                         raise _AbortException() from ex
-                    if attempt > max_attempts:
+                    if attempt >= max_attempts:
                         raise ex
                     self._sleep(self.on_error_delay)
         except _AbortException as ex:
@@ -138,11 +140,12 @@ class DataPackageListPoller(ABC):
         is_stated = False
 
         def _body_callback(body: "DataPackageBody") -> None:
-            is_stated = True  # pylint: disable=unused-variable
+            nonlocal is_stated
+            is_stated = True
             self.on_incremental_start(body)
 
         try:
-            for attempt in range(1, max_attempts):
+            for attempt in range(1, max_attempts + 1):
                 try:
                     sub = self._api.get_data_package_list_iterative(
                         _body_callback,
@@ -153,7 +156,7 @@ class DataPackageListPoller(ABC):
                 except Exception as ex:  # pylint: disable=broad-except
                     if self._abort:
                         raise _AbortException() from ex
-                    if attempt > max_attempts:
+                    if attempt >= max_attempts:
                         raise
                     self._sleep(self.on_error_delay)
 
@@ -180,7 +183,7 @@ class DataPackageListPoller(ABC):
     ) -> Optional["DataPackageBody"]:
         try:
             while True:
-                for attempt in range(1, max_attempts):
+                for attempt in count(1, 1):
                     try:
                         sub = self._api.get_data_package_list_iterative(
                             lambda _: None,
@@ -201,7 +204,7 @@ class DataPackageListPoller(ABC):
                     except Exception as ex2:  # pylint: disable=broad-except
                         if self._abort:
                             raise _AbortException() from ex2
-                        if attempt > max_attempts:
+                        if attempt >= max_attempts:
                             raise
                         self._sleep(self.on_error_delay)
         except _AbortException as ex:
