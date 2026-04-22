@@ -1,6 +1,5 @@
 from typing import Generator, Sequence, TypeVar
 
-
 SplitInToChunksTypeVar = TypeVar("SplitInToChunksTypeVar")
 
 

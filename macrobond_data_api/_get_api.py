@@ -2,7 +2,6 @@ import os
 import sys
 from typing import TYPE_CHECKING, Optional, List
 
-
 if TYPE_CHECKING:  # pragma: no cover
     from macrobond_data_api.common.api import Api
 
