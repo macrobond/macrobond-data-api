@@ -34,7 +34,7 @@
 <!-- markdownlint-enable -->
 
 The Macrobond Data API for Python is used to access the world’s most extensive
-macroeconomic, aggregate financial and sector database provided by [Macrobond](http://www.macrobond.com).
+macroeconomic, aggregate financial and sector database provided by [Macrobond](https://go.macrobond.com/l/853743/2026-05-18/3phzv2).
 Exposes a common API in Python for the
 [Macrobond Web](https://help.macrobond.com/technical-information/the-macrobond-data-web-api-feed/)
 and [Client data](https://help.macrobond.com/technical-information/the-macrobond-api-for-python/)
