@@ -99,7 +99,7 @@ setuptools.setup(
             "ipython>=7.34.0",
             "types-pywin32==312.0.0.20260609",
             "types-requests==2.33.0.20260518",
-            "types-setuptools==82.0.0.20260518",
+            "types-setuptools==83.0.0.20260724",
             "filelock==3.29.0",
             "numpy>=1.24.4",
         ],
