@@ -92,7 +92,7 @@ setuptools.setup(
             "build==1.5.0",
             "pytest==9.1.1",
             "pytest-xdist==3.8.0",
-            "coverage==7.15.4",
+            "coverage==7.16.0",
             "black[jupyter]==26.5.1",
             "requests[socks]>=2.32.5",
             "nbconvert==7.17.1",
